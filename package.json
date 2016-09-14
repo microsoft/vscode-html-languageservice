@@ -1,0 +1,36 @@
+{
+    "name": "vscode-html-languageservice",
+    "version": "1.0.0-next.1",
+    "description": "Language service for HTML",
+    "main": "./lib/htmlLanguageService.js",
+    "typings": "./lib/htmlLanguageService",
+    "author": "Microsoft Corporation",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Microsoft/vscode-html-languageservice"
+    },
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/Microsoft/vscode-html-languageservice"
+    },
+    "devDependencies": {
+        "mocha": "^2.4.5",
+        "typescript": "^1.8.10",
+        "gulp": "^3.9.1",
+        "gulp-tsb": "^1.10.4",
+        "merge-stream": "^1.0.0",
+        "object-assign": "^4.1.0",
+        "rimraf": "^2.5.2"
+    },
+    "dependencies": {
+        "vscode-languageserver-types": "^1.0.4-next.1",
+        "vscode-nls": "^1.0.4",
+        "vscode-uri": "^0.0.7"
+    },
+    "scripts": {
+        "prepublish": "gulp compile",
+        "compile": "gulp compile",
+        "watch": "gulp watch",
+        "test": "gulp compile && mocha"
+    }
+}
