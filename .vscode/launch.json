@@ -15,7 +15,7 @@
 			"type": "node",
 			"request": "launch",
 			"program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
-			"stopOnEntry": true,
+			"stopOnEntry": false,
 			"args": [
 				"--timeout",
 				"999999",
