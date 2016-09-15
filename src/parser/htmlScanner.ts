@@ -32,12 +32,6 @@ export enum TokenType {
 	EOS
 }
 
-export interface IToken {
-	type: TokenType;
-	offset: number;
-	len: number;
-}
-
 class MultiLineStream {
 
 	private source: string;
@@ -139,15 +133,16 @@ class MultiLineStream {
 	}
 
 	public advanceUntilChars(ch: number[]): boolean {
-		while (this.position + ch.length < this.source.length) {
-			for (let i = 0; i < ch.length; i++) {
-				if (this.source.charCodeAt(this.position + i) !== ch[i]) {
-					break;
-				}
+		while (this.position + ch.length <= this.source.length) {
+			let i = 0;
+			for (; i < ch.length && this.source.charCodeAt(this.position + i) === ch[i]; i++) {
+			}
+			if (i === ch.length) {
 				return true;
 			}
 			this.advance(1);
 		}
+		this.goToEnd();
 		return false;
 	}
 
@@ -251,7 +246,7 @@ export function createScanner(input: string, initialOffset = 0, initialState: Sc
 					state = ScannerState.WithinContent;
 					return finishToken(offset, TokenType.EndCommentTag);
 				}
-				stream.advanceUntilChars([_MIN, _MIN, _RAN]);  // -->
+				stream.advanceUntilChars([_MIN, _MIN, _RAN]); // -->
 				return finishToken(offset, TokenType.Comment);
 			case ScannerState.WithinDoctype:
 				if (stream.advanceIfChar(_RAN)) {

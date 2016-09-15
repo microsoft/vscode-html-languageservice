@@ -742,4 +742,22 @@ suite('HTML Scanner', () => {
 		}
 		]);
 	});
+
+
+	test('Incomplete', () => {
+		assertTokens([{
+			input: '    ',
+			tokens: [
+				{ offset: 0, type: TokenType.Content }
+			]
+		}]);
+		assertTokens([{
+			input: '<!---   ',
+			tokens: [
+				{ offset: 0, type: TokenType.StartCommentTag },
+				{ offset: 4, type: TokenType.Comment }
+			]
+		}]);
+	});	
+
 });
