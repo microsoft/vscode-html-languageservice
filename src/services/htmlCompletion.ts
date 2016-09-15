@@ -18,7 +18,7 @@ let allTagProviders = [
 	getRazorTagProvider()
 ];
 
-export function doComplete(document: TextDocument, position: Position, doc: HTMLDocument, settings?: CompletionConfiguration): CompletionList {
+export function doComplete(document: TextDocument, position: Position, htmlDocument: HTMLDocument, settings?: CompletionConfiguration): CompletionList {
 
 	let result: CompletionList = {
 		isIncomplete: false,
@@ -27,7 +27,7 @@ export function doComplete(document: TextDocument, position: Position, doc: HTML
 	let tagProviders = allTagProviders.filter(p => p.isApplicable(document.languageId) && (!settings || !!settings[p.getId()]));
 
 	let offset = document.offsetAt(position);
-	let node = doc.findNodeBefore(offset);
+	let node = htmlDocument.findNodeBefore(offset);
 	if (!node) {
 		return result;
 	}
@@ -57,6 +57,22 @@ export function doComplete(document: TextDocument, position: Position, doc: HTML
 		return result;
 	}
 
+	function getLineIndent(offset: number) {
+		let text = document.getText();
+		let start = offset;
+		while (start > 0) {
+			let ch = text.charAt(start - 1);
+			if ("\n\r".indexOf(ch) >= 0) {
+				return text.substring(start, offset);
+			}
+			if (!isWhiteSpace(ch)) {
+				return null;
+			}
+			start--;
+		}
+		return text.substring(0, offset);
+	}
+
 	function collectCloseTagSuggestions(afterOpenBracket: number, matchingOnly: boolean): CompletionList {
 		let range = getReplaceRange(afterOpenBracket);
 		let contentAfter = document.getText().substr(offset);
@@ -64,13 +80,20 @@ export function doComplete(document: TextDocument, position: Position, doc: HTML
 		let curr = node;
 		while (curr) {
 			let tag = curr.tag;
-			if (tag && !curr.closed) {
-				result.items.push({
+			if (tag && !curr.closed) {			
+				let item = {
 					label: '/' + tag,
 					kind: CompletionItemKind.Property,
 					filterText: '/' + tag + closeTag,
 					textEdit: { newText: '/' + tag + closeTag, range: range }
-				});
+				};
+				let startIndent = getLineIndent(curr.start);
+				let endIndent = getLineIndent(afterOpenBracket - 1);
+				if (startIndent !== null && endIndent !== null && startIndent !== endIndent) {
+					item.textEdit = { newText: startIndent + '</' + tag + closeTag, range: getReplaceRange(afterOpenBracket - 1 - endIndent.length) };
+					item.filterText = endIndent + '</' + tag + closeTag;
+				}
+				result.items.push(item);
 				return result;
 			}
 			curr = curr.parent;
@@ -79,7 +102,7 @@ export function doComplete(document: TextDocument, position: Position, doc: HTML
 			return result;
 		}
 
-		tagProviders.forEach((provider) => {
+		tagProviders.forEach(provider => {
 			provider.collectTags((tag, label) => {
 				result.items.push({
 					label: '/' + tag,
@@ -101,7 +124,7 @@ export function doComplete(document: TextDocument, position: Position, doc: HTML
 
 	function collectAttributeNameSuggestions(nameStart: number): CompletionList {
 		let range = getReplaceRange(nameStart);
-		tagProviders.forEach((provider) => {
+		tagProviders.forEach(provider => {
 			provider.collectAttributes(currentTag, (attribute, type) => {
 				let codeSnippet = attribute;
 				if (type !== 'v') {
@@ -119,7 +142,7 @@ export function doComplete(document: TextDocument, position: Position, doc: HTML
 
 	function collectAttributeValueSuggestions(valueStart: number): CompletionList {
 		let range = getReplaceRange(valueStart);
-		tagProviders.forEach((provider) => {
+		tagProviders.forEach(provider => {
 			provider.collectValues(currentTag, currentAttributeName, (value) => {
 				let codeSnippet = '"' + value + '"';
 				result.items.push({
@@ -165,7 +188,6 @@ export function doComplete(document: TextDocument, position: Position, doc: HTML
 				}
 				break;
 			case TokenType.Whitespace:
-			case TokenType.Unknown:
 				if (offset <= scanner.getTokenEnd()) {
 					switch (scanner.getScannerState()) {
 						case ScannerState.AfterOpeningStartTag:
@@ -198,6 +220,11 @@ export function doComplete(document: TextDocument, position: Position, doc: HTML
 						}
 						start--;
 					}
+				}
+				break;
+			default:
+				if (offset <= scanner.getTokenEnd()) {
+					return result;
 				}
 				break;
 		}

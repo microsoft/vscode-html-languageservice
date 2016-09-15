@@ -240,6 +240,12 @@ suite('HTML Completion', () => {
 					{ label: '/li', resultText: '<li><br></li>' },
 				]
 			}),
+			testCompletionFor('<li/|>', {
+				count: 0
+			}),
+			testCompletionFor('  <div/|   ', {
+				count: 0
+			}),
 			testCompletionFor('<foo><br/></ f|>', {
 				items: [
 					{ label: '/foo', resultText: '<foo><br/></foo>' },
@@ -265,7 +271,7 @@ suite('HTML Completion', () => {
 			}),
 			testCompletionFor(['<body>', '  <div>', '    </|'].join('\n'), {
 				items: [
-					{ label: '/div', resultText: ['<body>', '  <div>', '    </div>'].join('\n') },
+					{ label: '/div', resultText: ['<body>', '  <div>', '  </div>'].join('\n') },
 				]
 			})
 		], testDone);
