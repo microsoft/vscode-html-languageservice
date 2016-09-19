@@ -235,6 +235,18 @@ export function createScanner(input: string, initialOffset = 0, initialState: Sc
 
 	function scan(): TokenType {
 		let offset = stream.pos();
+		let oldState = state;
+		let token = internalScan();
+		if (token !== TokenType.EOS && offset === stream.pos()) {
+			console.log('Scanner.scan has not advanced at offset ' + offset + ', state before: ' + oldState + ' after: ' + state);
+			stream.advance(1);
+			return finishToken(offset, TokenType.Unknown);
+		}
+		return token;
+	}
+
+	function internalScan(): TokenType {		
+		let offset = stream.pos();
 		if (stream.eos()) {
 			return finishToken(offset, TokenType.EOS);
 		}
@@ -285,9 +297,12 @@ export function createScanner(input: string, initialOffset = 0, initialState: Sc
 				if (stream.skipWhitespace()) { // white space is not valid here
 					return finishToken(offset, TokenType.Whitespace, localize('error.unexpectedWhitespace', 'Tag name must directly follow the open bracket.'));
 				}
-				stream.advanceUntilChar(_RAN);
 				state = ScannerState.WithinEndTag;
-				return finishToken(offset, TokenType.Unknown, localize('error.endTagNameExpected', 'End tag name expected.'));
+				stream.advanceUntilChar(_RAN);
+				if (offset < stream.pos()) {
+					return finishToken(offset, TokenType.Unknown, localize('error.endTagNameExpected', 'End tag name expected.'));
+				}
+				return internalScan();
 			case ScannerState.WithinEndTag:
 				if (stream.skipWhitespace()) { // white space is valid here
 					return finishToken(offset, TokenType.Whitespace);
@@ -310,9 +325,12 @@ export function createScanner(input: string, initialOffset = 0, initialState: Sc
 				if (stream.skipWhitespace()) { // white space is not valid here
 					return finishToken(offset, TokenType.Whitespace, localize('error.unexpectedWhitespace', 'Tag name must directly follow the open bracket.'));
 				}
-				stream.advanceUntilChar(_RAN);
 				state = ScannerState.WithinTag;
-				return finishToken(offset, TokenType.Unknown, localize('error.startTagNameExpected', 'Start tag name expected.'));
+				stream.advanceUntilChar(_RAN);
+				if (offset < stream.pos()) {
+					return finishToken(offset, TokenType.Unknown, localize('error.startTagNameExpected', 'Start tag name expected.'));
+				}
+				return internalScan();
 			case ScannerState.WithinTag:
 				if (stream.skipWhitespace()) {
 					hasSpaceAfterTag = true; // remember that we have seen a whitespace
@@ -358,7 +376,7 @@ export function createScanner(input: string, initialOffset = 0, initialState: Sc
 					return finishToken(offset, TokenType.DelimiterAssign);
 				}
 				state = ScannerState.WithinTag;
-				return scan(); // no advance yet - jump to WithinTag
+				return internalScan(); // no advance yet - jump to WithinTag
 			case ScannerState.BeforeAttributeValue:
 				if (stream.skipWhitespace()) {
 					return finishToken(offset, TokenType.Whitespace);
@@ -387,7 +405,7 @@ export function createScanner(input: string, initialOffset = 0, initialState: Sc
 				}
 				state = ScannerState.WithinTag;
 				hasSpaceAfterTag = false;
-				return scan(); // no advance yet - jump to WithinTag
+				return internalScan(); // no advance yet - jump to WithinTag
 			case ScannerState.WithinScriptContent:
 				// see http://stackoverflow.com/questions/14574471/how-do-browsers-parse-a-script-tag-exactly
 				let sciptState = 1;
@@ -419,14 +437,14 @@ export function createScanner(input: string, initialOffset = 0, initialState: Sc
 				if (offset < stream.pos()) {
 					return finishToken(offset, TokenType.Script);
 				}
-				return scan(); // no advance yet - jump to content
+				return internalScan(); // no advance yet - jump to content
 			case ScannerState.WithinScriptContent:
 				stream.advanceUntilRegExp(/<\/style/i);
 				state = ScannerState.WithinContent;
 				if (offset < stream.pos()) {
 					return finishToken(offset, TokenType.Styles);
 				}
-				return scan(); // no advance yet - jump to content
+				return internalScan(); // no advance yet - jump to content
 		}
 
 		stream.advance(1);
