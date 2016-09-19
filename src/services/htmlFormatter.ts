@@ -5,7 +5,7 @@
 'use strict';
 
 import {HTMLFormatConfiguration} from '../htmlLanguageService';
-import {TextDocument, Range, TextEdit} from 'vscode-languageserver-types';
+import {TextDocument, Range, TextEdit, Position} from 'vscode-languageserver-types';
 import {IBeautifyHTMLOptions, html_beautify} from '../beautify/beautify-html';
 
 export function format(document: TextDocument, range: Range, options: HTMLFormatConfiguration): TextEdit[] {
@@ -14,6 +14,8 @@ export function format(document: TextDocument, range: Range, options: HTMLFormat
 		let startOffset = document.offsetAt(range.start);
 		let endOffset = document.offsetAt(range.end);
 		value = value.substring(startOffset, endOffset);
+	} else {
+		range = Range.create(Position.create(0, 0), document.positionAt(value.length));
 	}
 	let htmlOptions: IBeautifyHTMLOptions = {
 		indent_size: options.insertSpaces ? options.tabSize : 1,
