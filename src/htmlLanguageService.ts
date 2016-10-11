@@ -32,12 +32,16 @@ export interface CompletionConfiguration {
 
 export declare type HTMLDocument = {};
 
+export interface DocumentContext {
+	resolveReference(ref: string): string;
+}
+
 export interface LanguageService {
 	parseHTMLDocument(document: TextDocument): HTMLDocument;
 	findDocumentHighlights(document: TextDocument, position: Position, htmlDocument: HTMLDocument): DocumentHighlight[];
 	doComplete(document: TextDocument, position: Position, htmlDocument: HTMLDocument, options?: CompletionConfiguration): CompletionList;
 	format(document: TextDocument, range: Range, options: HTMLFormatConfiguration): TextEdit[];
-	findDocumentLinks(document: TextDocument, workspacePath: string): DocumentLink[];
+	findDocumentLinks(document: TextDocument, documentContext: DocumentContext): DocumentLink[];
 }
 
 export function getLanguageService(): LanguageService {
