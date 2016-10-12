@@ -31,7 +31,8 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 	if (!node) {
 		return result;
 	}
-	let scanner = createScanner(document.getText(), node.start);
+	let text = document.getText();
+	let scanner = createScanner(text, node.start);
 	let currentTag: string;
 	let currentAttributeName: string;
 
@@ -58,7 +59,6 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 	}
 
 	function getLineIndent(offset: number) {
-		let text = document.getText();
 		let start = offset;
 		while (start > 0) {
 			let ch = text.charAt(start - 1);
@@ -75,7 +75,7 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 
 	function collectCloseTagSuggestions(afterOpenBracket: number, matchingOnly: boolean, tagNameEnd: number = offset): CompletionList {
 		let range = getReplaceRange(afterOpenBracket, tagNameEnd);
-		let closeTag = isFollowedBy(document.getText(), tagNameEnd, ScannerState.WithinEndTag, TokenType.EndTagClose) ? '' : '>';
+		let closeTag = isFollowedBy(text, tagNameEnd, ScannerState.WithinEndTag, TokenType.EndTagClose) ? '' : '>';
 		let curr = node;
 		while (curr) {
 			let tag = curr.tag;
@@ -123,7 +123,7 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 
 	function collectAttributeNameSuggestions(nameStart: number, nameEnd: number = offset): CompletionList {
 		let range = getReplaceRange(nameStart, nameEnd);
-		let value = isFollowedBy(document.getText(), nameEnd, ScannerState.AfterAttributeName, TokenType.DelimiterAssign) ? '' : '="{{}}"';
+		let value = isFollowedBy(text, nameEnd, ScannerState.AfterAttributeName, TokenType.DelimiterAssign) ? '' : '="{{}}"';
 		tagProviders.forEach(provider => {
 			provider.collectAttributes(currentTag, (attribute, type) => {
 				let codeSnippet = attribute;
@@ -141,10 +141,24 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 	}
 
 	function collectAttributeValueSuggestions(valueStart: number, valueEnd?: number): CompletionList {
-		let range = getReplaceRange(valueStart, valueEnd);
+		let range: Range;
+		let addQuotes: boolean;
+		if (offset > valueStart && offset <= valueEnd && text[valueStart] === '"') {
+			// inside attribute
+			if (valueEnd > offset && text[valueEnd-1] === '"') {
+				valueEnd--;
+			}
+			let wsBefore = getWordStart(text, offset, valueStart + 1);
+			let wsAfter = getWordEnd(text, offset, valueEnd); 
+			range = getReplaceRange(wsBefore, wsAfter);
+			addQuotes = false
+		} else {
+			range = getReplaceRange(valueStart, valueEnd);
+			addQuotes = true;
+		}
 		tagProviders.forEach(provider => {
 			provider.collectValues(currentTag, currentAttributeName, (value) => {
-				let codeSnippet = '"' + value + '"';
+				let codeSnippet = addQuotes ? '"' + value + '"' : value;
 				result.items.push({
 					label: value,
 					filterText: codeSnippet,
@@ -224,7 +238,6 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 				break;
 			case TokenType.EndTag:
 				if (offset <= scanner.getTokenEnd()) {
-					let text = document.getText();
 					let start = scanner.getTokenOffset() - 1;
 					while (start >= 0) {
 						let ch = text.charAt(start);
@@ -252,6 +265,10 @@ function isWhiteSpace(s: string): boolean {
 	return /^\s*$/.test(s);
 }
 
+function isWhiteSpaceOrQuote(s: string): boolean {
+	return /^[\s"]*$/.test(s);
+}
+
 function isFollowedBy(s: string, offset:number, intialState: ScannerState, expectedToken: TokenType) {
 	let scanner = createScanner(s, offset, intialState);
 	let token = scanner.scan();
@@ -259,4 +276,18 @@ function isFollowedBy(s: string, offset:number, intialState: ScannerState, expec
 		token = scanner.scan();
 	}
 	return token == expectedToken;
+}
+
+function getWordStart(s: string, offset: number, limit: number): number {
+	while (offset > limit && !isWhiteSpace(s[offset-1])) {
+		offset--;
+	}
+	return offset;
+}
+
+function getWordEnd(s: string, offset: number, limit: number): number {
+	while (offset < limit && !isWhiteSpace(s[offset])) {
+		offset++;
+	}
+	return offset;
 }

@@ -196,14 +196,18 @@ suite('HTML Completion', () => {
 					{ label: 'checkbox', resultText: '<input type="checkbox"' },
 				]
 			}),
-
 			testCompletionFor('<input type="c|', {
 				items: [
-					{ label: 'color', resultText: '<input type="color"' },
-					{ label: 'checkbox', resultText: '<input type="checkbox"' },
+					{ label: 'color', resultText: '<input type="color' },
+					{ label: 'checkbox', resultText: '<input type="checkbox' },
 				]
 			}),
-
+			testCompletionFor('<input type="|', {
+				items: [
+					{ label: 'color', resultText: '<input type="color' },
+					{ label: 'checkbox', resultText: '<input type="checkbox' },
+				]
+			}),
 			testCompletionFor('<input type= |', {
 				items: [
 					{ label: 'color', resultText: '<input type= "color"' },
@@ -213,6 +217,26 @@ suite('HTML Completion', () => {
 			testCompletionFor('<input src="c" type="color|" ', {
 				items: [
 					{ label: 'color', resultText: '<input src="c" type="color" ' },
+				]
+			}),
+			testCompletionFor('<iframe sandbox="allow-forms |', {
+				items: [
+					{ label: 'allow-modals', resultText: '<iframe sandbox="allow-forms allow-modals' },
+				]
+			}),
+			testCompletionFor('<iframe sandbox="allow-forms allow-modals|', {
+				items: [
+					{ label: 'allow-modals', resultText: '<iframe sandbox="allow-forms allow-modals' },
+				]
+			}),
+			testCompletionFor('<iframe sandbox="allow-forms all|"', {
+				items: [
+					{ label: 'allow-modals', resultText: '<iframe sandbox="allow-forms allow-modals"' },
+				]
+			}),
+			testCompletionFor('<iframe sandbox="allow-forms a|llow-modals "', {
+				items: [
+					{ label: 'allow-modals', resultText: '<iframe sandbox="allow-forms allow-modals "' },
 				]
 			}),
 			testCompletionFor('<input src="c" type=color| ', {
