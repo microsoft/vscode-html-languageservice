@@ -120,7 +120,16 @@ suite('HTML Completion', () => {
 					{ label: 'input', resultText: '<input' },
 				]
 			}),
-
+			testCompletionFor('<inp|ut', {
+				items: [
+					{ label: 'input', resultText: '<input' },
+				]
+			}),
+			testCompletionFor('<|inp', {
+				items: [
+					{ label: 'input', resultText: '<input' },
+				]
+			}),
 			testCompletionFor('<input |', {
 				items: [
 					{ label: 'type', resultText: '<input type="{{}}"' },
@@ -133,6 +142,20 @@ suite('HTML Completion', () => {
 				items: [
 					{ label: 'type', resultText: '<input type="{{}}"' },
 					{ label: 'tabindex', resultText: '<input tabindex="{{}}"' },
+				]
+			}),
+
+			testCompletionFor('<input t|ype', {
+				items: [
+					{ label: 'type', resultText: '<input type="{{}}"' },
+					{ label: 'tabindex', resultText: '<input tabindex="{{}}"' },
+				]
+			}),
+
+			testCompletionFor('<input t|ype="text"', {
+				items: [
+					{ label: 'type', resultText: '<input type="text"' },
+					{ label: 'tabindex', resultText: '<input tabindex="text"' },
 				]
 			}),
 
@@ -189,7 +212,7 @@ suite('HTML Completion', () => {
 			}),
 			testCompletionFor('<input src="c" type="color|" ', {
 				items: [
-					{ label: 'color', resultText: '<input src="c" type="color"" ' },
+					{ label: 'color', resultText: '<input src="c" type="color" ' },
 				]
 			}),
 			testCompletionFor('<input src="c" type=color| ', {
@@ -225,6 +248,16 @@ suite('HTML Completion', () => {
 					{ label: '/foo', resultText: '<foo></foo>' },
 				]
 			}),
+			testCompletionFor('<foo></f|o', {
+				items: [
+					{ label: '/foo', resultText: '<foo></foo>' },
+				]
+			}),		
+			testCompletionFor('<foo></|fo', {
+				items: [
+					{ label: '/foo', resultText: '<foo></foo>' },
+				]
+			}),	
 			testCompletionFor('<foo></ |>', {
 				items: [
 					{ label: '/foo', resultText: '<foo></foo>' },

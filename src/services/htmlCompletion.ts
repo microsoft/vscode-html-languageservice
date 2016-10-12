@@ -35,15 +35,15 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 	let currentTag: string;
 	let currentAttributeName: string;
 
-	function getReplaceRange(replaceStart: number): Range {
+	function getReplaceRange(replaceStart: number, replaceEnd: number = offset): Range {
 		if (replaceStart > offset) {
 			replaceStart = offset;
 		}
-		return { start: document.positionAt(replaceStart), end: document.positionAt(offset) };
+		return { start: document.positionAt(replaceStart), end: document.positionAt(replaceEnd) };
 	}
 
-	function collectOpenTagSuggestions(afterOpenBracket: number): CompletionList {
-		let range = getReplaceRange(afterOpenBracket);
+	function collectOpenTagSuggestions(afterOpenBracket: number, tagNameEnd?: number): CompletionList {
+		let range = getReplaceRange(afterOpenBracket, tagNameEnd);
 		tagProviders.forEach((provider) => {
 			provider.collectTags((tag, label) => {
 				result.items.push({
@@ -73,10 +73,9 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 		return text.substring(0, offset);
 	}
 
-	function collectCloseTagSuggestions(afterOpenBracket: number, matchingOnly: boolean): CompletionList {
-		let range = getReplaceRange(afterOpenBracket);
-		let contentAfter = document.getText().substr(offset);
-		let closeTag = contentAfter.match(/^\s*>/) ? '' : '>';
+	function collectCloseTagSuggestions(afterOpenBracket: number, matchingOnly: boolean, tagNameEnd: number = offset): CompletionList {
+		let range = getReplaceRange(afterOpenBracket, tagNameEnd);
+		let closeTag = isFollowedBy(document.getText(), tagNameEnd, ScannerState.WithinEndTag, TokenType.EndTagClose) ? '' : '>';
 		let curr = node;
 		while (curr) {
 			let tag = curr.tag;
@@ -116,19 +115,20 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 		return result;
 	}
 
-	function collectTagSuggestions(tagStart: number): CompletionList {
-		collectOpenTagSuggestions(tagStart);
-		collectCloseTagSuggestions(tagStart, true);
+	function collectTagSuggestions(tagStart: number, tagEnd: number): CompletionList {
+		collectOpenTagSuggestions(tagStart, tagEnd);
+		collectCloseTagSuggestions(tagStart, true, tagEnd);
 		return result;
 	}
 
-	function collectAttributeNameSuggestions(nameStart: number): CompletionList {
-		let range = getReplaceRange(nameStart);
+	function collectAttributeNameSuggestions(nameStart: number, nameEnd: number = offset): CompletionList {
+		let range = getReplaceRange(nameStart, nameEnd);
+		let value = isFollowedBy(document.getText(), nameEnd, ScannerState.AfterAttributeName, TokenType.DelimiterAssign) ? '' : '="{{}}"';
 		tagProviders.forEach(provider => {
 			provider.collectAttributes(currentTag, (attribute, type) => {
 				let codeSnippet = attribute;
-				if (type !== 'v') {
-					codeSnippet = codeSnippet + '="{{}}"';
+				if (type !== 'v' && value.length) {
+					codeSnippet = codeSnippet + value;
 				}
 				result.items.push({
 					label: attribute,
@@ -140,8 +140,8 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 		return result;
 	}
 
-	function collectAttributeValueSuggestions(valueStart: number): CompletionList {
-		let range = getReplaceRange(valueStart);
+	function collectAttributeValueSuggestions(valueStart: number, valueEnd?: number): CompletionList {
+		let range = getReplaceRange(valueStart, valueEnd);
 		tagProviders.forEach(provider => {
 			provider.collectValues(currentTag, currentAttributeName, (value) => {
 				let codeSnippet = '"' + value + '"';
@@ -156,24 +156,35 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 		return result;
 	}
 
+	function scanNextForEndPos(nextToken: TokenType) : number {
+		if (offset === scanner.getTokenEnd()) {
+			token = scanner.scan();
+			if (token === nextToken && scanner.getTokenOffset() === offset) {
+				return scanner.getTokenEnd();
+			}
+		}
+		return offset;
+	}
+
 	let token = scanner.scan();
 
 	while (token !== TokenType.EOS && scanner.getTokenOffset() <= offset) {
 		switch (token) {
 			case TokenType.StartTagOpen:
 				if (scanner.getTokenEnd() === offset) {
-					return collectTagSuggestions(offset);
+					let endPos = scanNextForEndPos(TokenType.StartTag);
+					return collectTagSuggestions(offset, endPos);
 				}
 				break;
 			case TokenType.StartTag:
 				if (scanner.getTokenOffset() <= offset && offset <= scanner.getTokenEnd()) {
-					return collectOpenTagSuggestions(scanner.getTokenOffset());
+					return collectOpenTagSuggestions(scanner.getTokenOffset(), scanner.getTokenEnd());
 				}
 				currentTag = scanner.getTokenText();
 				break;
 			case TokenType.AttributeName:
 				if (scanner.getTokenOffset() <= offset && offset <= scanner.getTokenEnd()) {
-					return collectAttributeNameSuggestions(scanner.getTokenOffset());
+					return collectAttributeNameSuggestions(scanner.getTokenOffset(), scanner.getTokenEnd());
 				}
 				currentAttributeName = scanner.getTokenText();
 				break;
@@ -184,14 +195,16 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 				break;
 			case TokenType.AttributeValue:
 				if (scanner.getTokenOffset() <= offset && offset <= scanner.getTokenEnd()) {
-					return collectAttributeValueSuggestions(scanner.getTokenOffset());
+					return collectAttributeValueSuggestions(scanner.getTokenOffset(), scanner.getTokenEnd());
 				}
 				break;
 			case TokenType.Whitespace:
 				if (offset <= scanner.getTokenEnd()) {
 					switch (scanner.getScannerState()) {
 						case ScannerState.AfterOpeningStartTag:
-							return collectTagSuggestions(scanner.getTokenOffset());
+							let startPos = scanner.getTokenOffset();
+							let endTagPos = scanNextForEndPos(TokenType.StartTag);
+							return collectTagSuggestions(startPos, endTagPos);
 						case ScannerState.WithinTag:
 						case ScannerState.AfterAttributeName:
 							return collectAttributeNameSuggestions(scanner.getTokenEnd());
@@ -204,7 +217,9 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 				break;
 			case TokenType.EndTagOpen:
 				if (offset <= scanner.getTokenEnd()) {
-					return collectCloseTagSuggestions(scanner.getTokenOffset() + 1, false);
+					let afterOpenBracket = scanner.getTokenOffset() + 1;
+					let endOffset = scanNextForEndPos(TokenType.EndTag);
+					return collectCloseTagSuggestions(afterOpenBracket, false, endOffset);
 				}
 				break;
 			case TokenType.EndTag:
@@ -214,7 +229,7 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 					while (start >= 0) {
 						let ch = text.charAt(start);
 						if (ch === '/') {
-							return collectCloseTagSuggestions(start, false);
+							return collectCloseTagSuggestions(start, false, scanner.getTokenEnd());
 						} else if (!isWhiteSpace(ch)) {
 							break;
 						}
@@ -235,4 +250,13 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 
 function isWhiteSpace(s: string): boolean {
 	return /^\s*$/.test(s);
+}
+
+function isFollowedBy(s: string, offset:number, intialState: ScannerState, expectedToken: TokenType) {
+	let scanner = createScanner(s, offset, intialState);
+	let token = scanner.scan();
+	while (token === TokenType.Whitespace) {
+		token = scanner.scan();
+	}
+	return token == expectedToken;
 }
