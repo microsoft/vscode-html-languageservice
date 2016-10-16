@@ -14,8 +14,8 @@ import {DocumentLink, DocumentContext} from '../htmlLanguageService';
 
 function stripQuotes(url: string): string {
 	return url
-		.replace(/^'([^']+)'$/, (substr, match1) => match1)
-		.replace(/^"([^"]+)"$/, (substr, match1) => match1);
+		.replace(/^'([^']*)'$/, (substr, match1) => match1)
+		.replace(/^"([^"]*)"$/, (substr, match1) => match1);
 }
 
 function getWorkspaceUrl(modelAbsoluteUri: Uri, tokenContent: string, documentContext: DocumentContext): string {
@@ -46,6 +46,9 @@ function getWorkspaceUrl(modelAbsoluteUri: Uri, tokenContent: string, documentCo
 function createLink(document: TextDocument, documentContext: DocumentContext, attributeValue: string, startOffset: number, endOffset: number): DocumentLink {
 	let documentUri = Uri.parse(document.uri);
 	let tokenContent = stripQuotes(attributeValue);
+	if (tokenContent.length === 0) {
+		return null;
+	}
 	if (tokenContent.length < attributeValue.length) {
 		startOffset++;
 		endOffset--;
