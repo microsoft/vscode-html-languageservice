@@ -25,7 +25,7 @@
     "dependencies": {
         "vscode-languageserver-types": "^1.0.4-next.1",
         "vscode-nls": "^1.0.4",
-        "vscode-uri": "^0.0.7"
+        "vscode-uri": "^1.0.0"
     },
     "scripts": {
         "prepublish": "gulp compile",
