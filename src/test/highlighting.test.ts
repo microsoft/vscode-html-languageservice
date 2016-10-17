@@ -31,7 +31,7 @@ suite('HTML Highlighting', () => {
 			let actualEndOffset = document.offsetAt(highlights[i].range.end);
 			assert.equal(actualEndOffset, expectedMatches[i] + elementName.length);
 
-			assert.equal(document.getText().substring(actualStartOffset, actualEndOffset), elementName);
+			assert.equal(document.getText().substring(actualStartOffset, actualEndOffset).toLowerCase(), elementName);
 		}
 	}
 
@@ -68,5 +68,10 @@ suite('HTML Highlighting', () => {
 		assertHighlights('<html><|div/></html>', [7], 'div');
 		assertHighlights('<html><|br></html>', [7], 'br');
 		assertHighlights('<html><div><d|iv/></div></html>', [12], 'div');
+	});
+
+	test('Case insensivity', function (): any {
+		assertHighlights('<HTML><diV><Div></dIV></dI|v></html>', [7, 24], 'div');
+		assertHighlights('<HTML><diV|><Div></dIV></dIv></html>', [7, 24], 'div');
 	});
 });

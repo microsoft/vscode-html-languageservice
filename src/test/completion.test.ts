@@ -334,6 +334,31 @@ suite('HTML Completion', () => {
 		], testDone);
 	});
 
+	test('Case sensitivity', function (testDone) {
+		run([
+			testCompletionFor('<LI></|', {
+				items: [
+					{ label: '/li', resultText: '<LI></li>' }
+				]
+			}),
+			testCompletionFor('<lI></|', {
+				items: [
+					{ label: '/li', resultText: '<lI></li>' }
+				]
+			}),
+			testCompletionFor('<iNpUt |', {
+				items: [
+					{ label: 'type', resultText: '<iNpUt type="{{}}"' }
+				]
+			}),
+			testCompletionFor('<INPUT TYPE=|', {
+				items: [
+					{ label: 'color', resultText: '<INPUT TYPE="color"' }
+				]
+			})
+		], testDone);
+	});
+
 	test('Handlebar Completion', function (testDone) {
 		run([
 			testCompletionFor('<script id="entry-template" type="text/x-handlebars-template"> <| </script>', {

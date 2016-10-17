@@ -69,7 +69,7 @@ export function parse(text: string): HTMLDocument {
 				curr = child;
 				break;
 			case TokenType.StartTag:
-				curr.tag = scanner.getTokenText();
+				curr.tag = scanner.getTokenText().toLowerCase();
 				break;
 			case TokenType.StartTagClose:
 				curr.end = scanner.getTokenEnd(); // might be later set to end tag position
@@ -82,7 +82,7 @@ export function parse(text: string): HTMLDocument {
 				endTagStart = scanner.getTokenOffset();
 				break;
 			case TokenType.EndTag:
-				let closeTag = scanner.getTokenText();
+				let closeTag = scanner.getTokenText().toLowerCase();
 				while (!isSameTag(curr.tag, closeTag) && curr !== htmlDocument) {
 					curr.end = endTagStart;
 					curr.closed = false;

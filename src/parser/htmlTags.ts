@@ -46,7 +46,7 @@ export function isEmptyElement(e: string): boolean {
 }
 
 export function isSameTag(t1: string, t2: string): boolean {
-	return t1 && t2 && t1.toLowerCase() === t2.toLowerCase();
+	return t1 && t2 && t1 === t2;
 }
 
 export interface IHTMLTagProvider {

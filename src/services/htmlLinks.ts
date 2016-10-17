@@ -74,7 +74,7 @@ export function findDocumentLinks(document: TextDocument, documentContext: Docum
 	while (token !== TokenType.EOS) {
 		switch (token) {
 			case TokenType.AttributeName:
-				let attributeName = scanner.getTokenText();
+				let attributeName = scanner.getTokenText().toLowerCase();
 				afterHrefOrSrc = attributeName === 'src' || attributeName === 'href';
 				break;
 			case TokenType.AttributeValue:

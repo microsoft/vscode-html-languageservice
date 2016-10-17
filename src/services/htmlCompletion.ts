@@ -124,8 +124,9 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 	function collectAttributeNameSuggestions(nameStart: number, nameEnd: number = offset): CompletionList {
 		let range = getReplaceRange(nameStart, nameEnd);
 		let value = isFollowedBy(text, nameEnd, ScannerState.AfterAttributeName, TokenType.DelimiterAssign) ? '' : '="{{}}"';
+		let tag = currentTag.toLowerCase();
 		tagProviders.forEach(provider => {
-			provider.collectAttributes(currentTag, (attribute, type) => {
+			provider.collectAttributes(tag, (attribute, type) => {
 				let codeSnippet = attribute;
 				if (type !== 'v' && value.length) {
 					codeSnippet = codeSnippet + value;
@@ -156,8 +157,10 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 			range = getReplaceRange(valueStart, valueEnd);
 			addQuotes = true;
 		}
+		let tag = currentTag.toLowerCase();
+		let attribute = currentAttributeName.toLowerCase();
 		tagProviders.forEach(provider => {
-			provider.collectValues(currentTag, currentAttributeName, (value) => {
+			provider.collectValues(tag, attribute, value => {
 				let codeSnippet = addQuotes ? '"' + value + '"' : value;
 				result.items.push({
 					label: value,

@@ -72,6 +72,7 @@ suite('HTML Link Detection', () => {
 		testLinkDetection('<img src="foo.png">', [10]);
 		testLinkDetection('<a href="http://server/foo.html">', [9]);
 		testLinkDetection('<img src="">', []);
+		testLinkDetection('<LINK HREF="a.html">', [12]);
 	});
 
 });
