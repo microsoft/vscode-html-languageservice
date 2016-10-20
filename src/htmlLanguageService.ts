@@ -4,6 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 
+import {createScanner} from './parser/htmlScanner';
 import {parse} from './parser/htmlParser';
 import {doComplete} from './services/htmlCompletion';
 import {format} from './services/htmlFormatter';
@@ -30,13 +31,78 @@ export interface CompletionConfiguration {
 	[provider: string]: boolean;
 }
 
-export declare type HTMLDocument = {};
+export interface Node {
+	tag: string;
+	start: number;
+	end: number;
+	endTagStart: number;
+	children: Node[];
+	parent: Node;
+}
+
+
+export enum TokenType {
+	StartCommentTag,
+	Comment,
+	EndCommentTag,
+	StartTagOpen,
+	StartTagClose,
+	StartTagSelfClose,
+	StartTag,
+	EndTagOpen,
+	EndTagClose,
+	EndTag,
+	DelimiterAssign,
+	AttributeName,
+	AttributeValue,
+	StartDoctypeTag,
+	Doctype,
+	EndDoctypeTag,
+	Content,
+	Whitespace,
+	Unknown,
+	Script,
+	Styles,
+	EOS
+}
+
+export enum ScannerState {
+	WithinContent,
+	AfterOpeningStartTag,
+	AfterOpeningEndTag,
+	WithinDoctype,
+	WithinTag,
+	WithinEndTag,
+	WithinComment,
+	WithinScriptContent,
+	WithinStyleContent,
+	AfterAttributeName,
+	BeforeAttributeValue
+}
+
+export interface Scanner {
+	scan(): TokenType;
+	getTokenType(): TokenType;
+	getTokenOffset(): number;
+	getTokenLength(): number;
+	getTokenEnd(): number;
+	getTokenText(): string;
+	getTokenError(): string;
+	getScannerState(): ScannerState;
+}
+
+export declare type HTMLDocument = {
+	roots: Node[];
+	findNodeBefore(offset: number): Node;
+	findNodeAt(offset: number): Node;
+};
 
 export interface DocumentContext {
 	resolveReference(ref: string): string;
 }
 
 export interface LanguageService {
+	createScanner(input: string): Scanner;
 	parseHTMLDocument(document: TextDocument): HTMLDocument;
 	findDocumentHighlights(document: TextDocument, position: Position, htmlDocument: HTMLDocument): DocumentHighlight[];
 	doComplete(document: TextDocument, position: Position, htmlDocument: HTMLDocument, options?: CompletionConfiguration): CompletionList;
@@ -46,6 +112,7 @@ export interface LanguageService {
 
 export function getLanguageService(): LanguageService {
 	return {
+		createScanner,
 		parseHTMLDocument: document => parse(document.getText()),
 		doComplete,
 		format,
