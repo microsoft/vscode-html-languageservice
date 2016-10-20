@@ -438,7 +438,7 @@ export function createScanner(input: string, initialOffset = 0, initialState: Sc
 					return finishToken(offset, TokenType.Script);
 				}
 				return internalScan(); // no advance yet - jump to content
-			case ScannerState.WithinScriptContent:
+			case ScannerState.WithinStyleContent:
 				stream.advanceUntilRegExp(/<\/style/i);
 				state = ScannerState.WithinContent;
 				if (offset < stream.pos()) {
