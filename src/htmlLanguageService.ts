@@ -7,6 +7,7 @@
 import {createScanner} from './parser/htmlScanner';
 import {parse} from './parser/htmlParser';
 import {doComplete} from './services/htmlCompletion';
+import {doHover} from './services/htmlHover';
 import {format} from './services/htmlFormatter';
 import {findDocumentLinks} from './services/htmlLinks';
 import {findDocumentHighlights} from './services/htmlHighlighting';
@@ -106,6 +107,7 @@ export interface LanguageService {
 	parseHTMLDocument(document: TextDocument): HTMLDocument;
 	findDocumentHighlights(document: TextDocument, position: Position, htmlDocument: HTMLDocument): DocumentHighlight[];
 	doComplete(document: TextDocument, position: Position, htmlDocument: HTMLDocument, options?: CompletionConfiguration): CompletionList;
+	doHover(document: TextDocument, position: Position, htmlDocument: HTMLDocument): Hover;
 	format(document: TextDocument, range: Range, options: HTMLFormatConfiguration): TextEdit[];
 	findDocumentLinks(document: TextDocument, documentContext: DocumentContext): DocumentLink[];
 }
@@ -115,6 +117,7 @@ export function getLanguageService(): LanguageService {
 		createScanner,
 		parseHTMLDocument: document => parse(document.getText()),
 		doComplete,
+		doHover,
 		format,
 		findDocumentHighlights,
 		findDocumentLinks

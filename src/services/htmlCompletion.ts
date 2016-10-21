@@ -7,16 +7,8 @@
 import {TextDocument, Position, CompletionList, CompletionItemKind, Range} from 'vscode-languageserver-types';
 import {HTMLDocument} from '../parser/htmlParser';
 import {TokenType, createScanner, ScannerState} from '../parser/htmlScanner';
-import {getHTML5TagProvider, getAngularTagProvider, getIonicTagProvider} from '../parser/htmlTags';
-import {getRazorTagProvider} from '../parser/razorTags';
+import {allTagProviders} from './tagProviders';
 import {CompletionConfiguration} from '../htmlLanguageService';
-
-let allTagProviders = [
-	getHTML5TagProvider(),
-	getAngularTagProvider(),
-	getIonicTagProvider(),
-	getRazorTagProvider()
-];
 
 export function doComplete(document: TextDocument, position: Position, htmlDocument: HTMLDocument, settings?: CompletionConfiguration): CompletionList {
 
