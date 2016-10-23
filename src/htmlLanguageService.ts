@@ -14,6 +14,7 @@ import {findDocumentHighlights} from './services/htmlHighlighting';
 import {TextDocument, Position, CompletionItem, CompletionList, Hover, Range, SymbolInformation, Diagnostic, TextEdit, DocumentHighlight, FormattingOptions, MarkedString, DocumentLink } from 'vscode-languageserver-types';
 
 export {TextDocument, Position, CompletionItem, CompletionList, Hover, Range, SymbolInformation, Diagnostic, TextEdit, DocumentHighlight, FormattingOptions, MarkedString, DocumentLink };
+export {HTMLTagProvider, registerTagProvider} from './services/tagProviders';
 
 export interface HTMLFormatConfiguration {
 	tabSize: number;
