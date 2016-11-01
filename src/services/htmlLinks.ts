@@ -19,7 +19,7 @@ function stripQuotes(url: string): string {
 }
 
 function getWorkspaceUrl(modelAbsoluteUri: Uri, tokenContent: string, documentContext: DocumentContext): string {
-	if (/^\s*javascript\:/i.test(tokenContent) || /^\s*\#/i.test(tokenContent)) {
+	if (/^\s*javascript\:/i.test(tokenContent) || /^\s*\#/i.test(tokenContent) || /[\n\r]/.test(tokenContent)) {
 		return null;
 	}
 	tokenContent = tokenContent.replace(/^\s*/g, '');
