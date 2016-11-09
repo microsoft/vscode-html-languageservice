@@ -6,14 +6,16 @@
 
 import { TokenType, createScanner } from './htmlScanner';
 import { findFirst } from '../utils/arrays';
-import { isEmptyElement, isSameTag } from './htmlTags';
+import { isEmptyElement } from './htmlTags';
 
 export class Node {
 	public tag: string;
 	public closed: boolean;
 	public endTagStart: number;
 	constructor(public start: number, public end: number, public children: Node[], public parent: Node) {
-
+	}
+	public isSameTag(tagInLowerCase: string) {
+		return this.tag && tagInLowerCase && this.tag.length === tagInLowerCase.length && this.tag.toLowerCase() === tagInLowerCase;
 	}
 	public get firstChild(): Node { return this.children[0]; }
 	public get lastChild(): Node { return this.children.length ? this.children[this.children.length - 1] : void 0; }
@@ -69,7 +71,7 @@ export function parse(text: string): HTMLDocument {
 				curr = child;
 				break;
 			case TokenType.StartTag:
-				curr.tag = scanner.getTokenText().toLowerCase();
+				curr.tag = scanner.getTokenText();
 				break;
 			case TokenType.StartTagClose:
 				curr.end = scanner.getTokenEnd(); // might be later set to end tag position
@@ -83,7 +85,7 @@ export function parse(text: string): HTMLDocument {
 				break;
 			case TokenType.EndTag:
 				let closeTag = scanner.getTokenText().toLowerCase();
-				while (!isSameTag(curr.tag, closeTag) && curr !== htmlDocument) {
+				while (!curr.isSameTag(closeTag) && curr !== htmlDocument) {
 					curr.end = endTagStart;
 					curr.closed = false;
 					curr = curr.parent;

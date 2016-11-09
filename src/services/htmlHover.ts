@@ -17,6 +17,7 @@ export function doHover(document: TextDocument, position: Position, htmlDocument
 	}
 	let tagProviders = allTagProviders.filter(p => p.isApplicable(document.languageId));
 	function getTagHover(tag: string, range: Range, open: boolean): Hover {
+		tag = tag.toLowerCase();
 		for (let provider of tagProviders) {
 			let hover: Hover;
 			provider.collectTags((t, label) => {

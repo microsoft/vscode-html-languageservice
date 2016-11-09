@@ -338,12 +338,13 @@ suite('HTML Completion', () => {
 		run([
 			testCompletionFor('<LI></|', {
 				items: [
-					{ label: '/li', resultText: '<LI></li>' }
+					{ label: '/LI', resultText: '<LI></LI>' },
+					{ label: '/li', notAvailable: true }
 				]
 			}),
 			testCompletionFor('<lI></|', {
 				items: [
-					{ label: '/li', resultText: '<lI></li>' }
+					{ label: '/lI', resultText: '<lI></lI>' }
 				]
 			}),
 			testCompletionFor('<iNpUt |', {
