@@ -59,7 +59,7 @@ suite('HTML Completion', () => {
 		}
 	};
 
-	let testCompletionFor = function (value: string, expected: { count?: number, items?: ItemDescription[] }, settings?: htmlLanguageService.CompletionConfiguration): Thenable<void> {
+	let testCompletionFor = function (value: string, expected: { count?: number, items?: ItemDescription[] }, settings?: htmlLanguageService.CompletionConfiguration): PromiseLike<void> {
 		let offset = value.indexOf('|');
 		value = value.substr(0, offset) + value.substr(offset + 1);
 
@@ -80,7 +80,7 @@ suite('HTML Completion', () => {
 		return Promise.resolve();
 	};
 
-	function run(tests: Thenable<void>[], testDone) {
+	function run(tests: PromiseLike<void>[], testDone) {
 		Promise.all(tests).then(() => {
 			testDone();
 		}, (error) => {

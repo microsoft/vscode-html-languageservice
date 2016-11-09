@@ -15,12 +15,9 @@
     },
     "devDependencies": {
         "mocha": "^2.4.5",
-        "typescript": "^1.8.10",
-        "gulp": "^3.9.1",
-        "gulp-tsb": "^1.10.4",
-        "merge-stream": "^1.0.0",
-        "object-assign": "^4.1.0",
-        "rimraf": "^2.5.2"
+        "typescript": "^2.0.8",
+        "@types/node": "^6.0.46",
+        "@types/mocha": "^2.2.32"
     },
     "dependencies": {
         "vscode-languageserver-types": "^1.0.4-next.1",
@@ -28,9 +25,9 @@
         "vscode-uri": "^1.0.0"
     },
     "scripts": {
-        "prepublish": "gulp compile",
-        "compile": "gulp compile",
-        "watch": "gulp watch",
-        "test": "gulp compile && mocha"
+        "prepublish": "npm run compile",
+        "compile": "tsc -p ./src && cp ./src/beautify/*.js ./lib/beautify",
+        "watch": "cp ./src/beautify/*.js ./lib/beautify && tsc -w -p ./src",
+        "test": "npm run compile && mocha"
     }
 }
