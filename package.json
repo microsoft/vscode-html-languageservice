@@ -1,6 +1,6 @@
 {
     "name": "vscode-html-languageservice",
-    "version": "1.0.1-next.1",
+    "version": "1.0.1-next.2",
     "description": "Language service for HTML",
     "main": "./lib/htmlLanguageService.js",
     "typings": "./lib/htmlLanguageService",
@@ -20,7 +20,7 @@
         "@types/mocha": "^2.2.32"
     },
     "dependencies": {
-        "vscode-languageserver-types": "^3.0.0-next.1",
+        "vscode-languageserver-types": "^1.0.5-next.1",
         "vscode-nls": "^1.0.4",
         "vscode-uri": "^1.0.0"
     },
