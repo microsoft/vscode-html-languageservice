@@ -10,9 +10,11 @@ import {IBeautifyHTMLOptions, html_beautify} from '../beautify/beautify-html';
 
 export function format(document: TextDocument, range: Range, options: HTMLFormatConfiguration): TextEdit[] {
 	let value = document.getText();
+	let includesEnd = true;
 	if (range) {
 		let startOffset = document.offsetAt(range.start);
 		let endOffset = document.offsetAt(range.end);
+		includesEnd = endOffset === value.length;
 		value = value.substring(startOffset, endOffset);
 	} else {
 		range = Range.create(Position.create(0, 0), document.positionAt(value.length));
@@ -26,7 +28,7 @@ export function format(document: TextDocument, range: Range, options: HTMLFormat
 		preserve_newlines: getFormatOption(options, 'preserveNewLines', false),
 		max_preserve_newlines: getFormatOption(options, 'maxPreserveNewLines', void 0),
 		indent_handlebars: getFormatOption(options, 'indentHandlebars', false),
-		end_with_newline: getFormatOption(options, 'endWithNewline', false),
+		end_with_newline: includesEnd && getFormatOption(options, 'endWithNewline', false),
 		extra_liners: getTagsFormatOption(options, 'extraLiners', void 0),
 	};
 
