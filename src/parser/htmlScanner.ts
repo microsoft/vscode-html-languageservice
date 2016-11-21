@@ -381,7 +381,7 @@ export function createScanner(input: string, initialOffset = 0, initialState: Sc
 				if (stream.skipWhitespace()) {
 					return finishToken(offset, TokenType.Whitespace);
 				}
-				let attributeValue = stream.advanceIfRegExp(/^[^\s"'`=<>]+/);
+				let attributeValue = stream.advanceIfRegExp(/^[^\s"'`=<>\/]+/);
 				if (attributeValue.length > 0) {
 					if (lastAttributeName === 'type') {
 						lastTypeValue = attributeValue;

@@ -549,6 +549,23 @@ suite('HTML Scanner', () => {
 		]);
 	});
 
+
+	test('Tag with Attributes, no quotes, self close', () => {
+		assertTokens([{
+			input: '<abc foo=bar/>',
+			tokens: [
+				{ offset: 0, type: TokenType.StartTagOpen },
+				{ offset: 1, type: TokenType.StartTag, content: 'abc' },
+				{ offset: 4, type: TokenType.Whitespace },
+				{ offset: 5, type: TokenType.AttributeName },
+				{ offset: 8, type: TokenType.DelimiterAssign },
+				{ offset: 9, type: TokenType.AttributeValue },
+				{ offset: 12, type: TokenType.StartTagSelfClose }
+			]
+		}
+		]);
+	});	
+
 	test('Tag with Attribute And Whitespace', () => {
 		assertTokens([{
 			input: '<abc foo=  "bar">',
