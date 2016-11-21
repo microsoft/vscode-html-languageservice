@@ -12,6 +12,7 @@ export class Node {
 	public tag: string;
 	public closed: boolean;
 	public endTagStart: number;
+	public attributeNames: string[];
 	constructor(public start: number, public end: number, public children: Node[], public parent: Node) {
 	}
 	public isSameTag(tagInLowerCase: string) {
@@ -107,6 +108,13 @@ export function parse(text: string): HTMLDocument {
 					curr.end = scanner.getTokenEnd();
 					curr = curr.parent;
 				}
+				break;
+			case TokenType.AttributeName:
+				let attributeNames = curr.attributeNames;
+				if (!attributeNames) {
+					curr.attributeNames = attributeNames = [];
+				}
+				attributeNames.push(scanner.getTokenText());
 				break;
 		}
 		token = scanner.scan();
