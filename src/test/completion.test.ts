@@ -7,15 +7,13 @@
 import * as assert from 'assert';
 import * as htmlLanguageService from '../htmlLanguageService';
 
-import {CompletionList, TextDocument, CompletionItemKind} from 'vscode-languageserver-types';
-import {applyEdits} from './textEditSupport';
+import { CompletionList, TextDocument, CompletionItemKind, SnippetString, TextEdit } from 'vscode-languageserver-types';
+import { applyEdits } from './textEditSupport';
 
 export interface ItemDescription {
 	label: string;
 	documentation?: string;
 	kind?: CompletionItemKind;
-	insertText?: string;
-	overwriteBefore?: number;
 	resultText?: string;
 	notAvailable?: boolean;
 }
@@ -37,25 +35,21 @@ suite('HTML Completion', () => {
 		}
 
 		assert.equal(matches.length, 1, expected.label + " should only existing once: Actual: " + completions.items.map(c => c.label).join(', '));
+		let match = matches[0];
 		if (expected.documentation) {
-			assert.equal(matches[0].documentation, expected.documentation);
+			assert.equal(match.documentation, expected.documentation);
 		}
 		if (expected.kind) {
-			assert.equal(matches[0].kind, expected.kind);
-		}
-		if (expected.insertText) {
-			assert.equal(matches[0].insertText || matches[0].textEdit.newText, expected.insertText);
+			assert.equal(match.kind, expected.kind);
 		}
 		if (expected.resultText) {
-			assert.equal(applyEdits(document, [matches[0].textEdit]), expected.resultText);
-		}
-		if (expected.insertText && typeof expected.overwriteBefore === 'number' && matches[0].textEdit) {
-			let text = document.getText();
-			let expectedText = text.substr(0, offset - expected.overwriteBefore) + expected.insertText + text.substr(offset);
-			let actualText = applyEdits(document, [matches[0].textEdit]);
-			if (actualText !== expectedText) {
-				assert.equal(actualText, expectedText);
+			let insertText = match.label;
+			if (SnippetString.is(match.insertText)) {
+				insertText = match.insertText.value;
+			} else if (match.insertText) {
+				insertText = match.insertText;
 			}
+			assert.equal(applyEdits(document, [TextEdit.replace(match.range, insertText)]), expected.resultText);
 		}
 	};
 
@@ -132,23 +126,23 @@ suite('HTML Completion', () => {
 			}),
 			testCompletionFor('<input |', {
 				items: [
-					{ label: 'type', resultText: '<input type="{{}}"' },
-					{ label: 'style', resultText: '<input style="{{}}"' },
-					{ label: 'onmousemove', resultText: '<input onmousemove="{{}}"' },
+					{ label: 'type', resultText: '<input type="$1"' },
+					{ label: 'style', resultText: '<input style="$1"' },
+					{ label: 'onmousemove', resultText: '<input onmousemove="$1"' },
 				]
 			}),
 
 			testCompletionFor('<input t|', {
 				items: [
-					{ label: 'type', resultText: '<input type="{{}}"' },
-					{ label: 'tabindex', resultText: '<input tabindex="{{}}"' },
+					{ label: 'type', resultText: '<input type="$1"' },
+					{ label: 'tabindex', resultText: '<input tabindex="$1"' },
 				]
 			}),
 
 			testCompletionFor('<input t|ype', {
 				items: [
-					{ label: 'type', resultText: '<input type="{{}}"' },
-					{ label: 'tabindex', resultText: '<input tabindex="{{}}"' },
+					{ label: 'type', resultText: '<input type="$1"' },
+					{ label: 'tabindex', resultText: '<input tabindex="$1"' },
 				]
 			}),
 
@@ -161,17 +155,17 @@ suite('HTML Completion', () => {
 
 			testCompletionFor('<input type="text" |', {
 				items: [
-					{ label: 'style', resultText: '<input type="text" style="{{}}"' },
-					{ label: 'type', resultText: '<input type="text" type="{{}}"' },
-					{ label: 'size', resultText: '<input type="text" size="{{}}"' },
+					{ label: 'style', resultText: '<input type="text" style="$1"' },
+					{ label: 'type', resultText: '<input type="text" type="$1"' },
+					{ label: 'size', resultText: '<input type="text" size="$1"' },
 				]
 			}),
 
 			testCompletionFor('<input type="text" s|', {
 				items: [
-					{ label: 'style', resultText: '<input type="text" style="{{}}"' },
-					{ label: 'src', resultText: '<input type="text" src="{{}}"' },
-					{ label: 'size', resultText: '<input type="text" size="{{}}"' },
+					{ label: 'style', resultText: '<input type="text" style="$1"' },
+					{ label: 'src', resultText: '<input type="text" src="$1"' },
+					{ label: 'size', resultText: '<input type="text" size="$1"' },
 				]
 			}),
 
@@ -179,14 +173,14 @@ suite('HTML Completion', () => {
 				items: [
 
 					{ label: 'disabled', resultText: '<input disabled type="text"' },
-					{ label: 'dir', resultText: '<input dir="{{}}" type="text"' },
+					{ label: 'dir', resultText: '<input dir="$1" type="text"' },
 				]
 			}),
 
 			testCompletionFor('<input disabled | type="text"', {
 				items: [
-					{ label: 'dir', resultText: '<input disabled dir="{{}}" type="text"' },
-					{ label: 'style', resultText: '<input disabled style="{{}}" type="text"' },
+					{ label: 'dir', resultText: '<input disabled dir="$1" type="text"' },
+					{ label: 'style', resultText: '<input disabled style="$1" type="text"' },
 				]
 			}),
 
@@ -276,12 +270,12 @@ suite('HTML Completion', () => {
 				items: [
 					{ label: '/foo', resultText: '<foo></foo>' },
 				]
-			}),		
+			}),
 			testCompletionFor('<foo></|fo', {
 				items: [
 					{ label: '/foo', resultText: '<foo></foo>' },
 				]
-			}),	
+			}),
 			testCompletionFor('<foo></ |>', {
 				items: [
 					{ label: '/foo', resultText: '<foo></foo>' },
@@ -349,7 +343,7 @@ suite('HTML Completion', () => {
 			}),
 			testCompletionFor('<iNpUt |', {
 				items: [
-					{ label: 'type', resultText: '<iNpUt type="{{}}"' }
+					{ label: 'type', resultText: '<iNpUt type="$1"' }
 				]
 			}),
 			testCompletionFor('<INPUT TYPE=|', {
@@ -432,20 +426,20 @@ suite('HTML Completion', () => {
 		run([
 			testCompletionFor('<body  |> </body >', {
 				items: [
-					{ label: 'ng-controller', resultText: '<body  ng-controller="{{}}"> </body >' },
-					{ label: 'data-ng-controller', resultText: '<body  data-ng-controller="{{}}"> </body >' },
+					{ label: 'ng-controller', resultText: '<body  ng-controller="$1"> </body >' },
+					{ label: 'data-ng-controller', resultText: '<body  data-ng-controller="$1"> </body >' },
 				]
 			}),
 			testCompletionFor('<li  |> </li >', {
 				items: [
-					{ label: 'ng-repeat', resultText: '<li  ng-repeat="{{}}"> </li >' },
-					{ label: 'data-ng-repeat', resultText: '<li  data-ng-repeat="{{}}"> </li >' },
+					{ label: 'ng-repeat', resultText: '<li  ng-repeat="$1"> </li >' },
+					{ label: 'data-ng-repeat', resultText: '<li  data-ng-repeat="$1"> </li >' },
 				]
 			}),
 			testCompletionFor('<input  |> </input >', {
 				items: [
-					{ label: 'ng-model', resultText: '<input  ng-model="{{}}"> </input >' },
-					{ label: 'data-ng-model', resultText: '<input  data-ng-model="{{}}"> </input >' },
+					{ label: 'ng-model', resultText: '<input  ng-model="$1"> </input >' },
+					{ label: 'data-ng-model', resultText: '<input  data-ng-model="$1"> </input >' },
 				]
 			})
 		], testDone);

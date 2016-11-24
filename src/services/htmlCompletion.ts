@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 
-import {TextDocument, Position, CompletionList, CompletionItemKind, Range} from 'vscode-languageserver-types';
+import {TextDocument, Position, CompletionList, CompletionItemKind, Range, SnippetString} from 'vscode-languageserver-types';
 import {HTMLDocument} from '../parser/htmlParser';
 import {TokenType, createScanner, ScannerState} from '../parser/htmlScanner';
 import {allTagProviders} from './tagProviders';
@@ -43,7 +43,7 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 					label: tag,
 					kind: CompletionItemKind.Property,
 					documentation: label,
-					textEdit: { newText: tag, range: range }
+					range
 				});
 			});
 		});
@@ -76,12 +76,14 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 					label: '/' + tag,
 					kind: CompletionItemKind.Property,
 					filterText: '/' + tag + closeTag,
-					textEdit: { newText: '/' + tag + closeTag, range: range }
+					insertText: '/' + tag + closeTag,
+					range
 				};
 				let startIndent = getLineIndent(curr.start);
 				let endIndent = getLineIndent(afterOpenBracket - 1);
 				if (startIndent !== null && endIndent !== null && startIndent !== endIndent) {
-					item.textEdit = { newText: startIndent + '</' + tag + closeTag, range: getReplaceRange(afterOpenBracket - 1 - endIndent.length) };
+					item.insertText =  startIndent + '</' + tag + closeTag;
+					item.range = getReplaceRange(afterOpenBracket - 1 - endIndent.length);
 					item.filterText = endIndent + '</' + tag + closeTag;
 				}
 				result.items.push(item);
@@ -100,7 +102,8 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 					kind: CompletionItemKind.Property,
 					documentation: label,
 					filterText: '/' + tag + closeTag,
-					textEdit: { newText: '/' + tag + closeTag, range: range }
+					insertText: '/' + tag + closeTag, 
+					range
 				});
 			});
 		});
@@ -115,7 +118,7 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 
 	function collectAttributeNameSuggestions(nameStart: number, nameEnd: number = offset): CompletionList {
 		let range = getReplaceRange(nameStart, nameEnd);
-		let value = isFollowedBy(text, nameEnd, ScannerState.AfterAttributeName, TokenType.DelimiterAssign) ? '' : '="{{}}"';
+		let value = isFollowedBy(text, nameEnd, ScannerState.AfterAttributeName, TokenType.DelimiterAssign) ? '' : '="$1"';
 		let tag = currentTag.toLowerCase();
 		tagProviders.forEach(provider => {
 			provider.collectAttributes(tag, (attribute, type) => {
@@ -126,7 +129,8 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 				result.items.push({
 					label: attribute,
 					kind: type === 'handler' ? CompletionItemKind.Function : CompletionItemKind.Value,
-					textEdit: { newText: codeSnippet, range: range }
+					insertText: SnippetString.create(codeSnippet),
+					range
 				});
 			});
 		});
@@ -153,12 +157,13 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 		let attribute = currentAttributeName.toLowerCase();
 		tagProviders.forEach(provider => {
 			provider.collectValues(tag, attribute, value => {
-				let codeSnippet = addQuotes ? '"' + value + '"' : value;
+				let insertText = addQuotes ? '"' + value + '"' : value;
 				result.items.push({
 					label: value,
-					filterText: codeSnippet,
+					filterText: insertText,
 					kind: CompletionItemKind.Unit,
-					textEdit: { newText: codeSnippet, range: range }
+					insertText,
+					range
 				});
 			});
 		});

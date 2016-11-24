@@ -1,33 +1,33 @@
 {
-    "name": "vscode-html-languageservice",
-    "version": "1.0.1-next.4",
-    "description": "Language service for HTML",
-    "main": "./lib/htmlLanguageService.js",
-    "typings": "./lib/htmlLanguageService",
-    "author": "Microsoft Corporation",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/Microsoft/vscode-html-languageservice"
-    },
-    "license": "MIT",
-    "bugs": {
-        "url": "https://github.com/Microsoft/vscode-html-languageservice"
-    },
-    "devDependencies": {
-        "mocha": "^2.4.5",
-        "typescript": "^2.0.8",
-        "@types/node": "^6.0.46",
-        "@types/mocha": "^2.2.32"
-    },
-    "dependencies": {
-        "vscode-languageserver-types": "^1.0.5-next.1",
-        "vscode-nls": "^1.0.4",
-        "vscode-uri": "^1.0.0"
-    },
-    "scripts": {
-        "prepublish": "npm run compile",
-        "compile": "tsc -p ./src && cp ./src/beautify/*.js ./lib/beautify",
-        "watch": "cp ./src/beautify/*.js ./lib/beautify && tsc -w -p ./src",
-        "test": "npm run compile && mocha"
-    }
+  "name": "vscode-html-languageservice",
+  "version": "2.0.0-next.1",
+  "description": "Language service for HTML",
+  "main": "./lib/htmlLanguageService.js",
+  "typings": "./lib/htmlLanguageService",
+  "author": "Microsoft Corporation",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Microsoft/vscode-html-languageservice"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Microsoft/vscode-html-languageservice"
+  },
+  "devDependencies": {
+    "mocha": "^2.4.5",
+    "typescript": "^2.0.10",
+    "@types/node": "^6.0.51",
+    "@types/mocha": "^2.2.33"
+  },
+  "dependencies": {
+    "vscode-languageserver-types": "^3.0.1-alpha.2",
+    "vscode-nls": "^1.0.7",
+    "vscode-uri": "^1.0.0"
+  },
+  "scripts": {
+    "prepublish": "npm run compile",
+    "compile": "tsc -p ./src && cp ./src/beautify/*.js ./lib/beautify",
+    "watch": "cp ./src/beautify/*.js ./lib/beautify && tsc -w -p ./src",
+    "test": "npm run compile && mocha"
+  }
 }
