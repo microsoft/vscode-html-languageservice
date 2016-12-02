@@ -71,7 +71,7 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 		let curr = node;
 		while (curr) {
 			let tag = curr.tag;
-			if (tag && !curr.closed) {			
+			if (tag && (!curr.closed || curr.endTagStart > offset)) {			
 				let item = {
 					label: '/' + tag,
 					kind: CompletionItemKind.Property,

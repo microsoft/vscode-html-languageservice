@@ -315,6 +315,13 @@ suite('HTML Completion', () => {
 					{ label: '/foo', resultText: '<foo><bar></bar></foo>   ' },
 				]
 			}),
+			testCompletionFor('<div>\n  <form>\n    <div>\n      <label></label>\n      <|\n    </div>\n  </form></div>', {
+				items: [
+					{ label: 'span', resultText: '<div>\n  <form>\n    <div>\n      <label></label>\n      <span\n    </div>\n  </form></div>' },
+
+					{ label: '/div', resultText: '<div>\n  <form>\n    <div>\n      <label></label>\n    </div>\n    </div>\n  </form></div>' },
+				]
+			}),
 			testCompletionFor('<body><div><div></div></div></|  >', {
 				items: [
 					{ label: '/body', resultText: '<body><div><div></div></div></body  >' },
