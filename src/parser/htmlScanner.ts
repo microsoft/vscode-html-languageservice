@@ -118,6 +118,8 @@ class MultiLineStream {
 		if (match) {
 			this.position = this.position + match.index;
 			return match[0];
+		} else {
+			this.goToEnd();
 		}
 		return '';
 	}

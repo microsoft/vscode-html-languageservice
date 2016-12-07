@@ -775,6 +775,24 @@ suite('HTML Scanner', () => {
 				{ offset: 4, type: TokenType.Comment }
 			]
 		}]);
+		assertTokens([{
+			input: '<style>color:red',
+			tokens: [
+				{ offset: 0, type: TokenType.StartTagOpen },
+				{ offset: 1, type: TokenType.StartTag, content: 'style' },
+				{ offset: 6, type: TokenType.StartTagClose },
+				{ offset: 7, type: TokenType.Styles }
+			]
+		}]);
+		assertTokens([{
+			input: '<script>alert("!!")',
+			tokens: [
+				{ offset: 0, type: TokenType.StartTagOpen },
+				{ offset: 1, type: TokenType.StartTag, content: 'script' },
+				{ offset: 7, type: TokenType.StartTagClose },
+				{ offset: 8, type: TokenType.Script }
+			]
+		}]);
 	});	
 
 });
