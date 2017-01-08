@@ -76,6 +76,12 @@ export interface IBeautifyHTMLOptions {
      * default [head,body,/html]
      */
     extra_liners?: string[];
+
+    /**
+     * wrap attribute always ('force') or when line length is reached ('auto')
+     * default auto
+     */
+    wrap_attributes: 'auto' | 'force';
 }
 
 export interface IBeautifyHTML {

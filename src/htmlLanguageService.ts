@@ -21,6 +21,7 @@ export interface HTMLFormatConfiguration {
 	wrapLineLength: number;
 	unformatted: string;
 	indentInnerHtml: boolean;
+	wrapAttributes: 'auto' | 'force';
 	preserveNewLines: boolean;
 	maxPreserveNewLines: number;
 	indentHandlebars: boolean;

@@ -30,6 +30,7 @@ export function format(document: TextDocument, range: Range, options: HTMLFormat
 		indent_handlebars: getFormatOption(options, 'indentHandlebars', false),
 		end_with_newline: includesEnd && getFormatOption(options, 'endWithNewline', false),
 		extra_liners: getTagsFormatOption(options, 'extraLiners', void 0),
+		wrap_attributes: getFormatOption(options, 'wrapAttributes', 'auto'),
 	};
 
 	let result = html_beautify(value, htmlOptions);
