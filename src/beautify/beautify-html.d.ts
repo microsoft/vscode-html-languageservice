@@ -42,6 +42,12 @@ export interface IBeautifyHTMLOptions {
     unformatted?: string[];
 
     /**
+     * list of tags, that its content shouldn't be reformatted
+     * defaults to pre tag
+     */
+    content_unformatted?: string[];
+
+    /**
      * "keep"|"separate"|"normal"
      * default normal
      */
@@ -78,10 +84,13 @@ export interface IBeautifyHTMLOptions {
     extra_liners?: string[];
 
     /**
-     * wrap attribute always ('force') or when line length is reached ('auto')
+     * wrap each attribute except first ('force')
+     * wrap each attribute except first and align ('force-aligned')
+     * wrap each attribute ('force-expand-multiline')
+     * wrap only when line length is reached ('auto')
      * default auto
      */
-    wrap_attributes: 'auto' | 'force';
+    wrap_attributes: 'auto' | 'force' | 'force-expand-multiline' | 'force-aligned';
 }
 
 export interface IBeautifyHTML {

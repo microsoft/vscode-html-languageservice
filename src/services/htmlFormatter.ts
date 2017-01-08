@@ -24,6 +24,7 @@ export function format(document: TextDocument, range: Range, options: HTMLFormat
 		indent_char: options.insertSpaces ? ' ' : '\t',
 		wrap_line_length: getFormatOption(options, 'wrapLineLength', 120),
 		unformatted: getTagsFormatOption(options, 'unformatted', void 0),
+		content_unformatted: getTagsFormatOption(options, 'contentUnformatted', void 0),
 		indent_inner_html: getFormatOption(options, 'indentInnerHtml', false),
 		preserve_newlines: getFormatOption(options, 'preserveNewLines', false),
 		max_preserve_newlines: getFormatOption(options, 'maxPreserveNewLines', void 0),

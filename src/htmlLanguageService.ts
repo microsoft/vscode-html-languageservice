@@ -20,8 +20,9 @@ export interface HTMLFormatConfiguration {
 	insertSpaces: boolean;
 	wrapLineLength: number;
 	unformatted: string;
+	contentUnformatted: string;
 	indentInnerHtml: boolean;
-	wrapAttributes: 'auto' | 'force';
+	wrapAttributes: 'auto' | 'force' | 'force-aligned' | 'force-expand-multiline';
 	preserveNewLines: boolean;
 	maxPreserveNewLines: number;
 	indentHandlebars: boolean;
