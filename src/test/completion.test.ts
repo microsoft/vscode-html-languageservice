@@ -7,7 +7,7 @@
 import * as assert from 'assert';
 import * as htmlLanguageService from '../htmlLanguageService';
 
-import { CompletionList, TextDocument, CompletionItemKind, SnippetString, TextEdit } from 'vscode-languageserver-types';
+import { CompletionList, TextDocument, CompletionItemKind, TextEdit } from 'vscode-languageserver-types';
 import { applyEdits } from './textEditSupport';
 
 export interface ItemDescription {
@@ -43,13 +43,7 @@ suite('HTML Completion', () => {
 			assert.equal(match.kind, expected.kind);
 		}
 		if (expected.resultText) {
-			let insertText = match.label;
-			if (SnippetString.is(match.insertText)) {
-				insertText = match.insertText.value;
-			} else if (match.insertText) {
-				insertText = match.insertText;
-			}
-			assert.equal(applyEdits(document, [TextEdit.replace(match.range, insertText)]), expected.resultText);
+			assert.equal(applyEdits(document, [match.textEdit]), expected.resultText);
 		}
 	};
 

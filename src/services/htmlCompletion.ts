@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 
-import {TextDocument, Position, CompletionList, CompletionItemKind, Range, SnippetString} from 'vscode-languageserver-types';
+import {TextDocument, Position, CompletionList, CompletionItemKind, Range, TextEdit, InsertTextFormat, CompletionItem} from 'vscode-languageserver-types';
 import {HTMLDocument} from '../parser/htmlParser';
 import {TokenType, createScanner, ScannerState} from '../parser/htmlScanner';
 import {allTagProviders} from './tagProviders';
@@ -43,7 +43,8 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 					label: tag,
 					kind: CompletionItemKind.Property,
 					documentation: label,
-					range
+					textEdit: TextEdit.replace(range, tag),
+					insertTextFormat: InsertTextFormat.PlainText
 				});
 			});
 		});
@@ -72,18 +73,18 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 		while (curr) {
 			let tag = curr.tag;
 			if (tag && (!curr.closed || curr.endTagStart > offset)) {			
-				let item = {
+				let item : CompletionItem = {
 					label: '/' + tag,
 					kind: CompletionItemKind.Property,
 					filterText: '/' + tag + closeTag,
-					insertText: '/' + tag + closeTag,
-					range
+					textEdit: TextEdit.replace(range, '/' + tag + closeTag),
+					insertTextFormat: InsertTextFormat.PlainText
 				};
 				let startIndent = getLineIndent(curr.start);
 				let endIndent = getLineIndent(afterOpenBracket - 1);
 				if (startIndent !== null && endIndent !== null && startIndent !== endIndent) {
-					item.insertText =  startIndent + '</' + tag + closeTag;
-					item.range = getReplaceRange(afterOpenBracket - 1 - endIndent.length);
+					let insertText = startIndent + '</' + tag + closeTag;
+					item.textEdit = TextEdit.replace(getReplaceRange(afterOpenBracket - 1 - endIndent.length), insertText),
 					item.filterText = endIndent + '</' + tag + closeTag;
 				}
 				result.items.push(item);
@@ -102,8 +103,8 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 					kind: CompletionItemKind.Property,
 					documentation: label,
 					filterText: '/' + tag + closeTag,
-					insertText: '/' + tag + closeTag, 
-					range
+					textEdit: TextEdit.replace(range,  '/' + tag + closeTag),
+					insertTextFormat: InsertTextFormat.PlainText
 				});
 			});
 		});
@@ -129,8 +130,8 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 				result.items.push({
 					label: attribute,
 					kind: type === 'handler' ? CompletionItemKind.Function : CompletionItemKind.Value,
-					insertText: SnippetString.create(codeSnippet),
-					range
+					textEdit: TextEdit.replace(range, codeSnippet),
+					insertTextFormat: InsertTextFormat.Snippet
 				});
 			});
 		});
@@ -162,8 +163,8 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 					label: value,
 					filterText: insertText,
 					kind: CompletionItemKind.Unit,
-					insertText,
-					range
+					textEdit: TextEdit.replace(range, insertText),
+					insertTextFormat: InsertTextFormat.PlainText
 				});
 			});
 		});
