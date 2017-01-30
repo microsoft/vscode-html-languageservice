@@ -16,7 +16,7 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 		isIncomplete: false,
 		items: []
 	};
-	let tagProviders = allTagProviders.filter(p => p.isApplicable(document.languageId) && (!settings || !!settings[p.getId()]));
+	let tagProviders = allTagProviders.filter(p => p.isApplicable(document.languageId) && (!settings || settings[p.getId()] !== false));
 
 	let offset = document.offsetAt(position);
 	let node = htmlDocument.findNodeBefore(offset);
