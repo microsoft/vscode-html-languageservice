@@ -61,8 +61,8 @@ suite('HTML Link Detection', () => {
 		testLinkCreation('https://www.test.com/path/to/file.txt', '//www.microsoft.com/', 'https://www.microsoft.com/');
 		testLinkCreation('https://www.test.com/path/to/file.txt', '//www.microsoft.com/', 'https://www.microsoft.com/');
 
-		// invalid uris don't throw
-		testLinkCreation('https://www.test.com/path/to/file.txt', '%', 'https://www.test.com/path/to/%');
+		// invalid uris are ignored
+		testLinkCreation('https://www.test.com/path/to/file.txt', '%', null);
 
 		// Bug #18314: Ctrl + Click does not open existing file if folder's name starts with 'c' character
 		testLinkCreation('file:///c:/Alex/working_dir/18314-link-detection/test.html', '/class/class.js', 'file:///class/class.js');

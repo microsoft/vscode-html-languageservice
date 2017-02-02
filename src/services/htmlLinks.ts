@@ -54,13 +54,22 @@ function createLink(document: TextDocument, documentContext: DocumentContext, at
 		endOffset--;
 	}
 	let workspaceUrl = getWorkspaceUrl(documentUri, tokenContent, documentContext);
-	if (!workspaceUrl) {
+	if (!workspaceUrl || !isValidURI(workspaceUrl)) {
 		return null;
 	}
 	return {
 		range: Range.create(document.positionAt(startOffset), document.positionAt(endOffset)),
 		target: workspaceUrl
 	};
+}
+
+function isValidURI(uri: string) {
+	try {
+		Uri.parse(uri);
+		return true;
+	} catch (e) {
+		return false;
+	}
 }
 
 export function findDocumentLinks(document: TextDocument, documentContext: DocumentContext): DocumentLink[] {
