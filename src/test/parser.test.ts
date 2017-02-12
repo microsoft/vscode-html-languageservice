@@ -13,6 +13,10 @@ suite('HTML Parser', () => {
 		return { tag: node.tag, start: node.start, end: node.end, endTagStart: node.endTagStart, closed: node.closed, children: node.children.map(toJSON) };
 	}
 
+	function toJSONWithAttributes(node: Node) {
+		return { tag: node.tag, attributes: node.attributes, children: node.children.map(toJSONWithAttributes) };
+	}
+
 	function assertDocument(input: string, expected: any) {
 		let document = parse(input);
 		assert.deepEqual(document.roots.map(toJSON), expected);
@@ -22,6 +26,11 @@ suite('HTML Parser', () => {
 		let document = parse(input);
 		let node = document.findNodeBefore(offset);
 		assert.equal(node ? node.tag : '', expectedTag, "offset " + offset);
+	}
+
+	function assertAttributes(input: string, expected: any) {
+		let document = parse(input);
+		assert.deepEqual(document.roots.map(toJSONWithAttributes), expected);
 	}
 
 	test('Simple', () => {
@@ -44,6 +53,7 @@ suite('HTML Parser', () => {
 			]
 		}]);
 	});
+
 	test('MissingTags', () => {
 		assertDocument('</meta>', []);
 		assertDocument('<div></div></div>', [{ tag: 'div', start: 0, end: 11, endTagStart: 5, closed: true, children: [] }]);
@@ -51,7 +61,6 @@ suite('HTML Parser', () => {
 		assertDocument('<title><div></title>', [{ tag: 'title', start: 0, end: 20, endTagStart: 12, closed: true, children: [{ tag: 'div', start: 7, end: 12, endTagStart: void 0, closed: false, children: [] }] }]);
 		assertDocument('<h1><div><span></h1>', [{ tag: 'h1', start: 0, end: 20, endTagStart: 15, closed: true, children: [{ tag: 'div', start: 4, end: 15, endTagStart: void 0, closed: false, children: [{ tag: 'span', start: 9, end: 15, endTagStart: void 0, closed: false, children: [] }] }] }]);
 	});
-
 
 	test('FindNodeBefore', () => {
 		let str = '<div><input type="button"><span><br><hr></span></div>';
@@ -82,4 +91,33 @@ suite('HTML Parser', () => {
 		assertNodeBefore(str, 21, 'div');
 	});
 
+	test('Attributes', () => {
+		let str = '<div class="these are my-classes" id="test"><span aria-describedby="test"></span></div>'
+		assertAttributes(str, [{
+			tag: 'div',
+			attributes: {
+				class: '"these are my-classes"',
+				id: '"test"'
+			},
+			children: [{
+				tag: 'span', 
+				attributes: {
+					'aria-describedby': '"test"'
+				},
+				children: []
+			}]
+		}]);
+	});
+
+	test('Attributes without value', () => {
+		let str = '<div checked id="test"></div>'
+		assertAttributes(str, [{
+			tag: 'div',
+			attributes: {
+				checked: null,
+				id: '"test"'
+			},
+			children: []
+		}]);
+	});
 });

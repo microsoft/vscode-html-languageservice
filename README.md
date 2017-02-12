@@ -12,7 +12,8 @@ and the Monaco editor.
  - *doComplete* provides completion proposals for a given location.
  - *findDocumentHighlights* provides the highlighted symbols for a given position
  - *format* formats the code at the given range.
- - *findDocumentLinks* finds al links in the document
+ - *findDocumentLinks* finds all links in the document
+ - *findDocumentSymbols* finds all the symbols in the document
 
 Installation
 ------------

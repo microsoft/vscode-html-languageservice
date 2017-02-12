@@ -12,7 +12,7 @@ export class Node {
 	public tag: string;
 	public closed: boolean;
 	public endTagStart: number;
-	public attributeNames: string[];
+	public attributes: {[name: string]: string};
 	constructor(public start: number, public end: number, public children: Node[], public parent: Node) {
 	}
 	public isSameTag(tagInLowerCase: string) {
@@ -63,6 +63,7 @@ export function parse(text: string): HTMLDocument {
 	let htmlDocument = new Node(0, text.length, [], null);
 	let curr = htmlDocument;
 	let endTagStart: number = -1;
+	let pendingAttribute: string = null;
 	let token = scanner.scan();
 	while (token !== TokenType.EOS) {
 		switch (token) {
@@ -110,11 +111,19 @@ export function parse(text: string): HTMLDocument {
 				}
 				break;
 			case TokenType.AttributeName:
-				let attributeNames = curr.attributeNames;
-				if (!attributeNames) {
-					curr.attributeNames = attributeNames = [];
+				let attributeName = pendingAttribute = scanner.getTokenText();
+				let attributes = curr.attributes;
+				if (!attributes) {
+					curr.attributes = attributes = {};
 				}
-				attributeNames.push(scanner.getTokenText());
+				attributes[pendingAttribute] = null; // Support valueless attributes such as 'checked'
+				break;
+			case TokenType.AttributeValue:
+				let value = scanner.getTokenText();
+				if (attributes && pendingAttribute) {
+					attributes[pendingAttribute] = value;
+					pendingAttribute = null;
+				}
 				break;
 		}
 		token = scanner.scan();
