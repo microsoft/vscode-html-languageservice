@@ -6,32 +6,35 @@
 'use strict';
 
 import * as assert from 'assert';
-import {TextDocument} from 'vscode-languageserver-types';
+import { TextDocument } from 'vscode-languageserver-types';
 import * as htmlLanguageService from '../htmlLanguageService';
-import * as url from 'url'; 
+import * as url from 'url';
 
 suite('HTML Link Detection', () => {
 
-
+	function getDocumentContext(documentUrl: string): htmlLanguageService.DocumentContext {
+		return {
+			resolveReference: (ref, base) => {
+				if (base) {
+					documentUrl = url.resolve(documentUrl, base);
+				}
+				return url.resolve(documentUrl, ref);
+			}
+		}
+	}
 
 	function testLinkCreation(modelUrl: string, tokenContent: string, expected: string): void {
-		let documentContext : htmlLanguageService.DocumentContext = {
-			resolveReference: (ref) => url.resolve(modelUrl, ref)
-		}
 		let document = TextDocument.create(modelUrl, 'html', 0, `<a href="${tokenContent}">`);
 		let ls = htmlLanguageService.getLanguageService();
-		let links = ls.findDocumentLinks(document, documentContext);
+		let links = ls.findDocumentLinks(document, getDocumentContext(modelUrl));
 		assert.equal(links[0] && links[0].target, expected);
 	}
 
-	function testLinkDetection(value: string, expectedLinkLocations: number[]): void {
+	function testLinkDetection(value: string, expectedLinks: { offset: number, target: string; }[]): void {
 		let document = TextDocument.create('test://test/test.html', 'html', 0, value);
-		let documentContext : htmlLanguageService.DocumentContext = {
-			resolveReference: (ref) => url.resolve(document.uri, ref)
-		}
 		let ls = htmlLanguageService.getLanguageService();
-		let links = ls.findDocumentLinks(document, documentContext);
-		assert.deepEqual(links.map(l => l.range.start.character), expectedLinkLocations);
+		let links = ls.findDocumentLinks(document, getDocumentContext(document.uri));
+		assert.deepEqual(links.map(l => ({ offset: l.range.start.character, target: l.target })), expectedLinks);
 	}
 
 	test('Link creation', () => {
@@ -69,11 +72,14 @@ suite('HTML Link Detection', () => {
 	});
 
 	test('Link detection', () => {
-		testLinkDetection('<img src="foo.png">', [10]);
-		testLinkDetection('<a href="http://server/foo.html">', [9]);
+		testLinkDetection('<img src="foo.png">', [{ offset: 10, target: 'test://test/foo.png' }]);
+		testLinkDetection('<a href="http://server/foo.html">', [{ offset: 9, target: 'http://server/foo.html' }]);
 		testLinkDetection('<img src="">', []);
-		testLinkDetection('<LINK HREF="a.html">', [12]);
+		testLinkDetection('<LINK HREF="a.html">', [{ offset: 12, target: 'test://test/a.html' }]);
 		testLinkDetection('<LINK HREF="a.html\n>\n', []);
+
+		testLinkDetection('<html><base href="docs/"><img src="foo.png"></html>', [{ offset: 18, target: 'test://test/docs/' }, { offset: 35, target: 'test://test/docs/foo.png' }]);
+		testLinkDetection('<html><base href="http://www.example.com/page.html"><img src="foo.png"></html>', [{ offset: 18, target: 'http://www.example.com/page.html' }, { offset: 62, target: 'http://www.example.com/foo.png' }]);
 	});
 
 });

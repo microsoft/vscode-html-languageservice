@@ -102,7 +102,7 @@ export declare type HTMLDocument = {
 };
 
 export interface DocumentContext {
-	resolveReference(ref: string): string;
+	resolveReference(ref: string, base?: string): string;
 }
 
 export interface LanguageService {
