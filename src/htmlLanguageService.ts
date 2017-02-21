@@ -11,6 +11,7 @@ import {doHover} from './services/htmlHover';
 import {format} from './services/htmlFormatter';
 import {findDocumentLinks} from './services/htmlLinks';
 import {findDocumentHighlights} from './services/htmlHighlighting';
+import {findDocumentSymbols} from './services/htmlSymbolsProvider';
 import {TextDocument, Position, CompletionItem, CompletionList, Hover, Range, SymbolInformation, Diagnostic, TextEdit, DocumentHighlight, FormattingOptions, MarkedString, DocumentLink } from 'vscode-languageserver-types';
 
 export {TextDocument, Position, CompletionItem, CompletionList, Hover, Range, SymbolInformation, Diagnostic, TextEdit, DocumentHighlight, FormattingOptions, MarkedString, DocumentLink };
@@ -113,6 +114,7 @@ export interface LanguageService {
 	doHover(document: TextDocument, position: Position, htmlDocument: HTMLDocument): Hover;
 	format(document: TextDocument, range: Range, options: HTMLFormatConfiguration): TextEdit[];
 	findDocumentLinks(document: TextDocument, documentContext: DocumentContext): DocumentLink[];
+	findDocumentSymbols(document: TextDocument, htmlDocument: HTMLDocument): SymbolInformation[];
 }
 
 export function getLanguageService(): LanguageService {
@@ -123,6 +125,7 @@ export function getLanguageService(): LanguageService {
 		doHover,
 		format,
 		findDocumentHighlights,
-		findDocumentLinks
+		findDocumentLinks,
+		findDocumentSymbols
 	};
 }
