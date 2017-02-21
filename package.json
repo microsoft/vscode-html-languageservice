@@ -16,6 +16,7 @@
   "devDependencies": {
     "mocha": "^2.4.5",
     "typescript": "^2.1.5",
+    "cpy-cli": "^1.0.1",
     "@types/node": "^6.0.51",
     "@types/mocha": "^2.2.33"
   },
@@ -26,8 +27,8 @@
   },
   "scripts": {
     "prepublish": "npm run compile",
-    "compile": "tsc -p ./src && cp ./src/beautify/*.js ./lib/beautify",
-    "watch": "cp ./src/beautify/*.js ./lib/beautify && tsc -w -p ./src",
+    "compile": "tsc -p ./src && cpy ./src/beautify/*.js ./lib/beautify",
+    "watch": "cpy ./src/beautify/*.js ./lib/beautify && tsc -w -p ./src",
     "test": "npm run compile && mocha",
     "install-types-next": "npm install vscode-languageserver-types@next -f -S"
   }
