@@ -13,6 +13,7 @@ export class Node {
 	public closed: boolean;
 	public endTagStart: number;
 	public attributes: {[name: string]: string};
+	public get attributeNames() : string[] { return Object.keys(this.attributes); };
 	constructor(public start: number, public end: number, public children: Node[], public parent: Node) {
 	}
 	public isSameTag(tagInLowerCase: string) {

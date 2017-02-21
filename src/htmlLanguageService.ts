@@ -42,7 +42,7 @@ export interface Node {
 	endTagStart: number;
 	children: Node[];
 	parent: Node;
-	attributeNames?: string[];
+	attributes?: {[name: string]: string};
 }
 
 
