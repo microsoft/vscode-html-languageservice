@@ -19,6 +19,9 @@ function stripQuotes(url: string): string {
 }
 
 function getWorkspaceUrl(modelAbsoluteUri: Uri, tokenContent: string, documentContext: DocumentContext, base: string): string {
+	if (strings.endsWith(tokenContent, '/')) {
+		return null; // ignore folders
+	}
 	if (/^\s*javascript\:/i.test(tokenContent) || /^\s*\#/i.test(tokenContent) || /[\n\r]/.test(tokenContent)) {
 		return null;
 	}
