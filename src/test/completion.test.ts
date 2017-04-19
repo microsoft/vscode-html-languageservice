@@ -325,6 +325,11 @@ suite('HTML Completion', () => {
 				items: [
 					{ label: '/div', resultText: ['<body>', '  <div>', '  </div>'].join('\n') },
 				]
+			}),
+			testCompletionFor('<div><a hre|</div>', {
+				items: [
+					{ label: 'href', resultText: '<div><a href="$1"</div>' }
+				]
 			})
 		], testDone);
 	});

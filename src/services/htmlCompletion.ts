@@ -118,7 +118,11 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 	}
 
 	function collectAttributeNameSuggestions(nameStart: number, nameEnd: number = offset): CompletionList {
-		let range = getReplaceRange(nameStart, nameEnd);
+		let replaceEnd = offset;
+		while (replaceEnd < nameEnd && text[replaceEnd] != '<') { // < is a valid attribute name character, but we rather assume the attribute name ends. See #23236.
+			replaceEnd++;
+		}
+		let range = getReplaceRange(nameStart, replaceEnd);
 		let value = isFollowedBy(text, nameEnd, ScannerState.AfterAttributeName, TokenType.DelimiterAssign) ? '' : '="$1"';
 		let tag = currentTag.toLowerCase();
 		tagProviders.forEach(provider => {
