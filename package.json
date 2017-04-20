@@ -14,11 +14,12 @@
     "url": "https://github.com/Microsoft/vscode-html-languageservice"
   },
   "devDependencies": {
-    "mocha": "^2.4.5",
-    "typescript": "^2.1.5",
-    "cpy-cli": "^1.0.1",
+    "@types/mocha": "^2.2.33",
     "@types/node": "^6.0.51",
-    "@types/mocha": "^2.2.33"
+    "cpy-cli": "^1.0.1",
+    "mocha": "^2.4.5",
+    "tslint": "^5.1.0",
+    "typescript": "^2.1.5"
   },
   "dependencies": {
     "vscode-languageserver-types": "^3.0.3",
@@ -26,10 +27,11 @@
     "vscode-uri": "^1.0.0"
   },
   "scripts": {
-    "prepublish": "npm run compile",
+    "prepublish": "npm run compile && npm run lint",
     "compile": "tsc -p ./src && cpy ./src/beautify/*.js ./lib/beautify",
     "watch": "cpy ./src/beautify/*.js ./lib/beautify && tsc -w -p ./src",
     "test": "npm run compile && mocha",
+    "lint" : "tslint src/**/*.ts",
     "install-types-next": "npm install vscode-languageserver-types@next -f -S"
   }
 }

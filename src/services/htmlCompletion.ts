@@ -119,7 +119,7 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 
 	function collectAttributeNameSuggestions(nameStart: number, nameEnd: number = offset): CompletionList {
 		let replaceEnd = offset;
-		while (replaceEnd < nameEnd && text[replaceEnd] != '<') { // < is a valid attribute name character, but we rather assume the attribute name ends. See #23236.
+		while (replaceEnd < nameEnd && text[replaceEnd] !== '<') { // < is a valid attribute name character, but we rather assume the attribute name ends. See #23236.
 			replaceEnd++;
 		}
 		let range = getReplaceRange(nameStart, replaceEnd);
@@ -280,7 +280,7 @@ function isFollowedBy(s: string, offset:number, intialState: ScannerState, expec
 	while (token === TokenType.Whitespace) {
 		token = scanner.scan();
 	}
-	return token == expectedToken;
+	return token === expectedToken;
 }
 
 function getWordStart(s: string, offset: number, limit: number): number {
