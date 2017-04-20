@@ -4,11 +4,11 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 
-import {TextDocument, Position, CompletionList, CompletionItemKind, Range, TextEdit, InsertTextFormat, CompletionItem} from 'vscode-languageserver-types';
-import {HTMLDocument} from '../parser/htmlParser';
-import {TokenType, createScanner, ScannerState} from '../parser/htmlScanner';
-import {allTagProviders} from './tagProviders';
-import {CompletionConfiguration} from '../htmlLanguageService';
+import { TextDocument, Position, CompletionList, CompletionItemKind, Range, TextEdit, InsertTextFormat, CompletionItem } from 'vscode-languageserver-types';
+import { HTMLDocument } from '../parser/htmlParser';
+import { TokenType, createScanner, ScannerState } from '../parser/htmlScanner';
+import { allTagProviders } from './tagProviders';
+import { CompletionConfiguration } from '../htmlLanguageService';
 
 export function doComplete(document: TextDocument, position: Position, htmlDocument: HTMLDocument, settings?: CompletionConfiguration): CompletionList {
 
@@ -66,14 +66,17 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 		return text.substring(0, offset);
 	}
 
-	function collectCloseTagSuggestions(afterOpenBracket: number, matchingOnly: boolean, tagNameEnd: number = offset): CompletionList {
+	function collectCloseTagSuggestions(afterOpenBracket: number, inOpenTag: boolean, tagNameEnd: number = offset): CompletionList {
 		let range = getReplaceRange(afterOpenBracket, tagNameEnd);
 		let closeTag = isFollowedBy(text, tagNameEnd, ScannerState.WithinEndTag, TokenType.EndTagClose) ? '' : '>';
 		let curr = node;
+		if (inOpenTag) {
+			curr = curr.parent; // don't suggest the own tag, it's not yet open
+		}
 		while (curr) {
 			let tag = curr.tag;
-			if (tag && (!curr.closed || curr.endTagStart > offset)) {			
-				let item : CompletionItem = {
+			if (tag && (!curr.closed || curr.endTagStart > offset)) {
+				let item: CompletionItem = {
 					label: '/' + tag,
 					kind: CompletionItemKind.Property,
 					filterText: '/' + tag + closeTag,
@@ -85,14 +88,14 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 				if (startIndent !== null && endIndent !== null && startIndent !== endIndent) {
 					let insertText = startIndent + '</' + tag + closeTag;
 					item.textEdit = TextEdit.replace(getReplaceRange(afterOpenBracket - 1 - endIndent.length), insertText),
-					item.filterText = endIndent + '</' + tag + closeTag;
+						item.filterText = endIndent + '</' + tag + closeTag;
 				}
 				result.items.push(item);
 				return result;
 			}
 			curr = curr.parent;
 		}
-		if (matchingOnly) {
+		if (inOpenTag) {
 			return result;
 		}
 
@@ -103,7 +106,7 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 					kind: CompletionItemKind.Property,
 					documentation: label,
 					filterText: '/' + tag + closeTag,
-					textEdit: TextEdit.replace(range,  '/' + tag + closeTag),
+					textEdit: TextEdit.replace(range, '/' + tag + closeTag),
 					insertTextFormat: InsertTextFormat.PlainText
 				});
 			});
@@ -147,11 +150,11 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 		let addQuotes: boolean;
 		if (offset > valueStart && offset <= valueEnd && text[valueStart] === '"') {
 			// inside attribute
-			if (valueEnd > offset && text[valueEnd-1] === '"') {
+			if (valueEnd > offset && text[valueEnd - 1] === '"') {
 				valueEnd--;
 			}
 			let wsBefore = getWordStart(text, offset, valueStart + 1);
-			let wsAfter = getWordEnd(text, offset, valueEnd); 
+			let wsAfter = getWordEnd(text, offset, valueEnd);
 			range = getReplaceRange(wsBefore, wsAfter);
 			addQuotes = false
 		} else {
@@ -175,7 +178,7 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 		return result;
 	}
 
-	function scanNextForEndPos(nextToken: TokenType) : number {
+	function scanNextForEndPos(nextToken: TokenType): number {
 		if (offset === scanner.getTokenEnd()) {
 			token = scanner.scan();
 			if (token === nextToken && scanner.getTokenOffset() === offset) {
@@ -274,7 +277,7 @@ function isWhiteSpaceOrQuote(s: string): boolean {
 	return /^[\s"]*$/.test(s);
 }
 
-function isFollowedBy(s: string, offset:number, intialState: ScannerState, expectedToken: TokenType) {
+function isFollowedBy(s: string, offset: number, intialState: ScannerState, expectedToken: TokenType) {
 	let scanner = createScanner(s, offset, intialState);
 	let token = scanner.scan();
 	while (token === TokenType.Whitespace) {
@@ -284,7 +287,7 @@ function isFollowedBy(s: string, offset:number, intialState: ScannerState, expec
 }
 
 function getWordStart(s: string, offset: number, limit: number): number {
-	while (offset > limit && !isWhiteSpace(s[offset-1])) {
+	while (offset > limit && !isWhiteSpace(s[offset - 1])) {
 		offset--;
 	}
 	return offset;

@@ -330,6 +330,18 @@ suite('HTML Completion', () => {
 				items: [
 					{ label: 'href', resultText: '<div><a href="$1"</div>' }
 				]
+			}),
+			testCompletionFor('<a><b>foo</b><|f>', {
+				items: [
+					{ label: '/a', resultText: '<a><b>foo</b></a>' },
+					{ notAvailable: true, label: '/f' }
+				]
+			}),
+			testCompletionFor('<a><b>foo</b><| bar.', {
+				items: [
+					{ label: '/a', resultText: '<a><b>foo</b></a> bar.' },
+					{ notAvailable: true, label: '/bar' }
+				]
 			})
 		], testDone);
 	});
