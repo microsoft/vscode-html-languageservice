@@ -1,4 +1,5 @@
 // copied from https://raw.githubusercontent.com/beautify-web/js-beautify/master/js/lib/beautify-html.js
+// https://github.com/beautify-web/js-beautify/commit/9c1a01448012b3f2f8545867fadc682268806974
 /*jshint curly:true, eqeqeq:true, laxbreak:true, noempty:false */
 /*
 
@@ -835,7 +836,7 @@
                 // if next_tag comes back but is not an isolated tag, then
                 // let's treat the 'a' tag as having content
                 // and respect the unformatted option
-                if (!tag || this.Utils.in_array(tag, unformatted)) {
+                if (!tag || this.Utils.in_array(tag[1], unformatted)) {
                     return true;
                 } else {
                     return false;
