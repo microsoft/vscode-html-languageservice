@@ -91,6 +91,11 @@ export interface IBeautifyHTMLOptions {
      * default auto
      */
     wrap_attributes: 'auto' | 'force' | 'force-expand-multiline' | 'force-aligned';
+
+    /* 
+     * end of line character to use
+     */
+    eol?: string;
 }
 
 export interface IBeautifyHTML {

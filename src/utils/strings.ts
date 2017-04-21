@@ -48,3 +48,15 @@ export function commonPrefixLength(a: string, b: string): number {
 
 	return len;
 }
+
+export function repeat(value: string, count: number) {
+	var s = '';
+	while (count > 0) {
+		if ((count & 1) === 1) {
+			s += value;
+		}
+		value += value;
+		count = count >>> 1;
+	}
+	return s;
+}

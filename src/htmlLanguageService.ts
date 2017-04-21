@@ -17,18 +17,18 @@ import {TextDocument, Position, CompletionItem, CompletionList, Hover, Range, Sy
 export {TextDocument, Position, CompletionItem, CompletionList, Hover, Range, SymbolInformation, Diagnostic, TextEdit, DocumentHighlight, FormattingOptions, MarkedString, DocumentLink };
 
 export interface HTMLFormatConfiguration {
-	tabSize: number;
-	insertSpaces: boolean;
-	wrapLineLength: number;
-	unformatted: string;
-	contentUnformatted: string;
-	indentInnerHtml: boolean;
-	wrapAttributes: 'auto' | 'force' | 'force-aligned' | 'force-expand-multiline';
-	preserveNewLines: boolean;
-	maxPreserveNewLines: number;
-	indentHandlebars: boolean;
-	endWithNewline: boolean;
-	extraLiners: string;
+	tabSize?: number;
+	insertSpaces?: boolean;
+	wrapLineLength?: number;
+	unformatted?: string;
+	contentUnformatted?: string;
+	indentInnerHtml?: boolean;
+	wrapAttributes?: 'auto' | 'force' | 'force-aligned' | 'force-expand-multiline';
+	preserveNewLines?: boolean;
+	maxPreserveNewLines?: number;
+	indentHandlebars?: boolean;
+	endWithNewline?: boolean;
+	extraLiners?: string;
 }
 
 export interface CompletionConfiguration {

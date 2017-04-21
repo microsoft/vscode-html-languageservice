@@ -4,18 +4,54 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 
-import {HTMLFormatConfiguration} from '../htmlLanguageService';
-import {TextDocument, Range, TextEdit, Position} from 'vscode-languageserver-types';
-import {IBeautifyHTMLOptions, html_beautify} from '../beautify/beautify-html';
+import { HTMLFormatConfiguration } from '../htmlLanguageService';
+import { TextDocument, Range, TextEdit, Position } from 'vscode-languageserver-types';
+import { IBeautifyHTMLOptions, html_beautify } from '../beautify/beautify-html';
+import { repeat } from '../utils/strings';
 
 export function format(document: TextDocument, range: Range, options: HTMLFormatConfiguration): TextEdit[] {
 	let value = document.getText();
 	let includesEnd = true;
+	let indent = '';
+	let addLeadingIndent = false;
 	if (range) {
 		let startOffset = document.offsetAt(range.start);
+
+		// include all leading whitespace iff at the beginning of the line
+		let extendedStart = startOffset;
+		while (extendedStart > 0 && isWhitespace(value, extendedStart - 1)) {
+			extendedStart--;
+		}
+		if (extendedStart === 0 || isEOL(value, extendedStart - 1)) {
+			startOffset = extendedStart;
+			addLeadingIndent = true;
+		} else {
+			// else keep at least one whitespace
+			if (extendedStart + 1 < startOffset) {
+				startOffset = extendedStart + 1;
+			}
+		}
+
+		// include all following whitespace until the end of the line
 		let endOffset = document.offsetAt(range.end);
+		let extendedEnd = endOffset;
+		while (extendedEnd < value.length && isWhitespace(value, extendedEnd)) {
+			extendedEnd++;
+		}
+		if (extendedEnd === value.length || isEOL(value, extendedEnd)) {
+			endOffset = extendedEnd;
+		}
+		range = Range.create(document.positionAt(extendedStart), document.positionAt(endOffset));
+
 		includesEnd = endOffset === value.length;
 		value = value.substring(startOffset, endOffset);
+
+		let startOfLineOffset = document.offsetAt(Position.create(range.start.line, 0));
+		let initialIndentLevel = computeIndentLevel(document.getText(), startOfLineOffset, options);
+		if (initialIndentLevel > 0) {
+			indent = options.insertSpaces ? repeat(' ', options.tabSize * initialIndentLevel) : repeat('\t', initialIndentLevel);
+		}
+
 	} else {
 		range = Range.create(Position.create(0, 0), document.positionAt(value.length));
 	}
@@ -26,15 +62,22 @@ export function format(document: TextDocument, range: Range, options: HTMLFormat
 		unformatted: getTagsFormatOption(options, 'unformatted', void 0),
 		content_unformatted: getTagsFormatOption(options, 'contentUnformatted', void 0),
 		indent_inner_html: getFormatOption(options, 'indentInnerHtml', false),
-		preserve_newlines: getFormatOption(options, 'preserveNewLines', false),
-		max_preserve_newlines: getFormatOption(options, 'maxPreserveNewLines', void 0),
+		preserve_newlines: getFormatOption(options, 'preserveNewLines', true),
+		max_preserve_newlines: getFormatOption(options, 'maxPreserveNewLines', 32786),
 		indent_handlebars: getFormatOption(options, 'indentHandlebars', false),
 		end_with_newline: includesEnd && getFormatOption(options, 'endWithNewline', false),
 		extra_liners: getTagsFormatOption(options, 'extraLiners', void 0),
 		wrap_attributes: getFormatOption(options, 'wrapAttributes', 'auto'),
+		eol: '\n'
 	};
 
 	let result = html_beautify(value, htmlOptions);
+
+	result = result.split('\n').join(getEOL(document) + indent);
+	if (addLeadingIndent) {
+		result = indent + result;
+	}
+
 	return [{
 		range: range,
 		newText: result
@@ -60,4 +103,43 @@ function getTagsFormatOption(options: HTMLFormatConfiguration, key: string, dflt
 		return [];
 	}
 	return dflt;
+}
+
+function computeIndentLevel(content: string, offset: number, options: HTMLFormatConfiguration): number {
+	let i = offset;
+	let nChars = 0;
+	let tabSize = options.tabSize || 4;
+	while (i < content.length) {
+		let ch = content.charAt(i);
+		if (ch === ' ') {
+			nChars++;
+		} else if (ch === '\t') {
+			nChars += tabSize;
+		} else {
+			break;
+		}
+		i++;
+	}
+	return Math.floor(nChars / tabSize);
+}
+
+function getEOL(document: TextDocument): string {
+	let text = document.getText();
+	if (document.lineCount > 1) {
+		let to = document.offsetAt(Position.create(1, 0));
+		let from = to;
+		while (from > 0 && isEOL(text, from - 1)) {
+			from--;
+		}
+		return text.substr(from, to - from);
+	}
+	return '\n';
+}
+
+function isEOL(text: string, offset: number) {
+	return '\r\n'.indexOf(text.charAt(offset)) !== -1;
+}
+
+function isWhitespace(text: string, offset: number) {
+	return ' \t'.indexOf(text.charAt(offset)) !== -1;
 }
