@@ -1,6 +1,6 @@
 {
   "name": "vscode-html-languageservice",
-  "version": "2.0.2-next.2",
+  "version": "2.0.2",
   "description": "Language service for HTML",
   "main": "./lib/htmlLanguageService.js",
   "typings": "./lib/htmlLanguageService",
@@ -31,7 +31,7 @@
     "compile": "tsc -p ./src && cpy ./src/beautify/*.js ./lib/beautify",
     "watch": "cpy ./src/beautify/*.js ./lib/beautify && tsc -w -p ./src",
     "test": "npm run compile && mocha",
-    "lint" : "tslint src/**/*.ts",
+    "lint": "tslint src/**/*.ts",
     "install-types-next": "npm install vscode-languageserver-types@next -f -S",
     "update-jsbeautify": "node ./build/update-jsbeautify.js"
   }
