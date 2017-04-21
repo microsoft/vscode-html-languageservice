@@ -1,3 +1,6 @@
+2.0.3 / 2017-03-21
+==================
+  * Fix indentation issues when formatting a range
 
 2.0.1 / 2017-02-21
 ==================
