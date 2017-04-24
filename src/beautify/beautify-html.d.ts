@@ -23,6 +23,12 @@ export interface IBeautifyHTMLOptions {
     indent_char?: string; // character to indent with,
 
     /**
+     * the initial indent level
+     * default 0
+     */
+    indent_level?: number;
+
+    /**
      * maximum amount of characters per line (0 = disable)
      * default 250
      */

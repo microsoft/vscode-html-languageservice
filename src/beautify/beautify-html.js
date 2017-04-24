@@ -855,7 +855,7 @@
                 this.indent_string = '';
                 this.indent_size = indent_size;
                 this.brace_style = brace_style;
-                this.indent_level = 0;
+                this.indent_level = (options.indent_level === undefined) ? 0 : parseInt(options.indent_level, 10);
                 this.wrap_line_length = wrap_line_length;
                 this.line_char_count = 0; //count to see if wrap_line_length was exceeded
 

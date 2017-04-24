@@ -56,7 +56,7 @@ function getCommitSha(repoId, repoPath) {
     });
 }
 
-function update(repoId, repoPath, dest, addHeader) {
+function update(repoId, repoPath, dest, addHeader, patch) {
     var contentPath = 'https://raw.githubusercontent.com/' + repoId + '/master/' + repoPath;
     console.log('Reading from ' + contentPath);
     return download(contentPath).then(function (content) {
@@ -70,6 +70,9 @@ function update(repoId, repoPath, dest, addHeader) {
                 }
             }
             try {
+                if (patch) {
+                    content = patch(content);
+                }
                 fs.writeFileSync(dest, header + content);
                 if (info) {
                     console.log('Updated ' + path.basename(dest) + ' to ' + repoId + '@' + info.commitSha.substr(0, 7) + ' (' + info.commitDate.substr(0, 10) + ')');
@@ -84,6 +87,10 @@ function update(repoId, repoPath, dest, addHeader) {
     }, console.error);
 }
 
-update('beautify-web/js-beautify', 'js/lib/beautify-html.js', './src/beautify/beautify-html.js', true);
+function patchHTMLFormatter(content) {
+    return content.replace('this.indent_level = 0;', 'this.indent_level = (options.indent_level === undefined) ? 0 : parseInt(options.indent_level, 10);');
+}
+
+update('beautify-web/js-beautify', 'js/lib/beautify-html.js', './src/beautify/beautify-html.js', true, patchHTMLFormatter);
 update('beautify-web/js-beautify', 'js/lib/beautify-css.js', './src/beautify/beautify-css.js', true);
 update('beautify-web/js-beautify', 'LICENSE', './src/beautify/beautify-license');

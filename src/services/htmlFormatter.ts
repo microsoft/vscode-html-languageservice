@@ -12,8 +12,7 @@ import { repeat } from '../utils/strings';
 export function format(document: TextDocument, range: Range, options: HTMLFormatConfiguration): TextEdit[] {
 	let value = document.getText();
 	let includesEnd = true;
-	let indent = '';
-	let addLeadingIndent = false;
+	let initialIndentLevel = 0;
 	if (range) {
 		let startOffset = document.offsetAt(range.start);
 
@@ -24,7 +23,6 @@ export function format(document: TextDocument, range: Range, options: HTMLFormat
 		}
 		if (extendedStart === 0 || isEOL(value, extendedStart - 1)) {
 			startOffset = extendedStart;
-			addLeadingIndent = true;
 		} else {
 			// else keep at least one whitespace
 			if (extendedStart + 1 < startOffset) {
@@ -46,18 +44,17 @@ export function format(document: TextDocument, range: Range, options: HTMLFormat
 		includesEnd = endOffset === value.length;
 		value = value.substring(startOffset, endOffset);
 
-		let startOfLineOffset = document.offsetAt(Position.create(range.start.line, 0));
-		let initialIndentLevel = computeIndentLevel(document.getText(), startOfLineOffset, options);
-		if (initialIndentLevel > 0) {
-			indent = options.insertSpaces ? repeat(' ', options.tabSize * initialIndentLevel) : repeat('\t', initialIndentLevel);
+		if (startOffset !== 0) {
+			let startOfLineOffset = document.offsetAt(Position.create(range.start.line, 0));
+			initialIndentLevel = computeIndentLevel(document.getText(), startOfLineOffset, options);
 		}
-
 	} else {
 		range = Range.create(Position.create(0, 0), document.positionAt(value.length));
 	}
 	let htmlOptions: IBeautifyHTMLOptions = {
 		indent_size: options.insertSpaces ? options.tabSize : 1,
 		indent_char: options.insertSpaces ? ' ' : '\t',
+		indent_level: initialIndentLevel,
 		wrap_line_length: getFormatOption(options, 'wrapLineLength', 120),
 		unformatted: getTagsFormatOption(options, 'unformatted', void 0),
 		content_unformatted: getTagsFormatOption(options, 'contentUnformatted', void 0),
@@ -72,12 +69,10 @@ export function format(document: TextDocument, range: Range, options: HTMLFormat
 	};
 
 	let result = html_beautify(value, htmlOptions);
-
-	result = result.split('\n').join(getEOL(document) + indent);
-	if (addLeadingIndent) {
-		result = indent + result;
+	if (initialIndentLevel > 0 && range.start.character === 0) {
+		let indent = options.insertSpaces ? repeat(' ', options.tabSize * initialIndentLevel) : repeat('\t', initialIndentLevel);
+		result = indent + result; // keep the indent
 	}
-
 	return [{
 		range: range,
 		newText: result
