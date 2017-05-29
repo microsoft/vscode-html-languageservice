@@ -25,7 +25,7 @@ export function format(document: TextDocument, range: Range, options: HTMLFormat
 			startOffset = extendedStart;
 		} else {
 			// else keep at least one whitespace
-			if (extendedStart + 1 < startOffset) {
+			if (extendedStart < startOffset) {
 				startOffset = extendedStart + 1;
 			}
 		}
@@ -39,7 +39,7 @@ export function format(document: TextDocument, range: Range, options: HTMLFormat
 		if (extendedEnd === value.length || isEOL(value, extendedEnd)) {
 			endOffset = extendedEnd;
 		}
-		range = Range.create(document.positionAt(extendedStart), document.positionAt(endOffset));
+		range = Range.create(document.positionAt(startOffset), document.positionAt(endOffset));
 
 		includesEnd = endOffset === value.length;
 		value = value.substring(startOffset, endOffset);

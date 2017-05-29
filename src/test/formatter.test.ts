@@ -100,6 +100,18 @@ suite('JSON Formatter', () => {
 		format(content, expected);
 	});
 
+	test('range 3', () => {
+		var content = [
+			'<div |class= "foo"|>'
+		].join('\n');
+
+		var expected = [
+			'<div class= "foo">'
+		].join('\n');
+
+		format(content, expected);
+	});
+
 	test('range with indent', () => {
 		var content = [
 			'<div  class = "foo">',
@@ -146,7 +158,7 @@ suite('JSON Formatter', () => {
 
 		var expected = [
 			'<div  class = "foo">',
-			'  <div></div><img src="foo">',
+			'  <div></div> <img src="foo">',
 			' </div>'
 		].join('\n');
 
