@@ -68,6 +68,19 @@ suite('HTML Completion', () => {
 		return Promise.resolve();
 	};
 
+	let testTagCompletion = function (value: string, expected: string): void {
+		let offset = value.indexOf('|');
+		value = value.substr(0, offset) + value.substr(offset + 1);
+
+		let ls = htmlLanguageService.getLanguageService();
+
+		let document = TextDocument.create('test://test/test.html', 'html', 0, value);
+		let position = document.positionAt(offset);
+		let htmlDoc = ls.parseHTMLDocument(document);
+		let actual = ls.doTagComplete(document, position, htmlDoc);
+		assert.equal(actual, expected);
+	};
+
 	function run(tests: PromiseLike<void>[], testDone) {
 		Promise.all(tests).then(() => {
 			testDone();
@@ -342,7 +355,22 @@ suite('HTML Completion', () => {
 					{ label: '/a', resultText: '<a><b>foo</b></a> bar.' },
 					{ notAvailable: true, label: '/bar' }
 				]
-			})
+			}),
+			testCompletionFor('<div><h1><br><span></span><img></| </h1></div>', {
+				items: [
+					{ label: '/h1', resultText: '<div><h1><br><span></span><img></h1> </h1></div>' },
+				]
+			}),
+			testCompletionFor('<div>|', {
+				items: [
+					{ label: '</div>', resultText: '<div>$0</div>' }
+				]
+			}),
+			testCompletionFor('<div>|', {
+				items: [
+					{ notAvailable: true, label: '</div>' }
+				]
+			}, { hideAutoCompleteProposals: true })
 		], testDone);
 	});
 
@@ -368,7 +396,12 @@ suite('HTML Completion', () => {
 				items: [
 					{ label: 'color', resultText: '<INPUT TYPE="color"' }
 				]
-			})
+			}),
+			testCompletionFor('<dIv>|', {
+				items: [
+					{ label: '</dIv>', resultText: '<dIv>$0</dIv>' }
+				]
+			}),
 		], testDone);
 	});
 
@@ -496,5 +529,15 @@ suite('HTML Completion', () => {
 				]
 			}, { html5: true, ionic: false, angular1: false }),
 		], testDone);
+	});
+
+	test('doTagComplete', function (): any {
+		testTagCompletion('<div>|', '$0</div>');
+		testTagCompletion('<div>|</div>', null);
+		testTagCompletion('<div class="">|', "$0</div>");
+		testTagCompletion('<img>|', null);
+		testTagCompletion('<div><br></|', "div>");
+		testTagCompletion('<div><br><span></span></|', "div>");
+		testTagCompletion('<div><h1><br><span></span><img></| </h1></div>', "h1>");
 	});
 })

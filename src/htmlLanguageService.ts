@@ -6,7 +6,7 @@
 
 import {createScanner} from './parser/htmlScanner';
 import {parse} from './parser/htmlParser';
-import {doComplete} from './services/htmlCompletion';
+import {doComplete, doTagComplete} from './services/htmlCompletion';
 import {doHover} from './services/htmlHover';
 import {format} from './services/htmlFormatter';
 import {findDocumentLinks} from './services/htmlLinks';
@@ -33,6 +33,7 @@ export interface HTMLFormatConfiguration {
 
 export interface CompletionConfiguration {
 	[provider: string]: boolean;
+	hideAutoCompleteProposals?: boolean
 }
 
 export interface Node {
@@ -115,6 +116,7 @@ export interface LanguageService {
 	format(document: TextDocument, range: Range, options: HTMLFormatConfiguration): TextEdit[];
 	findDocumentLinks(document: TextDocument, documentContext: DocumentContext): DocumentLink[];
 	findDocumentSymbols(document: TextDocument, htmlDocument: HTMLDocument): SymbolInformation[];
+	doTagComplete(document: TextDocument, position: Position, htmlDocument: HTMLDocument): string;
 }
 
 export function getLanguageService(): LanguageService {
@@ -126,6 +128,7 @@ export function getLanguageService(): LanguageService {
 		format,
 		findDocumentHighlights,
 		findDocumentLinks,
-		findDocumentSymbols
+		findDocumentSymbols,
+		doTagComplete
 	};
 }

@@ -1,3 +1,9 @@
+2.0.6 / 2017-08-25
+==================
+  * Added new API `htmlLanguageService.doTagComplete`. Called behind a `>` or `\`, `doTagComplete` will compute a closing tag. The result is a snippet string that can be inserted behind the position, or null, if no tag completion should be performed.
+  * New settings `CompletionConfiguration.hideAutoCompleteProposals`. If set, `doComplete` will not propose a closing tag proposals on `>`.
+  * These APIs are experimental and might be improved.
+
 2.0.3 / 2017-03-21
 ==================
   * Fix indentation issues when formatting a range

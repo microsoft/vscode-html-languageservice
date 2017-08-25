@@ -7,6 +7,7 @@
 import { TextDocument, Position, CompletionList, CompletionItemKind, Range, TextEdit, InsertTextFormat, CompletionItem } from 'vscode-languageserver-types';
 import { HTMLDocument } from '../parser/htmlParser';
 import { TokenType, createScanner, ScannerState } from '../parser/htmlScanner';
+import { isEmptyElement } from '../parser/htmlTags'
 import { allTagProviders } from './tagProviders';
 import { CompletionConfiguration } from '../htmlLanguageService';
 
@@ -87,8 +88,8 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 				let endIndent = getLineIndent(afterOpenBracket - 1);
 				if (startIndent !== null && endIndent !== null && startIndent !== endIndent) {
 					let insertText = startIndent + '</' + tag + closeTag;
-					item.textEdit = TextEdit.replace(getReplaceRange(afterOpenBracket - 1 - endIndent.length), insertText),
-						item.filterText = endIndent + '</' + tag + closeTag;
+					item.textEdit = TextEdit.replace(getReplaceRange(afterOpenBracket - 1 - endIndent.length), insertText);
+					item.filterText = endIndent + '</' + tag + closeTag;
 				}
 				result.items.push(item);
 				return result;
@@ -111,6 +112,23 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 				});
 			});
 		});
+		return result;
+	}
+
+	function collectAutoCloseTagSuggestion(tagCloseEnd: number, tag: string): CompletionList {
+		if (settings && settings.hideAutoCompleteProposals) {
+			return result;
+		}
+		if (!isEmptyElement(tag)) {
+			let pos = document.positionAt(tagCloseEnd);
+			result.items.push({
+				label: '</' + tag + '>',
+				kind: CompletionItemKind.Property,
+				filterText: '</' + tag + '>',
+				textEdit: TextEdit.insert(pos, '$0</' + tag + '>'),
+				insertTextFormat: InsertTextFormat.Snippet
+			});
+		}
 		return result;
 	}
 
@@ -258,6 +276,13 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 					}
 				}
 				break;
+			case TokenType.StartTagClose:
+				if (offset <= scanner.getTokenEnd()) {
+					if (currentTag) {
+						return collectAutoCloseTagSuggestion(scanner.getTokenEnd(), currentTag);
+					}
+				}
+				break;
 			default:
 				if (offset <= scanner.getTokenEnd()) {
 					return result;
@@ -267,6 +292,43 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 		token = scanner.scan();
 	}
 	return result;
+}
+
+export function doTagComplete(document: TextDocument, position: Position, htmlDocument: HTMLDocument): string {
+	let offset = document.offsetAt(position);
+	if (offset <= 0) {
+		return;
+	}
+	let char = document.getText().charAt(offset - 1);
+	if (char === '>') {
+		let node = htmlDocument.findNodeBefore(offset);
+		if (node && node.tag && !isEmptyElement(node.tag) && node.start < offset && (!node.endTagStart || node.endTagStart > offset)) {
+			let scanner = createScanner(document.getText(), node.start);
+			let token = scanner.scan();
+			while (token !== TokenType.EOS && scanner.getTokenEnd() <= offset) {
+				if (token === TokenType.StartTagClose && scanner.getTokenEnd() === offset) {
+					return `$0</${node.tag}>`;
+				}
+				token = scanner.scan();
+			}
+		}
+	} else if (char === '/') {
+		let node = htmlDocument.findNodeBefore(offset);
+		while (node && node.closed) {
+			node = node.parent;
+		}
+		if (node && node.tag) {
+			let scanner = createScanner(document.getText(), node.start);
+			let token = scanner.scan();
+			while (token !== TokenType.EOS && scanner.getTokenEnd() <= offset) {
+				if (token === TokenType.EndTagOpen && scanner.getTokenEnd() === offset) {
+					return `${node.tag}>`;
+				}
+				token = scanner.scan();
+			}
+		}
+	}
+	return null;
 }
 
 function isWhiteSpace(s: string): boolean {
