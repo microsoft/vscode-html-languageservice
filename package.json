@@ -19,12 +19,12 @@
     "cpy-cli": "^1.0.1",
     "mocha": "^2.4.5",
     "tslint": "^5.1.0",
-    "typescript": "^2.1.5"
+    "typescript": "^2.4.2"
   },
   "dependencies": {
-    "vscode-languageserver-types": "^3.0.3",
+    "vscode-languageserver-types": "^3.3.0",
     "vscode-nls": "^2.0.2",
-    "vscode-uri": "^1.0.0"
+    "vscode-uri": "^1.0.1"
   },
   "scripts": {
     "prepublish": "npm run compile && npm run lint",
