@@ -21,7 +21,7 @@ export function getRazorTagProvider() : IHTMLTagProvider {
 	return {
 		getId: () => 'razor',
 		isApplicable: (languageId) => languageId === 'razor',
-		collectTags: (collector: (tag: string) => void) => {
+		collectTags: (collector: (tag: string, label: string) => void) => {
 			// no extra tags
 		},
 		collectAttributes: (tag: string, collector: (attribute: string, type: string) => void) => {
