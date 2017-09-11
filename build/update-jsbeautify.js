@@ -87,10 +87,6 @@ function update(repoId, repoPath, dest, addHeader, patch) {
     }, console.error);
 }
 
-function patchHTMLFormatter(content) {
-    return content.replace('this.indent_level = 0;', 'this.indent_level = (options.indent_level === undefined) ? 0 : parseInt(options.indent_level, 10);');
-}
-
-update('beautify-web/js-beautify', 'js/lib/beautify-html.js', './src/beautify/beautify-html.js', true, patchHTMLFormatter);
+update('beautify-web/js-beautify', 'js/lib/beautify-html.js', './src/beautify/beautify-html.js', true);
 update('beautify-web/js-beautify', 'js/lib/beautify-css.js', './src/beautify/beautify-css.js', true);
 update('beautify-web/js-beautify', 'LICENSE', './src/beautify/beautify-license');

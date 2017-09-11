@@ -54,7 +54,6 @@ export function format(document: TextDocument, range: Range, options: HTMLFormat
 	let htmlOptions: IBeautifyHTMLOptions = {
 		indent_size: options.insertSpaces ? options.tabSize : 1,
 		indent_char: options.insertSpaces ? ' ' : '\t',
-		indent_level: initialIndentLevel,
 		wrap_line_length: getFormatOption(options, 'wrapLineLength', 120),
 		unformatted: getTagsFormatOption(options, 'unformatted', void 0),
 		content_unformatted: getTagsFormatOption(options, 'contentUnformatted', void 0),
@@ -69,9 +68,12 @@ export function format(document: TextDocument, range: Range, options: HTMLFormat
 	};
 
 	let result = html_beautify(value, htmlOptions);
-	if (initialIndentLevel > 0 && range.start.character === 0) {
+	if (initialIndentLevel > 0) {
 		let indent = options.insertSpaces ? repeat(' ', options.tabSize * initialIndentLevel) : repeat('\t', initialIndentLevel);
-		result = indent + result; // keep the indent
+		result = result.split('\n').join('\n' + indent);
+		if (range.start.character === 0) {
+			result = indent + result; // keep the indent
+		}
 	}
 	return [{
 		range: range,
