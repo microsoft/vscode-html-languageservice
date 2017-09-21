@@ -8,4 +8,6 @@ test/
 build/
 .eslintrc
 .gitignore
+tslint.json
+.travis.yml
 gulpfile.js
