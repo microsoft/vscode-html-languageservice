@@ -9,17 +9,17 @@ import { TokenType, createScanner } from '../parser/htmlScanner';
 import { TextDocument, Range, Position, Hover, MarkedString } from 'vscode-languageserver-types';
 import { allTagProviders } from './tagProviders';
 
-export function doHover(document: TextDocument, position: Position, htmlDocument: HTMLDocument): Hover {
+export function doHover(document: TextDocument, position: Position, htmlDocument: HTMLDocument): Hover | undefined {
 	let offset = document.offsetAt(position);
 	let node = htmlDocument.findNodeAt(offset);
 	if (!node || !node.tag) {
 		return void 0;
 	}
 	let tagProviders = allTagProviders.filter(p => p.isApplicable(document.languageId));
-	function getTagHover(tag: string, range: Range, open: boolean): Hover {
+	function getTagHover(tag: string, range: Range, open: boolean): Hover | undefined {
 		tag = tag.toLowerCase();
 		for (let provider of tagProviders) {
-			let hover: Hover;
+			let hover: Hover | undefined = undefined;
 			provider.collectTags((t, label) => {
 				if (t === tag) {
 					let tagLabel = open ? '<' + tag + '>' : '</' + tag + '>';
@@ -33,7 +33,7 @@ export function doHover(document: TextDocument, position: Position, htmlDocument
 		return void 0;
 	}
 
-	function getTagNameRange(tokenType: TokenType, startOffset: number): Range {
+	function getTagNameRange(tokenType: TokenType, startOffset: number): Range | null {
 		let scanner = createScanner(document.getText(), startOffset);
 		let token = scanner.scan();
 		while (token !== TokenType.EOS && (scanner.getTokenEnd() < offset || scanner.getTokenEnd() === offset && token !== tokenType)) {

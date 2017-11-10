@@ -12,7 +12,7 @@ import {TextDocument} from 'vscode-languageserver-types';
 
 suite('HTML Hover', () => {
 
-	function assertHover(value: string, expectedHoverLabel: string, expectedHoverOffset): void {
+	function assertHover(value: string, expectedHoverLabel: string | undefined, expectedHoverOffset: number | undefined): void {
 		let offset = value.indexOf('|');
 		value = value.substr(0, offset) + value.substr(offset + 1);
 
@@ -23,8 +23,8 @@ suite('HTML Hover', () => {
 		let htmlDoc = ls.parseHTMLDocument(document);
 
 		let hover = ls.doHover(document, position, htmlDoc);
-		assert.equal(hover && hover.contents[0].value, expectedHoverLabel);
-		assert.equal(hover && document.offsetAt(hover.range.start), expectedHoverOffset);
+		assert.equal(hover && (hover.contents as any[])[0].value, expectedHoverLabel);
+		assert.equal(hover && hover.range && document.offsetAt(hover.range.start), expectedHoverOffset);
 	}
 
 	test('Single', function (): any {

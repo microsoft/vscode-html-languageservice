@@ -12,15 +12,15 @@ export class Node {
 	public tag: string;
 	public closed: boolean;
 	public endTagStart: number;
-	public attributes: {[name: string]: string};
-	public get attributeNames() : string[] { return Object.keys(this.attributes); };
-	constructor(public start: number, public end: number, public children: Node[], public parent: Node) {
+	public attributes: { [name: string]: string | null };
+	public get attributeNames(): string[] { return Object.keys(this.attributes); };
+	constructor(public start: number, public end: number, public children: Node[], public parent: Node | null) {
 	}
 	public isSameTag(tagInLowerCase: string) {
 		return this.tag && tagInLowerCase && this.tag.length === tagInLowerCase.length && this.tag.toLowerCase() === tagInLowerCase;
 	}
 	public get firstChild(): Node { return this.children[0]; }
-	public get lastChild(): Node { return this.children.length ? this.children[this.children.length - 1] : void 0; }
+	public get lastChild(): Node | undefined { return this.children.length ? this.children[this.children.length - 1] : void 0; }
 
 	public findNodeBefore(offset: number): Node {
 		let idx = findFirst(this.children, c => offset <= c.start) - 1;
@@ -62,25 +62,31 @@ export function parse(text: string): HTMLDocument {
 	let scanner = createScanner(text);
 
 	let htmlDocument = new Node(0, text.length, [], null);
-	let curr = htmlDocument;
+	let curr: Node | null = htmlDocument;
 	let endTagStart: number = -1;
-	let pendingAttribute: string = null;
+	let pendingAttribute: string | null = null;
 	let token = scanner.scan();
 	while (token !== TokenType.EOS) {
 		switch (token) {
 			case TokenType.StartTagOpen:
-				let child = new Node(scanner.getTokenOffset(), text.length, [], curr);
-				curr.children.push(child);
+				let child: Node = new Node(scanner.getTokenOffset(), text.length, [], curr);
+				if (curr) {
+					curr.children.push(child);
+				}
 				curr = child;
 				break;
 			case TokenType.StartTag:
-				curr.tag = scanner.getTokenText();
+				if (curr) {
+					curr.tag = scanner.getTokenText();
+				}
 				break;
 			case TokenType.StartTagClose:
-				curr.end = scanner.getTokenEnd(); // might be later set to end tag position
-				if (isEmptyElement(curr.tag) && curr !== htmlDocument) {
-					curr.closed = true;
-					curr = curr.parent;
+				if (curr) {
+					curr.end = scanner.getTokenEnd(); // might be later set to end tag position
+					if (isEmptyElement(curr.tag) && curr !== htmlDocument) {
+						curr.closed = true;
+						curr = curr.parent;
+					}
 				}
 				break;
 			case TokenType.EndTagOpen:
@@ -88,48 +94,54 @@ export function parse(text: string): HTMLDocument {
 				break;
 			case TokenType.EndTag:
 				let closeTag = scanner.getTokenText().toLowerCase();
-				while (!curr.isSameTag(closeTag) && curr !== htmlDocument) {
+				while (curr && !curr.isSameTag(closeTag) && curr !== htmlDocument) {
 					curr.end = endTagStart;
 					curr.closed = false;
 					curr = curr.parent;
 				}
-				if (curr !== htmlDocument) {
+				if (curr && curr !== htmlDocument) {
 					curr.closed = true;
 					curr.endTagStart = endTagStart;
 				}
 				break;
 			case TokenType.StartTagSelfClose:
-				if (curr !== htmlDocument) {
+				if (curr && curr !== htmlDocument) {
 					curr.closed = true;
 					curr.end = scanner.getTokenEnd();
 					curr = curr.parent;
 				}
 				break;
 			case TokenType.EndTagClose:
-				if (curr !== htmlDocument) {
+				if (curr && curr !== htmlDocument) {
 					curr.end = scanner.getTokenEnd();
 					curr = curr.parent;
 				}
 				break;
 			case TokenType.AttributeName:
-				let attributeName = pendingAttribute = scanner.getTokenText();
-				let attributes = curr.attributes;
-				if (!attributes) {
-					curr.attributes = attributes = {};
+				if (curr) {
+					let attributeName = pendingAttribute = scanner.getTokenText();
+					let attributes = curr.attributes;
+					if (!attributes) {
+						curr.attributes = attributes = {};
+					}
+					attributes[pendingAttribute] = null; // Support valueless attributes such as 'checked'
 				}
-				attributes[pendingAttribute] = null; // Support valueless attributes such as 'checked'
 				break;
 			case TokenType.AttributeValue:
-				let value = scanner.getTokenText();
-				if (attributes && pendingAttribute) {
-					attributes[pendingAttribute] = value;
-					pendingAttribute = null;
+				if (curr) {
+					let value = scanner.getTokenText();
+					let attributes = curr.attributes;
+
+					if (attributes && pendingAttribute) {
+						attributes[pendingAttribute] = value;
+						pendingAttribute = null;
+					}
 				}
 				break;
 		}
 		token = scanner.scan();
 	}
-	while (curr !== htmlDocument) {
+	while (curr && curr !== htmlDocument) {
 		curr.end = text.length;
 		curr.closed = false;
 		curr = curr.parent;

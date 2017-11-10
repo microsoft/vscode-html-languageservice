@@ -43,7 +43,7 @@ suite('HTML Completion', () => {
 			assert.equal(match.kind, expected.kind);
 		}
 		if (expected.resultText) {
-			assert.equal(applyEdits(document, [match.textEdit]), expected.resultText);
+			assert.equal(applyEdits(document, match.textEdit ? [match.textEdit] : []), expected.resultText);
 		}
 	};
 
@@ -68,7 +68,7 @@ suite('HTML Completion', () => {
 		return Promise.resolve();
 	};
 
-	let testTagCompletion = function (value: string, expected: string): void {
+	let testTagCompletion = function (value: string, expected: string | null): void {
 		let offset = value.indexOf('|');
 		value = value.substr(0, offset) + value.substr(offset + 1);
 
@@ -81,7 +81,7 @@ suite('HTML Completion', () => {
 		assert.equal(actual, expected);
 	};
 
-	function run(tests: PromiseLike<void>[], testDone) {
+	function run(tests: PromiseLike<void>[], testDone: (err?: any) => void) {
 		Promise.all(tests).then(() => {
 			testDone();
 		}, (error) => {

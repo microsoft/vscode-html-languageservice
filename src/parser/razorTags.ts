@@ -24,7 +24,7 @@ export function getRazorTagProvider() : IHTMLTagProvider {
 		collectTags: (collector: (tag: string, label: string) => void) => {
 			// no extra tags
 		},
-		collectAttributes: (tag: string, collector: (attribute: string, type: string) => void) => {
+		collectAttributes: (tag: string | undefined, collector: (attribute: string, type: string | null) => void) => {
 			if (tag) {
 				var attributes = customTags[tag];
 				if (attributes) {
@@ -32,7 +32,7 @@ export function getRazorTagProvider() : IHTMLTagProvider {
 				}
 			}
 		},
-		collectValues: (tag: string, attribute: string, collector: (value: string) => void) => {
+		collectValues: (tag: string | undefined, attribute: string, collector: (value: string) => void) => {
 			// no values
 		}
 	};

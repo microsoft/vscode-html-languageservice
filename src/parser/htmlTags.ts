@@ -42,15 +42,15 @@ let localize = nls.loadMessageBundle();
 export const EMPTY_ELEMENTS: string[] = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'menuitem', 'meta', 'param', 'source', 'track', 'wbr'];
 
 export function isEmptyElement(e: string): boolean {
-	return e && arrays.binarySearch(EMPTY_ELEMENTS, e.toLowerCase(), (s1: string, s2: string) => s1.localeCompare(s2)) >= 0;
+	return e ? arrays.binarySearch(EMPTY_ELEMENTS, e.toLowerCase(), (s1: string, s2: string) => s1.localeCompare(s2)) >= 0 : false;
 }
 
 export interface IHTMLTagProvider {
 	getId(): string;
-	isApplicable(languageId: string);
+	isApplicable(languageId: string): boolean;
 	collectTags(collector: (tag: string, label: string) => void): void;
-	collectAttributes(tag: string, collector: (attribute: string, type: string) => void): void;
-	collectValues(tag: string, attribute: string, collector: (value: string) => void): void;
+	collectAttributes(tag: string | undefined, collector: (attribute: string, type: string | null) => void): void;
+	collectValues(tag: string | undefined, attribute: string, collector: (value: string) => void): void;
 }
 
 export interface ITagSet {
@@ -513,7 +513,7 @@ export function getAngularTagProvider(): IHTMLTagProvider {
 		collectTags: (collector: (tag: string, label: string) => void) => {
 			// no extra tags
 		},
-		collectAttributes: (tag: string, collector: (attribute: string, type: string) => void) => {
+		collectAttributes: (tag: string, collector: (attribute: string, type: string | null) => void) => {
 			if (tag) {
 				var attributes = customTags[tag];
 				if (attributes) {
@@ -560,7 +560,7 @@ export function getIonicTagProvider(): IHTMLTagProvider {
 		getId: () => 'ionic',
 		isApplicable: (languageId) => languageId === 'html',
 		collectTags: (collector: (tag: string, label: string) => void) => collectTagsDefault(collector, IONIC_TAGS),
-		collectAttributes: (tag: string, collector: (attribute: string, type: string) => void) => {
+		collectAttributes: (tag: string, collector: (attribute: string, type: string | null) => void) => {
 			collectAttributesDefault(tag, collector, IONIC_TAGS, globalAttributes);
 			if (tag) {
 				var attributes = customTags[tag];

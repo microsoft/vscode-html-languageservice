@@ -12,7 +12,7 @@ import {applyEdits} from './textEditSupport';
 suite('JSON Formatter', () => {
 
 	function format(unformatted: string, expected: string, insertSpaces = true) {
-		let range: Range = null;
+		let range: Range | null = null;
 		let uri = 'test://test.html';
 
 		let rangeStart = unformatted.indexOf('|');
@@ -27,7 +27,7 @@ suite('JSON Formatter', () => {
 		}
 
 		var document = TextDocument.create(uri, 'html', 0, unformatted);
-		let edits = getLanguageService().format(document, range, { tabSize: 2, insertSpaces: insertSpaces, unformatted: '' });
+		let edits = getLanguageService().format(document, range!, { tabSize: 2, insertSpaces: insertSpaces, unformatted: '' });
 		let formatted  = applyEdits(document, edits);
 		assert.equal(formatted, expected);
 	}

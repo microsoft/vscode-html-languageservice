@@ -69,7 +69,7 @@ export function format(document: TextDocument, range: Range, options: HTMLFormat
 
 	let result = html_beautify(value, htmlOptions);
 	if (initialIndentLevel > 0) {
-		let indent = options.insertSpaces ? repeat(' ', options.tabSize * initialIndentLevel) : repeat('\t', initialIndentLevel);
+		let indent = options.insertSpaces ? repeat(' ', (options.tabSize || 4) * initialIndentLevel) : repeat('\t', initialIndentLevel);
 		result = result.split('\n').join('\n' + indent);
 		if (range.start.character === 0) {
 			result = indent + result; // keep the indent
@@ -81,7 +81,7 @@ export function format(document: TextDocument, range: Range, options: HTMLFormat
 	}];
 }
 
-function getFormatOption(options: HTMLFormatConfiguration, key: string, dflt: any): any {
+function getFormatOption(options: HTMLFormatConfiguration, key: keyof HTMLFormatConfiguration, dflt: any): any {
 	if (options && options.hasOwnProperty(key)) {
 		let value = options[key];
 		if (value !== null) {
@@ -91,7 +91,7 @@ function getFormatOption(options: HTMLFormatConfiguration, key: string, dflt: an
 	return dflt;
 }
 
-function getTagsFormatOption(options: HTMLFormatConfiguration, key: string, dflt: string[]): string[] {
+function getTagsFormatOption(options: HTMLFormatConfiguration, key: keyof HTMLFormatConfiguration, dflt: string[] | undefined): string[] {
 	let list = <string>getFormatOption(options, key, null);
 	if (typeof list === 'string') {
 		if (list.length > 0) {
@@ -99,7 +99,7 @@ function getTagsFormatOption(options: HTMLFormatConfiguration, key: string, dflt
 		}
 		return [];
 	}
-	return dflt;
+	return dflt || [];
 }
 
 function computeIndentLevel(content: string, offset: number, options: HTMLFormatConfiguration): number {

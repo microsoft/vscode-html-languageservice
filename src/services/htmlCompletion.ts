@@ -5,7 +5,7 @@
 'use strict';
 
 import { TextDocument, Position, CompletionList, CompletionItemKind, Range, TextEdit, InsertTextFormat, CompletionItem } from 'vscode-languageserver-types';
-import { HTMLDocument } from '../parser/htmlParser';
+import { HTMLDocument, Node } from '../parser/htmlParser';
 import { TokenType, createScanner, ScannerState } from '../parser/htmlScanner';
 import { isEmptyElement } from '../parser/htmlTags'
 import { allTagProviders } from './tagProviders';
@@ -26,7 +26,7 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 	}
 	let text = document.getText();
 	let scanner = createScanner(text, node.start);
-	let currentTag: string;
+	let currentTag: string | undefined = undefined;
 	let currentAttributeName: string;
 
 	function getReplaceRange(replaceStart: number, replaceEnd: number = offset): Range {
@@ -70,7 +70,7 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 	function collectCloseTagSuggestions(afterOpenBracket: number, inOpenTag: boolean, tagNameEnd: number = offset): CompletionList {
 		let range = getReplaceRange(afterOpenBracket, tagNameEnd);
 		let closeTag = isFollowedBy(text, tagNameEnd, ScannerState.WithinEndTag, TokenType.EndTagClose) ? '' : '>';
-		let curr = node;
+		let curr: Node | null = node;
 		if (inOpenTag) {
 			curr = curr.parent; // don't suggest the own tag, it's not yet open
 		}
@@ -145,7 +145,7 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 		}
 		let range = getReplaceRange(nameStart, replaceEnd);
 		let value = isFollowedBy(text, nameEnd, ScannerState.AfterAttributeName, TokenType.DelimiterAssign) ? '' : '="$1"';
-		let tag = currentTag.toLowerCase();
+		let tag = currentTag ? currentTag.toLowerCase() : undefined;
 		tagProviders.forEach(provider => {
 			provider.collectAttributes(tag, (attribute, type) => {
 				let codeSnippet = attribute;
@@ -166,6 +166,7 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 	function collectAttributeValueSuggestions(valueStart: number, valueEnd?: number): CompletionList {
 		let range: Range;
 		let addQuotes: boolean;
+		valueEnd = valueEnd as number;
 		if (offset > valueStart && offset <= valueEnd && text[valueStart] === '"') {
 			// inside attribute
 			if (valueEnd > offset && text[valueEnd - 1] === '"') {
@@ -179,7 +180,7 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 			range = getReplaceRange(valueStart, valueEnd);
 			addQuotes = true;
 		}
-		let tag = currentTag.toLowerCase();
+		let tag = currentTag ? currentTag.toLowerCase() : undefined;
 		let attribute = currentAttributeName.toLowerCase();
 		tagProviders.forEach(provider => {
 			provider.collectValues(tag, attribute, value => {
@@ -294,10 +295,10 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 	return result;
 }
 
-export function doTagComplete(document: TextDocument, position: Position, htmlDocument: HTMLDocument): string {
+export function doTagComplete(document: TextDocument, position: Position, htmlDocument: HTMLDocument): string | null {
 	let offset = document.offsetAt(position);
 	if (offset <= 0) {
-		return;
+		return null;
 	}
 	let char = document.getText().charAt(offset - 1);
 	if (char === '>') {
@@ -313,7 +314,7 @@ export function doTagComplete(document: TextDocument, position: Position, htmlDo
 			}
 		}
 	} else if (char === '/') {
-		let node = htmlDocument.findNodeBefore(offset);
+		let node: Node | null = htmlDocument.findNodeBefore(offset);
 		while (node && node.closed) {
 			node = node.parent;
 		}
