@@ -106,7 +106,7 @@ class MultiLineStream {
 		let str = this.source.substr(this.position);
 		let match = str.match(regex);
 		if (match) {
-			this.position = this.position + match.index + match[0].length;
+			this.position = this.position + match.index! + match[0].length;
 			return match[0];
 		}
 		return '';
@@ -116,7 +116,7 @@ class MultiLineStream {
 		let str = this.source.substr(this.position);
 		let match = str.match(regex);
 		if (match) {
-			this.position = this.position + match.index;
+			this.position = this.position + match.index!;
 			return match[0];
 		} else {
 			this.goToEnd();
@@ -199,7 +199,7 @@ export interface Scanner {
 	getTokenLength(): number;
 	getTokenEnd(): number;
 	getTokenText(): string;
-	getTokenError(): string;
+	getTokenError(): string | undefined;
 	getScannerState(): ScannerState;
 }
 
@@ -212,13 +212,13 @@ export function createScanner(input: string, initialOffset = 0, initialState: Sc
 	let stream = new MultiLineStream(input, initialOffset);
 	let state = initialState;
 	let tokenOffset: number = 0;
-	let tokenType: number = void 0;
-	let tokenError: string;
+	let tokenType: number | undefined = void 0;
+	let tokenError: string | undefined;
 
 	let hasSpaceAfterTag: boolean;
 	let lastTag: string;
-	let lastAttributeName: string;
-	let lastTypeValue: string;
+	let lastAttributeName: string | null;
+	let lastTypeValue: string | null;
 
 	function nextElementName(): string {
 		return stream.advanceIfRegExp(/^[_:\w][_:\w-.\d]*/).toLowerCase();
@@ -352,7 +352,7 @@ export function createScanner(input: string, initialOffset = 0, initialState: Sc
 				}
 				if (stream.advanceIfChar(_RAN)) { // >
 					if (lastTag === 'script') {
-						if (lastTypeValue && htmlScriptContents[lastTypeValue]) {
+						if (lastTypeValue && (htmlScriptContents as any)[lastTypeValue]) {
 							// stay in html
 							state = ScannerState.WithinContent;
 						} else {
@@ -455,7 +455,7 @@ export function createScanner(input: string, initialOffset = 0, initialState: Sc
 	}
 	return {
 		scan,
-		getTokenType: () => tokenType,
+		getTokenType: () => tokenType!,
 		getTokenOffset: () => tokenOffset,
 		getTokenLength: () => stream.pos() - tokenOffset,
 		getTokenEnd: () => stream.pos(),

@@ -36,7 +36,7 @@ function covers(range: Range, position: Position) {
 	return isBeforeOrEqual(range.start, position) && isBeforeOrEqual(position, range.end);
 }
 
-function getTagNameRange(tokenType: TokenType, document: TextDocument, startOffset: number): Range {
+function getTagNameRange(tokenType: TokenType, document: TextDocument, startOffset: number): Range | null {
 	let scanner = createScanner(document.getText(), startOffset);
 	let token = scanner.scan();
 	while (token !== TokenType.EOS && token !== tokenType) {

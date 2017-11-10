@@ -23,7 +23,7 @@ suite('HTML Link Detection', () => {
 		}
 	}
 
-	function testLinkCreation(modelUrl: string, tokenContent: string, expected: string): void {
+	function testLinkCreation(modelUrl: string, tokenContent: string, expected: string | null): void {
 		let document = TextDocument.create(modelUrl, 'html', 0, `<a href="${tokenContent}">`);
 		let ls = htmlLanguageService.getLanguageService();
 		let links = ls.findDocumentLinks(document, getDocumentContext(modelUrl));
