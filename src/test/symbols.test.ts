@@ -19,7 +19,7 @@ suite('HTML Symbols', () => {
 
     let assertSymbols = function (symbols: SymbolInformation[], expected: SymbolInformation[]) {
         assert.deepEqual(symbols, expected);
-    }
+    };
 
     let testSymbolsFor = function(value: string, expected: SymbolInformation[]) {
         let ls = htmlLanguageService.getLanguageService();
@@ -27,7 +27,7 @@ suite('HTML Symbols', () => {
 		let htmlDoc = ls.parseHTMLDocument(document);
         let symbols = ls.findDocumentSymbols(document, htmlDoc);
         assertSymbols(symbols, expected);
-    }
+    };
 
     test('Simple', () => {
         testSymbolsFor('<div></div>', [<SymbolInformation>{ containerName: '', name: 'div', kind: <SymbolKind>SymbolKind.Field, location: Location.create(TEST_URI, Range.create(0, 0, 0, 11)) }]);
@@ -70,4 +70,4 @@ suite('HTML Symbols', () => {
 
 		testSymbolsFor(content, expected);
 	});         
-})
+});
