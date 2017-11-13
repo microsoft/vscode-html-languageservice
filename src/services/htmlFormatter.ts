@@ -9,10 +9,11 @@ import { TextDocument, Range, TextEdit, Position } from 'vscode-languageserver-t
 import { IBeautifyHTMLOptions, html_beautify } from '../beautify/beautify-html';
 import { repeat } from '../utils/strings';
 
-export function format(document: TextDocument, range: Range, options: HTMLFormatConfiguration): TextEdit[] {
+export function format(document: TextDocument, range: Range | undefined, options: HTMLFormatConfiguration): TextEdit[] {
 	let value = document.getText();
 	let includesEnd = true;
 	let initialIndentLevel = 0;
+	let tabSize = options.tabSize || 4;
 	if (range) {
 		let startOffset = document.offsetAt(range.start);
 
@@ -52,7 +53,7 @@ export function format(document: TextDocument, range: Range, options: HTMLFormat
 		range = Range.create(Position.create(0, 0), document.positionAt(value.length));
 	}
 	let htmlOptions: IBeautifyHTMLOptions = {
-		indent_size: options.insertSpaces ? options.tabSize : 1,
+		indent_size: options.insertSpaces ? tabSize : 1,
 		indent_char: options.insertSpaces ? ' ' : '\t',
 		wrap_line_length: getFormatOption(options, 'wrapLineLength', 120),
 		unformatted: getTagsFormatOption(options, 'unformatted', void 0),
@@ -69,7 +70,7 @@ export function format(document: TextDocument, range: Range, options: HTMLFormat
 
 	let result = html_beautify(value, htmlOptions);
 	if (initialIndentLevel > 0) {
-		let indent = options.insertSpaces ? repeat(' ', options.tabSize * initialIndentLevel) : repeat('\t', initialIndentLevel);
+		let indent = options.insertSpaces ? repeat(' ', tabSize * initialIndentLevel) : repeat('\t', initialIndentLevel);
 		result = result.split('\n').join('\n' + indent);
 		if (range.start.character === 0) {
 			result = indent + result; // keep the indent
@@ -81,7 +82,7 @@ export function format(document: TextDocument, range: Range, options: HTMLFormat
 	}];
 }
 
-function getFormatOption(options: HTMLFormatConfiguration, key: string, dflt: any): any {
+function getFormatOption(options: HTMLFormatConfiguration, key: keyof HTMLFormatConfiguration, dflt: any): any {
 	if (options && options.hasOwnProperty(key)) {
 		let value = options[key];
 		if (value !== null) {
@@ -91,7 +92,7 @@ function getFormatOption(options: HTMLFormatConfiguration, key: string, dflt: an
 	return dflt;
 }
 
-function getTagsFormatOption(options: HTMLFormatConfiguration, key: string, dflt: string[]): string[] {
+function getTagsFormatOption(options: HTMLFormatConfiguration, key: keyof HTMLFormatConfiguration, dflt: string[] | undefined): string[] | undefined {
 	let list = <string>getFormatOption(options, key, null);
 	if (typeof list === 'string') {
 		if (list.length > 0) {

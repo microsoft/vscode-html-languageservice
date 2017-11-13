@@ -9,6 +9,7 @@
  		"outDir": "../lib",
 		"lib": [
 			"es5", "es2015.promise"
-		]
+		],
+		"strict": true
 	 }
 } 

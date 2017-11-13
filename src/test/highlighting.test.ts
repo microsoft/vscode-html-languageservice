@@ -13,7 +13,7 @@ import {TextDocument} from 'vscode-languageserver-types';
 suite('HTML Highlighting', () => {
 
 
-	function assertHighlights(value: string, expectedMatches: number[], elementName: string): void {
+	function assertHighlights(value: string, expectedMatches: number[], elementName: string | null): void {
 		let offset = value.indexOf('|');
 		value = value.substr(0, offset) + value.substr(offset + 1);
 
@@ -29,7 +29,7 @@ suite('HTML Highlighting', () => {
 			let actualStartOffset = document.offsetAt(highlights[i].range.start);
 			assert.equal(actualStartOffset, expectedMatches[i]);
 			let actualEndOffset = document.offsetAt(highlights[i].range.end);
-			assert.equal(actualEndOffset, expectedMatches[i] + elementName.length);
+			assert.equal(actualEndOffset, expectedMatches[i] + elementName!.length);
 
 			assert.equal(document.getText().substring(actualStartOffset, actualEndOffset).toLowerCase(), elementName);
 		}

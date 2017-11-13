@@ -4,17 +4,17 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 
-import {createScanner} from './parser/htmlScanner';
-import {parse} from './parser/htmlParser';
-import {doComplete, doTagComplete} from './services/htmlCompletion';
-import {doHover} from './services/htmlHover';
-import {format} from './services/htmlFormatter';
-import {findDocumentLinks} from './services/htmlLinks';
-import {findDocumentHighlights} from './services/htmlHighlighting';
-import {findDocumentSymbols} from './services/htmlSymbolsProvider';
-import {TextDocument, Position, CompletionItem, CompletionList, Hover, Range, SymbolInformation, Diagnostic, TextEdit, DocumentHighlight, FormattingOptions, MarkedString, DocumentLink } from 'vscode-languageserver-types';
+import { createScanner } from './parser/htmlScanner';
+import { parse } from './parser/htmlParser';
+import { doComplete, doTagComplete } from './services/htmlCompletion';
+import { doHover } from './services/htmlHover';
+import { format } from './services/htmlFormatter';
+import { findDocumentLinks } from './services/htmlLinks';
+import { findDocumentHighlights } from './services/htmlHighlighting';
+import { findDocumentSymbols } from './services/htmlSymbolsProvider';
+import { TextDocument, Position, CompletionItem, CompletionList, Hover, Range, SymbolInformation, Diagnostic, TextEdit, DocumentHighlight, FormattingOptions, MarkedString, DocumentLink } from 'vscode-languageserver-types';
 
-export {TextDocument, Position, CompletionItem, CompletionList, Hover, Range, SymbolInformation, Diagnostic, TextEdit, DocumentHighlight, FormattingOptions, MarkedString, DocumentLink };
+export { TextDocument, Position, CompletionItem, CompletionList, Hover, Range, SymbolInformation, Diagnostic, TextEdit, DocumentHighlight, FormattingOptions, MarkedString, DocumentLink };
 
 export interface HTMLFormatConfiguration {
 	tabSize?: number;
@@ -32,8 +32,8 @@ export interface HTMLFormatConfiguration {
 }
 
 export interface CompletionConfiguration {
-	[provider: string]: boolean;
-	hideAutoCompleteProposals?: boolean
+	[provider: string]: boolean | undefined;
+	hideAutoCompleteProposals?: boolean;
 }
 
 export interface Node {
@@ -42,8 +42,8 @@ export interface Node {
 	end: number;
 	endTagStart: number;
 	children: Node[];
-	parent: Node;
-	attributes?: {[name: string]: string};
+	parent?: Node;
+	attributes?: { [name: string]: string | null };
 }
 
 
@@ -93,7 +93,7 @@ export interface Scanner {
 	getTokenLength(): number;
 	getTokenEnd(): number;
 	getTokenText(): string;
-	getTokenError(): string;
+	getTokenError(): string | undefined;
 	getScannerState(): ScannerState;
 }
 
@@ -112,11 +112,11 @@ export interface LanguageService {
 	parseHTMLDocument(document: TextDocument): HTMLDocument;
 	findDocumentHighlights(document: TextDocument, position: Position, htmlDocument: HTMLDocument): DocumentHighlight[];
 	doComplete(document: TextDocument, position: Position, htmlDocument: HTMLDocument, options?: CompletionConfiguration): CompletionList;
-	doHover(document: TextDocument, position: Position, htmlDocument: HTMLDocument): Hover;
-	format(document: TextDocument, range: Range, options: HTMLFormatConfiguration): TextEdit[];
+	doHover(document: TextDocument, position: Position, htmlDocument: HTMLDocument): Hover | null;
+	format(document: TextDocument, range: Range | undefined, options: HTMLFormatConfiguration): TextEdit[];
 	findDocumentLinks(document: TextDocument, documentContext: DocumentContext): DocumentLink[];
 	findDocumentSymbols(document: TextDocument, htmlDocument: HTMLDocument): SymbolInformation[];
-	doTagComplete(document: TextDocument, position: Position, htmlDocument: HTMLDocument): string;
+	doTagComplete(document: TextDocument, position: Position, htmlDocument: HTMLDocument): string | null;
 }
 
 export function getLanguageService(): LanguageService {

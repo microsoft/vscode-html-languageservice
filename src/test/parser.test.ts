@@ -13,7 +13,7 @@ suite('HTML Parser', () => {
 		return { tag: node.tag, start: node.start, end: node.end, endTagStart: node.endTagStart, closed: node.closed, children: node.children.map(toJSON) };
 	}
 
-	function toJSONWithAttributes(node: Node) {
+	function toJSONWithAttributes(node: Node) : any {
 		return { tag: node.tag, attributes: node.attributes, children: node.children.map(toJSONWithAttributes) };
 	}
 
@@ -22,7 +22,7 @@ suite('HTML Parser', () => {
 		assert.deepEqual(document.roots.map(toJSON), expected);
 	}
 
-	function assertNodeBefore(input: string, offset: number, expectedTag: string) {
+	function assertNodeBefore(input: string, offset: number, expectedTag: string | undefined) {
 		let document = parse(input);
 		let node = document.findNodeBefore(offset);
 		assert.equal(node ? node.tag : '', expectedTag, "offset " + offset);
@@ -92,7 +92,7 @@ suite('HTML Parser', () => {
 	});
 
 	test('Attributes', () => {
-		let str = '<div class="these are my-classes" id="test"><span aria-describedby="test"></span></div>'
+		let str = '<div class="these are my-classes" id="test"><span aria-describedby="test"></span></div>';
 		assertAttributes(str, [{
 			tag: 'div',
 			attributes: {
@@ -110,7 +110,7 @@ suite('HTML Parser', () => {
 	});
 
 	test('Attributes without value', () => {
-		let str = '<div checked id="test"></div>'
+		let str = '<div checked id="test"></div>';
 		assertAttributes(str, [{
 			tag: 'div',
 			attributes: {

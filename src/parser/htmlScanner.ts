@@ -106,7 +106,7 @@ class MultiLineStream {
 		let str = this.source.substr(this.position);
 		let match = str.match(regex);
 		if (match) {
-			this.position = this.position + match.index + match[0].length;
+			this.position = this.position + match.index! + match[0].length;
 			return match[0];
 		}
 		return '';
@@ -116,7 +116,7 @@ class MultiLineStream {
 		let str = this.source.substr(this.position);
 		let match = str.match(regex);
 		if (match) {
-			this.position = this.position + match.index;
+			this.position = this.position + match.index!;
 			return match[0];
 		} else {
 			this.goToEnd();
@@ -199,11 +199,11 @@ export interface Scanner {
 	getTokenLength(): number;
 	getTokenEnd(): number;
 	getTokenText(): string;
-	getTokenError(): string;
+	getTokenError(): string | undefined;
 	getScannerState(): ScannerState;
 }
 
-const htmlScriptContents = {
+const htmlScriptContents: { [key: string]: boolean } = {
 	'text/x-handlebars-template': true
 };
 
@@ -212,13 +212,13 @@ export function createScanner(input: string, initialOffset = 0, initialState: Sc
 	let stream = new MultiLineStream(input, initialOffset);
 	let state = initialState;
 	let tokenOffset: number = 0;
-	let tokenType: number = void 0;
-	let tokenError: string;
+	let tokenType: TokenType = TokenType.Unknown;
+	let tokenError: string | undefined;
 
 	let hasSpaceAfterTag: boolean;
 	let lastTag: string;
-	let lastAttributeName: string;
-	let lastTypeValue: string;
+	let lastAttributeName: string | undefined;
+	let lastTypeValue: string | undefined;
 
 	function nextElementName(): string {
 		return stream.advanceIfRegExp(/^[_:\w][_:\w-.\d]*/).toLowerCase();
@@ -247,7 +247,7 @@ export function createScanner(input: string, initialOffset = 0, initialState: Sc
 		return token;
 	}
 
-	function internalScan(): TokenType {		
+	function internalScan(): TokenType {
 		let offset = stream.pos();
 		if (stream.eos()) {
 			return finishToken(offset, TokenType.EOS);
@@ -317,8 +317,8 @@ export function createScanner(input: string, initialOffset = 0, initialState: Sc
 				break;
 			case ScannerState.AfterOpeningStartTag:
 				lastTag = nextElementName();
-				lastTypeValue = null;
-				lastAttributeName = null;
+				lastTypeValue = void 0;
+				lastAttributeName = void 0;
 				if (lastTag.length > 0) {
 					hasSpaceAfterTag = false;
 					state = ScannerState.WithinTag;

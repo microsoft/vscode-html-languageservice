@@ -12,7 +12,7 @@ import {applyEdits} from './textEditSupport';
 suite('JSON Formatter', () => {
 
 	function format(unformatted: string, expected: string, insertSpaces = true) {
-		let range: Range = null;
+		let range: Range | undefined = void 0;
 		let uri = 'test://test.html';
 
 		let rangeStart = unformatted.indexOf('|');

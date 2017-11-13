@@ -18,7 +18,7 @@ function stripQuotes(url: string): string {
 		.replace(/^"([^"]*)"$/, (substr, match1) => match1);
 }
 
-function getWorkspaceUrl(modelAbsoluteUri: Uri, tokenContent: string, documentContext: DocumentContext, base: string): string {
+function getWorkspaceUrl(modelAbsoluteUri: Uri, tokenContent: string, documentContext: DocumentContext, base: string | undefined): string | null {
 	if (/^\s*javascript\:/i.test(tokenContent) || /^\s*\#/i.test(tokenContent) || /[\n\r]/.test(tokenContent)) {
 		return null;
 	}
@@ -43,7 +43,7 @@ function getWorkspaceUrl(modelAbsoluteUri: Uri, tokenContent: string, documentCo
 	return tokenContent;
 }
 
-function createLink(document: TextDocument, documentContext: DocumentContext, attributeValue: string, startOffset: number, endOffset: number, base: string): DocumentLink {
+function createLink(document: TextDocument, documentContext: DocumentContext, attributeValue: string, startOffset: number, endOffset: number, base: string | undefined): DocumentLink | null {
 	let documentUri = Uri.parse(document.uri);
 	let tokenContent = stripQuotes(attributeValue);
 	if (tokenContent.length === 0) {
@@ -75,13 +75,13 @@ function isValidURI(uri: string) {
 export function findDocumentLinks(document: TextDocument, documentContext: DocumentContext): DocumentLink[] {
 	let newLinks: DocumentLink[] = [];
 
-	let rootAbsoluteUrl: Uri = null;
+	let rootAbsoluteUrl: Uri | null = null;
 
 	let scanner = createScanner(document.getText(), 0);
 	let token = scanner.scan();
 	let afterHrefOrSrc = false;
 	let afterBase = false;
-	let base = void 0;
+	let base : string | undefined = void 0;
 	while (token !== TokenType.EOS) {
 		switch (token) {
 			case TokenType.StartTag:

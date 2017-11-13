@@ -24,11 +24,11 @@ export function getRazorTagProvider() : IHTMLTagProvider {
 		collectTags: (collector: (tag: string, label: string) => void) => {
 			// no extra tags
 		},
-		collectAttributes: (tag: string, collector: (attribute: string, type: string) => void) => {
+		collectAttributes: (tag: string, collector: (attribute: string, type?: string) => void) => {
 			if (tag) {
 				var attributes = customTags[tag];
 				if (attributes) {
-					attributes.forEach(a => collector(a, null));
+					attributes.forEach(a => collector(a));
 				}
 			}
 		},

@@ -42,14 +42,14 @@ let localize = nls.loadMessageBundle();
 export const EMPTY_ELEMENTS: string[] = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'menuitem', 'meta', 'param', 'source', 'track', 'wbr'];
 
 export function isEmptyElement(e: string): boolean {
-	return e && arrays.binarySearch(EMPTY_ELEMENTS, e.toLowerCase(), (s1: string, s2: string) => s1.localeCompare(s2)) >= 0;
+	return !!e && arrays.binarySearch(EMPTY_ELEMENTS, e.toLowerCase(), (s1: string, s2: string) => s1.localeCompare(s2)) >= 0;
 }
 
 export interface IHTMLTagProvider {
 	getId(): string;
-	isApplicable(languageId: string);
+	isApplicable(languageId: string) : boolean;
 	collectTags(collector: (tag: string, label: string) => void): void;
-	collectAttributes(tag: string, collector: (attribute: string, type: string) => void): void;
+	collectAttributes(tag: string, collector: (attribute: string, type?: string) => void): void;
 	collectValues(tag: string, attribute: string, collector: (value: string) => void): void;
 }
 
@@ -482,7 +482,7 @@ export function getHTML5TagProvider(): IHTMLTagProvider {
 		getId: () => 'html5',
 		isApplicable: () => true,
 		collectTags: (collector: (tag: string, label: string) => void) => collectTagsDefault(collector, HTML_TAGS),
-		collectAttributes: (tag: string, collector: (attribute: string, type: string) => void) => {
+		collectAttributes: (tag: string, collector: (attribute: string, type?: string) => void) => {
 			collectAttributesDefault(tag, collector, HTML_TAGS, globalAttributes);
 			eventHandlers.forEach(handler => {
 				collector(handler, 'event');
@@ -513,19 +513,19 @@ export function getAngularTagProvider(): IHTMLTagProvider {
 		collectTags: (collector: (tag: string, label: string) => void) => {
 			// no extra tags
 		},
-		collectAttributes: (tag: string, collector: (attribute: string, type: string) => void) => {
+		collectAttributes: (tag: string, collector: (attribute: string, type?: string) => void) => {
 			if (tag) {
 				var attributes = customTags[tag];
 				if (attributes) {
 					attributes.forEach((a) => {
-						collector(a, null);
-						collector('data-' + a, null);
+						collector(a);
+						collector('data-' + a);
 					});
 				}
 			}
 			globalAttributes.forEach((a) => {
-				collector(a, null);
-				collector('data-' + a, null);
+				collector(a);
+				collector('data-' + a);
 			});
 		},
 		collectValues: (tag: string, attribute: string, collector: (value: string) => void) => {
@@ -560,7 +560,7 @@ export function getIonicTagProvider(): IHTMLTagProvider {
 		getId: () => 'ionic',
 		isApplicable: (languageId) => languageId === 'html',
 		collectTags: (collector: (tag: string, label: string) => void) => collectTagsDefault(collector, IONIC_TAGS),
-		collectAttributes: (tag: string, collector: (attribute: string, type: string) => void) => {
+		collectAttributes: (tag: string, collector: (attribute: string, type?: string) => void) => {
 			collectAttributesDefault(tag, collector, IONIC_TAGS, globalAttributes);
 			if (tag) {
 				var attributes = customTags[tag];
@@ -582,7 +582,7 @@ function collectTagsDefault(collector: (tag: string, label: string) => void, tag
 	}
 }
 
-function collectAttributesDefault(tag: string, collector: (attribute: string, type: string) => void, tagSet: ITagSet, globalAttributes: string[]): void {
+function collectAttributesDefault(tag: string, collector: (attribute: string, type?: string) => void, tagSet: ITagSet, globalAttributes: string[]): void {
 	globalAttributes.forEach(attr => {
 		var segments = attr.split(':');
 		collector(segments[0], segments[1]);
