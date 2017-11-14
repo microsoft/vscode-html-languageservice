@@ -163,6 +163,20 @@ suite('JSON Formatter', () => {
 		].join('\n');
 
 		format(content, expected);
-	});	
+	});
+
+	test('bug 36574', () => {
+		var content = [
+			'<script src="/js/main.js"> </script>'
+		].join('\n');
+
+		var expected = [
+			'<script src="/js/main.js">',
+			'',
+			'</script>'
+		].join('\n');
+
+		format(content, expected);
+	});		
 	
 });
