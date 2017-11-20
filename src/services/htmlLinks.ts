@@ -81,7 +81,7 @@ export function findDocumentLinks(document: TextDocument, documentContext: Docum
 	let token = scanner.scan();
 	let afterHrefOrSrc = false;
 	let afterBase = false;
-	let base : string | undefined = void 0;
+	let base: string | undefined = void 0;
 	while (token !== TokenType.EOS) {
 		switch (token) {
 			case TokenType.StartTag:
@@ -97,12 +97,17 @@ export function findDocumentLinks(document: TextDocument, documentContext: Docum
 			case TokenType.AttributeValue:
 				if (afterHrefOrSrc) {
 					let attributeValue = scanner.getTokenText();
-					let link = createLink(document, documentContext, attributeValue, scanner.getTokenOffset(), scanner.getTokenEnd(), base);
-					if (link) {
-						newLinks.push(link);
+					if (!afterBase) { // don't highlight the base link itself
+						let link = createLink(document, documentContext, attributeValue, scanner.getTokenOffset(), scanner.getTokenEnd(), base);
+						if (link) {
+							newLinks.push(link);
+						}
 					}
 					if (afterBase && typeof base === 'undefined') {
 						base = stripQuotes(attributeValue);
+						if (documentContext) {
+							base = documentContext.resolveReference(base, document.uri);
+						}
 					}
 					afterBase = false;
 					afterHrefOrSrc = false;
