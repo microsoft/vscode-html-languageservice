@@ -12,10 +12,33 @@ import Uri from 'vscode-uri';
 
 import { DocumentLink, DocumentContext } from '../htmlLanguageService';
 
-function stripQuotes(url: string): string {
-	return url
-		.replace(/^'([^']*)'$/, (substr, match1) => match1)
-		.replace(/^"([^"]*)"$/, (substr, match1) => match1);
+function normalizeRef(url: string, languageId: string): string {
+	let first = url[0];
+	let last = url[url.length - 1];
+	if (first === last && (first === '\'' || first === '\"')) {
+		url = url.substr(1, url.length - 2);
+	}
+	if (languageId === 'razor' && url[0] === '~') {
+		url = url.substr(1);
+	}
+	return url;
+}
+
+function validateRef(url: string, languageId: string): boolean {
+	if (!url.length) {
+		return false;
+	}
+	if (languageId === 'handlebars' && /{{.*}}/.test(url)) {
+		return false;
+	}
+	if (languageId === 'razor' && /@/.test(url)) {
+		return false;
+	}
+	try {
+		return !!Uri.parse(url);
+	} catch (e) {
+		return false;
+	}
 }
 
 function getWorkspaceUrl(modelAbsoluteUri: Uri, tokenContent: string, documentContext: DocumentContext, base: string | undefined): string | null {
@@ -45,8 +68,8 @@ function getWorkspaceUrl(modelAbsoluteUri: Uri, tokenContent: string, documentCo
 
 function createLink(document: TextDocument, documentContext: DocumentContext, attributeValue: string, startOffset: number, endOffset: number, base: string | undefined): DocumentLink | null {
 	let documentUri = Uri.parse(document.uri);
-	let tokenContent = stripQuotes(attributeValue);
-	if (tokenContent.length === 0) {
+	let tokenContent = normalizeRef(attributeValue, document.languageId);
+	if (!validateRef(tokenContent, document.languageId)) {
 		return null;
 	}
 	if (tokenContent.length < attributeValue.length) {
@@ -104,8 +127,8 @@ export function findDocumentLinks(document: TextDocument, documentContext: Docum
 						}
 					}
 					if (afterBase && typeof base === 'undefined') {
-						base = stripQuotes(attributeValue);
-						if (documentContext) {
+						base = normalizeRef(attributeValue, document.languageId);
+						if (base && documentContext) {
 							base = documentContext.resolveReference(base, document.uri);
 						}
 					}
