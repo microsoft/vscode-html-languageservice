@@ -540,4 +540,45 @@ suite('HTML Completion', () => {
 		testTagCompletion('<div><br><span></span></|', "div>");
 		testTagCompletion('<div><h1><br><span></span><img></| </h1></div>', "h1>");
 	});
+
+	test('Character entities', function (testDone): any {
+		run([
+			testCompletionFor('<div>&|', {
+				items: [
+					{ label: '&hookrightarrow;', resultText: '<div>&hookrightarrow;' },
+					{ label: '&plus;', resultText: '<div>&plus;' },
+				]
+			}),
+			testCompletionFor('<div>Hello&|', {
+				items: [
+					{ label: '&ZeroWidthSpace;', resultText: '<div>Hello&ZeroWidthSpace;' }
+				]
+			}),
+			testCompletionFor('<div>Hello&gt|', {
+				items: [
+					{ label: '&gtrdot;', resultText: '<div>Hello&gtrdot;' }
+				]
+			}),
+			testCompletionFor('<div class="&g|"', {
+				items: [
+					{ label: '&grave;', resultText: '<div class="&grave;"' }
+				]
+			}),
+			testCompletionFor('<div class=&d|', {
+				items: [
+					{ label: '&duarr;', resultText: '<div class=&duarr;' }
+				]
+			}),
+			testCompletionFor('<div &d|', {
+				items: [
+					{ label: '&duarr;', notAvailable: true }
+				]
+			}),
+			testCompletionFor('<div&d|', {
+				items: [
+					{ label: '&duarr;', notAvailable: true }
+				]
+			}),
+		], testDone);
+	});
 });

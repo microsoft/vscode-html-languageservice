@@ -60,3 +60,15 @@ export function repeat(value: string, count: number) {
 	}
 	return s;
 }
+
+const _a = 'a'.charCodeAt(0);
+const _z = 'z'.charCodeAt(0);
+const _A = 'A'.charCodeAt(0);
+const _Z = 'Z'.charCodeAt(0);
+const _0 = '0'.charCodeAt(0);
+const _9 = '9'.charCodeAt(0);
+
+export function isLetterOrDigit(text: string, index: number) {
+	let c = text.charCodeAt(index);
+	return (_a <= c && c <= _z) || (_A <= c && c <= _Z) || (_0 <= c && c <= _9);
+}

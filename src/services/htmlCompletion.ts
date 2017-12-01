@@ -10,6 +10,11 @@ import { TokenType, createScanner, ScannerState } from '../parser/htmlScanner';
 import { isEmptyElement } from '../parser/htmlTags';
 import { allTagProviders } from './tagProviders';
 import { CompletionConfiguration } from '../htmlLanguageService';
+import { entities } from '../parser/htmlEntities';
+
+import * as nls from 'vscode-nls';
+import { isLetterOrDigit, endsWith } from '../utils/strings';
+let localize = nls.loadMessageBundle();
 
 export function doComplete(document: TextDocument, position: Position, htmlDocument: HTMLDocument, settings?: CompletionConfiguration): CompletionList {
 
@@ -19,12 +24,14 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 	};
 	let tagProviders = allTagProviders.filter(p => p.isApplicable(document.languageId) && (!settings || settings[p.getId()] !== false));
 
+	let text = document.getText();
 	let offset = document.offsetAt(position);
+
 	let node = htmlDocument.findNodeBefore(offset);
 	if (!node) {
 		return result;
 	}
-	let text = document.getText();
+
 	let scanner = createScanner(text, node.start);
 	let currentTag: string = '';
 	let currentAttributeName: string;
@@ -193,6 +200,7 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 				});
 			});
 		});
+		collectCharacterEntityProposals();
 		return result;
 	}
 
@@ -204,6 +212,35 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 			}
 		}
 		return offset;
+	}
+
+	function collectInsideContent(): CompletionList {
+		return collectCharacterEntityProposals();
+	}
+
+	function collectCharacterEntityProposals() {
+		// character entities
+		let k = offset - 1;
+		let characterStart = position.character;
+		while (k >= 0 && isLetterOrDigit(text, k)) {
+			k--;
+			characterStart--;
+		}
+		if (k >= 0 && text[k] === '&') {
+			let range = Range.create(Position.create(position.line, characterStart), position);
+			for (let entity in entities) {
+				if (endsWith(entity, ';')) {
+					result.items.push({
+						label: '&' + entity,
+						kind: CompletionItemKind.Keyword,
+						documentation: localize('entity.propose', `Character entity representing '${entities[entity]}'`),
+						textEdit: TextEdit.replace(range, entity),
+						insertTextFormat: InsertTextFormat.PlainText
+					});
+				}
+			}
+		}
+		return result;
 	}
 
 	let token = scanner.scan();
@@ -252,6 +289,8 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 							return collectAttributeValueSuggestions(scanner.getTokenEnd());
 						case ScannerState.AfterOpeningEndTag:
 							return collectCloseTagSuggestions(scanner.getTokenOffset() - 1, false);
+						case ScannerState.WithinContent:
+							return collectInsideContent();
 					}
 				}
 				break;
@@ -281,6 +320,11 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 					if (currentTag) {
 						return collectAutoCloseTagSuggestion(scanner.getTokenEnd(), currentTag);
 					}
+				}
+				break;
+			case TokenType.Content:
+				if (offset <= scanner.getTokenEnd()) {
+					return collectInsideContent();
 				}
 				break;
 			default:
