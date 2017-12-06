@@ -227,14 +227,15 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 			characterStart--;
 		}
 		if (k >= 0 && text[k] === '&') {
-			let range = Range.create(Position.create(position.line, characterStart), position);
+			let range = Range.create(Position.create(position.line, characterStart - 1), position);
 			for (let entity in entities) {
 				if (endsWith(entity, ';')) {
+					const label = '&' + entity;
 					result.items.push({
-						label: '&' + entity,
+						label,
 						kind: CompletionItemKind.Keyword,
 						documentation: localize('entity.propose', `Character entity representing '${entities[entity]}'`),
-						textEdit: TextEdit.replace(range, entity),
+						textEdit: TextEdit.replace(range, label),
 						insertTextFormat: InsertTextFormat.PlainText
 					});
 				}
