@@ -156,14 +156,22 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 		tagProviders.forEach(provider => {
 			provider.collectAttributes(tag, (attribute, type?: string) => {
 				let codeSnippet = attribute;
+				let command;
 				if (type !== 'v' && value.length) {
 					codeSnippet = codeSnippet + value;
+					if (type) {
+						command = {
+							title: 'Suggest',
+							command: 'editor.action.triggerSuggest'
+						};
+					}
 				}
 				result.items.push({
 					label: attribute,
 					kind: type === 'handler' ? CompletionItemKind.Function : CompletionItemKind.Value,
 					textEdit: TextEdit.replace(range, codeSnippet),
-					insertTextFormat: InsertTextFormat.Snippet
+					insertTextFormat: InsertTextFormat.Snippet,
+					command
 				});
 			});
 		});
