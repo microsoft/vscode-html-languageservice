@@ -153,6 +153,10 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 		let range = getReplaceRange(nameStart, replaceEnd);
 		let value = isFollowedBy(text, nameEnd, ScannerState.AfterAttributeName, TokenType.DelimiterAssign) ? '' : '="$1"';
 		let tag = currentTag.toLowerCase();
+		const suggestCommand = {
+			title: 'Suggest',
+			command: 'editor.action.triggerSuggest'
+		};
 		tagProviders.forEach(provider => {
 			provider.collectAttributes(tag, (attribute, type?: string) => {
 				let codeSnippet = attribute;
@@ -160,10 +164,7 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 				if (type !== 'v' && value.length) {
 					codeSnippet = codeSnippet + value;
 					if (type) {
-						command = {
-							title: 'Suggest',
-							command: 'editor.action.triggerSuggest'
-						};
+						command = suggestCommand;
 					}
 				}
 				result.items.push({
@@ -175,6 +176,26 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 				});
 			});
 		});
+		const dataAttr = 'data-';
+		result.items.push({
+			label: dataAttr,
+			kind: CompletionItemKind.Value,
+			textEdit: TextEdit.replace(range, dataAttr),
+			insertTextFormat: InsertTextFormat.Snippet,
+			command: suggestCommand
+		});
+		if (htmlDocument) {
+			htmlDocument.roots.forEach(element => {
+				const filteredAttrs = element.attributeNames.filter(attr => attr.indexOf(dataAttr) !== -1);
+				filteredAttrs.forEach(attr => result.items.push({
+					label: attr,
+					kind: CompletionItemKind.Value,
+					textEdit: TextEdit.replace(range, attr + '=""'),
+					insertTextFormat: InsertTextFormat.Snippet,
+					command: suggestCommand
+				}));
+			});
+		}
 		return result;
 	}
 

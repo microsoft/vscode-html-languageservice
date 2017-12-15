@@ -370,7 +370,18 @@ suite('HTML Completion', () => {
 				items: [
 					{ notAvailable: true, label: '</div>' }
 				]
-			}, { hideAutoCompleteProposals: true })
+			}, { hideAutoCompleteProposals: true }),
+			testCompletionFor('<div d|', {
+				items: [
+					{ label: 'data-', resultText: '<div data-' }
+				]
+			}),
+			testCompletionFor('<div data-custom="test"><div d|', {
+				items: [
+					{ label: 'data-', resultText: '<div data-custom="test"><div data-' },
+					{ label: 'data-custom', resultText: '<div data-custom="test"><div data-custom=""' }
+				]
+			})
 		], testDone);
 	});
 
