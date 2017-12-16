@@ -381,6 +381,13 @@ suite('HTML Completion', () => {
 					{ label: 'data-', resultText: '<div data-custom="test"><div data-' },
 					{ label: 'data-custom', resultText: '<div data-custom="test"><div data-custom=""' }
 				]
+			}),
+			testCompletionFor('<div data-custom="test"><div data-custom-two="2"></div></div>\n <div d|', {
+				items: [
+					{ label: 'data-', resultText: '<div data-custom="test"><div data-custom-two="2"></div></div>\n <div data-' },
+					{ label: 'data-custom', resultText: '<div data-custom="test"><div data-custom-two="2"></div></div>\n <div data-custom=""' },
+					{ label: 'data-custom-two', resultText: '<div data-custom="test"><div data-custom-two="2"></div></div>\n <div data-custom-two=""' }	
+				]
 			})
 		], testDone);
 	});

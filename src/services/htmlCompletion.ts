@@ -176,25 +176,24 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 				});
 			});
 		});
-		const dataAttr = 'data-';
 		result.items.push({
-			label: dataAttr,
+			label: 'data-',
 			kind: CompletionItemKind.Value,
-			textEdit: TextEdit.replace(range, dataAttr),
+			textEdit: TextEdit.replace(range, 'data-'),
 			insertTextFormat: InsertTextFormat.Snippet,
 			command: suggestCommand
 		});
-		if (htmlDocument) {
-			htmlDocument.roots.forEach(element => {
-				const filteredAttrs = element.attributeNames.filter(attr => attr.indexOf(dataAttr) !== -1);
-				filteredAttrs.forEach(attr => result.items.push({
-					label: attr,
+		const dataAttrs = text.match(/data-.+?=/g);
+		if (dataAttrs) {
+			for (const attr of dataAttrs) {
+				result.items.push({
+					label: attr.slice(0, -1),
 					kind: CompletionItemKind.Value,
-					textEdit: TextEdit.replace(range, attr + '=""'),
+					textEdit: TextEdit.replace(range, attr + '""'),
 					insertTextFormat: InsertTextFormat.Snippet,
 					command: suggestCommand
-				}));
-			});
+				});
+			}
 		}
 		return result;
 	}
