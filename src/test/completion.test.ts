@@ -376,6 +376,11 @@ suite('HTML Completion', () => {
 					{ label: 'data-', resultText: '<div data-' }
 				]
 			}),
+			testCompletionFor('<div no-data-test="no-data" d|', {
+				items: [
+					{ notAvailable:true, label: 'no-data-test' }
+				]
+			}),
 			testCompletionFor('<div data-custom="test"><div d|', {
 				items: [
 					{ label: 'data-', resultText: '<div data-custom="test"><div data-' },

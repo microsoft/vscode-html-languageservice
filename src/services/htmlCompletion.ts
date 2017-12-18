@@ -153,10 +153,6 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 		let range = getReplaceRange(nameStart, replaceEnd);
 		let value = isFollowedBy(text, nameEnd, ScannerState.AfterAttributeName, TokenType.DelimiterAssign) ? '' : '="$1"';
 		let tag = currentTag.toLowerCase();
-		const suggestCommand = {
-			title: 'Suggest',
-			command: 'editor.action.triggerSuggest'
-		};
 		tagProviders.forEach(provider => {
 			provider.collectAttributes(tag, (attribute, type?: string) => {
 				let codeSnippet = attribute;
@@ -164,7 +160,10 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 				if (type !== 'v' && value.length) {
 					codeSnippet = codeSnippet + value;
 					if (type) {
-						command = suggestCommand;
+						command = {
+							title: 'Suggest',
+							command: 'editor.action.triggerSuggest'
+						};
 					}
 				}
 				result.items.push({
@@ -176,26 +175,39 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 				});
 			});
 		});
-		result.items.push({
-			label: 'data-',
-			kind: CompletionItemKind.Value,
-			textEdit: TextEdit.replace(range, 'data-'),
-			insertTextFormat: InsertTextFormat.Snippet,
-			command: suggestCommand
-		});
-		const dataAttrs = text.match(/data-.+?=/g);
-		if (dataAttrs) {
-			for (const attr of dataAttrs) {
-				result.items.push({
-					label: attr.slice(0, -1),
-					kind: CompletionItemKind.Value,
-					textEdit: TextEdit.replace(range, attr + '""'),
-					insertTextFormat: InsertTextFormat.Snippet,
-					command: suggestCommand
-				});
-			}
-		}
+		collectDataAttributesSuggestions(range);
 		return result;
+	}
+
+	function collectDataAttributesSuggestions(range: Range) {
+
+		const dataAttr = 'data-';
+		let dataAttributes: string[] = [];
+
+		function addNodeDataAttributes(node: Node) {
+			node.attributeNames.filter(attr => attr.substr(0, dataAttr.length) === dataAttr).forEach(attr => {
+				if (dataAttributes.indexOf(attr) === -1) {
+					dataAttributes.push(attr);
+				}
+			});
+			node.children.forEach(child => addNodeDataAttributes(child));
+		}
+
+		result.items.push({
+			label: dataAttr,
+			kind: CompletionItemKind.Value,
+			textEdit: TextEdit.replace(range, dataAttr),
+			insertTextFormat: InsertTextFormat.Snippet
+		});
+		if (htmlDocument) {
+			htmlDocument.roots.forEach(root => addNodeDataAttributes(root));
+			dataAttributes.forEach(attr => result.items.push({
+				label: attr,
+				kind: CompletionItemKind.Value,
+				textEdit: TextEdit.replace(range, attr + '=""'),
+				insertTextFormat: InsertTextFormat.Snippet
+			}));
+		}
 	}
 
 	function collectAttributeValueSuggestions(valueStart: number, valueEnd: number = offset): CompletionList {
