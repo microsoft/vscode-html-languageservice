@@ -13,7 +13,7 @@ import { CompletionConfiguration } from '../htmlLanguageService';
 import { entities } from '../parser/htmlEntities';
 
 import * as nls from 'vscode-nls';
-import { isLetterOrDigit, endsWith } from '../utils/strings';
+import { isLetterOrDigit, endsWith, startsWith } from '../utils/strings';
 let localize = nls.loadMessageBundle();
 
 export function doComplete(document: TextDocument, position: Position, htmlDocument: HTMLDocument, settings?: CompletionConfiguration): CompletionList {
@@ -182,12 +182,12 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 	function collectDataAttributesSuggestions(range: Range) {
 
 		const dataAttr = 'data-';
-		let dataAttributes: string[] = [];
+		let dataAttributes: any = {};
 
 		function addNodeDataAttributes(node: Node) {
-			node.attributeNames.filter(attr => attr.substr(0, dataAttr.length) === dataAttr).forEach(attr => {
-				if (dataAttributes.indexOf(attr) === -1) {
-					dataAttributes.push(attr);
+			node.attributeNames.forEach(attr => {
+				if (startsWith(attr, dataAttr) && !dataAttributes[attr]) {
+					dataAttributes[attr] = true;
 				}
 			});
 			node.children.forEach(child => addNodeDataAttributes(child));
@@ -201,7 +201,7 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 		});
 		if (htmlDocument) {
 			htmlDocument.roots.forEach(root => addNodeDataAttributes(root));
-			dataAttributes.forEach(attr => result.items.push({
+			Object.getOwnPropertyNames(dataAttributes).forEach(attr => result.items.push({
 				label: attr,
 				kind: CompletionItemKind.Value,
 				textEdit: TextEdit.replace(range, attr + '=""'),
