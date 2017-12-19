@@ -182,7 +182,7 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 	function collectDataAttributesSuggestions(range: Range) {
 
 		const dataAttr = 'data-';
-		let dataAttributes: any = {};
+		let dataAttributes: { [name: string]: boolean } = {};
 
 		function addNodeDataAttributes(node: Node) {
 			node.attributeNames.forEach(attr => {
@@ -201,7 +201,7 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 		});
 		if (htmlDocument) {
 			htmlDocument.roots.forEach(root => addNodeDataAttributes(root));
-			Object.getOwnPropertyNames(dataAttributes).forEach(attr => result.items.push({
+			Object.keys(dataAttributes).forEach(attr => result.items.push({
 				label: attr,
 				kind: CompletionItemKind.Value,
 				textEdit: TextEdit.replace(range, attr + '=""'),
