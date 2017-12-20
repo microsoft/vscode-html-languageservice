@@ -41,7 +41,7 @@ function validateRef(url: string, languageId: string): boolean {
 	}
 }
 
-function getWorkspaceUrl(modelAbsoluteUri: Uri, tokenContent: string, documentContext: DocumentContext, base: string | undefined): string | null {
+function getWorkspaceUrl(documentUri: string, tokenContent: string, documentContext: DocumentContext, base: string | undefined): string | null {
 	if (/^\s*javascript\:/i.test(tokenContent) || /^\s*\#/i.test(tokenContent) || /[\n\r]/.test(tokenContent)) {
 		return null;
 	}
@@ -54,20 +54,16 @@ function getWorkspaceUrl(modelAbsoluteUri: Uri, tokenContent: string, documentCo
 
 	if (/^\/\//i.test(tokenContent)) {
 		// Absolute link (that does not name the protocol)
-		let pickedScheme = 'http';
-		if (modelAbsoluteUri.scheme === 'https') {
-			pickedScheme = 'https';
-		}
+		let pickedScheme = strings.startsWith(documentUri, 'https://') ? 'https' : 'http';
 		return pickedScheme + ':' + tokenContent.replace(/^\s*/g, '');
 	}
 	if (documentContext) {
-		return documentContext.resolveReference(tokenContent, base);
+		return documentContext.resolveReference(tokenContent, base || documentUri);
 	}
 	return tokenContent;
 }
 
 function createLink(document: TextDocument, documentContext: DocumentContext, attributeValue: string, startOffset: number, endOffset: number, base: string | undefined): DocumentLink | null {
-	let documentUri = Uri.parse(document.uri);
 	let tokenContent = normalizeRef(attributeValue, document.languageId);
 	if (!validateRef(tokenContent, document.languageId)) {
 		return null;
@@ -76,7 +72,7 @@ function createLink(document: TextDocument, documentContext: DocumentContext, at
 		startOffset++;
 		endOffset--;
 	}
-	let workspaceUrl = getWorkspaceUrl(documentUri, tokenContent, documentContext, base);
+	let workspaceUrl = getWorkspaceUrl(document.uri, tokenContent, documentContext, base);
 	if (!workspaceUrl || !isValidURI(workspaceUrl)) {
 		return null;
 	}

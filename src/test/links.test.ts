@@ -12,7 +12,7 @@ import * as url from 'url';
 
 suite('HTML Link Detection', () => {
 
-	const ext2lang : { [ext:string] : string } = {
+	const ext2lang: { [ext: string]: string } = {
 		html: 'html',
 		cshtml: 'razor',
 		hbs: 'handlebars'
@@ -20,11 +20,8 @@ suite('HTML Link Detection', () => {
 
 	function getDocumentContext(documentUrl: string): htmlLanguageService.DocumentContext {
 		return {
-			resolveReference: (ref, base) => {
-				if (base) {
-					documentUrl = url.resolve(documentUrl, base);
-				}
-				return url.resolve(documentUrl, ref);
+			resolveReference: (ref, base = documentUrl) => {
+				return url.resolve(base, ref);
 			}
 		};
 	}
