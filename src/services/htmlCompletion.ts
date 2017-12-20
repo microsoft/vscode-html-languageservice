@@ -13,7 +13,7 @@ import { CompletionConfiguration } from '../htmlLanguageService';
 import { entities } from '../parser/htmlEntities';
 
 import * as nls from 'vscode-nls';
-import { isLetterOrDigit, endsWith } from '../utils/strings';
+import { isLetterOrDigit, endsWith, startsWith } from '../utils/strings';
 let localize = nls.loadMessageBundle();
 
 export function doComplete(document: TextDocument, position: Position, htmlDocument: HTMLDocument, settings?: CompletionConfiguration): CompletionList {
@@ -175,7 +175,39 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 				});
 			});
 		});
+		collectDataAttributesSuggestions(range);
 		return result;
+	}
+
+	function collectDataAttributesSuggestions(range: Range) {
+
+		const dataAttr = 'data-';
+		let dataAttributes: { [name: string]: boolean } = {};
+
+		function addNodeDataAttributes(node: Node) {
+			node.attributeNames.forEach(attr => {
+				if (startsWith(attr, dataAttr) && !dataAttributes[attr]) {
+					dataAttributes[attr] = true;
+				}
+			});
+			node.children.forEach(child => addNodeDataAttributes(child));
+		}
+
+		result.items.push({
+			label: dataAttr,
+			kind: CompletionItemKind.Value,
+			textEdit: TextEdit.replace(range, dataAttr),
+			insertTextFormat: InsertTextFormat.Snippet
+		});
+		if (htmlDocument) {
+			htmlDocument.roots.forEach(root => addNodeDataAttributes(root));
+			Object.keys(dataAttributes).forEach(attr => result.items.push({
+				label: attr,
+				kind: CompletionItemKind.Value,
+				textEdit: TextEdit.replace(range, attr + '=""'),
+				insertTextFormat: InsertTextFormat.Snippet
+			}));
+		}
 	}
 
 	function collectAttributeValueSuggestions(valueStart: number, valueEnd: number = offset): CompletionList {
