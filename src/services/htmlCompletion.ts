@@ -186,7 +186,7 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 
 		function addNodeDataAttributes(node: Node) {
 			node.attributeNames.forEach(attr => {
-				if (startsWith(attr, dataAttr) && !dataAttributes[attr]) {
+				if (attr !== dataAttr && startsWith(attr, dataAttr) && !dataAttributes[attr]) {
 					dataAttributes[attr] = true;
 				}
 			});
@@ -196,7 +196,7 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 		result.items.push({
 			label: dataAttr,
 			kind: CompletionItemKind.Value,
-			textEdit: TextEdit.replace(range, dataAttr),
+			textEdit: TextEdit.replace(range, `${dataAttr}$1="$2"`),
 			insertTextFormat: InsertTextFormat.Snippet
 		});
 		if (htmlDocument) {
@@ -204,7 +204,7 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 			Object.keys(dataAttributes).forEach(attr => result.items.push({
 				label: attr,
 				kind: CompletionItemKind.Value,
-				textEdit: TextEdit.replace(range, attr + '=""'),
+				textEdit: TextEdit.replace(range, attr + '="$1"'),
 				insertTextFormat: InsertTextFormat.Snippet
 			}));
 		}
