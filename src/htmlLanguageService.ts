@@ -108,7 +108,7 @@ export interface DocumentContext {
 }
 
 export interface LanguageService {
-	createScanner(input: string): Scanner;
+	createScanner(input: string, initialOffset?: number): Scanner;
 	parseHTMLDocument(document: TextDocument): HTMLDocument;
 	findDocumentHighlights(document: TextDocument, position: Position, htmlDocument: HTMLDocument): DocumentHighlight[];
 	doComplete(document: TextDocument, position: Position, htmlDocument: HTMLDocument, options?: CompletionConfiguration): CompletionList;
