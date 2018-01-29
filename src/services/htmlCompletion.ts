@@ -5,6 +5,9 @@
 'use strict';
 
 import { TextDocument, Position, CompletionList, CompletionItemKind, Range, TextEdit, InsertTextFormat, CompletionItem } from 'vscode-languageserver-types';
+import URI from 'vscode-uri';
+import * as path from 'path';
+import * as fs from 'fs';
 import { HTMLDocument, Node } from '../parser/htmlParser';
 import { TokenType, createScanner, ScannerState } from '../parser/htmlScanner';
 import { isEmptyElement } from '../parser/htmlTags';
@@ -236,6 +239,7 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 				});
 			});
 		});
+		collectPathSuggestions(tag, attribute);
 		collectCharacterEntityProposals();
 		return result;
 	}
@@ -252,6 +256,30 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 
 	function collectInsideContent(): CompletionList {
 		return collectCharacterEntityProposals();
+	}
+
+	function collectPathSuggestions(tag: string, attribute: string) {
+		const pathTagAndAttribute: { [t: string]: string } = {
+			script: 'src',
+			img: 'src',
+			link: 'href'
+		};
+
+		if (pathTagAndAttribute[tag] === attribute) {
+			const currPath = scanner.getTokenText().replace(/['"]/g, '');
+			const resolvedPath = path.resolve(URI.parse(document.uri).fsPath, currPath);
+			const isDir = (p: string) => fs.statSync(p).isDirectory();
+			if (isDir(resolvedPath)) {
+				const filesAndFolders = fs.readdirSync(resolvedPath);
+				filesAndFolders.forEach(f => {
+					// TODO: use CompletionItemKind.Folder for folder
+					result.items.push({
+						label: f,
+						kind: CompletionItemKind.File
+					});
+				});
+			}
+		}
 	}
 
 	function collectCharacterEntityProposals() {
