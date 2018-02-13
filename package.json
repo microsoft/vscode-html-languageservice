@@ -1,6 +1,6 @@
 {
   "name": "vscode-html-languageservice",
-  "version": "2.0.15",
+  "version": "2.0.16",
   "description": "Language service for HTML",
   "main": "./lib/htmlLanguageService.js",
   "typings": "./lib/htmlLanguageService",
