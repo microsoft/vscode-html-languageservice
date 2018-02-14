@@ -83,7 +83,7 @@ export function doComplete(document: TextDocument, position: Position, htmlDocum
 		}
 		while (curr) {
 			let tag = curr.tag;
-			if (tag && (!curr.closed || curr.endTagStart > offset)) {
+			if (tag && (!curr.closed || curr.endTagStart && (curr.endTagStart > offset))) {
 				let item: CompletionItem = {
 					label: '/' + tag,
 					kind: CompletionItemKind.Property,

@@ -53,5 +53,5 @@ function nodeToName(node: Node): string {
 		}
 	}
 
-	return name;
+	return name || '?';
 }

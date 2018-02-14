@@ -37,13 +37,13 @@ export interface CompletionConfiguration {
 }
 
 export interface Node {
-	tag: string;
+	tag: string | undefined;
 	start: number;
 	end: number;
-	endTagStart: number;
+	endTagStart: number | undefined;
 	children: Node[];
 	parent?: Node;
-	attributes?: { [name: string]: string | null };
+	attributes?: { [name: string]: string | null } | undefined;
 }
 
 

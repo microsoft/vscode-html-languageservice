@@ -9,10 +9,10 @@ import { findFirst } from '../utils/arrays';
 import { isEmptyElement } from './htmlTags';
 
 export class Node {
-	public tag: string;
-	public closed: boolean;
-	public endTagStart: number;
-	public attributes: {[name: string]: string | null};
+	public tag: string | undefined;
+	public closed: boolean = false;
+	public endTagStart: number | undefined;
+	public attributes: {[name: string]: string | null} | undefined;
 	public get attributeNames() : string[] { return this.attributes ? Object.keys(this.attributes) : []; }
 	constructor(public start: number, public end: number, public children: Node[], public parent?: Node) {
 	}
@@ -78,7 +78,7 @@ export function parse(text: string): HTMLDocument {
 				break;
 			case TokenType.StartTagClose:
 				curr.end = scanner.getTokenEnd(); // might be later set to end tag position
-				if (isEmptyElement(curr.tag) && curr.parent) {
+				if (curr.tag && isEmptyElement(curr.tag) && curr.parent) {
 					curr.closed = true;
 					curr = curr.parent;
 				}
