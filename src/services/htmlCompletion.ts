@@ -271,6 +271,12 @@ export class HTMLCompletion {
 		}
 
 		function collectInsideContent(): CompletionList {
+			completionParticipants.forEach(participant => {
+				if (participant.onHtmlContent) {
+					participant.onHtmlContent();
+				}
+			});
+
 			return collectCharacterEntityProposals();
 		}
 

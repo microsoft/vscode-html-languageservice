@@ -109,7 +109,7 @@ export interface DocumentContext {
 
 export interface ICompletionParticipant {
 	onHtmlAttributeValue?: (context: { tag: string, attribute: string; value: string; range: Range }) => void;
-	onHtmlContent?: (context: { range: Range }) => void;
+	onHtmlContent?: () => void;
 }
 
 export interface LanguageService {
