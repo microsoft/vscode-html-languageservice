@@ -233,10 +233,10 @@ export class HTMLCompletion {
 				range = getReplaceRange(valueStart, valueEnd);
 				addQuotes = true;
 			}
+
 			let tag = currentTag.toLowerCase();
 			let attribute = currentAttributeName.toLowerCase();
-
-			let value = scanner.getTokenText();
+			let value = extractAttributeValue(scanner.getTokenText());
 
 			completionParticipants.forEach(participant => {
 				if (participant.onHtmlAttributeValue) {
@@ -469,4 +469,8 @@ function getWordEnd(s: string, offset: number, limit: number): number {
 		offset++;
 	}
 	return offset;
+}
+
+function extractAttributeValue(input: string): string {
+	return input.replace(/^['"]/, '').replace(/['"]$/, '');
 }
