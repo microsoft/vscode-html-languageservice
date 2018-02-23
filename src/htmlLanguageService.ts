@@ -6,7 +6,7 @@
 
 import { createScanner } from './parser/htmlScanner';
 import { parse } from './parser/htmlParser';
-import { doComplete, doTagComplete } from './services/htmlCompletion';
+import { HTMLCompletion } from './services/htmlCompletion';
 import { doHover } from './services/htmlHover';
 import { format } from './services/htmlFormatter';
 import { findDocumentLinks } from './services/htmlLinks';
@@ -107,11 +107,17 @@ export interface DocumentContext {
 	resolveReference(ref: string, base?: string): string;
 }
 
+export interface ICompletionParticipant {
+	onHtmlAttributeValue?: (context: { tag: string, attribute: string; value: string; range: Range }) => void;
+	onHtmlContent?: () => void;
+}
+
 export interface LanguageService {
 	createScanner(input: string, initialOffset?: number): Scanner;
 	parseHTMLDocument(document: TextDocument): HTMLDocument;
 	findDocumentHighlights(document: TextDocument, position: Position, htmlDocument: HTMLDocument): DocumentHighlight[];
 	doComplete(document: TextDocument, position: Position, htmlDocument: HTMLDocument, options?: CompletionConfiguration): CompletionList;
+	setCompletionParticipants(registeredCompletionParticipants: ICompletionParticipant[]): void;
 	doHover(document: TextDocument, position: Position, htmlDocument: HTMLDocument): Hover | null;
 	format(document: TextDocument, range: Range | undefined, options: HTMLFormatConfiguration): TextEdit[];
 	findDocumentLinks(document: TextDocument, documentContext: DocumentContext): DocumentLink[];
@@ -120,15 +126,17 @@ export interface LanguageService {
 }
 
 export function getLanguageService(): LanguageService {
+	const htmlCompletion = new HTMLCompletion();
 	return {
 		createScanner,
 		parseHTMLDocument: document => parse(document.getText()),
-		doComplete,
+		doComplete: htmlCompletion.doComplete.bind(htmlCompletion),
+		setCompletionParticipants: htmlCompletion.setCompletionParticipants.bind(htmlCompletion),
 		doHover,
 		format,
 		findDocumentHighlights,
 		findDocumentLinks,
 		findDocumentSymbols,
-		doTagComplete
+		doTagComplete: htmlCompletion.doTagComplete.bind(htmlCompletion),
 	};
 }
