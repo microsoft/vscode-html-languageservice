@@ -238,11 +238,11 @@ export class HTMLCompletion {
 			let attribute = currentAttributeName.toLowerCase();
 			let value = extractAttributeValue(scanner.getTokenText());
 
-			completionParticipants.forEach(participant => {
+			for (let participant of completionParticipants) {
 				if (participant.onHtmlAttributeValue) {
 					participant.onHtmlAttributeValue({ tag, attribute, value, range });
 				}
-      });
+			}
 
 			tagProviders.forEach(provider => {
 				provider.collectValues(tag, attribute, value => {
@@ -271,11 +271,11 @@ export class HTMLCompletion {
 		}
 
 		function collectInsideContent(): CompletionList {
-			completionParticipants.forEach(participant => {
+			for (let participant of completionParticipants) {
 				if (participant.onHtmlContent) {
 					participant.onHtmlContent();
 				}
-			});
+			}
 
 			return collectCharacterEntityProposals();
 		}
@@ -472,5 +472,6 @@ function getWordEnd(s: string, offset: number, limit: number): number {
 }
 
 function extractAttributeValue(input: string): string {
+	// Todo: decoding
 	return input.replace(/^['"]/, '').replace(/['"]$/, '');
 }

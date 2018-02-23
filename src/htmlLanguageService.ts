@@ -130,13 +130,13 @@ export function getLanguageService(): LanguageService {
 	return {
 		createScanner,
 		parseHTMLDocument: document => parse(document.getText()),
-		doComplete: htmlCompletion.doComplete,
-		setCompletionParticipants: htmlCompletion.setCompletionParticipants,
+		doComplete: htmlCompletion.doComplete.bind(htmlCompletion),
+		setCompletionParticipants: htmlCompletion.setCompletionParticipants.bind(htmlCompletion),
 		doHover,
 		format,
 		findDocumentHighlights,
 		findDocumentLinks,
 		findDocumentSymbols,
-		doTagComplete: htmlCompletion.doTagComplete,
+		doTagComplete: htmlCompletion.doTagComplete.bind(htmlCompletion),
 	};
 }
