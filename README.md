@@ -7,13 +7,17 @@ HTML language service extracted from VSCode to be reused, e.g in the Monaco edit
 
 Why?
 ----
+
 The _vscode-html-languageservice_ contains the language smarts behind the HTML editing experience of Visual Studio Code
 and the Monaco editor.
+
+ - *findDocumentHighlights* provides the highlighted symbols for a given position.
  - *doComplete* provides completion proposals for a given location.
- - *findDocumentHighlights* provides the highlighted symbols for a given position
+ - *setCompletionParticipants* allows participant to provide suggestions for specific tokens.
+ - *doHover* provides hover information at a given location.
  - *format* formats the code at the given range.
- - *findDocumentLinks* finds all links in the document
- - *findDocumentSymbols* finds all the symbols in the document
+ - *findDocumentLinks* finds all links in the document.
+ - *findDocumentSymbols* finds all the symbols in the document.
 
 Installation
 ------------

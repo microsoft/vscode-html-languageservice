@@ -236,7 +236,7 @@ export class HTMLCompletion {
 
 			let tag = currentTag.toLowerCase();
 			let attribute = currentAttributeName.toLowerCase();
-			let value = extractAttributeValue(scanner.getTokenText());
+			let value = scanner.getTokenText();
 
 			for (let participant of completionParticipants) {
 				if (participant.onHtmlAttributeValue) {
@@ -469,9 +469,4 @@ function getWordEnd(s: string, offset: number, limit: number): number {
 		offset++;
 	}
 	return offset;
-}
-
-function extractAttributeValue(input: string): string {
-	// Todo: decoding
-	return input.replace(/^['"]/, '').replace(/['"]$/, '');
 }
