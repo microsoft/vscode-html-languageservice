@@ -82,7 +82,7 @@ suite('HTML Completion Participant', () => {
     assert.equal(attributeValueParticipationCount, 1);
     assert.equal(tag, 'div');
     assert.equal(attribute, 'class');
-    assert.equal(value, '');
+    assert.equal(value, '""');
     assert.equal(range.start.line, 0);
     assert.equal(range.start.character, 12);
     assert.equal(range.end.line, 0);
@@ -92,11 +92,14 @@ suite('HTML Completion Participant', () => {
     assert.equal(attributeValueParticipationCount, 2);
     assert.equal(tag, 'div');
     assert.equal(attribute, 'class');
-    assert.equal(value, 'foo');
+    assert.equal(value, '"foo"');
     assert.equal(range.start.line, 0);
     assert.equal(range.start.character, 12);
     assert.equal(range.end.line, 0);
     assert.equal(range.end.character, 15);
+
+    testCompletionWithParticipantsFor(`<div class=foo></div>`, [participant]);
+    assert.equal(value, '"foo"');
   });
 
   test('onHtmlContent', () => {
