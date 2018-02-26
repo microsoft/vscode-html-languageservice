@@ -247,7 +247,7 @@ export class HTMLCompletion {
 				let fullRange = getReplaceRange(valueStart, valueEnd);
 				for (let participant of completionParticipants) {
 					if (participant.onHtmlAttributeValue) {
-						participant.onHtmlAttributeValue({ tag, attribute, value: valuePrefix, range: fullRange });
+						participant.onHtmlAttributeValue({ document, position, tag, attribute, value: valuePrefix, range: fullRange });
 					}
 				}
 			}
@@ -282,7 +282,7 @@ export class HTMLCompletion {
 		function collectInsideContent(): CompletionList {
 			for (let participant of completionParticipants) {
 				if (participant.onHtmlContent) {
-					participant.onHtmlContent();
+					participant.onHtmlContent({ document, position });
 				}
 			}
 

@@ -108,15 +108,22 @@ export interface DocumentContext {
 }
 
 export interface HtmlAttributeValueContext {
+	document: TextDocument;
+	position: Position;
 	tag: string;
 	attribute: string;
 	value: string;
 	range: Range;
 }
 
+export interface HtmlContentContext {
+	document: TextDocument;
+	position: Position;
+}
+
 export interface ICompletionParticipant {
 	onHtmlAttributeValue?: (context: HtmlAttributeValueContext) => void;
-	onHtmlContent?: () => void;
+	onHtmlContent?: (context: HtmlContentContext) => void;
 }
 
 export interface LanguageService {

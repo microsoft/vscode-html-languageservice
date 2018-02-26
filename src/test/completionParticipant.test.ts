@@ -9,7 +9,7 @@ import * as htmlLanguageService from '../htmlLanguageService';
 
 import { CompletionList, TextDocument, CompletionItemKind, TextEdit, Range, Position } from 'vscode-languageserver-types';
 import { applyEdits } from './textEditSupport';
-import { HtmlAttributeValueContext } from '../htmlLanguageService';
+import { HtmlAttributeValueContext, HtmlContentContext } from '../htmlLanguageService';
 
 export interface ExpectedHtmlAttributeValue {
   tag: string;
@@ -39,6 +39,8 @@ suite('HTML Completion Participant', () => {
     const participant: htmlLanguageService.ICompletionParticipant = {
       onHtmlAttributeValue: (context: HtmlAttributeValueContext) => {
         let replaceContent = document.getText().substring(document.offsetAt(context.range.start), document.offsetAt(context.range.end));
+        assert.equal(context.document, document);
+        assert.equal(context.position, position);
         actuals.push({
           tag: context.tag, attribute: context.attribute, value: context.value, replaceContent
         });
@@ -60,7 +62,7 @@ suite('HTML Completion Participant', () => {
 
     let actuals: {}[] = [];
     const participant: htmlLanguageService.ICompletionParticipant = {
-      onHtmlContent: () => {
+      onHtmlContent: (context: HtmlContentContext) => {
         actuals.push(Object.create(null));
       }
     };
@@ -88,7 +90,7 @@ suite('HTML Completion Participant', () => {
       attribute: 'class',
       value: '',
       replaceContent: '"f"'
-    }]);    
+    }]);
     testHtmlAttributeValues('<div class="foo|"></div>', [{
       tag: 'div',
       attribute: 'class',
@@ -124,7 +126,7 @@ suite('HTML Completion Participant', () => {
       attribute: 'class',
       value: 'fo',
       replaceContent: 'foo'
-    }]);    
+    }]);
   });
 
   test('onHtmlContent', () => {
