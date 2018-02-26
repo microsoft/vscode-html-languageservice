@@ -107,8 +107,15 @@ export interface DocumentContext {
 	resolveReference(ref: string, base?: string): string;
 }
 
+export interface HtmlAttributeValueContext {
+	tag: string;
+	attribute: string;
+	value: string;
+	range: Range;
+}
+
 export interface ICompletionParticipant {
-	onHtmlAttributeValue?: (context: { tag: string, attribute: string; value: string; range: Range }) => void;
+	onHtmlAttributeValue?: (context: HtmlAttributeValueContext) => void;
 	onHtmlContent?: () => void;
 }
 

@@ -220,30 +220,39 @@ export class HTMLCompletion {
 		function collectAttributeValueSuggestions(valueStart: number, valueEnd: number = offset): CompletionList {
 			let range: Range;
 			let addQuotes: boolean;
-			if (offset > valueStart && offset <= valueEnd && text[valueStart] === '"') {
-				// inside attribute
-				if (valueEnd > offset && text[valueEnd - 1] === '"') {
-					valueEnd--;
+			let valuePrefix: string;
+			if (offset > valueStart && offset <= valueEnd && isQuote(text[valueStart])) {
+				// inside quoted attribute
+				let valueContentStart = valueStart + 1;
+				let valueContentEnd = valueEnd;
+				if (valueEnd > valueStart && text[valueEnd - 1] === text[valueStart]) { // quote at the end?
+					valueContentEnd--;
 				}
-				let wsBefore = getWordStart(text, offset, valueStart + 1);
-				let wsAfter = getWordEnd(text, offset, valueEnd);
+
+				let wsBefore = getWordStart(text, offset, valueContentStart);
+				let wsAfter = getWordEnd(text, offset, valueContentEnd);
 				range = getReplaceRange(wsBefore, wsAfter);
+				valuePrefix = offset >= valueContentStart && offset <= valueContentEnd ? text.substring(valueContentStart, offset) : '';
 				addQuotes = false;
 			} else {
 				range = getReplaceRange(valueStart, valueEnd);
+				valuePrefix = text.substring(valueStart, offset);
 				addQuotes = true;
 			}
 
 			let tag = currentTag.toLowerCase();
 			let attribute = currentAttributeName.toLowerCase();
-			let value = scanner.getTokenText();
 
-			for (let participant of completionParticipants) {
-				if (participant.onHtmlAttributeValue) {
-					participant.onHtmlAttributeValue({ tag, attribute, value, range });
+			if (completionParticipants.length > 0) {
+				let fullRange = getReplaceRange(valueStart, valueEnd);
+				for (let participant of completionParticipants) {
+					if (participant.onHtmlAttributeValue) {
+						participant.onHtmlAttributeValue({ tag, attribute, value: valuePrefix, range: fullRange });
+					}
 				}
 			}
 
+			let value = scanner.getTokenText();
 			tagProviders.forEach(provider => {
 				provider.collectValues(tag, attribute, value => {
 					let insertText = addQuotes ? '"' + value + '"' : value;
@@ -330,7 +339,8 @@ export class HTMLCompletion {
 					break;
 				case TokenType.DelimiterAssign:
 					if (scanner.getTokenEnd() === offset) {
-						return collectAttributeValueSuggestions(scanner.getTokenEnd());
+						let endPos = scanNextForEndPos(TokenType.AttributeValue);
+						return collectAttributeValueSuggestions(offset, endPos);
 					}
 					break;
 				case TokenType.AttributeValue:
@@ -440,12 +450,12 @@ export class HTMLCompletion {
 	}
 }
 
-function isWhiteSpace(s: string): boolean {
-	return /^\s*$/.test(s);
+function isQuote(s: string): boolean {
+	return /^["']*$/.test(s);
 }
 
-function isWhiteSpaceOrQuote(s: string): boolean {
-	return /^[\s"]*$/.test(s);
+function isWhiteSpace(s: string): boolean {
+	return /^\s*$/.test(s);
 }
 
 function isFollowedBy(s: string, offset: number, intialState: ScannerState, expectedToken: TokenType) {
