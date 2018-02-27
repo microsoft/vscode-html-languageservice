@@ -225,7 +225,8 @@ export class HTMLCompletion {
 				// inside quoted attribute
 				let valueContentStart = valueStart + 1;
 				let valueContentEnd = valueEnd;
-				if (valueEnd > valueStart && text[valueEnd - 1] === text[valueStart]) { // quote at the end?
+				// valueEnd points to the char after quote, which encloses the replace range
+				if (valueEnd > valueStart && text[valueEnd - 1] === text[valueStart]) {
 					valueContentEnd--;
 				}
 
