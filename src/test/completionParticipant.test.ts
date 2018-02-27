@@ -42,7 +42,10 @@ suite('HTML Completion Participant', () => {
         assert.equal(context.document, document);
         assert.equal(context.position, position);
         actuals.push({
-          tag: context.tag, attribute: context.attribute, value: context.value, replaceContent
+          tag: context.tag,
+          attribute: context.attribute,
+          value: context.value,
+          replaceContent
         });
       }
     };
