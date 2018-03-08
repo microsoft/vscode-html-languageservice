@@ -1,3 +1,7 @@
+2.1.0 / 2018-03-08
+  * Added API `htmlLanguageService.setCompletionParticipants` that allows participation in code completion
+  * provide ES modules in lib/esm
+
 2.0.6 / 2017-08-25
 ==================
   * Added new API `htmlLanguageService.doTagComplete`. Called behind a `>` or `\`, `doTagComplete` will compute a closing tag. The result is a snippet string that can be inserted behind the position, or null, if no tag completion should be performed.

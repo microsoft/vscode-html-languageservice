@@ -34,8 +34,8 @@ BEGIN THIRD PARTY
  *  and limitations under the License.
  *--------------------------------------------------------------------------------------------*/
 
-import strings = require('../utils/strings');
-import arrays = require('../utils/arrays');
+import * as strings from '../utils/strings';
+import * as arrays from '../utils/arrays';
 import * as nls from 'vscode-nls';
 let localize = nls.loadMessageBundle();
 

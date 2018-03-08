@@ -6,7 +6,7 @@
 
 import {TextDocument, Range, Position, FormattingOptions, TextEdit} from 'vscode-languageserver-types';
 import {getLanguageService} from '../htmlLanguageService';
-import assert = require('assert');
+import * as assert from 'assert';
 import {applyEdits} from './textEditSupport';
 
 suite('JSON Formatter', () => {
