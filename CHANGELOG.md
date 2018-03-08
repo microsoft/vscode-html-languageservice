@@ -1,4 +1,5 @@
 2.1.0 / 2018-03-08
+==================
   * Added API `htmlLanguageService.setCompletionParticipants` that allows participation in code completion
   * provide ES modules in lib/esm
 
