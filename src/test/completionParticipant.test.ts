@@ -8,7 +8,6 @@ import * as assert from 'assert';
 import * as htmlLanguageService from '../htmlLanguageService';
 
 import { CompletionList, TextDocument, CompletionItemKind, TextEdit, Range, Position } from 'vscode-languageserver-types';
-import { applyEdits } from './textEditSupport';
 import { HtmlAttributeValueContext, HtmlContentContext } from '../htmlLanguageService';
 
 export interface ExpectedHtmlAttributeValue {

@@ -8,7 +8,6 @@ import * as assert from 'assert';
 import * as htmlLanguageService from '../htmlLanguageService';
 
 import { CompletionList, TextDocument, CompletionItemKind, TextEdit } from 'vscode-languageserver-types';
-import { applyEdits } from './textEditSupport';
 
 export interface ItemDescription {
 	label: string;
@@ -43,7 +42,7 @@ suite('HTML Completion', () => {
 			assert.equal(match.kind, expected.kind);
 		}
 		if (expected.resultText && match.textEdit) {
-			assert.equal(applyEdits(document, [match.textEdit]), expected.resultText);
+			assert.equal(TextDocument.applyEdits(document, [match.textEdit]), expected.resultText);
 		}
 	};
 

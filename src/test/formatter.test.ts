@@ -7,7 +7,6 @@
 import {TextDocument, Range, Position, FormattingOptions, TextEdit} from 'vscode-languageserver-types';
 import {getLanguageService} from '../htmlLanguageService';
 import * as assert from 'assert';
-import {applyEdits} from './textEditSupport';
 
 suite('JSON Formatter', () => {
 
@@ -28,7 +27,7 @@ suite('JSON Formatter', () => {
 
 		var document = TextDocument.create(uri, 'html', 0, unformatted);
 		let edits = getLanguageService().format(document, range, { tabSize: 2, insertSpaces: insertSpaces, unformatted: '' });
-		let formatted  = applyEdits(document, edits);
+		let formatted  = TextDocument.applyEdits(document, edits);
 		assert.equal(formatted, expected);
 	}
 
