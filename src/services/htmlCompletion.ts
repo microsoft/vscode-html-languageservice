@@ -164,8 +164,14 @@ export class HTMLCompletion {
 			let range = getReplaceRange(nameStart, replaceEnd);
 			let value = isFollowedBy(text, nameEnd, ScannerState.AfterAttributeName, TokenType.DelimiterAssign) ? '' : '="$1"';
 			let tag = currentTag.toLowerCase();
+			let seenAttributes = Object.create(null);
 			tagProviders.forEach(provider => {
 				provider.collectAttributes(tag, (attribute, type?: string) => {
+					if (seenAttributes[attribute]) {
+						return;
+					}
+					seenAttributes[attribute] = true;
+
 					let codeSnippet = attribute;
 					let command;
 					if (type !== 'v' && value.length) {
@@ -186,11 +192,11 @@ export class HTMLCompletion {
 					});
 				});
 			});
-			collectDataAttributesSuggestions(range);
+			collectDataAttributesSuggestions(range, seenAttributes);
 			return result;
 		}
 
-		function collectDataAttributesSuggestions(range: Range) {
+		function collectDataAttributesSuggestions(range: Range, seenAttributes: { [attribute: string]: boolean }) {
 
 			const dataAttr = 'data-';
 			let dataAttributes: { [name: string]: string } = {};
@@ -199,7 +205,7 @@ export class HTMLCompletion {
 
 			function addNodeDataAttributes(node: Node) {
 				node.attributeNames.forEach(attr => {
-					if (startsWith(attr, dataAttr) && !dataAttributes[attr]) {
+					if (startsWith(attr, dataAttr) && !dataAttributes[attr] && !seenAttributes[attr]) {
 						dataAttributes[attr] = attr + '="$1"';
 					}
 				});

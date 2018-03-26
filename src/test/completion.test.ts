@@ -56,6 +56,14 @@ suite('HTML Completion', () => {
 		let position = document.positionAt(offset);
 		let htmlDoc = ls.parseHTMLDocument(document);
 		let list = ls.doComplete(document, position, htmlDoc, settings);
+
+		// no duplicate labels
+		let labels = list.items.map(i => i.label).sort();
+		let previous = null;
+		for (let label of labels) {
+			assert.ok(previous !== label, `Duplicate label ${label} in ${labels.join(',')}`);
+			previous = label;
+		}
 		if (expected.count) {
 			assert.equal(list.items, expected.count);
 		}
@@ -382,6 +390,11 @@ suite('HTML Completion', () => {
 				{ label: 'data-custom-two', resultText: '<div data-custom="test"><div data-custom-two="2"></div></div>\n <div data-custom-two="$1"' }
 			]
 		});
+		testCompletionFor(`<body data-ng-app=""><div id="first" data-ng-include=" 'firstdoc.html' "></div><div id="second" inc|></div></body>`, {
+			items: [
+				{ label: 'data-ng-include', resultText: `<body data-ng-app=""><div id="first" data-ng-include=" 'firstdoc.html' "></div><div id="second" data-ng-include="$1"></div></body>` }
+			]
+		});		
 	});
 
 	test('Case sensitivity', function () {
