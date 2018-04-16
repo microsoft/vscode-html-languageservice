@@ -8,6 +8,7 @@ import { TextDocument, Position, Range } from 'vscode-languageserver-types';
 import { FoldingRangeType, FoldingRange, FoldingRangeList, TokenType } from '../htmlLanguageTypes';
 import { binarySearch } from '../utils/arrays';
 import { createScanner } from '../parser/htmlScanner';
+import { isEmptyElement } from '../parser/htmlTags';
 
 function limitRanges(ranges: FoldingRange[], maxRanges: number) {
 	ranges = ranges.sort((r1, r2) => {
@@ -70,12 +71,6 @@ function limitRanges(ranges: FoldingRange[], maxRanges: number) {
 		}
     }
 	return ranges.filter((r, index) => (typeof nestingLevels[index] === 'number') && nestingLevels[index] < maxLevel);
-}
-
-export const EMPTY_ELEMENTS: string[] = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'menuitem', 'meta', 'param', 'source', 'track', 'wbr'];
-
-export function isEmptyElement(e: string): boolean {
-	return !!e && binarySearch(EMPTY_ELEMENTS, e.toLowerCase(), (s1: string, s2: string) => s1.localeCompare(s2)) >= 0;
 }
 
 export function getFoldingRanges(document: TextDocument, context: { maxRanges?: number}): FoldingRangeList {
