@@ -18,6 +18,7 @@ and the Monaco editor.
  - *format* formats the code at the given range.
  - *findDocumentLinks* finds all links in the document.
  - *findDocumentSymbols* finds all the symbols in the document.
+ - *htmlLanguageService.getFoldingRanges* returning folding ranges for the given document
 
 Installation
 ------------

@@ -4,13 +4,13 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 
-import { TokenType, createScanner } from '../parser/htmlScanner';
-import { TextDocument, Range } from 'vscode-languageserver-types';
+import { createScanner } from '../parser/htmlScanner';
+import { TextDocument, Range, DocumentLink } from 'vscode-languageserver-types';
 import * as paths from '../utils/paths';
 import * as strings from '../utils/strings';
 import Uri from 'vscode-uri';
 
-import { DocumentLink, DocumentContext } from '../htmlLanguageService';
+import { TokenType, DocumentContext } from '../htmlLanguageTypes';
 
 function normalizeRef(url: string, languageId: string): string {
 	let first = url[0];

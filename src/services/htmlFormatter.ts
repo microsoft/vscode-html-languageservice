@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 
-import { HTMLFormatConfiguration } from '../htmlLanguageService';
+import { HTMLFormatConfiguration } from '../htmlLanguageTypes';
 import { TextDocument, Range, TextEdit, Position } from 'vscode-languageserver-types';
 import { IBeautifyHTMLOptions, html_beautify } from '../beautify/beautify-html';
 import { repeat } from '../utils/strings';

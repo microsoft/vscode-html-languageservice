@@ -4,9 +4,9 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 
-import {TextDocument, Position, Location, Range, SymbolInformation, SymbolKind} from 'vscode-languageserver-types';
-import {HTMLDocument, Node} from '../parser/htmlParser';
-import {TokenType, createScanner, ScannerState} from '../parser/htmlScanner';
+import { TextDocument, Position, Location, Range, SymbolInformation, SymbolKind } from 'vscode-languageserver-types';
+import { HTMLDocument, Node } from '../parser/htmlParser';
+import { createScanner } from '../parser/htmlScanner';
 
 export function findDocumentSymbols(document: TextDocument, htmlDocument: HTMLDocument): SymbolInformation[] {
 	let symbols = <SymbolInformation[]>[];
@@ -22,7 +22,7 @@ function provideFileSymbolsInternal(document: TextDocument, node: Node, containe
 
 	let name = nodeToName(node);
 	let location = Location.create(document.uri, Range.create(document.positionAt(node.start), document.positionAt(node.end)));
-	let symbol = <SymbolInformation> {
+	let symbol = <SymbolInformation>{
 		name: name,
 		location: location,
 		containerName: container,
@@ -43,7 +43,7 @@ function nodeToName(node: Node): string {
 	if (node.attributes) {
 		let id = node.attributes['id'];
 		let classes = node.attributes['class'];
-		
+
 		if (id) {
 			name += `#${id.replace(/[\"\']/g, '')}`;
 		}

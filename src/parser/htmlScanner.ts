@@ -5,32 +5,8 @@
 'use strict';
 
 import * as nls from 'vscode-nls';
+import { TokenType, ScannerState, Scanner } from '../htmlLanguageService';
 let localize = nls.loadMessageBundle();
-
-export enum TokenType {
-	StartCommentTag,
-	Comment,
-	EndCommentTag,
-	StartTagOpen,
-	StartTagClose,
-	StartTagSelfClose,
-	StartTag,
-	EndTagOpen,
-	EndTagClose,
-	EndTag,
-	DelimiterAssign,
-	AttributeName,
-	AttributeValue,
-	StartDoctypeTag,
-	Doctype,
-	EndDoctypeTag,
-	Content,
-	Whitespace,
-	Unknown,
-	Script,
-	Styles,
-	EOS
-}
 
 class MultiLineStream {
 
@@ -177,31 +153,6 @@ const _LFD = '\f'.charCodeAt(0);
 const _WSP = ' '.charCodeAt(0);
 const _TAB = '\t'.charCodeAt(0);
 
-
-export enum ScannerState {
-	WithinContent,
-	AfterOpeningStartTag,
-	AfterOpeningEndTag,
-	WithinDoctype,
-	WithinTag,
-	WithinEndTag,
-	WithinComment,
-	WithinScriptContent,
-	WithinStyleContent,
-	AfterAttributeName,
-	BeforeAttributeValue
-}
-
-export interface Scanner {
-	scan(): TokenType;
-	getTokenType(): TokenType;
-	getTokenOffset(): number;
-	getTokenLength(): number;
-	getTokenEnd(): number;
-	getTokenText(): string;
-	getTokenError(): string | undefined;
-	getScannerState(): ScannerState;
-}
 
 const htmlScriptContents: { [key: string]: boolean } = {
 	'text/x-handlebars-template': true

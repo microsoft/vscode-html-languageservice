@@ -4,9 +4,10 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 
-import {HTMLDocument} from '../parser/htmlParser';
-import {TokenType, createScanner} from '../parser/htmlScanner';
-import {TextDocument, Range, Position, DocumentHighlightKind, DocumentHighlight} from 'vscode-languageserver-types';
+import { HTMLDocument } from '../parser/htmlParser';
+import { createScanner } from '../parser/htmlScanner';
+import { TextDocument, Range, Position, DocumentHighlightKind, DocumentHighlight } from 'vscode-languageserver-types';
+import { TokenType } from '../htmlLanguageTypes';
 
 export function findDocumentHighlights(document: TextDocument, position: Position, htmlDocument: HTMLDocument): DocumentHighlight[] {
 	let offset = document.offsetAt(position);

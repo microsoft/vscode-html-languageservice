@@ -6,10 +6,10 @@
 
 import { TextDocument, Position, CompletionList, CompletionItemKind, Range, TextEdit, InsertTextFormat, CompletionItem } from 'vscode-languageserver-types';
 import { HTMLDocument, Node } from '../parser/htmlParser';
-import { TokenType, createScanner, ScannerState } from '../parser/htmlScanner';
+import { createScanner} from '../parser/htmlScanner';
 import { isEmptyElement } from '../parser/htmlTags';
 import { allTagProviders } from './tagProviders';
-import { CompletionConfiguration, ICompletionParticipant } from '../htmlLanguageService';
+import { CompletionConfiguration, ICompletionParticipant, ScannerState, TokenType } from '../htmlLanguageTypes';
 import { entities } from '../parser/htmlEntities';
 
 import * as nls from 'vscode-nls';

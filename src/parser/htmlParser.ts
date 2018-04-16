@@ -4,9 +4,10 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 
-import { TokenType, createScanner } from './htmlScanner';
+import { createScanner } from './htmlScanner';
 import { findFirst } from '../utils/arrays';
 import { isEmptyElement } from './htmlTags';
+import { TokenType } from '../htmlLanguageTypes';
 
 export class Node {
 	public tag: string | undefined;

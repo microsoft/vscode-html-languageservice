@@ -5,11 +5,12 @@
 'use strict';
 
 import { HTMLDocument } from '../parser/htmlParser';
-import { TokenType, createScanner } from '../parser/htmlScanner';
+import { createScanner } from '../parser/htmlScanner';
 import { TextDocument, Range, Position, Hover, MarkedString } from 'vscode-languageserver-types';
 import { allTagProviders } from './tagProviders';
+import { TokenType } from '../htmlLanguageTypes';
 
-export function doHover(document: TextDocument, position: Position, htmlDocument: HTMLDocument): Hover| null {
+export function doHover(document: TextDocument, position: Position, htmlDocument: HTMLDocument): Hover | null {
 	let offset = document.offsetAt(position);
 	let node = htmlDocument.findNodeAt(offset);
 	if (!node || !node.tag) {
@@ -23,7 +24,7 @@ export function doHover(document: TextDocument, position: Position, htmlDocument
 			provider.collectTags((t, label) => {
 				if (t === tag) {
 					let tagLabel = open ? '<' + tag + '>' : '</' + tag + '>';
-					hover = { contents: [ { language: 'html', value: tagLabel }, MarkedString.fromPlainText(label)], range };
+					hover = { contents: [{ language: 'html', value: tagLabel }, MarkedString.fromPlainText(label)], range };
 				}
 			});
 			if (hover) {

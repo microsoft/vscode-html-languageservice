@@ -1,3 +1,7 @@
+2.1.3 / 2018-04-16
+==================
+  * Added API `htmlLanguageService.getFoldingRanges` returning folding ranges for the given document
+
 2.1.0 / 2018-03-08
 ==================
   * Added API `htmlLanguageService.setCompletionParticipants` that allows participation in code completion
