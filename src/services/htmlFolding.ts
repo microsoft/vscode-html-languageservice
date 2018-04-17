@@ -5,12 +5,12 @@
 'use strict';
 import { TextDocument, Position, Range } from 'vscode-languageserver-types';
 
-import { FoldingRangeType, FoldingRange, FoldingRangeList, TokenType } from '../htmlLanguageTypes';
+import { FoldingRangeKind, FoldingRange, TokenType } from '../htmlLanguageTypes';
 import { binarySearch } from '../utils/arrays';
 import { createScanner } from '../parser/htmlScanner';
 import { isEmptyElement } from '../parser/htmlTags';
 
-function limitRanges(ranges: FoldingRange[], maxRanges: number) {
+function limitRanges(ranges: FoldingRange[], rangeLimit: number) {
 	ranges = ranges.sort((r1, r2) => {
 		let diff = r1.startLine - r2.startLine;
 		if (diff === 0) {
@@ -63,7 +63,7 @@ function limitRanges(ranges: FoldingRange[], maxRanges: number) {
 	for (let i = 0; i < nestingLevelCounts.length; i++) {
 		let n = nestingLevelCounts[i];
 		if (n) {
-			if (n + entries > maxRanges) {
+			if (n + entries > rangeLimit) {
 				maxLevel = i;
 				break;
 			}
@@ -73,7 +73,7 @@ function limitRanges(ranges: FoldingRange[], maxRanges: number) {
 	return ranges.filter((r, index) => (typeof nestingLevels[index] === 'number') && nestingLevels[index] < maxLevel);
 }
 
-export function getFoldingRanges(document: TextDocument, context: { maxRanges?: number}): FoldingRangeList {
+export function getFoldingRanges(document: TextDocument, context: { rangeLimit?: number}): FoldingRange[] {
 	const scanner = createScanner(document.getText());
 	let token = scanner.scan();
 	let ranges: FoldingRange[] = [];
@@ -140,14 +140,14 @@ export function getFoldingRanges(document: TextDocument, context: { maxRanges?: 
 							let endLine = startLine;
 							startLine = stackElement.startLine;
 							if (endLine > startLine && prevStart !== startLine) {
-								addRange({ startLine, endLine, type: FoldingRangeType.Region });
+								addRange({ startLine, endLine, kind: FoldingRangeKind.Region });
 							}
 						}
 					}
 				} else {
 					let endLine = document.positionAt(scanner.getTokenOffset() + scanner.getTokenLength()).line;
 					if (startLine < endLine) {
-						addRange({ startLine, endLine, type: FoldingRangeType.Comment });
+						addRange({ startLine, endLine, kind: FoldingRangeKind.Comment });
 					}
 				}
 				break;
@@ -156,9 +156,9 @@ export function getFoldingRanges(document: TextDocument, context: { maxRanges?: 
 		token = scanner.scan();
 	}
 
-	let maxRanges = context && context.maxRanges || Number.MAX_VALUE;
-	if (ranges.length > maxRanges) {
-		ranges = limitRanges(ranges, maxRanges);
+	let rangeLimit = context && context.rangeLimit || Number.MAX_VALUE;
+	if (ranges.length > rangeLimit) {
+		ranges = limitRanges(ranges, rangeLimit);
 	}
-	return { ranges };
+	return ranges;
 }

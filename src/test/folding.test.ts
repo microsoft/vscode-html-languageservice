@@ -13,7 +13,7 @@ import { getFoldingRanges } from '../services/htmlFolding';
 interface ExpectedIndentRange {
 	startLine: number;
 	endLine: number;
-	type?: string;
+	kind?: string;
 }
 
 function assertRanges(lines: string[], expected: ExpectedIndentRange[], message?: string, nRanges?: number): void {
@@ -22,18 +22,18 @@ function assertRanges(lines: string[], expected: ExpectedIndentRange[], message?
 		settings: {},
 		folders: [{ name: 'foo', uri: 'test://foo' }]
 	};
-	let actual = getFoldingRanges(document, { maxRanges: nRanges })!.ranges;
+	let actual = getFoldingRanges(document, { rangeLimit: nRanges });
 
 	let actualRanges = [];
 	for (let i = 0; i < actual.length; i++) {
-		actualRanges[i] = r(actual[i].startLine, actual[i].endLine, actual[i].type);
+		actualRanges[i] = r(actual[i].startLine, actual[i].endLine, actual[i].kind);
 	}
 	actualRanges = actualRanges.sort((r1, r2) => r1.startLine - r2.startLine);
 	assert.deepEqual(actualRanges, expected, message);
 }
 
-function r(startLine: number, endLine: number, type?: string): ExpectedIndentRange {
-	return { startLine, endLine, type };
+function r(startLine: number, endLine: number, kind?: string): ExpectedIndentRange {
+	return { startLine, endLine, kind };
 }
 
 suite('HTML Folding', () => {
