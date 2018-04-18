@@ -1,5 +1,5 @@
 // copied from https://raw.githubusercontent.com/beautify-web/js-beautify/master/js/lib/beautify-css.js
-// https://github.com/beautify-web/js-beautify/commit/2009d250914ba865e81b20b264aa40736e38bf86
+// https://github.com/beautify-web/js-beautify/commit/d74c157e137e4b4eaa2443ebdc4b0ad6d300bc3e
 /*jshint curly:false, eqeqeq:true, laxbreak:true, noempty:false */
 /* AUTO-GENERATED. DO NOT MODIFY. */
 /*
@@ -337,7 +337,7 @@ function Beautifier(source_text, options) {
             preindent_index += 1;
         }
         baseIndentString = source_text.substring(0, preindent_index);
-        js_source_text = source_text.substring(preindent_index);
+        source_text = source_text.substring(preindent_index);
     }
 
 
@@ -542,6 +542,7 @@ function Beautifier(source_text, options) {
                             print_string(eatString(')'));
                         } else {
                             pos--;
+                            parenLevel++;
                         }
                     }
                 } else {
@@ -586,7 +587,9 @@ function Beautifier(source_text, options) {
                 if (whiteRe.test(ch)) {
                     ch = '';
                 }
-
+            } else if (ch === '!') { // !important
+                print_string(' ');
+                print_string(ch);
             } else {
                 preserveSingleSpace(isAfterSpace);
                 print_string(ch);
