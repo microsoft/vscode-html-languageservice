@@ -69,11 +69,21 @@ function limitRanges(ranges: FoldingRange[], rangeLimit: number) {
 			}
 			entries += n;
 		}
-    }
-	return ranges.filter((r, index) => (typeof nestingLevels[index] === 'number') && nestingLevels[index] < maxLevel);
+	}
+
+	let result = [];
+	for (let i = 0; i < ranges.length; i++) {
+		let level = nestingLevels[i];
+		if (typeof level === 'number') {
+			if (level < maxLevel || (level === maxLevel && entries++ < rangeLimit)) {
+				result.push(ranges[i]);
+			}
+		}
+	}
+	return result;
 }
 
-export function getFoldingRanges(document: TextDocument, context: { rangeLimit?: number}): FoldingRange[] {
+export function getFoldingRanges(document: TextDocument, context: { rangeLimit?: number }): FoldingRange[] {
 	const scanner = createScanner(document.getText());
 	let token = scanner.scan();
 	let ranges: FoldingRange[] = [];
