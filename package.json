@@ -24,8 +24,8 @@
     "rimraf": "^2.6.2"
   },
   "dependencies": {
-    "vscode-languageserver-types": "^3.6.1",
-    "vscode-nls": "^3.2.1",
+    "vscode-languageserver-types": "^3.7.2",
+    "vscode-nls": "^3.2.2",
     "vscode-uri": "^1.0.3"
   },
   "scripts": {
