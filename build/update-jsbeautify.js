@@ -90,3 +90,30 @@ function update(repoId, repoPath, dest, addHeader, patch) {
 update('beautify-web/js-beautify', 'js/lib/beautify-html.js', './src/beautify/beautify-html.js', true);
 update('beautify-web/js-beautify', 'js/lib/beautify-css.js', './src/beautify/beautify-css.js', true);
 update('beautify-web/js-beautify', 'LICENSE', './src/beautify/beautify-license');
+
+// ESM version
+update('beautify-web/js-beautify', 'js/lib/beautify-html.js', './src/beautify/esm/beautify-html.js', true, function (contents) {
+    contents = contents.replace(
+        /\(function\(\) \{\nvar legacy_beautify_html/m,
+        `import { js_beautify } from "./beautify.js";
+import { css_beautify } from "./beautify-css.js";
+
+var legacy_beautify_html`
+    );
+    contents = contents.substring(0, contents.indexOf('var style_html = legacy_beautify_html;'));
+    contents = contents + `
+export function html_beautify(html_source, options) {
+    return legacy_beautify_html(html_source, options, js_beautify, css_beautify);
+}
+`;
+
+    return contents;
+});
+update('beautify-web/js-beautify', 'js/lib/beautify-css.js', './src/beautify/esm/beautify-css.js', true, function (contents) {
+    contents = contents.replace(
+        /\(function\(\) \{\nvar legacy_beautify_css/m,
+        'export const css_beautify'
+    );
+    contents = contents.substring(0, contents.indexOf('var css_beautify = legacy_beautify_css;'));
+    return contents;
+});

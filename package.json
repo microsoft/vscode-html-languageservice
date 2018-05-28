@@ -32,7 +32,7 @@
     "prepublishOnly": "npm run clean && npm run compile-esm && npm run test",
     "postpublish": "node ./build/post-publish.js",
     "compile": "tsc -p ./src && cpy ./src/beautify/*.js ./lib/umd/beautify",
-    "compile-esm": "tsc -p ./src/tsconfig.esm.json && cpy ./src/beautify/*.js ./lib/esm/beautify",
+    "compile-esm": "tsc -p ./src/tsconfig.esm.json && cpy ./src/beautify/esm/*.js ./lib/esm/beautify",
     "watch": "cpy ./src/beautify/*.js ./lib/umd/beautify && tsc -w -p ./src",
     "clean": "rimraf lib",
     "test": "npm run compile && mocha && npm run lint",
