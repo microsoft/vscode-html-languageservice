@@ -74,8 +74,8 @@
     });
 */
 
-import { js_beautify } from "./beautify.js";
-import { css_beautify } from "./beautify-css.js";
+import { js_beautify } from "./beautify";
+import { css_beautify } from "./beautify-css";
 
 var legacy_beautify_html =
 /******/ (function(modules) { // webpackBootstrap

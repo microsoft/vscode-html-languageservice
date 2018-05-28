@@ -95,8 +95,8 @@ update('beautify-web/js-beautify', 'LICENSE', './src/beautify/beautify-license')
 update('beautify-web/js-beautify', 'js/lib/beautify-html.js', './src/beautify/esm/beautify-html.js', true, function (contents) {
     contents = contents.replace(
         /\(function\(\) \{\nvar legacy_beautify_html/m,
-        `import { js_beautify } from "./beautify.js";
-import { css_beautify } from "./beautify-css.js";
+        `import { js_beautify } from "./beautify";
+import { css_beautify } from "./beautify-css";
 
 var legacy_beautify_html`
     );
