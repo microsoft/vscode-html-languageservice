@@ -18,10 +18,11 @@
     "@types/mocha": "2.2.33",
     "@types/node": "7.0.43",
     "cpy-cli": "^1.0.1",
+    "js-beautify": "^1.8.0-rc2",
     "mocha": "^5.2.0",
+    "rimraf": "^2.6.2",
     "tslint": "^5.10.0",
-    "typescript": "^2.8.3",
-    "rimraf": "^2.6.2"
+    "typescript": "^2.8.3"
   },
   "dependencies": {
     "vscode-languageserver-types": "^3.7.2",
@@ -38,7 +39,7 @@
     "test": "npm run compile && mocha && npm run lint",
     "lint": "tslint src/**/*.ts",
     "install-types-next": "npm install vscode-languageserver-types@next -f -S",
-    "update-jsbeautify": "node ./build/update-jsbeautify.js",
+    "update-jsbeautify": "npm install js-beautify@next && node ./build/update-jsbeautify.js",
     "preversion": "npm test",
     "postversion": "git push && git push --tags"
   }

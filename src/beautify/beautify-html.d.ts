@@ -90,7 +90,7 @@ export interface IBeautifyHTMLOptions {
      * wrap only when line length is reached ('auto')
      * default auto
      */
-    wrap_attributes: 'auto' | 'force' | 'force-expand-multiline' | 'force-aligned';
+    wrap_attributes: 'auto' | 'force' | 'force-expand-multiline' | 'force-aligned' | 'aligned-multiple';
 
     /* 
      * end of line character to use

@@ -1,5 +1,5 @@
-// copied from https://raw.githubusercontent.com/beautify-web/js-beautify/master/js/lib/beautify-css.js
-// https://github.com/beautify-web/js-beautify/commit/d74c157e137e4b4eaa2443ebdc4b0ad6d300bc3e
+// copied from js-beautify/js/lib/beautify-css.js
+// version: 1.8.0-rc2
 /*jshint curly:false, eqeqeq:true, laxbreak:true, noempty:false */
 /* AUTO-GENERATED. DO NOT MODIFY. */
 /*
@@ -101,18 +101,35 @@ export const css_beautify =
 /******/ 	// expose the module cache
 /******/ 	__webpack_require__.c = installedModules;
 /******/
-/******/ 	// identity function for calling harmony imports with the correct context
-/******/ 	__webpack_require__.i = function(value) { return value; };
-/******/
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
-/******/ 			Object.defineProperty(exports, name, {
-/******/ 				configurable: false,
-/******/ 				enumerable: true,
-/******/ 				get: getter
-/******/ 			});
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
 /******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
 /******/ 	};
 /******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
@@ -130,498 +147,68 @@ export const css_beautify =
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "";
 /******/
+/******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 4);
+/******/ 	return __webpack_require__(__webpack_require__.s = 8);
 /******/ })
 /************************************************************************/
 /******/ ([
-/* 0 */
-/***/ (function(module, exports, __webpack_require__) {
+/* 0 */,
+/* 1 */,
+/* 2 */
+/***/ (function(module, exports) {
 
 /*jshint curly:true, eqeqeq:true, laxbreak:true, noempty:false */
 /*
 
-  The MIT License (MIT)
+    The MIT License (MIT)
 
-  Copyright (c) 2007-2017 Einar Lielmanis, Liam Newman, and contributors.
+    Copyright (c) 2007-2017 Einar Lielmanis, Liam Newman, and contributors.
 
-  Permission is hereby granted, free of charge, to any person
-  obtaining a copy of this software and associated documentation files
-  (the "Software"), to deal in the Software without restriction,
-  including without limitation the rights to use, copy, modify, merge,
-  publish, distribute, sublicense, and/or sell copies of the Software,
-  and to permit persons to whom the Software is furnished to do so,
-  subject to the following conditions:
+    Permission is hereby granted, free of charge, to any person
+    obtaining a copy of this software and associated documentation files
+    (the "Software"), to deal in the Software without restriction,
+    including without limitation the rights to use, copy, modify, merge,
+    publish, distribute, sublicense, and/or sell copies of the Software,
+    and to permit persons to whom the Software is furnished to do so,
+    subject to the following conditions:
 
-  The above copyright notice and this permission notice shall be
-  included in all copies or substantial portions of the Software.
+    The above copyright notice and this permission notice shall be
+    included in all copies or substantial portions of the Software.
 
-  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-  MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-  NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
-  BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
-  ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-  SOFTWARE.
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+    BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+    ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+    CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
 */
 
-var mergeOpts = __webpack_require__(2).mergeOpts;
-var acorn = __webpack_require__(1);
-var Output = __webpack_require__(3).Output;
+function mergeOpts(allOptions, targetType) {
+  var finalOpts = {};
+  var name;
 
-
-var lineBreak = acorn.lineBreak;
-var allLineBreaks = acorn.allLineBreaks;
-
-function Beautifier(source_text, options) {
-    options = options || {};
-
-    // Allow the setting of language/file-type specific options
-    // with inheritance of overall settings
-    options = mergeOpts(options, 'css');
-
-    source_text = source_text || '';
-
-    var newlinesFromLastWSEat = 0;
-    var indentSize = options.indent_size ? parseInt(options.indent_size, 10) : 4;
-    var indentCharacter = options.indent_char || ' ';
-    var preserve_newlines = (options.preserve_newlines === undefined) ? false : options.preserve_newlines;
-    var selectorSeparatorNewline = (options.selector_separator_newline === undefined) ? true : options.selector_separator_newline;
-    var end_with_newline = (options.end_with_newline === undefined) ? false : options.end_with_newline;
-    var newline_between_rules = (options.newline_between_rules === undefined) ? true : options.newline_between_rules;
-    var space_around_combinator = (options.space_around_combinator === undefined) ? false : options.space_around_combinator;
-    space_around_combinator = space_around_combinator || ((options.space_around_selector_separator === undefined) ? false : options.space_around_selector_separator);
-    var eol = options.eol ? options.eol : 'auto';
-
-    if (options.indent_with_tabs) {
-        indentCharacter = '\t';
-        indentSize = 1;
+  for (name in allOptions) {
+    if (name !== targetType) {
+      finalOpts[name] = allOptions[name];
     }
+  }
 
-    if (eol === 'auto') {
-        eol = '\n';
-        if (source_text && lineBreak.test(source_text || '')) {
-            eol = source_text.match(lineBreak)[0];
-        }
+  //merge in the per type settings for the targetType
+  if (targetType in allOptions) {
+    for (name in allOptions[targetType]) {
+      finalOpts[name] = allOptions[targetType][name];
     }
-
-    eol = eol.replace(/\\r/, '\r').replace(/\\n/, '\n');
-
-    // HACK: newline parsing inconsistent. This brute force normalizes the input.
-    source_text = source_text.replace(allLineBreaks, '\n');
-
-    // tokenizer
-    var whiteRe = /^\s+$/;
-
-    var pos = -1,
-        ch;
-    var parenLevel = 0;
-
-    function next() {
-        ch = source_text.charAt(++pos);
-        return ch || '';
-    }
-
-    function peek(skipWhitespace) {
-        var result = '';
-        var prev_pos = pos;
-        if (skipWhitespace) {
-            eatWhitespace();
-        }
-        result = source_text.charAt(pos + 1) || '';
-        pos = prev_pos - 1;
-        next();
-        return result;
-    }
-
-    function eatString(endChars) {
-        var start = pos;
-        while (next()) {
-            if (ch === "\\") {
-                next();
-            } else if (endChars.indexOf(ch) !== -1) {
-                break;
-            } else if (ch === "\n") {
-                break;
-            }
-        }
-        return source_text.substring(start, pos + 1);
-    }
-
-    function peekString(endChar) {
-        var prev_pos = pos;
-        var str = eatString(endChar);
-        pos = prev_pos - 1;
-        next();
-        return str;
-    }
-
-    function eatWhitespace(preserve_newlines_local) {
-        var result = 0;
-        while (whiteRe.test(peek())) {
-            next();
-            if (ch === '\n' && preserve_newlines_local && preserve_newlines) {
-                output.add_new_line(true);
-                result++;
-            }
-        }
-        newlinesFromLastWSEat = result;
-        return result;
-    }
-
-    function skipWhitespace() {
-        var result = '';
-        if (ch && whiteRe.test(ch)) {
-            result = ch;
-        }
-        while (whiteRe.test(next())) {
-            result += ch;
-        }
-        return result;
-    }
-
-    function eatComment() {
-        var start = pos;
-        var singleLine = peek() === "/";
-        next();
-        while (next()) {
-            if (!singleLine && ch === "*" && peek() === "/") {
-                next();
-                break;
-            } else if (singleLine && ch === "\n") {
-                return source_text.substring(start, pos);
-            }
-        }
-
-        return source_text.substring(start, pos) + ch;
-    }
-
-
-    function lookBack(str) {
-        return source_text.substring(pos - str.length, pos).toLowerCase() ===
-            str;
-    }
-
-    // Nested pseudo-class if we are insideRule
-    // and the next special character found opens
-    // a new block
-    function foundNestedPseudoClass() {
-        var openParen = 0;
-        for (var i = pos + 1; i < source_text.length; i++) {
-            var ch = source_text.charAt(i);
-            if (ch === "{") {
-                return true;
-            } else if (ch === '(') {
-                // pseudoclasses can contain ()
-                openParen += 1;
-            } else if (ch === ')') {
-                if (openParen === 0) {
-                    return false;
-                }
-                openParen -= 1;
-            } else if (ch === ";" || ch === "}") {
-                return false;
-            }
-        }
-        return false;
-    }
-
-    // printer
-    var baseIndentString = '';
-    var preindent_index = 0;
-    if (source_text && source_text.length) {
-        while ((source_text.charAt(preindent_index) === ' ' ||
-                source_text.charAt(preindent_index) === '\t')) {
-            preindent_index += 1;
-        }
-        baseIndentString = source_text.substring(0, preindent_index);
-        source_text = source_text.substring(preindent_index);
-    }
-
-
-    var singleIndent = new Array(indentSize + 1).join(indentCharacter);
-    var indentLevel;
-    var nestedLevel;
-    var output;
-
-    function print_string(output_string) {
-        if (output.just_added_newline()) {
-            output.set_indent(indentLevel);
-        }
-        output.add_token(output_string);
-    }
-
-    function preserveSingleSpace(isAfterSpace) {
-        if (isAfterSpace) {
-            output.space_before_token = true;
-        }
-    }
-
-    function indent() {
-        indentLevel++;
-    }
-
-    function outdent() {
-        if (indentLevel > 0) {
-            indentLevel--;
-        }
-    }
-
-    /*_____________________--------------------_____________________*/
-
-    this.beautify = function() {
-        // reset
-        output = new Output(singleIndent, baseIndentString);
-        indentLevel = 0;
-        nestedLevel = 0;
-
-        pos = -1;
-        ch = null;
-        parenLevel = 0;
-
-        var insideRule = false;
-        var insidePropertyValue = false;
-        var enteringConditionalGroup = false;
-        var top_ch = '';
-        var last_top_ch = '';
-
-        while (true) {
-            var whitespace = skipWhitespace();
-            var isAfterSpace = whitespace !== '';
-            var isAfterNewline = whitespace.indexOf('\n') !== -1;
-            last_top_ch = top_ch;
-            top_ch = ch;
-
-            if (!ch) {
-                break;
-            } else if (ch === '/' && peek() === '*') { /* css comment */
-                var header = indentLevel === 0;
-
-                if (isAfterNewline || header) {
-                    output.add_new_line();
-                }
-
-                print_string(eatComment());
-                output.add_new_line();
-                if (header) {
-                    output.add_new_line(true);
-                }
-            } else if (ch === '/' && peek() === '/') { // single line comment
-                if (!isAfterNewline && last_top_ch !== '{') {
-                    output.trim(true);
-                }
-                output.space_before_token = true;
-                print_string(eatComment());
-                output.add_new_line();
-            } else if (ch === '@') {
-                preserveSingleSpace(isAfterSpace);
-
-                // deal with less propery mixins @{...}
-                if (peek() === '{') {
-                    print_string(eatString('}'));
-                } else {
-                    print_string(ch);
-
-                    // strip trailing space, if present, for hash property checks
-                    var variableOrRule = peekString(": ,;{}()[]/='\"");
-
-                    if (variableOrRule.match(/[ :]$/)) {
-                        // we have a variable or pseudo-class, add it and insert one space before continuing
-                        next();
-                        variableOrRule = eatString(": ").replace(/\s$/, '');
-                        print_string(variableOrRule);
-                        output.space_before_token = true;
-                    }
-
-                    variableOrRule = variableOrRule.replace(/\s$/, '');
-
-                    // might be a nesting at-rule
-                    if (variableOrRule in this.NESTED_AT_RULE) {
-                        nestedLevel += 1;
-                        if (variableOrRule in this.CONDITIONAL_GROUP_RULE) {
-                            enteringConditionalGroup = true;
-                        }
-                    }
-                }
-            } else if (ch === '#' && peek() === '{') {
-                preserveSingleSpace(isAfterSpace);
-                print_string(eatString('}'));
-            } else if (ch === '{') {
-                if (peek(true) === '}') {
-                    eatWhitespace();
-                    next();
-                    output.space_before_token = true;
-                    print_string("{}");
-                    if (!eatWhitespace(true)) {
-                        output.add_new_line();
-                    }
-
-                    if (newlinesFromLastWSEat < 2 && newline_between_rules && indentLevel === 0) {
-                        output.add_new_line(true);
-                    }
-                } else {
-                    indent();
-                    output.space_before_token = true;
-                    print_string(ch);
-                    if (!eatWhitespace(true)) {
-                        output.add_new_line();
-                    }
-
-                    // when entering conditional groups, only rulesets are allowed
-                    if (enteringConditionalGroup) {
-                        enteringConditionalGroup = false;
-                        insideRule = (indentLevel > nestedLevel);
-                    } else {
-                        // otherwise, declarations are also allowed
-                        insideRule = (indentLevel >= nestedLevel);
-                    }
-                }
-            } else if (ch === '}') {
-                outdent();
-                output.add_new_line();
-                print_string(ch);
-                insideRule = false;
-                insidePropertyValue = false;
-                if (nestedLevel) {
-                    nestedLevel--;
-                }
-
-                if (!eatWhitespace(true)) {
-                    output.add_new_line();
-                }
-
-                if (newlinesFromLastWSEat < 2 && newline_between_rules && indentLevel === 0) {
-                    output.add_new_line(true);
-                }
-            } else if (ch === ":") {
-                eatWhitespace();
-                if ((insideRule || enteringConditionalGroup) &&
-                    !(lookBack("&") || foundNestedPseudoClass()) &&
-                    !lookBack("(")) {
-                    // 'property: value' delimiter
-                    // which could be in a conditional group query
-                    print_string(':');
-                    if (!insidePropertyValue) {
-                        insidePropertyValue = true;
-                        output.space_before_token = true;
-                    }
-                } else {
-                    // sass/less parent reference don't use a space
-                    // sass nested pseudo-class don't use a space
-
-                    // preserve space before pseudoclasses/pseudoelements, as it means "in any child"
-                    if (lookBack(" ")) {
-                        output.space_before_token = true;
-                    }
-                    if (peek() === ":") {
-                        // pseudo-element
-                        next();
-                        print_string("::");
-                    } else {
-                        // pseudo-class
-                        print_string(':');
-                    }
-                }
-            } else if (ch === '"' || ch === '\'') {
-                preserveSingleSpace(isAfterSpace);
-                print_string(eatString(ch));
-            } else if (ch === ';') {
-                insidePropertyValue = false;
-                print_string(ch);
-                if (!eatWhitespace(true)) {
-                    output.add_new_line();
-                }
-            } else if (ch === '(') { // may be a url
-                if (lookBack("url")) {
-                    print_string(ch);
-                    eatWhitespace();
-                    if (next()) {
-                        if (ch !== ')' && ch !== '"' && ch !== '\'') {
-                            print_string(eatString(')'));
-                        } else {
-                            pos--;
-                            parenLevel++;
-                        }
-                    }
-                } else {
-                    parenLevel++;
-                    preserveSingleSpace(isAfterSpace);
-                    print_string(ch);
-                    eatWhitespace();
-                }
-            } else if (ch === ')') {
-                print_string(ch);
-                parenLevel--;
-            } else if (ch === ',') {
-                print_string(ch);
-                if (!eatWhitespace(true) && selectorSeparatorNewline && !insidePropertyValue && parenLevel < 1) {
-                    output.add_new_line();
-                } else {
-                    output.space_before_token = true;
-                }
-            } else if ((ch === '>' || ch === '+' || ch === '~') &&
-                !insidePropertyValue && parenLevel < 1) {
-                //handle combinator spacing
-                if (space_around_combinator) {
-                    output.space_before_token = true;
-                    print_string(ch);
-                    output.space_before_token = true;
-                } else {
-                    print_string(ch);
-                    eatWhitespace();
-                    // squash extra whitespace
-                    if (ch && whiteRe.test(ch)) {
-                        ch = '';
-                    }
-                }
-            } else if (ch === ']') {
-                print_string(ch);
-            } else if (ch === '[') {
-                preserveSingleSpace(isAfterSpace);
-                print_string(ch);
-            } else if (ch === '=') { // no whitespace before or after
-                eatWhitespace();
-                print_string('=');
-                if (whiteRe.test(ch)) {
-                    ch = '';
-                }
-            } else if (ch === '!') { // !important
-                print_string(' ');
-                print_string(ch);
-            } else {
-                preserveSingleSpace(isAfterSpace);
-                print_string(ch);
-            }
-        }
-
-        var sweetCode = output.get_code(end_with_newline, eol);
-
-        return sweetCode;
-    };
-
-    // https://developer.mozilla.org/en-US/docs/Web/CSS/At-rule
-    this.NESTED_AT_RULE = {
-        "@page": true,
-        "@font-face": true,
-        "@keyframes": true,
-        // also in CONDITIONAL_GROUP_RULE below
-        "@media": true,
-        "@supports": true,
-        "@document": true
-    };
-    this.CONDITIONAL_GROUP_RULE = {
-        "@media": true,
-        "@supports": true,
-        "@document": true
-    };
+  }
+  return finalOpts;
 }
 
-module.exports.Beautifier = Beautifier;
-
+module.exports.mergeOpts = mergeOpts;
 
 /***/ }),
-/* 1 */
+/* 3 */
 /***/ (function(module, exports) {
 
 /* jshint curly: false */
@@ -665,86 +252,31 @@ exports.allLineBreaks = new RegExp(exports.lineBreak.source, 'g');
 // Test whether a given character code starts an identifier.
 
 exports.isIdentifierStart = function(code) {
-    // permit $ (36) and @ (64). @ is used in ES7 decorators.
-    if (code < 65) return code === 36 || code === 64;
-    // 65 through 91 are uppercase letters.
-    if (code < 91) return true;
-    // permit _ (95).
-    if (code < 97) return code === 95;
-    // 97 through 123 are lowercase letters.
-    if (code < 123) return true;
-    return code >= 0xaa && nonASCIIidentifierStart.test(String.fromCharCode(code));
+  // permit $ (36) and @ (64). @ is used in ES7 decorators.
+  if (code < 65) return code === 36 || code === 64;
+  // 65 through 91 are uppercase letters.
+  if (code < 91) return true;
+  // permit _ (95).
+  if (code < 97) return code === 95;
+  // 97 through 123 are lowercase letters.
+  if (code < 123) return true;
+  return code >= 0xaa && nonASCIIidentifierStart.test(String.fromCharCode(code));
 };
 
 // Test whether a given character is part of an identifier.
 
 exports.isIdentifierChar = function(code) {
-    if (code < 48) return code === 36;
-    if (code < 58) return true;
-    if (code < 65) return false;
-    if (code < 91) return true;
-    if (code < 97) return code === 95;
-    if (code < 123) return true;
-    return code >= 0xaa && nonASCIIidentifier.test(String.fromCharCode(code));
+  if (code < 48) return code === 36;
+  if (code < 58) return true;
+  if (code < 65) return false;
+  if (code < 91) return true;
+  if (code < 97) return code === 95;
+  if (code < 123) return true;
+  return code >= 0xaa && nonASCIIidentifier.test(String.fromCharCode(code));
 };
 
-
 /***/ }),
-/* 2 */
-/***/ (function(module, exports) {
-
-/*jshint curly:true, eqeqeq:true, laxbreak:true, noempty:false */
-/*
-
-    The MIT License (MIT)
-
-    Copyright (c) 2007-2017 Einar Lielmanis, Liam Newman, and contributors.
-
-    Permission is hereby granted, free of charge, to any person
-    obtaining a copy of this software and associated documentation files
-    (the "Software"), to deal in the Software without restriction,
-    including without limitation the rights to use, copy, modify, merge,
-    publish, distribute, sublicense, and/or sell copies of the Software,
-    and to permit persons to whom the Software is furnished to do so,
-    subject to the following conditions:
-
-    The above copyright notice and this permission notice shall be
-    included in all copies or substantial portions of the Software.
-
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
-    BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
-    ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-    CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-    SOFTWARE.
-*/
-
-function mergeOpts(allOptions, targetType) {
-    var finalOpts = {};
-    var name;
-
-    for (name in allOptions) {
-        if (name !== targetType) {
-            finalOpts[name] = allOptions[name];
-        }
-    }
-
-    //merge in the per type settings for the targetType
-    if (targetType in allOptions) {
-        for (name in allOptions[targetType]) {
-            finalOpts[name] = allOptions[targetType][name];
-        }
-    }
-    return finalOpts;
-}
-
-module.exports.mergeOpts = mergeOpts;
-
-
-/***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports) {
 
 /*jshint curly:true, eqeqeq:true, laxbreak:true, noempty:false */
@@ -776,215 +308,217 @@ module.exports.mergeOpts = mergeOpts;
 */
 
 function OutputLine(parent) {
-    var _character_count = 0;
-    // use indent_count as a marker for lines that have preserved indentation
-    var _indent_count = -1;
+  var _character_count = 0;
+  // use indent_count as a marker for lines that have preserved indentation
+  var _indent_count = -1;
 
-    var _items = [];
-    var _empty = true;
+  var _items = [];
+  var _empty = true;
 
-    this.set_indent = function(level) {
-        _character_count = parent.baseIndentLength + level * parent.indent_length;
-        _indent_count = level;
-    };
+  this.set_indent = function(level) {
+    _character_count = parent.baseIndentLength + level * parent.indent_length;
+    _indent_count = level;
+  };
 
-    this.get_character_count = function() {
-        return _character_count;
-    };
+  this.get_character_count = function() {
+    return _character_count;
+  };
 
-    this.is_empty = function() {
-        return _empty;
-    };
+  this.is_empty = function() {
+    return _empty;
+  };
 
-    this.last = function() {
-        if (!this._empty) {
-            return _items[_items.length - 1];
-        } else {
-            return null;
-        }
-    };
+  this.last = function() {
+    if (!this._empty) {
+      return _items[_items.length - 1];
+    } else {
+      return null;
+    }
+  };
 
-    this.push = function(input) {
-        _items.push(input);
-        _character_count += input.length;
-        _empty = false;
-    };
+  this.push = function(input) {
+    _items.push(input);
+    _character_count += input.length;
+    _empty = false;
+  };
 
-    this.pop = function() {
-        var item = null;
-        if (!_empty) {
-            item = _items.pop();
-            _character_count -= item.length;
-            _empty = _items.length === 0;
-        }
-        return item;
-    };
+  this.pop = function() {
+    var item = null;
+    if (!_empty) {
+      item = _items.pop();
+      _character_count -= item.length;
+      _empty = _items.length === 0;
+    }
+    return item;
+  };
 
-    this.remove_indent = function() {
-        if (_indent_count > 0) {
-            _indent_count -= 1;
-            _character_count -= parent.indent_length;
-        }
-    };
+  this.remove_indent = function() {
+    if (_indent_count > 0) {
+      _indent_count -= 1;
+      _character_count -= parent.indent_length;
+    }
+  };
 
-    this.trim = function() {
-        while (this.last() === ' ') {
-            _items.pop();
-            _character_count -= 1;
-        }
-        _empty = _items.length === 0;
-    };
+  this.trim = function() {
+    while (this.last() === ' ') {
+      _items.pop();
+      _character_count -= 1;
+    }
+    _empty = _items.length === 0;
+  };
 
-    this.toString = function() {
-        var result = '';
-        if (!this._empty) {
-            if (_indent_count >= 0) {
-                result = parent.indent_cache[_indent_count];
-            }
-            result += _items.join('');
-        }
-        return result;
-    };
+  this.toString = function() {
+    var result = '';
+    if (!this._empty) {
+      if (_indent_count >= 0) {
+        result = parent.indent_cache[_indent_count];
+      }
+      result += _items.join('');
+    }
+    return result;
+  };
 }
 
 function Output(indent_string, baseIndentString) {
-    baseIndentString = baseIndentString || '';
-    this.indent_cache = [baseIndentString];
-    this.baseIndentLength = baseIndentString.length;
-    this.indent_length = indent_string.length;
-    this.raw = false;
+  baseIndentString = baseIndentString || '';
+  this.indent_cache = [baseIndentString];
+  this.baseIndentLength = baseIndentString.length;
+  this.indent_length = indent_string.length;
+  this.raw = false;
 
-    var lines = [];
-    this.baseIndentString = baseIndentString;
-    this.indent_string = indent_string;
-    this.previous_line = null;
-    this.current_line = null;
+  var lines = [];
+  this.baseIndentString = baseIndentString;
+  this.indent_string = indent_string;
+  this.previous_line = null;
+  this.current_line = null;
+  this.space_before_token = false;
+
+  this.add_outputline = function() {
+    this.previous_line = this.current_line;
+    this.current_line = new OutputLine(this);
+    lines.push(this.current_line);
+  };
+
+  // initialize
+  this.add_outputline();
+
+
+  this.get_line_number = function() {
+    return lines.length;
+  };
+
+  // Using object instead of string to allow for later expansion of info about each line
+  this.add_new_line = function(force_newline) {
+    if (this.get_line_number() === 1 && this.just_added_newline()) {
+      return false; // no newline on start of file
+    }
+
+    if (force_newline || !this.just_added_newline()) {
+      if (!this.raw) {
+        this.add_outputline();
+      }
+      return true;
+    }
+
+    return false;
+  };
+
+  this.get_code = function(end_with_newline, eol) {
+    var sweet_code = lines.join('\n').replace(/[\r\n\t ]+$/, '');
+
+    if (end_with_newline) {
+      sweet_code += '\n';
+    }
+
+    if (eol !== '\n') {
+      sweet_code = sweet_code.replace(/[\n]/g, eol);
+    }
+
+    return sweet_code;
+  };
+
+  this.set_indent = function(level) {
+    // Never indent your first output indent at the start of the file
+    if (lines.length > 1) {
+      while (level >= this.indent_cache.length) {
+        this.indent_cache.push(this.indent_cache[this.indent_cache.length - 1] + this.indent_string);
+      }
+
+      this.current_line.set_indent(level);
+      return true;
+    }
+    this.current_line.set_indent(0);
+    return false;
+  };
+
+  this.add_raw_token = function(token) {
+    for (var x = 0; x < token.newlines; x++) {
+      this.add_outputline();
+    }
+    this.current_line.push(token.whitespace_before);
+    this.current_line.push(token.text);
     this.space_before_token = false;
+  };
 
-    this.add_outputline = function() {
-        this.previous_line = this.current_line;
-        this.current_line = new OutputLine(this);
-        lines.push(this.current_line);
-    };
+  this.add_token = function(printable_token) {
+    this.add_space_before_token();
+    this.current_line.push(printable_token);
+  };
 
-    // initialize
-    this.add_outputline();
+  this.add_space_before_token = function() {
+    if (this.space_before_token && !this.just_added_newline()) {
+      this.current_line.push(' ');
+    }
+    this.space_before_token = false;
+  };
 
+  this.remove_indent = function(index) {
+    var output_length = lines.length;
+    while (index < output_length) {
+      lines[index].remove_indent();
+      index++;
+    }
+  };
 
-    this.get_line_number = function() {
-        return lines.length;
-    };
+  this.trim = function(eat_newlines) {
+    eat_newlines = (eat_newlines === undefined) ? false : eat_newlines;
 
-    // Using object instead of string to allow for later expansion of info about each line
-    this.add_new_line = function(force_newline) {
-        if (this.get_line_number() === 1 && this.just_added_newline()) {
-            return false; // no newline on start of file
-        }
+    this.current_line.trim(indent_string, baseIndentString);
 
-        if (force_newline || !this.just_added_newline()) {
-            if (!this.raw) {
-                this.add_outputline();
-            }
-            return true;
-        }
+    while (eat_newlines && lines.length > 1 &&
+      this.current_line.is_empty()) {
+      lines.pop();
+      this.current_line = lines[lines.length - 1];
+      this.current_line.trim();
+    }
 
-        return false;
-    };
+    this.previous_line = lines.length > 1 ? lines[lines.length - 2] : null;
+  };
 
-    this.get_code = function(end_with_newline, eol) {
-        var sweet_code = lines.join('\n').replace(/[\r\n\t ]+$/, '');
+  this.just_added_newline = function() {
+    return this.current_line.is_empty();
+  };
 
-        if (end_with_newline) {
-            sweet_code += '\n';
-        }
+  this.just_added_blankline = function() {
+    if (this.just_added_newline()) {
+      if (lines.length === 1) {
+        return true; // start of the file and newline = blank
+      }
 
-        if (eol !== '\n') {
-            sweet_code = sweet_code.replace(/[\n]/g, eol);
-        }
-
-        return sweet_code;
-    };
-
-    this.set_indent = function(level) {
-        // Never indent your first output indent at the start of the file
-        if (lines.length > 1) {
-            while (level >= this.indent_cache.length) {
-                this.indent_cache.push(this.indent_cache[this.indent_cache.length - 1] + this.indent_string);
-            }
-
-            this.current_line.set_indent(level);
-            return true;
-        }
-        this.current_line.set_indent(0);
-        return false;
-    };
-
-    this.add_raw_token = function(token) {
-        for (var x = 0; x < token.newlines; x++) {
-            this.add_outputline();
-        }
-        this.current_line.push(token.whitespace_before);
-        this.current_line.push(token.text);
-        this.space_before_token = false;
-    };
-
-    this.add_token = function(printable_token) {
-        this.add_space_before_token();
-        this.current_line.push(printable_token);
-    };
-
-    this.add_space_before_token = function() {
-        if (this.space_before_token && !this.just_added_newline()) {
-            this.current_line.push(' ');
-        }
-        this.space_before_token = false;
-    };
-
-    this.remove_indent = function(index) {
-        var output_length = lines.length;
-        while (index < output_length) {
-            lines[index].remove_indent();
-            index++;
-        }
-    };
-
-    this.trim = function(eat_newlines) {
-        eat_newlines = (eat_newlines === undefined) ? false : eat_newlines;
-
-        this.current_line.trim(indent_string, baseIndentString);
-
-        while (eat_newlines && lines.length > 1 &&
-            this.current_line.is_empty()) {
-            lines.pop();
-            this.current_line = lines[lines.length - 1];
-            this.current_line.trim();
-        }
-
-        this.previous_line = lines.length > 1 ? lines[lines.length - 2] : null;
-    };
-
-    this.just_added_newline = function() {
-        return this.current_line.is_empty();
-    };
-
-    this.just_added_blankline = function() {
-        if (this.just_added_newline()) {
-            if (lines.length === 1) {
-                return true; // start of the file and newline = blank
-            }
-
-            var line = lines[lines.length - 2];
-            return line.is_empty();
-        }
-        return false;
-    };
+      var line = lines[lines.length - 2];
+      return line.is_empty();
+    }
+    return false;
+  };
 }
 
 module.exports.Output = Output;
 
-
 /***/ }),
-/* 4 */
+/* 5 */,
+/* 6 */,
+/* 7 */,
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*jshint curly:true, eqeqeq:true, laxbreak:true, noempty:false */
@@ -1015,14 +549,524 @@ module.exports.Output = Output;
     SOFTWARE.
 */
 
-var Beautifier = __webpack_require__(0).Beautifier;
+var Beautifier = __webpack_require__(9).Beautifier;
 
 function css_beautify(source_text, options) {
-    var beautifier = new Beautifier(source_text, options);
-    return beautifier.beautify();
+  var beautifier = new Beautifier(source_text, options);
+  return beautifier.beautify();
 }
 
 module.exports = css_beautify;
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/*jshint curly:true, eqeqeq:true, laxbreak:true, noempty:false */
+/*
+
+  The MIT License (MIT)
+
+  Copyright (c) 2007-2017 Einar Lielmanis, Liam Newman, and contributors.
+
+  Permission is hereby granted, free of charge, to any person
+  obtaining a copy of this software and associated documentation files
+  (the "Software"), to deal in the Software without restriction,
+  including without limitation the rights to use, copy, modify, merge,
+  publish, distribute, sublicense, and/or sell copies of the Software,
+  and to permit persons to whom the Software is furnished to do so,
+  subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be
+  included in all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+  MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+  NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+  BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+  ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
+*/
+
+var mergeOpts = __webpack_require__(2).mergeOpts;
+var acorn = __webpack_require__(3);
+var Output = __webpack_require__(4).Output;
+
+
+var lineBreak = acorn.lineBreak;
+var allLineBreaks = acorn.allLineBreaks;
+
+function Beautifier(source_text, options) {
+  source_text = source_text || '';
+  options = options || {};
+
+  // Allow the setting of language/file-type specific options
+  // with inheritance of overall settings
+  options = mergeOpts(options, 'css');
+
+  var indentSize = options.indent_size ? parseInt(options.indent_size, 10) : 4;
+  var indentCharacter = options.indent_char || ' ';
+  var preserve_newlines = (options.preserve_newlines === undefined) ? false : options.preserve_newlines;
+  var selectorSeparatorNewline = (options.selector_separator_newline === undefined) ? true : options.selector_separator_newline;
+  var end_with_newline = (options.end_with_newline === undefined) ? false : options.end_with_newline;
+  var newline_between_rules = (options.newline_between_rules === undefined) ? true : options.newline_between_rules;
+  var space_around_combinator = (options.space_around_combinator === undefined) ? false : options.space_around_combinator;
+  space_around_combinator = space_around_combinator || ((options.space_around_selector_separator === undefined) ? false : options.space_around_selector_separator);
+  var eol = options.eol ? options.eol : 'auto';
+
+  if (options.indent_with_tabs) {
+    indentCharacter = '\t';
+    indentSize = 1;
+  }
+
+  if (eol === 'auto') {
+    eol = '\n';
+    if (source_text && lineBreak.test(source_text || '')) {
+      eol = source_text.match(lineBreak)[0];
+    }
+  }
+
+  eol = eol.replace(/\\r/, '\r').replace(/\\n/, '\n');
+
+  // HACK: newline parsing inconsistent. This brute force normalizes the input.
+  source_text = source_text.replace(allLineBreaks, '\n');
+
+  // tokenizer
+  var whiteRe = /^\s+$/;
+
+  var pos = -1,
+    ch;
+  var parenLevel = 0;
+
+  function next() {
+    ch = source_text.charAt(++pos);
+    return ch || '';
+  }
+
+  function peek(index) {
+    index = index || 0;
+    index += pos + 1;
+    var result = source_text.charAt(index) || '';
+    return result;
+  }
+
+  function peekIgnoreWhitespace(index) {
+    var prev_pos = pos;
+    eatWhitespace();
+    var result = peek(index);
+    pos = prev_pos - 1;
+    next();
+    return result;
+  }
+
+  function eatString(endChars) {
+    var start = pos;
+    while (next()) {
+      if (ch === "\\") {
+        next();
+      } else if (endChars.indexOf(ch) !== -1) {
+        break;
+      } else if (ch === "\n") {
+        break;
+      }
+    }
+    return source_text.substring(start, pos + 1);
+  }
+
+  function peekString(endChar) {
+    var prev_pos = pos;
+    var str = eatString(endChar);
+    pos = prev_pos - 1;
+    next();
+    return str;
+  }
+
+  // Skips any white space in the source text from the current position.
+  // When allowAtLeastOneNewLine is true, will output new lines for each
+  // newline character found; if the user has preserve_newlines off, only
+  // the first newline will be output
+  function eatWhitespace(allowAtLeastOneNewLine) {
+    var result = whiteRe.test(peek());
+    var isFirstNewLine = true;
+
+    while (whiteRe.test(peek())) {
+      next();
+      if (allowAtLeastOneNewLine && ch === '\n') {
+        if (preserve_newlines || isFirstNewLine) {
+          isFirstNewLine = false;
+          output.add_new_line(true);
+        }
+      }
+    }
+    return result;
+  }
+
+  function skipWhitespace() {
+    var result = '';
+    if (ch && whiteRe.test(ch)) {
+      result = ch;
+    }
+    while (whiteRe.test(next())) {
+      result += ch;
+    }
+    return result;
+  }
+
+  function eatComment(singleLine) {
+    var start = pos;
+    if (!singleLine) {
+      next();
+    }
+    while (next()) {
+      if (!singleLine && ch === "*" && peek() === "/") {
+        next();
+        break;
+      } else if (singleLine && peek() === "\n") {
+        break;
+      }
+    }
+
+    return source_text.substring(start, pos) + ch;
+  }
+
+
+  function lookBack(str) {
+    return source_text.substring(pos - str.length, pos).toLowerCase() ===
+      str;
+  }
+
+  // Nested pseudo-class if we are insideRule
+  // and the next special character found opens
+  // a new block
+  function foundNestedPseudoClass() {
+    var openParen = 0;
+    for (var i = pos + 1; i < source_text.length; i++) {
+      var ch = source_text.charAt(i);
+      if (ch === "{") {
+        return true;
+      } else if (ch === '(') {
+        // pseudoclasses can contain ()
+        openParen += 1;
+      } else if (ch === ')') {
+        if (openParen === 0) {
+          return false;
+        }
+        openParen -= 1;
+      } else if (ch === ";" || ch === "}") {
+        return false;
+      }
+    }
+    return false;
+  }
+
+  // printer
+  var baseIndentString = '';
+  var preindent_index = 0;
+  if (source_text && source_text.length) {
+    while ((source_text.charAt(preindent_index) === ' ' ||
+        source_text.charAt(preindent_index) === '\t')) {
+      preindent_index += 1;
+    }
+    baseIndentString = source_text.substring(0, preindent_index);
+    source_text = source_text.substring(preindent_index);
+  }
+
+
+  var singleIndent = new Array(indentSize + 1).join(indentCharacter);
+  var indentLevel;
+  var nestedLevel;
+  var output;
+
+  function print_string(output_string) {
+    if (output.just_added_newline()) {
+      output.set_indent(indentLevel);
+    }
+    output.add_token(output_string);
+  }
+
+  function preserveSingleSpace(isAfterSpace) {
+    if (isAfterSpace) {
+      output.space_before_token = true;
+    }
+  }
+
+  function indent() {
+    indentLevel++;
+  }
+
+  function outdent() {
+    if (indentLevel > 0) {
+      indentLevel--;
+    }
+  }
+
+  /*_____________________--------------------_____________________*/
+
+  this.beautify = function() {
+    // reset
+    output = new Output(singleIndent, baseIndentString);
+    indentLevel = 0;
+    nestedLevel = 0;
+
+    pos = -1;
+    ch = null;
+    parenLevel = 0;
+
+    var insideRule = false;
+    var insidePropertyValue = false;
+    var enteringConditionalGroup = false;
+    var insideAtExtend = false;
+    var top_ch = '';
+    var last_top_ch = '';
+
+    while (true) {
+      var whitespace = skipWhitespace();
+      var isAfterSpace = whitespace !== '';
+      last_top_ch = top_ch;
+      top_ch = ch;
+
+      if (!ch) {
+        break;
+      } else if (ch === '/' && peek() === '*') {
+        // /* css comment */
+        // Always start block comments on a new line.
+        // This handles scenarios where a block comment immediately
+        // follows a property definition on the same line or where
+        // minified code is being beautified.
+        output.add_new_line();
+        print_string(eatComment(false));
+
+        // Ensures any new lines following the comment are preserved
+        eatWhitespace(true);
+
+        // Block comments are followed by a new line so they don't
+        // share a line with other properties
+        output.add_new_line();
+      } else if (ch === '/' && peek() === '/') {
+        // // single line comment
+        // Preserves the space before a comment
+        // on the same line as a rule
+        output.space_before_token = true;
+        print_string(eatComment(true));
+
+        // Ensures any new lines following the comment are preserved
+        eatWhitespace(true);
+      } else if (ch === '@') {
+        preserveSingleSpace(isAfterSpace);
+
+        // deal with less propery mixins @{...}
+        if (peek() === '{') {
+          print_string(eatString('}'));
+        } else {
+          print_string(ch);
+
+          // strip trailing space, if present, for hash property checks
+          var variableOrRule = peekString(": ,;{}()[]/='\"");
+
+          if (variableOrRule.match(/[ :]$/)) {
+            // we have a variable or pseudo-class, add it and insert one space before continuing
+            next();
+            variableOrRule = eatString(": ").replace(/\s$/, '');
+            print_string(variableOrRule);
+            output.space_before_token = true;
+          }
+
+          variableOrRule = variableOrRule.replace(/\s$/, '');
+
+          if (variableOrRule === 'extend') {
+            insideAtExtend = true;
+          }
+
+          // might be a nesting at-rule
+          if (variableOrRule in this.NESTED_AT_RULE) {
+            nestedLevel += 1;
+            if (variableOrRule in this.CONDITIONAL_GROUP_RULE) {
+              enteringConditionalGroup = true;
+            }
+          }
+        }
+      } else if (ch === '#' && peek() === '{') {
+        preserveSingleSpace(isAfterSpace);
+        print_string(eatString('}'));
+      } else if (ch === '{') {
+        if (peekIgnoreWhitespace() === '}') {
+          eatWhitespace();
+          next();
+          output.space_before_token = true;
+          print_string("{}");
+
+          eatWhitespace(true);
+          output.add_new_line();
+
+          if (newline_between_rules && indentLevel === 0 && !output.just_added_blankline()) {
+            output.add_new_line(true);
+          }
+        } else {
+          indent();
+          output.space_before_token = true;
+          print_string(ch);
+          eatWhitespace(true);
+          output.add_new_line();
+
+          // when entering conditional groups, only rulesets are allowed
+          if (enteringConditionalGroup) {
+            enteringConditionalGroup = false;
+            insideRule = (indentLevel > nestedLevel);
+          } else {
+            // otherwise, declarations are also allowed
+            insideRule = (indentLevel >= nestedLevel);
+          }
+        }
+      } else if (ch === '}') {
+        outdent();
+        output.add_new_line();
+        print_string(ch);
+        insideRule = false;
+        insidePropertyValue = false;
+        if (nestedLevel) {
+          nestedLevel--;
+        }
+
+        eatWhitespace(true);
+        output.add_new_line();
+
+        if (newline_between_rules && indentLevel === 0 && !output.just_added_blankline()) {
+          output.add_new_line(true);
+        }
+      } else if (ch === ":") {
+        eatWhitespace();
+        if ((insideRule || enteringConditionalGroup) &&
+          !(lookBack("&") || foundNestedPseudoClass()) &&
+          !lookBack("(") && !insideAtExtend) {
+          // 'property: value' delimiter
+          // which could be in a conditional group query
+          print_string(':');
+          if (!insidePropertyValue) {
+            insidePropertyValue = true;
+            output.space_before_token = true;
+          }
+        } else {
+          // sass/less parent reference don't use a space
+          // sass nested pseudo-class don't use a space
+
+          // preserve space before pseudoclasses/pseudoelements, as it means "in any child"
+          if (lookBack(" ")) {
+            output.space_before_token = true;
+          }
+          if (peek() === ":") {
+            // pseudo-element
+            next();
+            print_string("::");
+          } else {
+            // pseudo-class
+            print_string(':');
+          }
+        }
+      } else if (ch === '"' || ch === '\'') {
+        preserveSingleSpace(isAfterSpace);
+        print_string(eatString(ch));
+      } else if (ch === ';') {
+        insidePropertyValue = false;
+        insideAtExtend = false;
+        print_string(ch);
+        eatWhitespace(true);
+
+        // This maintains single line comments on the same
+        // line. Block comments are also affected, but
+        // a new line is always output before one inside
+        // that section
+        if (peek() !== '/') {
+          output.add_new_line();
+        }
+      } else if (ch === '(') { // may be a url
+        if (lookBack("url")) {
+          print_string(ch);
+          eatWhitespace();
+          if (next()) {
+            if (ch !== ')' && ch !== '"' && ch !== '\'') {
+              print_string(eatString(')'));
+            } else {
+              pos--;
+              parenLevel++;
+            }
+          }
+        } else {
+          parenLevel++;
+          preserveSingleSpace(isAfterSpace);
+          print_string(ch);
+          eatWhitespace();
+        }
+      } else if (ch === ')') {
+        print_string(ch);
+        parenLevel--;
+      } else if (ch === ',') {
+        print_string(ch);
+        eatWhitespace(true);
+        if (selectorSeparatorNewline && !insidePropertyValue && parenLevel < 1) {
+          output.add_new_line();
+        } else {
+          output.space_before_token = true;
+        }
+      } else if ((ch === '>' || ch === '+' || ch === '~') &&
+        !insidePropertyValue && parenLevel < 1) {
+        //handle combinator spacing
+        if (space_around_combinator) {
+          output.space_before_token = true;
+          print_string(ch);
+          output.space_before_token = true;
+        } else {
+          print_string(ch);
+          eatWhitespace();
+          // squash extra whitespace
+          if (ch && whiteRe.test(ch)) {
+            ch = '';
+          }
+        }
+      } else if (ch === ']') {
+        print_string(ch);
+      } else if (ch === '[') {
+        preserveSingleSpace(isAfterSpace);
+        print_string(ch);
+      } else if (ch === '=') { // no whitespace before or after
+        eatWhitespace();
+        print_string('=');
+        if (whiteRe.test(ch)) {
+          ch = '';
+        }
+      } else if (ch === '!') { // !important
+        print_string(' ');
+        print_string(ch);
+      } else {
+        preserveSingleSpace(isAfterSpace);
+        print_string(ch);
+      }
+    }
+
+    var sweetCode = output.get_code(end_with_newline, eol);
+
+    return sweetCode;
+  };
+
+  // https://developer.mozilla.org/en-US/docs/Web/CSS/At-rule
+  this.NESTED_AT_RULE = {
+    "@page": true,
+    "@font-face": true,
+    "@keyframes": true,
+    // also in CONDITIONAL_GROUP_RULE below
+    "@media": true,
+    "@supports": true,
+    "@document": true
+  };
+  this.CONDITIONAL_GROUP_RULE = {
+    "@media": true,
+    "@supports": true,
+    "@document": true
+  };
+}
+
+module.exports.Beautifier = Beautifier;
 
 /***/ })
 /******/ ]);
