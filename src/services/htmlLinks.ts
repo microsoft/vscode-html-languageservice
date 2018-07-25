@@ -6,7 +6,6 @@
 
 import { createScanner } from '../parser/htmlScanner';
 import { TextDocument, Range, DocumentLink } from 'vscode-languageserver-types';
-import * as paths from '../utils/paths';
 import * as strings from '../utils/strings';
 import Uri from 'vscode-uri';
 

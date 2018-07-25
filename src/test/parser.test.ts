@@ -5,7 +5,7 @@
 'use strict';
 
 import * as assert from 'assert';
-import {Node, HTMLDocument, parse} from '../parser/htmlParser';
+import { Node, parse } from '../parser/htmlParser';
 
 suite('HTML Parser', () => {
 
@@ -13,7 +13,7 @@ suite('HTML Parser', () => {
 		return { tag: node.tag, start: node.start, end: node.end, endTagStart: node.endTagStart, closed: node.closed, children: node.children.map(toJSON) };
 	}
 
-	function toJSONWithAttributes(node: Node) : any {
+	function toJSONWithAttributes(node: Node): any {
 		return { tag: node.tag, attributes: node.attributes, children: node.children.map(toJSONWithAttributes) };
 	}
 
@@ -100,7 +100,7 @@ suite('HTML Parser', () => {
 				id: '"test"'
 			},
 			children: [{
-				tag: 'span', 
+				tag: 'span',
 				attributes: {
 					'aria-describedby': '"test"'
 				},

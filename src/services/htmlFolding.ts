@@ -3,10 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
-import { TextDocument, Position, Range } from 'vscode-languageserver-types';
+import { TextDocument, FoldingRange, FoldingRangeKind } from 'vscode-languageserver-types';
 
-import { FoldingRangeKind, FoldingRange, TokenType } from '../htmlLanguageTypes';
-import { binarySearch } from '../utils/arrays';
+import { TokenType } from '../htmlLanguageTypes';
 import { createScanner } from '../parser/htmlScanner';
 import { isEmptyElement } from '../parser/htmlTags';
 

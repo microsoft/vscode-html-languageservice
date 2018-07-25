@@ -7,59 +7,59 @@
 import * as assert from 'assert';
 import * as htmlLanguageService from '../htmlLanguageService';
 
-import { TextDocument, SymbolInformation, SymbolKind, Location, Range, Position } from 'vscode-languageserver-types';
+import { TextDocument, SymbolInformation, SymbolKind, Location, Range } from 'vscode-languageserver-types';
 
 suite('HTML Symbols', () => {
 
-    const TEST_URI = "test://test/test.html";
+	const TEST_URI = "test://test/test.html";
 
 	function asPromise<T>(result: T): Promise<T> {
 		return Promise.resolve(result);
 	}
 
-    let assertSymbols = function (symbols: SymbolInformation[], expected: SymbolInformation[]) {
-        assert.deepEqual(symbols, expected);
-    };
+	let assertSymbols = function (symbols: SymbolInformation[], expected: SymbolInformation[]) {
+		assert.deepEqual(symbols, expected);
+	};
 
-    let testSymbolsFor = function(value: string, expected: SymbolInformation[]) {
-        let ls = htmlLanguageService.getLanguageService();
+	let testSymbolsFor = function (value: string, expected: SymbolInformation[]) {
+		let ls = htmlLanguageService.getLanguageService();
 		let document = TextDocument.create(TEST_URI, 'html', 0, value);
 		let htmlDoc = ls.parseHTMLDocument(document);
-        let symbols = ls.findDocumentSymbols(document, htmlDoc);
-        assertSymbols(symbols, expected);
-    };
+		let symbols = ls.findDocumentSymbols(document, htmlDoc);
+		assertSymbols(symbols, expected);
+	};
 
-    test('Simple', () => {
-        testSymbolsFor('<div></div>', [<SymbolInformation>{ containerName: '', name: 'div', kind: <SymbolKind>SymbolKind.Field, location: Location.create(TEST_URI, Range.create(0, 0, 0, 11)) }]);
-        testSymbolsFor('<div><input checked id="test" class="checkbox"></div>', [{ containerName: '', name: 'div', kind: <SymbolKind>SymbolKind.Field, location: Location.create(TEST_URI, Range.create(0, 0, 0, 53)) },
-            { containerName: 'div', name: 'input#test.checkbox', kind: <SymbolKind>SymbolKind.Field, location: Location.create(TEST_URI, Range.create(0, 5, 0, 47)) }]);
-    });
+	test('Simple', () => {
+		testSymbolsFor('<div></div>', [<SymbolInformation>{ containerName: '', name: 'div', kind: <SymbolKind>SymbolKind.Field, location: Location.create(TEST_URI, Range.create(0, 0, 0, 11)) }]);
+		testSymbolsFor('<div><input checked id="test" class="checkbox"></div>', [{ containerName: '', name: 'div', kind: <SymbolKind>SymbolKind.Field, location: Location.create(TEST_URI, Range.create(0, 0, 0, 53)) },
+		{ containerName: 'div', name: 'input#test.checkbox', kind: <SymbolKind>SymbolKind.Field, location: Location.create(TEST_URI, Range.create(0, 5, 0, 47)) }]);
+	});
 
-    test('Id and classes', function() {
+	test('Id and classes', function () {
 		var content = '<html id=\'root\'><body id="Foo" class="bar"><div class="a b"></div></body></html>';
 
 		var expected = [
 			{ name: 'html#root', kind: SymbolKind.Field, containerName: '', location: Location.create(TEST_URI, Range.create(0, 0, 0, 80)) },
 			{ name: 'body#Foo.bar', kind: SymbolKind.Field, containerName: 'html#root', location: Location.create(TEST_URI, Range.create(0, 16, 0, 73)) },
-            { name: 'div.a.b', kind: SymbolKind.Field, containerName: 'body#Foo.bar', location: Location.create(TEST_URI, Range.create(0, 43, 0, 66)) },
+			{ name: 'div.a.b', kind: SymbolKind.Field, containerName: 'body#Foo.bar', location: Location.create(TEST_URI, Range.create(0, 43, 0, 66)) },
 		];
 
 		testSymbolsFor(content, expected);
 	});
 
- 	test('Self closing', function() {
+	test('Self closing', function () {
 		var content = '<html><br id="Foo"><br id=Bar></html>';
 
 		var expected = [
 			{ name: 'html', kind: SymbolKind.Field, containerName: '', location: Location.create(TEST_URI, Range.create(0, 0, 0, 37)) },
 			{ name: 'br#Foo', kind: SymbolKind.Field, containerName: 'html', location: Location.create(TEST_URI, Range.create(0, 6, 0, 19)) },
-            { name: 'br#Bar', kind: SymbolKind.Field, containerName: 'html', location: Location.create(TEST_URI, Range.create(0, 19, 0, 30)) },
+			{ name: 'br#Bar', kind: SymbolKind.Field, containerName: 'html', location: Location.create(TEST_URI, Range.create(0, 19, 0, 30)) },
 		];
 
 		testSymbolsFor(content, expected);
-	}); 
+	});
 
-	test('No attrib', function() {
+	test('No attrib', function () {
 		var content = '<html><body><div></div></body></html>';
 
 		var expected = [
@@ -69,5 +69,5 @@ suite('HTML Symbols', () => {
 		];
 
 		testSymbolsFor(content, expected);
-	});         
+	});
 });

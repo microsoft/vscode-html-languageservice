@@ -17,17 +17,17 @@
   "devDependencies": {
     "@types/mocha": "2.2.33",
     "@types/node": "7.0.43",
-    "cpy-cli": "^1.0.1",
+    "cpy-cli": "^2.0.0",
     "js-beautify": "^1.8.0-rc2",
     "mocha": "^5.2.0",
     "rimraf": "^2.6.2",
     "tslint": "^5.10.0",
-    "typescript": "^2.8.3"
+    "typescript": "^2.9.2"
   },
   "dependencies": {
-    "vscode-languageserver-types": "^3.7.2",
-    "vscode-nls": "^3.2.2",
-    "vscode-uri": "^1.0.3"
+    "vscode-languageserver-types": "^3.10.0",
+    "vscode-nls": "^3.2.4",
+    "vscode-uri": "^1.0.5"
   },
   "scripts": {
     "prepublishOnly": "npm run clean && npm run compile-esm && npm run test",
