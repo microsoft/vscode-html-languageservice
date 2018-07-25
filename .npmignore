@@ -8,6 +8,8 @@ test/
 build/
 .eslintrc
 .gitignore
+.github
+yarn.lock
 tslint.json
 .travis.yml
 gulpfile.js
