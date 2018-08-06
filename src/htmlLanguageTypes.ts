@@ -14,7 +14,8 @@ export interface HTMLFormatConfiguration {
     unformatted?: string;
     contentUnformatted?: string;
     indentInnerHtml?: boolean;
-    wrapAttributes?: 'auto' | 'force' | 'force-aligned' | 'force-expand-multiline';
+    wrapAttributes?: 'auto' | 'force' | 'force-aligned' | 'force-expand-multiline' | 'aligned-multiple';
+    wrapAttributesIndentSize?: number;
     preserveNewLines?: boolean;
     maxPreserveNewLines?: number;
     indentHandlebars?: boolean;

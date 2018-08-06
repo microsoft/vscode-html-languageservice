@@ -65,6 +65,7 @@ export function format(document: TextDocument, range: Range | undefined, options
 		end_with_newline: includesEnd && getFormatOption(options, 'endWithNewline', false),
 		extra_liners: getTagsFormatOption(options, 'extraLiners', void 0),
 		wrap_attributes: getFormatOption(options, 'wrapAttributes', 'auto'),
+		wrap_attributes_indent_size: getFormatOption(options, 'wrapAttributesIndentSize', void 0),
 		eol: '\n'
 	};
 

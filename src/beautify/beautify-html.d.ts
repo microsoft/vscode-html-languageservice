@@ -87,10 +87,17 @@ export interface IBeautifyHTMLOptions {
      * wrap each attribute except first ('force')
      * wrap each attribute except first and align ('force-aligned')
      * wrap each attribute ('force-expand-multiline')
+     * multiple attributes are allowed per line, attributes that wrap will align vertically ('aligned-multiple')
      * wrap only when line length is reached ('auto')
+     * 
      * default auto
      */
-    wrap_attributes: 'auto' | 'force' | 'force-expand-multiline' | 'force-aligned' | 'aligned-multiple';
+    wrap_attributes?: 'auto' | 'force' | 'force-expand-multiline' | 'force-aligned' | 'aligned-multiple';
+
+    /**
+     * Alignment size when using 'force-aligned' | 'aligned-multiple'
+     */
+    wrap_attributes_indent_size?: number;
 
     /* 
      * end of line character to use
@@ -99,7 +106,7 @@ export interface IBeautifyHTMLOptions {
 }
 
 export interface IBeautifyHTML {
-	(value:string, options:IBeautifyHTMLOptions): string;
+    (value: string, options: IBeautifyHTMLOptions): string;
 }
 
-export declare var html_beautify:IBeautifyHTML;
+export declare var html_beautify: IBeautifyHTML;
