@@ -5,7 +5,7 @@
 'use strict';
 
 import * as nls from 'vscode-nls';
-import { TokenType, ScannerState, Scanner } from '../htmlLanguageService';
+import { TokenType, ScannerState, Scanner } from '../htmlLanguageTypes';
 let localize = nls.loadMessageBundle();
 
 class MultiLineStream {
