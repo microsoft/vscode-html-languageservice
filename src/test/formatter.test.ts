@@ -170,12 +170,27 @@ suite('JSON Formatter', () => {
 		].join('\n');
 
 		var expected = [
-			'<script src="/js/main.js">',
-			'',
-			'</script>'
+			'<script src="/js/main.js"> </script>'
 		].join('\n');
 
 		format(content, expected);
 	});
 
+	test('beautify-web/js-beautify#1491', () => {
+		var content = [
+			'<head>',
+			'    <script src="one.js"></script> <!-- one -->',
+			'    <script src="two.js"></script> <!-- two-->',
+			'</head>',
+		].join('\n');
+
+		var expected = [
+			'<head>',
+			'  <script src="one.js"></script> <!-- one -->',
+			'  <script src="two.js"></script> <!-- two-->',
+			'</head>',
+		].join('\n');
+
+		format(content, expected);
+	});
 });
