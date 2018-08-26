@@ -39,7 +39,8 @@
     "test": "npm run compile && mocha && npm run lint",
     "lint": "tslint src/**/*.ts",
     "install-types-next": "npm install vscode-languageserver-types@next -f -S",
-    "update-jsbeautify": "npm install js-beautify@next && node ./build/update-jsbeautify.js",
+    "update-jsbeautify": "npm install js-beautify && node ./build/update-jsbeautify.js",
+    "update-jsbeautify-next": "npm install js-beautify@next && node ./build/update-jsbeautify.js",
     "preversion": "npm test",
     "postversion": "git push && git push --tags"
   }
