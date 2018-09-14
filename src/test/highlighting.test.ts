@@ -74,4 +74,8 @@ suite('HTML Highlighting', () => {
 		assertHighlights('<HTML><diV><Div></dIV></dI|v></html>', [7, 24], 'div');
 		assertHighlights('<HTML><diV|><Div></dIV></dIv></html>', [7, 24], 'div');
 	});
+
+	test('Incomplete', function (): any {
+		assertHighlights('<div><ol><li></li></ol></p></|div>', [1, 29], 'div');
+	});
 });

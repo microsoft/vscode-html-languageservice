@@ -13,8 +13,8 @@ export class Node {
 	public tag: string | undefined;
 	public closed: boolean = false;
 	public endTagStart: number | undefined;
-	public attributes: {[name: string]: string | null} | undefined;
-	public get attributeNames() : string[] { return this.attributes ? Object.keys(this.attributes) : []; }
+	public attributes: { [name: string]: string | null } | undefined;
+	public get attributeNames(): string[] { return this.attributes ? Object.keys(this.attributes) : []; }
 	constructor(public start: number, public end: number, public children: Node[], public parent?: Node) {
 	}
 	public isSameTag(tagInLowerCase: string) {
@@ -65,6 +65,7 @@ export function parse(text: string): HTMLDocument {
 	let htmlDocument = new Node(0, text.length, [], void 0);
 	let curr = htmlDocument;
 	let endTagStart: number = -1;
+	let endTagName: string | null = null;
 	let pendingAttribute: string | null = null;
 	let token = scanner.scan();
 	while (token !== TokenType.EOS) {
@@ -84,21 +85,6 @@ export function parse(text: string): HTMLDocument {
 					curr = curr.parent;
 				}
 				break;
-			case TokenType.EndTagOpen:
-				endTagStart = scanner.getTokenOffset();
-				break;
-			case TokenType.EndTag:
-				let closeTag = scanner.getTokenText().toLowerCase();
-				while (!curr.isSameTag(closeTag) && curr.parent) {
-					curr.end = endTagStart;
-					curr.closed = false;
-					curr = curr.parent;
-				}
-				if (curr !== htmlDocument) {
-					curr.closed = true;
-					curr.endTagStart = endTagStart;
-				}
-				break;
 			case TokenType.StartTagSelfClose:
 				if (curr.parent) {
 					curr.closed = true;
@@ -106,10 +92,31 @@ export function parse(text: string): HTMLDocument {
 					curr = curr.parent;
 				}
 				break;
+			case TokenType.EndTagOpen:
+				endTagStart = scanner.getTokenOffset();
+				endTagName = null;
+				break;
+			case TokenType.EndTag:
+				endTagName = scanner.getTokenText().toLowerCase();
+				break;
 			case TokenType.EndTagClose:
-				if (curr.parent) {
-					curr.end = scanner.getTokenEnd();
-					curr = curr.parent;
+				if (endTagName) {
+					let node = curr;
+					// see if we can find a matching tag
+					while (!node.isSameTag(endTagName) && node.parent) {
+						node = node.parent;
+					}
+					if (node.parent) {
+						while (curr !== node) {
+							curr.end = endTagStart;
+							curr.closed = false;
+							curr = curr.parent!;
+						}
+						curr.closed = true;
+						curr.endTagStart = endTagStart;
+						curr.end = scanner.getTokenEnd();
+						curr = curr.parent!;
+					}
 				}
 				break;
 			case TokenType.AttributeName: {
