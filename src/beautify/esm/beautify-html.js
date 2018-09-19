@@ -74,9 +74,9 @@
     });
 */
 
-(function() {
+import { js_beautify } from "./beautify";
+import { css_beautify } from "./beautify-css";
 
-/* GENERATED_BUILD_OUTPUT */
 var legacy_beautify_html =
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache

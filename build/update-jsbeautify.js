@@ -68,21 +68,28 @@ update('js-beautify', 'LICENSE', './src/beautify/beautify-license');
 
 // ESM version
 update('js-beautify', 'js/lib/beautify-html.js', './src/beautify/esm/beautify-html.js', true, function (contents) {
-    contents = contents.replace(
-        /\(function\(\) \{\nvar legacy_beautify_html/m,
-        `import { js_beautify } from "./beautify";
-import { css_beautify } from "./beautify-css";
-
-var legacy_beautify_html`
-    );
-    contents = contents.substring(0, contents.indexOf('var style_html = legacy_beautify_html;'));
-    contents = contents + `
+    let topLevelFunction = '(function() {';
+    let outputVar = 'var legacy_beautify_html =';
+    let footer = 'var style_html = legacy_beautify_html;';
+    let index1 = contents.indexOf(topLevelFunction);
+    let index2 = contents.indexOf(outputVar, index1);
+    let index3 = contents.indexOf(footer, index2);
+    if (index1 === -1) {
+        throw new Error(`Problem patching beautify.html for ESM: '${topLevelFunction}' not found.`);
+    }
+    if (index2 === -1) {
+        throw new Error(`Problem patching beautify.html for ESM: '${outputVar}' not found after '${topLevelFunction}'.`);
+    }
+    if (index3 === -1) {
+        throw new Error(`Problem patching beautify.html for ESM: '${footer}' not found after '${outputVar}'.`);
+    }
+    return contents.substring(0, index1) +
+`import { js_beautify } from "./beautify";\nimport { css_beautify } from "./beautify-css";\n\n`
+        + contents.substring(index2, index3) +
+`
 export function html_beautify(html_source, options) {
     return legacy_beautify_html(html_source, options, js_beautify, css_beautify);
-}
-`;
-
-    return contents;
+}`;
 });
 update('js-beautify', 'js/lib/beautify-css.js', './src/beautify/esm/beautify-css.js', true, function (contents) {
     contents = contents.replace(
