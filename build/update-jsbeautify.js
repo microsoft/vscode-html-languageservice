@@ -92,10 +92,22 @@ export function html_beautify(html_source, options) {
 }`;
 });
 update('js-beautify', 'js/lib/beautify-css.js', './src/beautify/esm/beautify-css.js', true, function (contents) {
-    contents = contents.replace(
-        /\(function\(\) \{\nvar legacy_beautify_css/m,
-        'export const css_beautify'
-    );
-    contents = contents.substring(0, contents.indexOf('var css_beautify = legacy_beautify_css;'));
-    return contents;
+    let topLevelFunction = '(function() {';
+    let outputVar = 'var legacy_beautify_css =';
+    let footer = 'var css_beautify = legacy_beautify_css;';
+    let index1 = contents.indexOf(topLevelFunction);
+    let index2 = contents.indexOf(outputVar, index1);
+    let index3 = contents.indexOf(footer, index2);
+    if (index1 === -1) {
+        throw new Error(`Problem patching beautify.html for ESM: '${topLevelFunction}' not found.`);
+    }
+    if (index2 === -1) {
+        throw new Error(`Problem patching beautify.html for ESM: '${outputVar}' not found after '${topLevelFunction}'.`);
+    }
+    if (index3 === -1) {
+        throw new Error(`Problem patching beautify.html for ESM: '${footer}' not found after '${outputVar}'.`);
+    }
+    return contents.substring(0, index1) +
+        contents.substring(index2, index3) +
+        `\nexport const css_beautify = legacy_beautify_css;`;
 });

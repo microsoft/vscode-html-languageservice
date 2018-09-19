@@ -64,9 +64,6 @@
 // http://www.w3.org/TR/CSS21/syndata.html#tokenization
 // http://www.w3.org/TR/css3-syntax/
 
-(function() {
-
-/* GENERATED_BUILD_OUTPUT */
 var legacy_beautify_css =
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
@@ -1358,3 +1355,5 @@ module.exports.Options = Options;
 
 /***/ })
 /******/ ]);
+
+export const css_beautify = legacy_beautify_css;
