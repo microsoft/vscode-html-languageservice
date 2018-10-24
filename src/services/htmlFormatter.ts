@@ -71,7 +71,7 @@ export function format(document: TextDocument, range: Range | undefined, options
 		eol: '\n'
 	};
 
-	//TODO:dont truncate whitetext before this line
+	//TODO:set dont truncate whitetext before this line
 
 	let result = html_beautify(value, htmlOptions);
 	if (initialIndentLevel > 0) {
