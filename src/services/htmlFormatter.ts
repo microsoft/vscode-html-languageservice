@@ -42,7 +42,15 @@ export function format(document: TextDocument, range: Range | undefined, options
 		}
 		range = Range.create(document.positionAt(startOffset), document.positionAt(endOffset));
 
-		//TODO: identify that the paste is inside an element before here
+		//if out string is an element
+		let firstHalf = value.substring(0, startOffset);
+		let secondHalf = value.substring(endOffset, value.length);
+
+		//check if substring in inside an element
+		if ((firstHalf.match(new RegExp(/</g)) || []).length > (firstHalf.match(new RegExp(/>/g)) || []).length &&
+		 (secondHalf.match(new RegExp(/</g)) || []).length < (secondHalf.match(new RegExp(/>/g)) || []).length){
+			//set no truncation
+		}
 
 		includesEnd = endOffset === value.length;
 		value = value.substring(startOffset, endOffset);
