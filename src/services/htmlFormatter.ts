@@ -42,6 +42,8 @@ export function format(document: TextDocument, range: Range | undefined, options
 		}
 		range = Range.create(document.positionAt(startOffset), document.positionAt(endOffset));
 
+		//TODO: identify that the paste is inside an element before here
+
 		includesEnd = endOffset === value.length;
 		value = value.substring(startOffset, endOffset);
 
@@ -68,6 +70,8 @@ export function format(document: TextDocument, range: Range | undefined, options
 		wrap_attributes_indent_size: getFormatOption(options, 'wrapAttributesIndentSize', void 0),
 		eol: '\n'
 	};
+
+	//TODO:dont truncate whitetext before this line
 
 	let result = html_beautify(value, htmlOptions);
 	if (initialIndentLevel > 0) {
