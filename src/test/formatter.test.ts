@@ -193,4 +193,17 @@ suite('JSON Formatter', () => {
 
 		format(content, expected);
 	});
+
+	test('bug 58693', () => {
+		var content = [
+			'<a class="btn| btn-link|"></a>'
+		].join('\n');
+
+		var expected = [
+			'<a class="btn btn-link"></a>'
+		].join('\n');
+
+		format(content, expected);
+	});
+
 });
