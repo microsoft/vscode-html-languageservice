@@ -51,9 +51,11 @@ export function format(document: TextDocument, range: Range | undefined, options
 		 (secondHalf.match(new RegExp(/</g)) || []).length < (secondHalf.match(new RegExp(/>/g)) || []).length){
 			//set no truncation
 			let noChangeHTML: IBeautifyHTMLOptions = {};
-				return [{
-					range: range,
-					newText: html_beautify(value, noChangeHTML)
+			includesEnd = endOffset === value.length;
+			value = value.substring(startOffset, endOffset);
+			return [{
+				range: range,
+				newText: value
 			}];
 		}
 
