@@ -14,7 +14,6 @@ export function format(document: TextDocument, range: Range | undefined, options
 	let includesEnd = true;
 	let initialIndentLevel = 0;
 	let tabSize = options.tabSize || 4;
-	let dontTrunk = false; //TODO: Place this better
 	if (range) {
 		let startOffset = document.offsetAt(range.start);
 
@@ -43,14 +42,11 @@ export function format(document: TextDocument, range: Range | undefined, options
 		}
 		range = Range.create(document.positionAt(startOffset), document.positionAt(endOffset));
 
-		//check if substring in inside an element
-		//TODO instead of regex find out if last < is opening or closing
+		//Do not modify if substring in inside an element
 		let firstHalf = value.substring(0, startOffset);
 		let secondHalf = value.substring(endOffset, value.length);
-		if ((firstHalf.match(new RegExp(/</g)) || []).length > (firstHalf.match(new RegExp(/>/g)) || []).length &&
-		 (secondHalf.match(new RegExp(/</g)) || []).length < (secondHalf.match(new RegExp(/>/g)) || []).length){
-			//set no truncation
-			let noChangeHTML: IBeautifyHTMLOptions = {};
+		if(new RegExp(/.*[<][^>]*$/).test(firstHalf) && new RegExp(/^[^<]*[>].*/).test(secondHalf) ){ 
+			//return without modification
 			includesEnd = endOffset === value.length;
 			value = value.substring(startOffset, endOffset);
 			return [{
