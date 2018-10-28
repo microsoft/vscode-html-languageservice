@@ -47,7 +47,6 @@ export function format(document: TextDocument, range: Range | undefined, options
 		let secondHalf = value.substring(endOffset, value.length);
 		if(new RegExp(/.*[<][^>]*$/).test(firstHalf) && new RegExp(/^[^<]*[>].*/).test(secondHalf) ){ 
 			//return without modification
-			includesEnd = endOffset === value.length;
 			value = value.substring(startOffset, endOffset);
 			return [{
 				range: range,
