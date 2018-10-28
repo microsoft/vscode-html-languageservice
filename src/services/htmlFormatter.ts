@@ -14,6 +14,7 @@ export function format(document: TextDocument, range: Range | undefined, options
 	let includesEnd = true;
 	let initialIndentLevel = 0;
 	let tabSize = options.tabSize || 4;
+	let dontTrunk = false; //TODO: Place this better
 	if (range) {
 		let startOffset = document.offsetAt(range.start);
 
@@ -42,14 +43,18 @@ export function format(document: TextDocument, range: Range | undefined, options
 		}
 		range = Range.create(document.positionAt(startOffset), document.positionAt(endOffset));
 
-		//if out string is an element
+		//check if substring in inside an element
+		//TODO instead of regex find out if last < is opening or closing
 		let firstHalf = value.substring(0, startOffset);
 		let secondHalf = value.substring(endOffset, value.length);
-
-		//check if substring in inside an element
 		if ((firstHalf.match(new RegExp(/</g)) || []).length > (firstHalf.match(new RegExp(/>/g)) || []).length &&
 		 (secondHalf.match(new RegExp(/</g)) || []).length < (secondHalf.match(new RegExp(/>/g)) || []).length){
 			//set no truncation
+			let noChangeHTML: IBeautifyHTMLOptions = {};
+				return [{
+					range: range,
+					newText: html_beautify(value, noChangeHTML)
+			}];
 		}
 
 		includesEnd = endOffset === value.length;
@@ -80,6 +85,7 @@ export function format(document: TextDocument, range: Range | undefined, options
 	};
 
 	//TODO:set dont truncate whitetext before this line
+
 
 	let result = html_beautify(value, htmlOptions);
 	if (initialIndentLevel > 0) {
