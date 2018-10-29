@@ -42,6 +42,18 @@ export function format(document: TextDocument, range: Range | undefined, options
 		}
 		range = Range.create(document.positionAt(startOffset), document.positionAt(endOffset));
 
+		//Do not modify if substring in inside an element
+		let firstHalf = value.substring(0, startOffset);
+		let secondHalf = value.substring(endOffset, value.length);
+		if(new RegExp(/.*[<][^>]*$/).test(firstHalf) && new RegExp(/^[^<]*[>].*/).test(secondHalf) ){ 
+			//return without modification
+			value = value.substring(startOffset, endOffset);
+			return [{
+				range: range,
+				newText: value
+			}];
+		}
+
 		includesEnd = endOffset === value.length;
 		value = value.substring(startOffset, endOffset);
 
