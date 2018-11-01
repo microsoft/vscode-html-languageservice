@@ -90,9 +90,19 @@ suite('HTML Completion', () => {
 	test('Complete', function (): any {
 		testCompletionFor('<|', {
 			items: [
+				{ label: '!DOCTYPE', resultText: '<!DOCTYPE html>' },
 				{ label: 'iframe', resultText: '<iframe' },
 				{ label: 'h1', resultText: '<h1' },
 				{ label: 'div', resultText: '<div' },
+			]
+		});
+
+		testCompletionFor('\n<|', {
+			items: [
+				{ label: '!DOCTYPE', notAvailable: true },
+				{ label: 'iframe' },
+				{ label: 'h1' },
+				{ label: 'div' },
 			]
 		});
 

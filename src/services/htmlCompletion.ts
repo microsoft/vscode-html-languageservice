@@ -322,6 +322,17 @@ export class HTMLCompletion {
 			return result;
 		}
 
+		function suggestDoctype(replaceStart: number, replaceEnd: number) {
+			let range = getReplaceRange(replaceStart, replaceEnd);
+			result.items.push({
+				label: '!DOCTYPE',
+				kind: CompletionItemKind.Property,
+				documentation: 'A preamble for an HTML document.',
+				textEdit: TextEdit.replace(range, '!DOCTYPE html>'),
+				insertTextFormat: InsertTextFormat.PlainText
+			});
+		}
+
 		let token = scanner.scan();
 
 		while (token !== TokenType.EOS && scanner.getTokenOffset() <= offset) {
@@ -329,6 +340,9 @@ export class HTMLCompletion {
 				case TokenType.StartTagOpen:
 					if (scanner.getTokenEnd() === offset) {
 						let endPos = scanNextForEndPos(TokenType.StartTag);
+						if (position.line === 0) {			
+							suggestDoctype(offset, endPos);
+						}
 						return collectTagSuggestions(offset, endPos);
 					}
 					break;
