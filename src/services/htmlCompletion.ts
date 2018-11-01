@@ -6,7 +6,7 @@
 
 import { TextDocument, Position, CompletionList, CompletionItemKind, Range, TextEdit, InsertTextFormat, CompletionItem } from 'vscode-languageserver-types';
 import { HTMLDocument, Node } from '../parser/htmlParser';
-import { createScanner} from '../parser/htmlScanner';
+import { createScanner } from '../parser/htmlScanner';
 import { isEmptyElement } from '../parser/htmlTags';
 import { allTagProviders } from './tagProviders';
 import { CompletionConfiguration, ICompletionParticipant, ScannerState, TokenType } from '../htmlLanguageTypes';

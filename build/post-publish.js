@@ -4,7 +4,6 @@
  *--------------------------------------------------------------------------------------------*/
 
 const cp = require('child_process');
-const path = require('path');
 const fs = require('fs');
 const readline = require('readline');
 const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
