@@ -15,10 +15,11 @@ import { findDocumentSymbols } from './services/htmlSymbolsProvider';
 import { TextDocument, Position, CompletionList, Hover, Range, SymbolInformation, TextEdit, DocumentHighlight, DocumentLink, FoldingRange } from 'vscode-languageserver-types';
 import { Scanner, HTMLDocument, CompletionConfiguration, ICompletionParticipant, HTMLFormatConfiguration, DocumentContext } from './htmlLanguageTypes';
 import { getFoldingRanges } from './services/htmlFolding';
+import { ITagSet, IAttributeSet } from './parser/htmlTags';
+import { addTags, addAttributes } from './services/tagProviders';
 
 export * from './htmlLanguageTypes';
 export * from 'vscode-languageserver-types';
-
 
 export interface LanguageService {
 	createScanner(input: string, initialOffset?: number): Scanner;
@@ -34,8 +35,23 @@ export interface LanguageService {
 	getFoldingRanges(document: TextDocument, context?: { rangeLimit?: number }): FoldingRange[];
 }
 
-export function getLanguageService(): LanguageService {
+export interface LanguageServiceOptions {
+	customTags?: ITagSet;
+	customAttributes?: IAttributeSet;
+}
+
+export function getLanguageService(options?: LanguageServiceOptions): LanguageService {
 	const htmlCompletion = new HTMLCompletion();
+
+	if (options) {
+		if (options.customTags) {
+			addTags(options.customTags);
+		}
+		if (options.customAttributes) {
+			addAttributes(options.customAttributes);
+		}
+	}
+
 	return {
 		createScanner,
 		parseHTMLDocument: document => parse(document.getText()),

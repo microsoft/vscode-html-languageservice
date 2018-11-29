@@ -1,0 +1,5 @@
+{
+  "editor.insertSpaces": false,
+  "prettier.useTabs": true,
+  "prettier.semi": true
+}
