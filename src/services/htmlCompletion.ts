@@ -8,7 +8,7 @@ import { TextDocument, Position, CompletionList, CompletionItemKind, Range, Text
 import { HTMLDocument, Node } from '../parser/htmlParser';
 import { createScanner } from '../parser/htmlScanner';
 import { isEmptyElement } from '../parser/htmlTags';
-import { allTagProviders } from './tagProviders';
+import { getAllTagProviders } from './tagProviders';
 import { CompletionConfiguration, ICompletionParticipant, ScannerState, TokenType } from '../htmlLanguageTypes';
 import { entities } from '../parser/htmlEntities';
 
@@ -33,7 +33,7 @@ export class HTMLCompletion {
 			items: []
 		};
 		let completionParticipants = this.completionParticipants;
-		let tagProviders = allTagProviders.filter(p => p.isApplicable(document.languageId) && (!settings || settings[p.getId()] !== false));
+		let tagProviders = getAllTagProviders().filter(p => p.isApplicable(document.languageId) && (!settings || settings[p.getId()] !== false));
 
 		let text = document.getText();
 		let offset = document.offsetAt(position);

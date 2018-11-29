@@ -57,6 +57,13 @@ export interface ITagSet {
 	[tag: string]: HTMLTagSpecification;
 }
 
+export interface IAttributeSet {
+	[attribute: string]: {
+		label: string,
+		description: string
+	};
+}
+
 export class HTMLTagSpecification {
 	constructor(public label: string, public attributes: string[] = []) { }
 }
@@ -578,13 +585,13 @@ export function getIonicTagProvider(): IHTMLTagProvider {
 	};
 }
 
-function collectTagsDefault(collector: (tag: string, label: string) => void, tagSet: ITagSet): void {
+export function collectTagsDefault(collector: (tag: string, label: string) => void, tagSet: ITagSet): void {
 	for (var tag in tagSet) {
 		collector(tag, tagSet[tag].label);
 	}
 }
 
-function collectAttributesDefault(tag: string, collector: (attribute: string, type?: string) => void, tagSet: ITagSet, globalAttributes: string[]): void {
+export function collectAttributesDefault(tag: string, collector: (attribute: string, type?: string) => void, tagSet: ITagSet, globalAttributes: string[]): void {
 	globalAttributes.forEach(attr => {
 		var segments = attr.split(':');
 		collector(segments[0], segments[1]);

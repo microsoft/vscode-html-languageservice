@@ -7,7 +7,7 @@
 import { HTMLDocument } from '../parser/htmlParser';
 import { createScanner } from '../parser/htmlScanner';
 import { TextDocument, Range, Position, Hover, MarkedString } from 'vscode-languageserver-types';
-import { allTagProviders } from './tagProviders';
+import { getAllTagProviders } from './tagProviders';
 import { TokenType } from '../htmlLanguageTypes';
 
 export function doHover(document: TextDocument, position: Position, htmlDocument: HTMLDocument): Hover | null {
@@ -16,7 +16,7 @@ export function doHover(document: TextDocument, position: Position, htmlDocument
 	if (!node || !node.tag) {
 		return null;
 	}
-	let tagProviders = allTagProviders.filter(p => p.isApplicable(document.languageId));
+	let tagProviders = getAllTagProviders().filter(p => p.isApplicable(document.languageId));
 	function getTagHover(tag: string, range: Range, open: boolean): Hover | null {
 		tag = tag.toLowerCase();
 		for (let provider of tagProviders) {
