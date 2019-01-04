@@ -15,9 +15,10 @@ import { findDocumentSymbols } from './services/htmlSymbolsProvider';
 import { TextDocument, Position, CompletionList, Hover, Range, SymbolInformation, TextEdit, DocumentHighlight, DocumentLink, FoldingRange } from 'vscode-languageserver-types';
 import { Scanner, HTMLDocument, CompletionConfiguration, ICompletionParticipant, HTMLFormatConfiguration, DocumentContext } from './htmlLanguageTypes';
 import { getFoldingRanges } from './services/htmlFolding';
-import { ITagSet, IAttributeSet } from './parser/htmlTags';
 import { addTags, addAttributes } from './services/tagProviders';
+import { ITagSet, IAttributeSet } from './parser/htmlTags';
 
+export { HTMLTagSpecification, ITagSet, IAttributeSet } from './parser/htmlTags';
 export * from './htmlLanguageTypes';
 export * from 'vscode-languageserver-types';
 

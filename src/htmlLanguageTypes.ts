@@ -6,8 +6,6 @@
 
 import { TextDocument, Position, Range } from 'vscode-languageserver-types';
 
-export { HTMLTagSpecification, ITagSet, IAttributeSet } from './parser/htmlTags';
-
 export interface HTMLFormatConfiguration {
 	tabSize?: number;
 	insertSpaces?: boolean;
