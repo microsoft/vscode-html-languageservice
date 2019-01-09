@@ -648,32 +648,6 @@ suite('HTML Scanner', () => {
 		]);
 	});
 
-	test('Tag with Angular Attribute Name', () => {
-		assertTokens([{
-			input: '<abc #myinput (click)="bar" [value]="someProperty" *ngIf="someCondition">',
-			tokens: [
-				{ offset: 0, type: TokenType.StartTagOpen },
-				{ offset: 1, type: TokenType.StartTag, content: 'abc' },
-				{ offset: 4, type: TokenType.Whitespace },
-				{ offset: 5, type: TokenType.AttributeName },
-				{ offset: 13, type: TokenType.Whitespace },
-				{ offset: 14, type: TokenType.AttributeName },
-				{ offset: 21, type: TokenType.DelimiterAssign },
-				{ offset: 22, type: TokenType.AttributeValue },
-				{ offset: 27, type: TokenType.Whitespace },
-				{ offset: 28, type: TokenType.AttributeName },
-				{ offset: 35, type: TokenType.DelimiterAssign },
-				{ offset: 36, type: TokenType.AttributeValue },
-				{ offset: 50, type: TokenType.Whitespace },
-				{ offset: 51, type: TokenType.AttributeName },
-				{ offset: 56, type: TokenType.DelimiterAssign },
-				{ offset: 57, type: TokenType.AttributeValue },
-				{ offset: 72, type: TokenType.StartTagClose }
-			]
-		}
-		]);
-	});
-
 	test('Tag with Invalid Attribute Value', () => {
 		assertTokens([{
 			input: '<abc foo=">',

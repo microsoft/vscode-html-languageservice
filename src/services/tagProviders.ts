@@ -6,8 +6,6 @@
 
 import {
 	getHTML5TagProvider,
-	getAngularTagProvider,
-	getIonicTagProvider,
 	IHTMLTagProvider,
 	ITagSet,
 	collectTagsDefault,
@@ -22,8 +20,6 @@ export class TagProviderCollection {
 	constructor(tagProviders: IHTMLTagProvider[]) {
 		this._tagProviders = [
 			getHTML5TagProvider(),
-			getAngularTagProvider(),
-			getIonicTagProvider(),
 			getRazorTagProvider(),
 			...tagProviders
 		];
