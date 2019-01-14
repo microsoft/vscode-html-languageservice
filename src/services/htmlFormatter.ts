@@ -45,7 +45,7 @@ export function format(document: TextDocument, range: Range | undefined, options
 		//Do not modify if substring in inside an element
 		let firstHalf = value.substring(0, startOffset);
 		let secondHalf = value.substring(endOffset, value.length);
-		if(new RegExp(/.*[<][^>]*$/).test(firstHalf) && new RegExp(/^[^<]*[>].*/).test(secondHalf) ){ 
+		if(new RegExp(/.*[<][^>]*$/).test(firstHalf) && new RegExp(/^[^<]*[>].*/).test(secondHalf) ){
 			//return without modification
 			value = value.substring(startOffset, endOffset);
 			return [{
@@ -81,7 +81,7 @@ export function format(document: TextDocument, range: Range | undefined, options
 		eol: '\n'
 	};
 
-	let result = html_beautify(value, htmlOptions);
+	let result = html_beautify(value.trimLeft(), htmlOptions);
 	if (initialIndentLevel > 0) {
 		let indent = options.insertSpaces ? repeat(' ', tabSize * initialIndentLevel) : repeat('\t', initialIndentLevel);
 		result = result.split('\n').join('\n' + indent);

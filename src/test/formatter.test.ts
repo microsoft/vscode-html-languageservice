@@ -164,6 +164,25 @@ suite('JSON Formatter', () => {
 		format(content, expected);
 	});
 
+	test('range with indent', () => {
+		var content = [
+			'<div  class = "foo">',
+			'  <div></div>|<img src = "foo">',
+			'  <img  src = "foo">|',
+			' </div>'
+		].join('\n');
+
+		var expected = [
+			'<div  class = "foo">',
+			'  <div></div><img src="foo">',
+			'  <img src="foo">',
+			' </div>'
+		].join('\n');
+
+		format(content, expected);
+	});
+
+
 	test('bug 36574', () => {
 		var content = [
 			'<script src="/js/main.js"> </script>'
