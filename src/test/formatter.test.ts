@@ -127,7 +127,7 @@ suite('JSON Formatter', () => {
 
 		var expected = [
 			'<div  class = "foo">',
-			'  <img src="foo">    ',
+			'  <img  src = "foo">    ',
 			'  ',
 			' </div>'
 		].join('\n');
@@ -245,6 +245,60 @@ suite('JSON Formatter', () => {
 			'<div  class = "foo">',
 			'  <div></div><img src="foo">',
 			'  <img src="foo">',
+			' </div>'
+		].join('\n');
+
+		format(content, expected);
+	});
+
+	test('range with indent 5', () => {
+		var content = [
+			'<div  class = "foo">',
+			'   |<img src = "foo">',
+			'   <img  src = "foo">|',
+			' </div>'
+		].join('\n');
+
+		var expected = [
+			'<div  class = "foo">',
+			'  <img src="foo">',
+			'  <img src="foo">',
+			' </div>'
+		].join('\n');
+
+		format(content, expected);
+	});
+
+	test('range with indent 6', () => {
+		var content = [
+			'<div  class = "foo">',
+			'    |<img src = "foo">',
+			'    <img  src = "foo">|',
+			' </div>'
+		].join('\n');
+
+		var expected = [
+			'<div  class = "foo">',
+			'    <img src="foo">',
+			'    <img src="foo">',
+			' </div>'
+		].join('\n');
+
+		format(content, expected);
+	});
+
+	test('range with indent 7', () => {
+		var content = [
+			'<div  class = "foo">',
+			'    <div></div>|<img src = "foo">',
+			'      <img  src = "foo">|',
+			' </div>'
+		].join('\n');
+
+		var expected = [
+			'<div  class = "foo">',
+			'    <div></div><img src="foo">',
+			'    <img src="foo">',
 			' </div>'
 		].join('\n');
 
