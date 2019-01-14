@@ -42,10 +42,10 @@ export function format(document: TextDocument, range: Range | undefined, options
 		}
 		range = Range.create(document.positionAt(startOffset), document.positionAt(endOffset));
 
-		//Do not modify if substring in inside an element
+		// Do not modify if substring starts in inside an element
+		// Ending inside an element is fine as it doesn't cause formatting errors
 		let firstHalf = value.substring(0, startOffset);
-		let secondHalf = value.substring(endOffset, value.length);
-		if(new RegExp(/.*[<][^>]*$/).test(firstHalf) && new RegExp(/^[^<]*[>].*/).test(secondHalf) ){
+		if(new RegExp(/.*[<][^>]*$/).test(firstHalf)){
 			//return without modification
 			value = value.substring(startOffset, endOffset);
 			return [{
