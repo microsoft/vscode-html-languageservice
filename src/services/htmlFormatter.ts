@@ -65,7 +65,7 @@ export function format(document: TextDocument, range: Range | undefined, options
 		range = Range.create(Position.create(0, 0), document.positionAt(value.length));
 	}
 	let htmlOptions: IBeautifyHTMLOptions = {
-		indent_size: options.insertSpaces ? tabSize : 1,
+		indent_size: tabSize,
 		indent_char: options.insertSpaces ? ' ' : '\t',
 		wrap_line_length: getFormatOption(options, 'wrapLineLength', 120),
 		unformatted: getTagsFormatOption(options, 'unformatted', void 0),
