@@ -4,11 +4,11 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 
-import { ITagSet, IAttributeSet, getLanguageService } from '../htmlLanguageService';
-import { HTMLTagSpecification } from '../parser/htmlTags';
+import { getLanguageService } from '../htmlLanguageService';
 
 import { testCompletionFor } from './completionUtil';
 import { assertHover } from "./hoverUtil";
+import { ITagEntryData, IAttributeEntryData } from '../languageFacts';
 
 /**
  * Todo@Pine:
@@ -17,22 +17,42 @@ import { assertHover } from "./hoverUtil";
  */
 
 suite('HTML Custom Tag Provider', () => {
-	const tagSet: ITagSet = {
-		foo: new HTMLTagSpecification('The foo element', ['bar', 'baz'])
+	const tags: ITagEntryData[] = [
+		{
+			name: 'foo',
+			description: 'The foo element',
+			attributes: [
+				{ name: 'bar' },
+				{
+					name: 'baz',
+					values: [
+						{
+							name: 'baz-val-1'
+						}
+					]
+				}
+			]
+		}
+	];
+	
+	const globalAttributes: IAttributeEntryData[] = [
+		{ name: 'fooAttr', description: 'Foo Attribute' },
+		{ name: 'xattr:x', description: 'X attributes'}
+	];
+	
+	const valueSetMap = {
+		'x': [{
+			name: 'xval',
+			description: 'x value'
+		}]
 	};
 
-	const attributeSet: IAttributeSet = {
-		fooAttr: { label: 'fooAttr', description: 'Foo Attribute' }
-	};
-
-	/**
-	 * Todo@Pine:
-	 * Currently initializing a LS with custom tag/attr will make all Language Service instances
-	 * Make each Language Service stateful and containing its own custom tag/attr sets
-	 */ 
 	getLanguageService({
-		customTags: tagSet,
-		customAttributes: attributeSet
+		customData: {
+			tags,
+			globalAttributes,
+			valueSetMap
+		}
 	});
 
 	test('Completion', () => {
@@ -46,7 +66,20 @@ suite('HTML Custom Tag Provider', () => {
 			items: [
 				{ label: 'bar', resultText: `<foo bar="$1"` },
 				{ label: 'baz', resultText: `<foo baz="$1"` },
-				{ label: 'fooAttr', resultText: `<foo fooAttr="$1"` }
+				{ label: 'fooAttr', resultText: `<foo fooAttr="$1"` },
+				{ label: 'xattr', resultText: `<foo xattr="$1"` }
+			]
+		});
+
+		testCompletionFor('<foo baz=|', {
+			items: [
+				{ label: 'baz-val-1', resultText: `<foo baz="baz-val-1"` },
+			]
+		});
+
+		testCompletionFor('<foo xattr=|', {
+			items: [
+				{ label: 'xval', resultText: `<foo xattr="xval"` },
 			]
 		});
 	});

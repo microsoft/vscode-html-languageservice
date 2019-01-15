@@ -5,6 +5,7 @@
 'use strict';
 
 import { TextDocument, Position, Range } from 'vscode-languageserver-types';
+export { IEntryData, ITagEntryData, IAttributeEntryData, HTMLData } from './languageFacts';
 
 export interface HTMLFormatConfiguration {
 	tabSize?: number;

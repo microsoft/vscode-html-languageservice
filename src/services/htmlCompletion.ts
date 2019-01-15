@@ -7,8 +7,8 @@
 import { TextDocument, Position, CompletionList, CompletionItemKind, Range, TextEdit, InsertTextFormat, CompletionItem } from 'vscode-languageserver-types';
 import { HTMLDocument, Node } from '../parser/htmlParser';
 import { createScanner } from '../parser/htmlScanner';
-import { isEmptyElement } from '../parser/htmlTags';
-import { getAllTagProviders } from './tagProviders';
+import { isEmptyElement } from '../languageFacts';
+import { getAllDataProviders } from '../languageFacts';
 import { CompletionConfiguration, ICompletionParticipant, ScannerState, TokenType } from '../htmlLanguageTypes';
 import { entities } from '../parser/htmlEntities';
 
@@ -33,7 +33,7 @@ export class HTMLCompletion {
 			items: []
 		};
 		let completionParticipants = this.completionParticipants;
-		let tagProviders = getAllTagProviders().filter(p => p.isApplicable(document.languageId) && (!settings || settings[p.getId()] !== false));
+		let tagProviders = getAllDataProviders().filter(p => p.isApplicable(document.languageId) && (!settings || settings[p.getId()] !== false));
 
 		let text = document.getText();
 		let offset = document.offsetAt(position);
@@ -57,11 +57,11 @@ export class HTMLCompletion {
 		function collectOpenTagSuggestions(afterOpenBracket: number, tagNameEnd?: number): CompletionList {
 			let range = getReplaceRange(afterOpenBracket, tagNameEnd);
 			tagProviders.forEach((provider) => {
-				provider.collectTags((tag, label) => {
+				provider.collectTags((tag, description) => {
 					result.items.push({
 						label: tag,
 						kind: CompletionItemKind.Property,
-						documentation: label,
+						documentation: description,
 						textEdit: TextEdit.replace(range, tag),
 						insertTextFormat: InsertTextFormat.PlainText
 					});
@@ -119,11 +119,11 @@ export class HTMLCompletion {
 			}
 
 			tagProviders.forEach(provider => {
-				provider.collectTags((tag, label) => {
+				provider.collectTags((tag, description) => {
 					result.items.push({
 						label: '/' + tag,
 						kind: CompletionItemKind.Property,
-						documentation: label,
+						documentation: description,
 						filterText: '/' + tag + closeTag,
 						textEdit: TextEdit.replace(range, '/' + tag + closeTag),
 						insertTextFormat: InsertTextFormat.PlainText
@@ -166,7 +166,7 @@ export class HTMLCompletion {
 			let tag = currentTag.toLowerCase();
 			let seenAttributes = Object.create(null);
 			tagProviders.forEach(provider => {
-				provider.collectAttributes(tag, (attribute, type?: string) => {
+				provider.collectAttributes(tag, (attribute, type?: string, description?: string) => {
 					if (seenAttributes[attribute]) {
 						return;
 					}
@@ -186,6 +186,7 @@ export class HTMLCompletion {
 					result.items.push({
 						label: attribute,
 						kind: type === 'handler' ? CompletionItemKind.Function : CompletionItemKind.Value,
+						documentation: description,
 						textEdit: TextEdit.replace(range, codeSnippet),
 						insertTextFormat: InsertTextFormat.Snippet,
 						command

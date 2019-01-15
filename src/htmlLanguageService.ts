@@ -15,10 +15,9 @@ import { findDocumentSymbols } from './services/htmlSymbolsProvider';
 import { TextDocument, Position, CompletionList, Hover, Range, SymbolInformation, TextEdit, DocumentHighlight, DocumentLink, FoldingRange } from 'vscode-languageserver-types';
 import { Scanner, HTMLDocument, CompletionConfiguration, ICompletionParticipant, HTMLFormatConfiguration, DocumentContext } from './htmlLanguageTypes';
 import { getFoldingRanges } from './services/htmlFolding';
-import { addTags, addAttributes } from './services/tagProviders';
-import { ITagSet, IAttributeSet } from './parser/htmlTags';
+import { addCustomData } from './languageFacts';
+import { HTMLData } from './languageFacts';
 
-export { HTMLTagSpecification, ITagSet, IAttributeSet } from './parser/htmlTags';
 export * from './htmlLanguageTypes';
 export * from 'vscode-languageserver-types';
 
@@ -37,20 +36,14 @@ export interface LanguageService {
 }
 
 export interface LanguageServiceOptions {
-	customTags?: ITagSet;
-	customAttributes?: IAttributeSet;
+	customData?: HTMLData;
 }
 
 export function getLanguageService(options?: LanguageServiceOptions): LanguageService {
 	const htmlCompletion = new HTMLCompletion();
 
-	if (options) {
-		if (options.customTags) {
-			addTags(options.customTags);
-		}
-		if (options.customAttributes) {
-			addAttributes(options.customAttributes);
-		}
+	if (options && options.customData) {
+		addCustomData(options.customData);
 	}
 
 	return {
