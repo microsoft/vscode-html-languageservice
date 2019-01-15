@@ -48,11 +48,11 @@ suite('HTML Custom Tag Provider', () => {
 	};
 
 	getLanguageService({
-		customData: {
+		customDataCollections: [{
 			tags,
 			globalAttributes,
 			valueSetMap
-		}
+		}]
 	});
 
 	test('Completion', () => {

@@ -15,7 +15,7 @@ import { findDocumentSymbols } from './services/htmlSymbolsProvider';
 import { TextDocument, Position, CompletionList, Hover, Range, SymbolInformation, TextEdit, DocumentHighlight, DocumentLink, FoldingRange } from 'vscode-languageserver-types';
 import { Scanner, HTMLDocument, CompletionConfiguration, ICompletionParticipant, HTMLFormatConfiguration, DocumentContext } from './htmlLanguageTypes';
 import { getFoldingRanges } from './services/htmlFolding';
-import { addCustomData } from './languageFacts';
+import { handleCustomData } from './languageFacts';
 import { HTMLData } from './languageFacts';
 
 export * from './htmlLanguageTypes';
@@ -36,14 +36,14 @@ export interface LanguageService {
 }
 
 export interface LanguageServiceOptions {
-	customData?: HTMLData;
+	customDataCollections?: HTMLData[];
 }
 
 export function getLanguageService(options?: LanguageServiceOptions): LanguageService {
 	const htmlCompletion = new HTMLCompletion();
 
-	if (options && options.customData) {
-		addCustomData(options.customData);
+	if (options && options.customDataCollections) {
+		handleCustomData(options.customDataCollections);
 	}
 
 	return {
