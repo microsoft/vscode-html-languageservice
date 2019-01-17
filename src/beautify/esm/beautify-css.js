@@ -1,5 +1,5 @@
 // copied from js-beautify/js/lib/beautify-css.js
-// version: 1.9.0-beta1
+// version: 1.9.0-beta2
 /* AUTO-GENERATED. DO NOT MODIFY. */
 /*
 
@@ -450,11 +450,23 @@ Output.prototype.add_new_line = function(force_newline) {
 };
 
 Output.prototype.get_code = function(eol) {
-  var sweet_code = this.__lines.join('\n').replace(/[\r\n\t ]+$/, '');
+  this.trim(true);
+
+  // handle some edge cases where the last tokens
+  // has text that ends with newline(s)
+  var last_item = this.current_line.pop();
+  if (last_item) {
+    if (last_item[last_item.length - 1] === '\n') {
+      last_item = last_item.replace(/\n+$/g, '');
+    }
+    this.current_line.push(last_item);
+  }
 
   if (this._end_with_newline) {
-    sweet_code += '\n';
+    this.__add_outputline();
   }
+
+  var sweet_code = this.__lines.join('\n');
 
   if (eol !== '\n') {
     sweet_code = sweet_code.replace(/[\n]/g, eol);
@@ -853,6 +865,7 @@ InputScanner.prototype.test = function(pattern, index) {
 InputScanner.prototype.testChar = function(pattern, index) {
   // test one character regex match
   var val = this.peek(index);
+  pattern.lastIndex = 0;
   return val !== null && pattern.test(val);
 };
 
