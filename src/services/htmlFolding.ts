@@ -7,7 +7,7 @@ import { TextDocument, FoldingRange, FoldingRangeKind } from 'vscode-languageser
 
 import { TokenType } from '../htmlLanguageTypes';
 import { createScanner } from '../parser/htmlScanner';
-import { isEmptyElement } from '../parser/htmlTags';
+import { isEmptyElement } from '../languageFacts';
 
 function limitRanges(ranges: FoldingRange[], rangeLimit: number) {
 	ranges = ranges.sort((r1, r2) => {

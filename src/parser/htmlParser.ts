@@ -6,7 +6,7 @@
 
 import { createScanner } from './htmlScanner';
 import { findFirst } from '../utils/arrays';
-import { isEmptyElement } from './htmlTags';
+import { isEmptyElement } from '../languageFacts';
 import { TokenType } from '../htmlLanguageTypes';
 
 export class Node {

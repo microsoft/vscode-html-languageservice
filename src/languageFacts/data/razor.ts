@@ -4,11 +4,10 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 
-import {IHTMLTagProvider} from './htmlTags';
+import { IHTMLDataProvider } from '../dataProvider';
 
-
-export function getRazorTagProvider() : IHTMLTagProvider {
-	var customTags : { [tag:string]: string[]} = {
+export function getRazorDataProvider(): IHTMLDataProvider {
+	var customTags: { [tag: string]: string[] } = {
 		a: ['asp-action', 'asp-controller', 'asp-fragment', 'asp-host', 'asp-protocol', 'asp-route'],
 		div: ['asp-validation-summary'],
 		form: ['asp-action', 'asp-controller', 'asp-anti-forgery'],
@@ -20,7 +19,7 @@ export function getRazorTagProvider() : IHTMLTagProvider {
 
 	return {
 		getId: () => 'razor',
-		isApplicable: (languageId) => languageId === 'razor',
+		isApplicable: languageId => languageId === 'razor',
 		collectTags: (collector: (tag: string, label: string) => void) => {
 			// no extra tags
 		},
