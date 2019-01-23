@@ -55,7 +55,7 @@ export function getApplicableRanges(document: TextDocument, position: Position):
 	 * Cursor inside `</div>`
 	 */
 	else {
-		// `div`
+		// `div` inside `</div>`
 		if (currOffset >= currNode.endTagStart + 2) {
 			result.unshift([currNode.endTagStart + 2, currNode.end - 1]);
 		}
@@ -90,7 +90,8 @@ function getAllParentTagRanges(initialNode: Node) {
 }
 
 function getAttributeLevelRanges(document: TextDocument, currNode: Node, currOffset: number) {
-	const currNodeText = document.getText(offsetsToRange(document, currNode.start, currNode.end));
+	const currNodeRange = Range.create(document.positionAt(currNode.start), document.positionAt(currNode.end));
+	const currNodeText = document.getText(currNodeRange);
 	const relativeOffset = currOffset - currNode.start;
 
 	/**
@@ -101,7 +102,7 @@ function getAttributeLevelRanges(document: TextDocument, currNode: Node, currOff
 	let token = scanner.scan();
 	
 	/**
-	 * For text like so
+	 * For text like
 	 * <div class="foo">bar</div>
 	 */
 	const positionOffset = currNode.start;
@@ -163,8 +164,4 @@ function getAttributeLevelRanges(document: TextDocument, currNode: Node, currOff
 	return result.map(pair => {
 		return [pair[0] + positionOffset, pair[1] + positionOffset];
 	});
-}
-
-function offsetsToRange(doc: TextDocument, offset1: number, offset2: number) {
-	return Range.create(doc.positionAt(offset1), doc.positionAt(offset2));
 }
