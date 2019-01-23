@@ -1,6 +1,5 @@
 {
-	"version": "0.1.0",
-	// List of configurations. Add new configurations or edit existing ones.
+	"version": "0.2.0",
 	"configurations": [
 		{
 			"name": "Attach",
@@ -27,7 +26,7 @@
 			"env": {},
 			"sourceMaps": true,
 			"outFiles": ["${workspaceRoot}/lib/umd/**"],
-			"preLaunchTask": "compile"
+			"preLaunchTask": "npm: compile"
 		}
 	]
 }

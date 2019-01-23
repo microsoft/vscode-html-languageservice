@@ -15,15 +15,10 @@ export function getSelectionRanges(document: TextDocument, position: Position) {
 			document.positionAt(pair[1])
 		);
 	});
-	
-	ranges.forEach(r => {
-		console.log(document.getText(r));
-	});
-	
 	return ranges;
 }
 
-function getApplicableRanges(document: TextDocument, position: Position): number[][] {
+export function getApplicableRanges(document: TextDocument, position: Position): number[][] {
 	const htmlDoc = parse(document.getText());
 	const currOffset = document.offsetAt(position);
 	const currNode = htmlDoc.findNodeAt(currOffset);
@@ -42,7 +37,7 @@ function getApplicableRanges(document: TextDocument, position: Position): number
 	/**
 	 * Cursor inside `<div class="foo">`
 	 */
-	if (currNode.start <= currOffset && currOffset <= currNode.startTagEnd) {
+	if (currNode.start < currOffset && currOffset < currNode.startTagEnd) {
 		result.unshift([currNode.start + 1, currNode.startTagEnd - 1]);
 		const attributeLevelRanges = getAttributeLevelRanges(document, currNode, currOffset);
 		result = attributeLevelRanges.concat(result);
@@ -51,8 +46,7 @@ function getApplicableRanges(document: TextDocument, position: Position): number
 	/**
 	 * Cursor inside `bar`
 	 */
-	else if (currNode.startTagEnd < currOffset && currOffset < currNode.endTagStart) {
-		result.unshift([currNode.start, currNode.end]);
+	else if (currNode.startTagEnd <= currOffset && currOffset <= currNode.endTagStart) {
 		result.unshift([currNode.startTagEnd, currNode.endTagStart]);
 
 		return result;
@@ -61,7 +55,10 @@ function getApplicableRanges(document: TextDocument, position: Position): number
 	 * Cursor inside `</div>`
 	 */
 	else {
-		result.unshift([currNode.endTagStart, currNode.end]);
+		// `div`
+		if (currOffset >= currNode.endTagStart + 2) {
+			result.unshift([currNode.endTagStart + 2, currNode.end - 1]);
+		}
 		return result;
 	}
 }
