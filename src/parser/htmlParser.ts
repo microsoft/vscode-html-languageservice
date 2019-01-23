@@ -12,6 +12,7 @@ import { TokenType } from '../htmlLanguageTypes';
 export class Node {
 	public tag: string | undefined;
 	public closed: boolean = false;
+	public startTagEnd: number | undefined;
 	public endTagStart: number | undefined;
 	public attributes: { [name: string]: string | null } | undefined;
 	public get attributeNames(): string[] { return this.attributes ? Object.keys(this.attributes) : []; }
@@ -80,6 +81,7 @@ export function parse(text: string): HTMLDocument {
 				break;
 			case TokenType.StartTagClose:
 				curr.end = scanner.getTokenEnd(); // might be later set to end tag position
+				curr.startTagEnd = scanner.getTokenEnd();
 				if (curr.tag && isEmptyElement(curr.tag) && curr.parent) {
 					curr.closed = true;
 					curr = curr.parent;
@@ -89,6 +91,7 @@ export function parse(text: string): HTMLDocument {
 				if (curr.parent) {
 					curr.closed = true;
 					curr.end = scanner.getTokenEnd();
+					curr.startTagEnd = scanner.getTokenEnd();
 					curr = curr.parent;
 				}
 				break;
@@ -150,5 +153,4 @@ export function parse(text: string): HTMLDocument {
 		findNodeBefore: htmlDocument.findNodeBefore.bind(htmlDocument),
 		findNodeAt: htmlDocument.findNodeAt.bind(htmlDocument)
 	};
-
 }

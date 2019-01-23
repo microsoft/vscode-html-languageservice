@@ -31,6 +31,7 @@ export interface CompletionConfiguration {
 export interface Node {
 	tag: string | undefined;
 	start: number;
+	startTagEnd: number | undefined;
 	end: number;
 	endTagStart: number | undefined;
 	children: Node[];

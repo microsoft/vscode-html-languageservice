@@ -17,6 +17,7 @@ import { Scanner, HTMLDocument, CompletionConfiguration, ICompletionParticipant,
 import { getFoldingRanges } from './services/htmlFolding';
 import { handleCustomData } from './languageFacts';
 import { HTMLData } from './languageFacts';
+import { getSelectionRanges } from './services/htmlSelectionRange';
 
 export * from './htmlLanguageTypes';
 export * from 'vscode-languageserver-types';
@@ -33,6 +34,7 @@ export interface LanguageService {
 	findDocumentSymbols(document: TextDocument, htmlDocument: HTMLDocument): SymbolInformation[];
 	doTagComplete(document: TextDocument, position: Position, htmlDocument: HTMLDocument): string | null;
 	getFoldingRanges(document: TextDocument, context?: { rangeLimit?: number }): FoldingRange[];
+	getSelectionRanges(document: TextDocument, position: Position): Range[];
 }
 
 export interface LanguageServiceOptions {
@@ -57,6 +59,7 @@ export function getLanguageService(options?: LanguageServiceOptions): LanguageSe
 		findDocumentLinks,
 		findDocumentSymbols,
 		getFoldingRanges,
+		getSelectionRanges,
 		doTagComplete: htmlCompletion.doTagComplete.bind(htmlCompletion),
 	};
 }
