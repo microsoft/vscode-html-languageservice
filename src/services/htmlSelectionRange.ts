@@ -25,6 +25,14 @@ function getApplicableRanges(document: TextDocument, position: Position): number
 
 	let result = getAllParentTagRanges(currNode);
 	
+	// Self-closing tags
+	if (currNode.startTagEnd && !currNode.endTagStart) {
+		result.unshift([currNode.start + 1, currNode.startTagEnd - 2]);
+		const attributeLevelRanges = getAttributeLevelRanges(document, currNode, currOffset);
+		result = attributeLevelRanges.concat(result);
+		return result;
+	}
+
 	if (!currNode.startTagEnd || !currNode.endTagStart) {
 		return result;
 	}

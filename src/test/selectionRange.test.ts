@@ -120,4 +120,17 @@ suite('HTML SelectionRange', () => {
 			[0, `<div class="foo" id="bar">foo</div>`]
 		]);
 	});
+
+	test('Self closing tags', () => {
+		assertRanges('<br class="|foo"/>', [
+			[11, 'foo'],
+			[10, '"foo"'],
+			[4, 'class="foo"'],
+			[1, 'br class="foo"'],
+			[0, '<br class="foo"/>']
+		]);
+
+		//Todo@Pine: We need the range `br` too. Sync with Joh to see what selection ranges should provider return.
+		assertRanges('<b|r class="foo"/>', [[1, 'br class="foo"'], [0, '<br class="foo"/>']]);
+	});
 });
