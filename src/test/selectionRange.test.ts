@@ -10,13 +10,7 @@ import * as assert from 'assert';
 import { TextDocument } from 'vscode-languageserver-types';
 import { getLanguageService } from '../htmlLanguageService';
 
-function assertRanges(lines: string[] | string, expected: (number | string)[][]): void {
-	let content: string = '';
-	if (Array.isArray(lines)) {
-		content = lines.join('\n');
-	} else {
-		content = lines;
-	}
+function assertRanges(content: string, expected: number[][]): void {
 	let message = `Test ${content}`;
 
 	let offset = content.indexOf('|');
