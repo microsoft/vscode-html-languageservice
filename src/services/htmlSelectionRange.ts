@@ -18,7 +18,7 @@ export function getSelectionRanges(document: TextDocument, position: Position) {
 	return ranges;
 }
 
-export function getApplicableRanges(document: TextDocument, position: Position): number[][] {
+function getApplicableRanges(document: TextDocument, position: Position): number[][] {
 	const htmlDoc = parse(document.getText());
 	const currOffset = document.offsetAt(position);
 	const currNode = htmlDoc.findNodeAt(currOffset);

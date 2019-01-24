@@ -8,7 +8,7 @@
 import 'mocha';
 import * as assert from 'assert';
 import { TextDocument } from 'vscode-languageserver-types';
-import { getApplicableRanges } from '../services/htmlSelectionRange';
+import { getLanguageService } from '../htmlLanguageService';
 
 function assertRanges(lines: string[] | string, expected: number[][]): void {
 	let content: string = '';
@@ -22,11 +22,19 @@ function assertRanges(lines: string[] | string, expected: number[][]): void {
 	let offset = content.indexOf('|');
 	content = content.substr(0, offset) + content.substr(offset + 1);
 
-	const document = TextDocument.create('test://foo/bar.html', 'html', 1, content);
-	const actualRanges = getApplicableRanges(document, document.positionAt(offset));
+	const ls = getLanguageService();
 
-	message += `\n${JSON.stringify(actualRanges)} should equal to ${JSON.stringify(expected)}`;
-	assert.deepEqual(actualRanges, expected, message);
+	const document = TextDocument.create('test://foo.html', 'html', 1, content);
+	const actualRanges = ls.getSelectionRanges(document, document.positionAt(offset));
+	const offsetPairs = actualRanges.map(r => {
+		return [
+			document.offsetAt(r.start),
+			document.offsetAt(r.end)
+		];
+	});
+
+	message += `\n${JSON.stringify(offsetPairs)} should equal to ${JSON.stringify(expected)}`;
+	assert.deepEqual(offsetPairs, expected, message);
 }
 
 suite('HTML SelectionRange', () => {
