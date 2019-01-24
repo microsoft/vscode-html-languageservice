@@ -133,4 +133,14 @@ suite('HTML SelectionRange', () => {
 		//Todo@Pine: We need the range `br` too. Sync with Joh to see what selection ranges should provider return.
 		assertRanges('<b|r class="foo"/>', [[1, 'br class="foo"'], [0, '<br class="foo"/>']]);
 	});
+
+	test('Unhandled', () => {
+		// We do not handle comments. This semantic selection is handled by VS Code's default provider, which returns
+		// - foo
+		// - <!-- foo -->
+		assertRanges('<!-- f|oo -->', []);
+
+		// Same for DOCTYPE
+		assertRanges('<!DOCTYPE h|tml>', []);
+	});
 });
