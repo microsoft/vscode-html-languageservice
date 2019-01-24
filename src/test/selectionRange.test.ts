@@ -10,7 +10,7 @@ import * as assert from 'assert';
 import { TextDocument } from 'vscode-languageserver-types';
 import { getLanguageService } from '../htmlLanguageService';
 
-function assertRanges(lines: string[] | string, expected: number[][]): void {
+function assertRanges(lines: string[] | string, expected: (number | string)[][]): void {
 	let content: string = '';
 	if (Array.isArray(lines)) {
 		content = lines.join('\n');
@@ -27,10 +27,7 @@ function assertRanges(lines: string[] | string, expected: number[][]): void {
 	const document = TextDocument.create('test://foo.html', 'html', 1, content);
 	const actualRanges = ls.getSelectionRanges(document, document.positionAt(offset));
 	const offsetPairs = actualRanges.map(r => {
-		return [
-			document.offsetAt(r.start),
-			document.offsetAt(r.end)
-		];
+		return [document.offsetAt(r.start), document.getText(r)];
 	});
 
 	message += `\n${JSON.stringify(offsetPairs)} should equal to ${JSON.stringify(expected)}`;
@@ -39,40 +36,88 @@ function assertRanges(lines: string[] | string, expected: number[][]): void {
 
 suite('HTML SelectionRange', () => {
 	test('Basic', () => {
-		assertRanges('<div|>foo</div>', [[1, 4], [0, 14]]);
-		assertRanges('<|div>foo</div>', [[1, 4], [0, 14]]);
-		assertRanges('<d|iv>foo</div>', [[1, 4], [0, 14]]);
+		assertRanges('<div|>foo</div>', [[1, 'div'], [0, '<div>foo</div>']]);
+		assertRanges('<|div>foo</div>', [[1, 'div'], [0, '<div>foo</div>']]);
+		assertRanges('<d|iv>foo</div>', [[1, 'div'], [0, '<div>foo</div>']]);
 
-		assertRanges('<div>|foo</div>', [[5, 8], [0, 14]]);
-		assertRanges('<div>f|oo</div>', [[5, 8], [0, 14]]);
-		assertRanges('<div>foo|</div>', [[5, 8], [0, 14]]);
+		assertRanges('<div>|foo</div>', [[5, 'foo'], [0, '<div>foo</div>']]);
+		assertRanges('<div>f|oo</div>', [[5, 'foo'], [0, '<div>foo</div>']]);
+		assertRanges('<div>foo|</div>', [[5, 'foo'], [0, '<div>foo</div>']]);
 
-		assertRanges('<div>foo<|/div>', [[0, 14]]);
+		assertRanges('<div>foo<|/div>', [[0, '<div>foo</div>']]);
 
-		assertRanges('<div>foo</|div>', [[10, 13], [0, 14]]);
-		assertRanges('<div>foo</di|v>', [[10, 13], [0, 14]]);
-		assertRanges('<div>foo</div|>', [[10, 13], [0, 14]]);
+		assertRanges('<div>foo</|div>', [[10, 'div'], [0, '<div>foo</div>']]);
+		assertRanges('<div>foo</di|v>', [[10, 'div'], [0, '<div>foo</div>']]);
+		assertRanges('<div>foo</div|>', [[10, 'div'], [0, '<div>foo</div>']]);
 	});
 
 	test('Attribute Name', () => {
-		assertRanges('<div |class="foo">foo</div>', [[5, 10], [5, 16], [1, 16], [0, 26]]);
-		assertRanges('<div cl|ass="foo">foo</div>', [[5, 10], [5, 16], [1, 16], [0, 26]]);
-		assertRanges('<div class|="foo">foo</div>', [[5, 10], [5, 16], [1, 16], [0, 26]]);
+		assertRanges('<div |class="foo">foo</div>', [
+			[5, 'class'],
+			[5, `class="foo"`],
+			[1, `div class="foo"`],
+			[0, `<div class="foo">foo</div>`]
+		]);
+		assertRanges('<div cl|ass="foo">foo</div>', [
+			[5, 'class'],
+			[5, `class="foo"`],
+			[1, `div class="foo"`],
+			[0, `<div class="foo">foo</div>`]
+		]);
+		assertRanges('<div class|="foo">foo</div>', [
+			[5, 'class'],
+			[5, `class="foo"`],
+			[1, `div class="foo"`],
+			[0, `<div class="foo">foo</div>`]
+		]);
 	});
 
 	test('Attribute Value', () => {
-		assertRanges('<div class=|"foo">foo</div>', [[11, 16], [5, 16], [1, 16], [0, 26]]);
-		assertRanges('<div class="foo"|>foo</div>', [[11, 16], [5, 16], [1, 16], [0, 26]]);
+		assertRanges('<div class=|"foo">foo</div>', [
+			[11, `"foo"`],
+			[5, `class="foo"`],
+			[1, `div class="foo"`],
+			[0, `<div class="foo">foo</div>`]
+		]);
+		assertRanges('<div class="foo"|>foo</div>', [
+			[11, `"foo"`],
+			[5, `class="foo"`],
+			[1, `div class="foo"`],
+			[0, `<div class="foo">foo</div>`]
+		]);
 
-		assertRanges('<div class="|foo">foo</div>', [[12, 15], [11, 16], [5, 16], [1, 16], [0, 26]]);
-		assertRanges('<div class="f|oo">foo</div>', [[12, 15], [11, 16], [5, 16], [1, 16], [0, 26]]);
+		assertRanges('<div class="|foo">foo</div>', [
+			[12, 'foo'],
+			[11, `"foo"`],
+			[5, `class="foo"`],
+			[1, `div class="foo"`],
+			[0, `<div class="foo">foo</div>`]
+		]);
+		assertRanges('<div class="f|oo">foo</div>', [
+			[12, 'foo'],
+			[11, `"foo"`],
+			[5, `class="foo"`],
+			[1, `div class="foo"`],
+			[0, `<div class="foo">foo</div>`]
+		]);
 	});
 
 	test('Unquoted Attribute Value', () => {
-		assertRanges('<div class=|foo>foo</div>', [[11, 14], [5, 14], [1, 14], [0, 24]]);
+		assertRanges('<div class=|foo>foo</div>', [
+			[11, 'foo'],
+			[5, 'class=foo'],
+			[1, 'div class=foo'],
+			[0, '<div class=foo>foo</div>']
+		]);
 	});
 
 	test('Multiple Attribute Value', () => {
-		assertRanges('<div class="foo" id="|bar">foo</div>', [[21, 24], [20, 25], [17, 25], [1, 25], [0, 35]]);
+		assertRanges('<div class="foo" id="|bar">foo</div>', [
+			[21, 'bar'],
+			[20, `"bar"`],
+			[17, `id="bar"`],
+			[1, `div class="foo" id="bar"`],
+			[0, `<div class="foo" id="bar">foo</div>`]
+		]);
 	});
 });
