@@ -13,7 +13,7 @@ export interface HTMLFormatConfiguration {
 	unformatted?: string;
 	contentUnformatted?: string;
 	indentInnerHtml?: boolean;
-	wrapAttributes?: 'auto' | 'force' | 'force-aligned' | 'force-expand-multiline' | 'aligned-multiple';
+	wrapAttributes?: 'auto' | 'force' | 'force-aligned' | 'force-expand-multiline' | 'aligned-multiple' | 'preserve' | 'preserve-aligned';
 	wrapAttributesIndentSize?: number;
 	preserveNewLines?: boolean;
 	maxPreserveNewLines?: number;

@@ -92,7 +92,7 @@ export interface IBeautifyHTMLOptions {
      * 
      * default auto
      */
-    wrap_attributes?: 'auto' | 'force' | 'force-expand-multiline' | 'force-aligned' | 'aligned-multiple';
+    wrap_attributes?: 'auto' | 'force' | 'force-expand-multiline' | 'force-aligned' | 'aligned-multiple' | 'preserve' | 'preserve-aligned';
 
     /**
      * Alignment size when using 'force-aligned' | 'aligned-multiple'
