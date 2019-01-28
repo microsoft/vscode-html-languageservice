@@ -45,7 +45,7 @@ export function format(document: TextDocument, range: Range | undefined, options
 		// Do not modify if substring starts in inside an element
 		// Ending inside an element is fine as it doesn't cause formatting errors
 		let firstHalf = value.substring(0, startOffset);
-		if(new RegExp(/.*[<][^>]*$/).test(firstHalf)){
+		if (new RegExp(/.*[<][^>]*$/).test(firstHalf)) {
 			//return without modification
 			value = value.substring(startOffset, endOffset);
 			return [{
@@ -81,7 +81,7 @@ export function format(document: TextDocument, range: Range | undefined, options
 		eol: '\n'
 	};
 
-	let result = html_beautify(value.trimLeft(), htmlOptions);
+	let result = html_beautify(trimLeft(value), htmlOptions);
 	if (initialIndentLevel > 0) {
 		let indent = options.insertSpaces ? repeat(' ', tabSize * initialIndentLevel) : repeat('\t', initialIndentLevel);
 		result = result.split('\n').join('\n' + indent);
@@ -93,6 +93,10 @@ export function format(document: TextDocument, range: Range | undefined, options
 		range: range,
 		newText: result
 	}];
+}
+
+function trimLeft(str: string) {
+	return str.replace(/^\s+/, '');
 }
 
 function getFormatOption(options: HTMLFormatConfiguration, key: keyof HTMLFormatConfiguration, dflt: any): any {
