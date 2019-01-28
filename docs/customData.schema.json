@@ -1,0 +1,105 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "vscode-html-customdata",
+  "version": 1,
+  "title": "VS Code HTML Custom Data format",
+  "description": "Format for loading Custom Data in VS Code's HTML support",
+  "type": "object",
+  "required": ["version"],
+  "properties": {
+    "version": {
+      "description": "The custom data version",
+      "type": "number"
+    },
+    "tags": {
+      "description": "Custom HTML tags",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "attributes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["name"],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "valueSet": {
+                  "type": "string"
+                },
+                "values": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": ["name"],
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "globalAttributes": {
+      "description": "Custom HTML global attributes",
+      "type": "array",
+      "items": {
+        "required": ["name"],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "valueSets": {
+      "description": "A set of attribute value. When an attribute refers to an attribute set, its value completion will use valuse from that set",
+      "type": "array",
+      "items": {
+        "required": ["name"],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "values": {
+            "type": "array",
+            "items": {
+              "required": ["name"],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

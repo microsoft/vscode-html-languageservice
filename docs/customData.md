@@ -21,7 +21,7 @@ The JSON can have 3 top level properties:
 }
 ```
 
-You can find their shapes at [htmlLanguageTypes.ts](../src/htmlLanguageTypes.ts).
+You can find their shapes at [htmlLanguageTypes.ts](../src/htmlLanguageTypes.ts) or the [JSON Schema](./customData.schema.json).
 
 [html5.ts](../src/languageFacts/data/html5.ts) contains that built-in dataset that conforms to the spec.
 
