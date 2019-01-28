@@ -117,15 +117,6 @@ export interface ICompletionParticipant {
 	onHtmlContent?: (context: HtmlContentContext) => void;
 }
 
-export interface IHTMLDataProvider {
-	getId(): string;
-	isApplicable(languageId: string): boolean;
-
-	provideTags(): ITagData[];
-	provideAttributes(tag: string): IAttributeData[];
-	provideValues(tag: string, attribute: string): IValueData[];
-}
-
 export interface ITagData {
 	name: string;
 	description?: string;
@@ -154,4 +145,13 @@ export interface HTMLDataV1 {
 	tags?: ITagData[];
 	globalAttributes?: IAttributeData[];
 	valueSets?: IValueSet[];
+}
+
+export interface IHTMLDataProvider {
+	getId(): string;
+	isApplicable(languageId: string): boolean;
+
+	provideTags(): ITagData[];
+	provideAttributes(tag: string): IAttributeData[];
+	provideValues(tag: string, attribute: string): IValueData[];
 }
