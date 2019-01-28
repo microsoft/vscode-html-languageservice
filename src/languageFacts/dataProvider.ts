@@ -4,33 +4,12 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 
-import { startsWith } from '../utils/strings';
-
-export interface IHTMLDataProvider {
-	getId(): string;
-	isApplicable(languageId: string): boolean;
-	collectTags(collector: (tag: string, description?: string) => void): void;
-	collectAttributes(tag: string, collector: (attribute: string, type?: string, description?: string) => void): void;
-	collectValues(tag: string, attribute: string, collector: (value: string) => void): void;
-}
-
-export interface IEntryData {
-	name: string;
-	description?: string;
-}
-
-export interface IAttributeEntryData extends IEntryData {
-	values?: IEntryData[];
-}
-
-export interface ITagEntryData extends IEntryData {
-	attributes: IAttributeEntryData[];
-}
+import { ITagData, IAttributeData, IValueData, IHTMLDataProvider } from '../htmlLanguageTypes';
 
 export interface HTMLData {
-	tags?: ITagEntryData[];
-	globalAttributes?: IAttributeEntryData[];
-	valueSetMap?: { [setName: string]: IEntryData[] };
+	tags?: ITagData[];
+	globalAttributes?: IAttributeData[];
+	valueSetMap?: { [setName: string]: IValueData[] };
 }
 
 export class HTMLDataProvider implements IHTMLDataProvider {
@@ -38,11 +17,11 @@ export class HTMLDataProvider implements IHTMLDataProvider {
 		return true;
 	}
 
-	private _tags: ITagEntryData[];
-	private _tagMap: { [t: string]: ITagEntryData } = {};
-	private _globalAttributes: IAttributeEntryData[];
-	private _attributeMap: { [a: string]: IAttributeEntryData } = {};
-	private _valueSetMap: { [setName: string]: IEntryData[] } = {};
+	private _tags: ITagData[];
+	private _tagMap: { [t: string]: ITagData } = {};
+	private _globalAttributes: IAttributeData[];
+	private _attributeMap: { [a: string]: IAttributeData } = {};
+	private _valueSetMap: { [setName: string]: IValueData[] } = {};
 
 	constructor(private readonly id: string, customData: HTMLData) {
 		this._tags = customData.tags || [];
@@ -68,20 +47,18 @@ export class HTMLDataProvider implements IHTMLDataProvider {
 		return this.id;
 	}
 
-	collectTags(collector: (tag: string, description?: string) => void) {
-		this._tags.forEach(t => {
-			collector(t.name, t.description);
-		});
+	provideTags() {
+		return this._tags;
 	}
 
-	collectAttributes(tag: string, collector: (attribute: string, type?: string, description?: string) => void) {
-		const processAttribute = (a: IAttributeEntryData) => {
-			if (a.name.indexOf(':') !== -1) {
-				const [aName, aSetName] = a.name.split(':');
-				collector(aName, aSetName, a.description);
-			} else {
-				collector(a.name, undefined, a.description);
-			}
+	provideAttributes(tag: string) {
+		const attributes: IAttributeData[] = [];
+		const processAttribute = (a: IAttributeData) => {
+			attributes.push({
+				name: a.name,
+				description: a.description,
+				valueSet: a.valueSet
+			});
 		};
 
 		if (this._tagMap[tag]) {
@@ -93,36 +70,40 @@ export class HTMLDataProvider implements IHTMLDataProvider {
 		this._globalAttributes.forEach(ga => {
 			processAttribute(ga);
 		});
+
+		return attributes;
 	}
 
-	collectValues(tag: string, attribute: string, collector: (value: string) => void) {
-		const processAttributes = (attributes: IAttributeEntryData[]) => {
-			attributes.forEach(a => {
-				if (a.values) {
-					a.values.forEach(v => {
-						collector(v.name);
-					});
-				}
+	provideValues(tag: string, attribute: string) {
+		const values: IValueData[] = [];
 
-				if (startsWith(a.name, attribute + ':')) {
-					const setName = a.name.split(':')[1];
-					if (setName === 'v') {
-						collector(attribute);
-					} else {
-						if (setName && this._valueSetMap[setName]) {
-							this._valueSetMap[setName].forEach(v => {
-								collector(v.name);
+		const processAttributes = (attributes: IAttributeData[]) => {
+			attributes.forEach(a => {
+				if (a.name === attribute) {
+					if (a.values) {
+						a.values.forEach(v => {
+							values.push(v);
+						});
+					}
+	
+					if (a.valueSet) {
+						if (this._valueSetMap[a.valueSet]) {
+							this._valueSetMap[a.valueSet].forEach(v => {
+								values.push(v);
 							});
 						}
 					}
 				}
 			});
 		};
-
-		if (this._tagMap[tag]) {
-			processAttributes(this._tagMap[tag].attributes);
+		
+		if (!this._tagMap[tag]) {
+			return [];
 		}
 
+		processAttributes(this._tagMap[tag].attributes);
 		processAttributes(this._globalAttributes);
+
+		return values;
 	}
 }

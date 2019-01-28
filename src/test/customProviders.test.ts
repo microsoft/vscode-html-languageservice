@@ -4,11 +4,11 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 
-import { getLanguageService } from '../htmlLanguageService';
+import { getLanguageService, ITagData, IAttributeData } from '../htmlLanguageService';
 
 import { testCompletionFor } from './completionUtil';
 import { assertHover } from "./hoverUtil";
-import { ITagEntryData, IAttributeEntryData } from '../languageFacts';
+import { HTMLDataProvider } from '../languageFacts';
 
 /**
  * Todo@Pine:
@@ -17,7 +17,7 @@ import { ITagEntryData, IAttributeEntryData } from '../languageFacts';
  */
 
 suite('HTML Custom Tag Provider', () => {
-	const tags: ITagEntryData[] = [
+	const tags: ITagData[] = [
 		{
 			name: 'foo',
 			description: 'The foo element',
@@ -35,9 +35,9 @@ suite('HTML Custom Tag Provider', () => {
 		}
 	];
 	
-	const globalAttributes: IAttributeEntryData[] = [
+	const globalAttributes: IAttributeData[] = [
 		{ name: 'fooAttr', description: 'Foo Attribute' },
-		{ name: 'xattr:x', description: 'X attributes'}
+		{ name: 'xattr', description: 'X attributes', valueSet: 'x' }
 	];
 	
 	const valueSetMap = {
@@ -47,13 +47,13 @@ suite('HTML Custom Tag Provider', () => {
 		}]
 	};
 
-	getLanguageService({
-		customDataCollections: [{
-			tags,
-			globalAttributes,
-			valueSetMap
-		}]
+	const provider = new HTMLDataProvider('test', {
+		tags,
+		globalAttributes,
+		valueSetMap
 	});
+
+	getLanguageService({ customDataProviders: [provider] });
 
 	test('Completion', () => {
 		testCompletionFor('<|', {

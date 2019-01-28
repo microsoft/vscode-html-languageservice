@@ -16,17 +16,22 @@ export function doHover(document: TextDocument, position: Position, htmlDocument
 	if (!node || !node.tag) {
 		return null;
 	}
-	let tagProviders = getAllDataProviders().filter(p => p.isApplicable(document.languageId));
-	function getTagHover(tag: string, range: Range, open: boolean): Hover | null {
-		tag = tag.toLowerCase();
-		for (let provider of tagProviders) {
+	let dataProviders = getAllDataProviders().filter(p => p.isApplicable(document.languageId));
+
+	function getTagHover(currTag: string, range: Range, open: boolean): Hover | null {
+		currTag = currTag.toLowerCase();
+
+		for (let provider of dataProviders) {
 			let hover = null;
-			provider.collectTags((t, description = '') => {
-				if (t === tag) {
-					let tagLabel = open ? '<' + tag + '>' : '</' + tag + '>';
-					hover = { contents: [{ language: 'html', value: tagLabel }, MarkedString.fromPlainText(description)], range };
+
+			provider.provideTags().forEach(tag => {
+				if (tag.name.toLowerCase() === currTag.toLowerCase()) {
+					const tagLabel = open ? '<' + currTag + '>' : '</' + currTag + '>';
+					const tagDescription = tag.description || '';
+					hover = { contents: [{ language: 'html', value: tagLabel }, MarkedString.fromPlainText(tagDescription)], range };
 				}
 			});
+
 			if (hover) {
 				return hover;
 			}

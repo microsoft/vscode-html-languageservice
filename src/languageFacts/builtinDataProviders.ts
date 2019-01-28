@@ -6,7 +6,7 @@
 
 import { getRazorDataProvider } from './data/razor';
 import { getHTML5DataProvider } from './data/html5';
-import { IHTMLDataProvider, HTMLData, HTMLDataProvider, ITagEntryData, IAttributeEntryData, IEntryData } from './dataProvider';
+import { IHTMLDataProvider } from '../htmlLanguageTypes';
 
 export const builtinDataProviders: IHTMLDataProvider[] = [
 	getHTML5DataProvider()
@@ -20,29 +20,8 @@ export function getAllDataProviders(): IHTMLDataProvider[] {
 	return builtinDataProviders.concat(customDataProviders);
 }
 
-export function handleCustomData(customDataCollections: HTMLData[]) {
-	let allTags: ITagEntryData[] = [];
-	let allGlobalAttributes: IAttributeEntryData[] = [];
-	let allValueSetMap: { [key: string]: IEntryData[] } = {};
-	
-	customDataCollections.forEach(customData => {
-		const { tags, globalAttributes, valueSetMap } = customData;
-		if (tags) {
-			allTags = allTags.concat(tags);
-		}
-		if (globalAttributes) {
-			allGlobalAttributes = allGlobalAttributes.concat(globalAttributes);
-		}
-		if (valueSetMap) {
-			for (let v in valueSetMap) {
-				allValueSetMap[v] = valueSetMap[v];
-			}
-		}
+export function handleCustomDataProviders(providers: IHTMLDataProvider[]) {
+	providers.forEach(p => {
+		customDataProviders.push(p);
 	});
-
-	customDataProviders.push(new HTMLDataProvider('customData', {
-		tags: allTags,
-		globalAttributes: allGlobalAttributes,
-		valueSetMap: allValueSetMap
-	}));
 }

@@ -4,7 +4,8 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 
-import { HTMLDataProvider, ITagEntryData, IEntryData } from '../dataProvider';
+import { HTMLDataProvider } from '../dataProvider';
+import { ITagData, IAttributeData } from '../../htmlLanguageTypes';
 
 export function getHTML5DataProvider() {
 	return new HTMLDataProvider('html5', {
@@ -14,7 +15,7 @@ export function getHTML5DataProvider() {
 	});
 }
 
-export const HTML5_TAGS: ITagEntryData[] = [
+export const HTML5_TAGS: ITagData[] = [
 	{
 		name: 'html',
 		description: 'The html element represents the root of an HTML document.',
@@ -56,7 +57,8 @@ export const HTML5_TAGS: ITagEntryData[] = [
 				name: 'href'
 			},
 			{
-				name: 'crossorigin:xo'
+				name: 'crossorigin',
+				valueSet: 'xo'
 			},
 			{
 				name: 'rel'
@@ -109,7 +111,8 @@ export const HTML5_TAGS: ITagEntryData[] = [
 				name: 'type'
 			},
 			{
-				name: 'scoped:v'
+				name: 'scoped',
+				valueSet: 'v'
 			}
 		]
 	},
@@ -263,13 +266,15 @@ export const HTML5_TAGS: ITagEntryData[] = [
 			'The ol element represents a list of items, where the items have been intentionally ordered, such that changing the order would change the meaning of the document.',
 		attributes: [
 			{
-				name: 'reversed:v'
+				name: 'reversed',
+				valueSet: 'v'
 			},
 			{
 				name: 'start'
 			},
 			{
-				name: 'type:lt'
+				name: 'type',
+				valueSet: 'lt'
 			}
 		]
 	},
@@ -562,13 +567,15 @@ export const HTML5_TAGS: ITagEntryData[] = [
 				name: 'srcset'
 			},
 			{
-				name: 'crossorigin:xo'
+				name: 'crossorigin',
+				valueSet: 'xo'
 			},
 			{
 				name: 'usemap'
 			},
 			{
-				name: 'ismap:v'
+				name: 'ismap',
+				valueSet: 'v'
 			},
 			{
 				name: 'width'
@@ -592,13 +599,16 @@ export const HTML5_TAGS: ITagEntryData[] = [
 				name: 'name'
 			},
 			{
-				name: 'sandbox:sb'
+				name: 'sandbox',
+				valueSet: 'sb'
 			},
 			{
-				name: 'seamless:v'
+				name: 'seamless',
+				valueSet: 'v'
 			},
 			{
-				name: 'allowfullscreen:v'
+				name: 'allowfullscreen',
+				valueSet: 'v'
 			},
 			{
 				name: 'width'
@@ -639,7 +649,8 @@ export const HTML5_TAGS: ITagEntryData[] = [
 				name: 'type'
 			},
 			{
-				name: 'typemustmatch:v'
+				name: 'typemustmatch',
+				valueSet: 'v'
 			},
 			{
 				name: 'name'
@@ -679,28 +690,34 @@ export const HTML5_TAGS: ITagEntryData[] = [
 				name: 'src'
 			},
 			{
-				name: 'crossorigin:xo'
+				name: 'crossorigin',
+				valueSet: 'xo'
 			},
 			{
 				name: 'poster'
 			},
 			{
-				name: 'preload:pl'
+				name: 'preload',
+				valueSet: 'pl'
 			},
 			{
-				name: 'autoplay:v'
+				name: 'autoplay',
+				valueSet: 'v'
 			},
 			{
 				name: 'mediagroup'
 			},
 			{
-				name: 'loop:v'
+				name: 'loop',
+				valueSet: 'v'
 			},
 			{
-				name: 'muted:v'
+				name: 'muted',
+				valueSet: 'v'
 			},
 			{
-				name: 'controls:v'
+				name: 'controls',
+				valueSet: 'v'
 			},
 			{
 				name: 'width'
@@ -718,25 +735,31 @@ export const HTML5_TAGS: ITagEntryData[] = [
 				name: 'src'
 			},
 			{
-				name: 'crossorigin:xo'
+				name: 'crossorigin',
+				valueSet: 'xo'
 			},
 			{
-				name: 'preload:pl'
+				name: 'preload',
+				valueSet: 'pl'
 			},
 			{
-				name: 'autoplay:v'
+				name: 'autoplay',
+				valueSet: 'v'
 			},
 			{
 				name: 'mediagroup'
 			},
 			{
-				name: 'loop:v'
+				name: 'loop',
+				valueSet: 'v'
 			},
 			{
-				name: 'muted:v'
+				name: 'muted',
+				valueSet: 'v'
 			},
 			{
-				name: 'controls:v'
+				name: 'controls',
+				valueSet: 'v'
 			}
 		]
 	},
@@ -759,10 +782,12 @@ export const HTML5_TAGS: ITagEntryData[] = [
 			'The track element allows authors to specify explicit external timed text tracks for media elements. It does not represent anything on its own.',
 		attributes: [
 			{
-				name: 'default:v'
+				name: 'default',
+				valueSet: 'v'
 			},
 			{
-				name: 'kind:tk'
+				name: 'kind',
+				valueSet: 'tk'
 			},
 			{
 				name: 'label'
@@ -797,7 +822,8 @@ export const HTML5_TAGS: ITagEntryData[] = [
 				name: 'coords'
 			},
 			{
-				name: 'shape:sh'
+				name: 'shape',
+				valueSet: 'sh'
 			},
 			{
 				name: 'href'
@@ -827,7 +853,8 @@ export const HTML5_TAGS: ITagEntryData[] = [
 		description: 'The table element represents data with more than one dimension, in the form of a table.',
 		attributes: [
 			{
-				name: 'sortable:v'
+				name: 'sortable',
+				valueSet: 'v'
 			},
 			{
 				name: 'border'
@@ -912,7 +939,8 @@ export const HTML5_TAGS: ITagEntryData[] = [
 				name: 'headers'
 			},
 			{
-				name: 'scope:s'
+				name: 'scope',
+				valueSet: 's'
 			},
 			{
 				name: 'sorted'
@@ -934,19 +962,23 @@ export const HTML5_TAGS: ITagEntryData[] = [
 				name: 'action'
 			},
 			{
-				name: 'autocomplete:o'
+				name: 'autocomplete',
+				valueSet: 'o'
 			},
 			{
-				name: 'enctype:et'
+				name: 'enctype',
+				valueSet: 'et'
 			},
 			{
-				name: 'method:m'
+				name: 'method',
+				valueSet: 'm'
 			},
 			{
 				name: 'name'
 			},
 			{
-				name: 'novalidate:v'
+				name: 'novalidate',
+				valueSet: 'v'
 			},
 			{
 				name: 'target'
@@ -978,19 +1010,23 @@ export const HTML5_TAGS: ITagEntryData[] = [
 				name: 'alt'
 			},
 			{
-				name: 'autocomplete:inputautocomplete'
+				name: 'autocomplete',
+				valueSet: 'inputautocomplete'
 			},
 			{
-				name: 'autofocus:v'
+				name: 'autofocus',
+				valueSet: 'v'
 			},
 			{
-				name: 'checked:v'
+				name: 'checked',
+				valueSet: 'v'
 			},
 			{
 				name: 'dirname'
 			},
 			{
-				name: 'disabled:v'
+				name: 'disabled',
+				valueSet: 'v'
 			},
 			{
 				name: 'form'
@@ -999,13 +1035,16 @@ export const HTML5_TAGS: ITagEntryData[] = [
 				name: 'formaction'
 			},
 			{
-				name: 'formenctype:et'
+				name: 'formenctype',
+				valueSet: 'et'
 			},
 			{
-				name: 'formmethod:fm'
+				name: 'formmethod',
+				valueSet: 'fm'
 			},
 			{
-				name: 'formnovalidate:v'
+				name: 'formnovalidate',
+				valueSet: 'v'
 			},
 			{
 				name: 'formtarget'
@@ -1014,7 +1053,8 @@ export const HTML5_TAGS: ITagEntryData[] = [
 				name: 'height'
 			},
 			{
-				name: 'inputmode:im'
+				name: 'inputmode',
+				valueSet: 'im'
 			},
 			{
 				name: 'list'
@@ -1032,7 +1072,8 @@ export const HTML5_TAGS: ITagEntryData[] = [
 				name: 'minlength'
 			},
 			{
-				name: 'multiple:v'
+				name: 'multiple',
+				valueSet: 'v'
 			},
 			{
 				name: 'name'
@@ -1044,10 +1085,12 @@ export const HTML5_TAGS: ITagEntryData[] = [
 				name: 'placeholder'
 			},
 			{
-				name: 'readonly:v'
+				name: 'readonly',
+				valueSet: 'v'
 			},
 			{
-				name: 'required:v'
+				name: 'required',
+				valueSet: 'v'
 			},
 			{
 				name: 'size'
@@ -1059,7 +1102,8 @@ export const HTML5_TAGS: ITagEntryData[] = [
 				name: 'step'
 			},
 			{
-				name: 'type:t'
+				name: 'type',
+				valueSet: 't'
 			},
 			{
 				name: 'value'
@@ -1074,10 +1118,12 @@ export const HTML5_TAGS: ITagEntryData[] = [
 		description: 'The button element represents a button labeled by its contents.',
 		attributes: [
 			{
-				name: 'autofocus:v'
+				name: 'autofocus',
+				valueSet: 'v'
 			},
 			{
-				name: 'disabled:v'
+				name: 'disabled',
+				valueSet: 'v'
 			},
 			{
 				name: 'form'
@@ -1086,13 +1132,16 @@ export const HTML5_TAGS: ITagEntryData[] = [
 				name: 'formaction'
 			},
 			{
-				name: 'formenctype:et'
+				name: 'formenctype',
+				valueSet: 'et'
 			},
 			{
-				name: 'formmethod:fm'
+				name: 'formmethod',
+				valueSet: 'fm'
 			},
 			{
-				name: 'formnovalidate:v'
+				name: 'formnovalidate',
+				valueSet: 'v'
 			},
 			{
 				name: 'formtarget'
@@ -1101,7 +1150,8 @@ export const HTML5_TAGS: ITagEntryData[] = [
 				name: 'name'
 			},
 			{
-				name: 'type:bt'
+				name: 'type',
+				valueSet: 'bt'
 			},
 			{
 				name: 'value'
@@ -1113,25 +1163,30 @@ export const HTML5_TAGS: ITagEntryData[] = [
 		description: 'The select element represents a control for selecting amongst a set of options.',
 		attributes: [
 			{
-				name: 'autocomplete:inputautocomplete'
+				name: 'autocomplete',
+				valueSet: 'inputautocomplete'
 			},
 			{
-				name: 'autofocus:v'
+				name: 'autofocus',
+				valueSet: 'v'
 			},
 			{
-				name: 'disabled:v'
+				name: 'disabled',
+				valueSet: 'v'
 			},
 			{
 				name: 'form'
 			},
 			{
-				name: 'multiple:v'
+				name: 'multiple',
+				valueSet: 'v'
 			},
 			{
 				name: 'name'
 			},
 			{
-				name: 'required:v'
+				name: 'required',
+				valueSet: 'v'
 			},
 			{
 				name: 'size'
@@ -1149,7 +1204,8 @@ export const HTML5_TAGS: ITagEntryData[] = [
 		description: 'The optgroup element represents a group of option elements with a common label.',
 		attributes: [
 			{
-				name: 'disabled:v'
+				name: 'disabled',
+				valueSet: 'v'
 			},
 			{
 				name: 'label'
@@ -1162,13 +1218,15 @@ export const HTML5_TAGS: ITagEntryData[] = [
 			'The option element represents an option in a select element or as part of a list of suggestions in a datalist element.',
 		attributes: [
 			{
-				name: 'disabled:v'
+				name: 'disabled',
+				valueSet: 'v'
 			},
 			{
 				name: 'label'
 			},
 			{
-				name: 'selected:v'
+				name: 'selected',
+				valueSet: 'v'
 			},
 			{
 				name: 'value'
@@ -1181,10 +1239,12 @@ export const HTML5_TAGS: ITagEntryData[] = [
 			"The textarea element represents a multiline plain text edit control for the element's raw value. The contents of the control represent the control's default value.",
 		attributes: [
 			{
-				name: 'autocomplete:inputautocomplete'
+				name: 'autocomplete',
+				valueSet: 'inputautocomplete'
 			},
 			{
-				name: 'autofocus:v'
+				name: 'autofocus',
+				valueSet: 'v'
 			},
 			{
 				name: 'cols'
@@ -1193,13 +1253,15 @@ export const HTML5_TAGS: ITagEntryData[] = [
 				name: 'dirname'
 			},
 			{
-				name: 'disabled:v'
+				name: 'disabled',
+				valueSet: 'v'
 			},
 			{
 				name: 'form'
 			},
 			{
-				name: 'inputmode:im'
+				name: 'inputmode',
+				valueSet: 'im'
 			},
 			{
 				name: 'maxlength'
@@ -1214,16 +1276,19 @@ export const HTML5_TAGS: ITagEntryData[] = [
 				name: 'placeholder'
 			},
 			{
-				name: 'readonly:v'
+				name: 'readonly',
+				valueSet: 'v'
 			},
 			{
-				name: 'required:v'
+				name: 'required',
+				valueSet: 'v'
 			},
 			{
 				name: 'rows'
 			},
 			{
-				name: 'wrap:w'
+				name: 'wrap',
+				valueSet: 'w'
 			}
 		]
 	},
@@ -1286,7 +1351,8 @@ export const HTML5_TAGS: ITagEntryData[] = [
 		description: 'The fieldset element represents a set of form controls optionally grouped under a common name.',
 		attributes: [
 			{
-				name: 'disabled:v'
+				name: 'disabled',
+				valueSet: 'v'
 			},
 			{
 				name: 'form'
@@ -1308,7 +1374,8 @@ export const HTML5_TAGS: ITagEntryData[] = [
 			'The details element represents a disclosure widget from which the user can obtain additional information or controls.',
 		attributes: [
 			{
-				name: 'open:v'
+				name: 'open',
+				valueSet: 'v'
 			}
 		]
 	},
@@ -1339,13 +1406,16 @@ export const HTML5_TAGS: ITagEntryData[] = [
 				name: 'charset'
 			},
 			{
-				name: 'async:v'
+				name: 'async',
+				valueSet: 'v'
 			},
 			{
-				name: 'defer:v'
+				name: 'defer',
+				valueSet: 'v'
 			},
 			{
-				name: 'crossorigin:xo'
+				name: 'crossorigin',
+				valueSet: 'xo'
 			},
 			{
 				name: 'nonce'
@@ -1379,79 +1449,248 @@ export const HTML5_TAGS: ITagEntryData[] = [
 	}
 ];
 
-export const HTML5_GLOBAL_ATTRIBUTES: IEntryData[] = [
-	{ name: 'aria-activedescendant' },
-	{ name: 'aria-atomic:b' },
-	{ name: 'aria-autocomplete:autocomplete' },
-	{ name: 'aria-busy:b' },
-	{ name: 'aria-checked:tristate' },
-	{ name: 'aria-colcount' },
-	{ name: 'aria-colindex' },
-	{ name: 'aria-colspan' },
-	{ name: 'aria-controls' },
-	{ name: 'aria-current:current' },
-	{ name: 'aria-describedat' },
-	{ name: 'aria-describedby' },
-	{ name: 'aria-disabled:b' },
-	{ name: 'aria-dropeffect:dropeffect' },
-	{ name: 'aria-errormessage' },
-	{ name: 'aria-expanded:u' },
-	{ name: 'aria-flowto' },
-	{ name: 'aria-grabbed:u' },
-	{ name: 'aria-haspopup:b' },
-	{ name: 'aria-hidden:b' },
-	{ name: 'aria-invalid:invalid' },
-	{ name: 'aria-kbdshortcuts' },
-	{ name: 'aria-label' },
-	{ name: 'aria-labelledby' },
-	{ name: 'aria-level' },
-	{ name: 'aria-live:live' },
-	{ name: 'aria-modal:b' },
-	{ name: 'aria-multiline:b' },
-	{ name: 'aria-multiselectable:b' },
-	{ name: 'aria-orientation:orientation' },
-	{ name: 'aria-owns' },
-	{ name: 'aria-placeholder' },
-	{ name: 'aria-posinset' },
-	{ name: 'aria-pressed:tristate' },
-	{ name: 'aria-readonly:b' },
-	{ name: 'aria-relevant:relevant' },
-	{ name: 'aria-required:b' },
-	{ name: 'aria-roledescription' },
-	{ name: 'aria-rowcount' },
-	{ name: 'aria-rowindex' },
-	{ name: 'aria-rowspan' },
-	{ name: 'aria-selected:u' },
-	{ name: 'aria-setsize' },
-	{ name: 'aria-sort:sort' },
-	{ name: 'aria-valuemax' },
-	{ name: 'aria-valuemin' },
-	{ name: 'aria-valuenow' },
-	{ name: 'aria-valuetext' },
-	{ name: 'accesskey' },
-	{ name: 'class' },
-	{ name: 'contenteditable:b' },
-	{ name: 'contextmenu' },
-	{ name: 'dir:d' },
-	{ name: 'draggable:b' },
-	{ name: 'dropzone' },
-	{ name: 'hidden:v' },
-	{ name: 'id' },
-	{ name: 'itemid' },
-	{ name: 'itemprop' },
-	{ name: 'itemref' },
-	{ name: 'itemscope:v' },
-	{ name: 'itemtype' },
-	{ name: 'lang' },
-	{ name: 'role:roles' },
-	{ name: 'spellcheck:b' },
-	{ name: 'style' },
-	{ name: 'tabindex' },
-	{ name: 'title' },
-	{ name: 'translate:y' }
+export const HTML5_GLOBAL_ATTRIBUTES: IAttributeData[] = [
+	{
+		name: 'aria-activedescendant'
+	},
+	{
+		name: 'aria-atomic',
+		valueSet: 'b'
+	},
+	{
+		name: 'aria-autocomplete',
+		valueSet: 'autocomplete'
+	},
+	{
+		name: 'aria-busy',
+		valueSet: 'b'
+	},
+	{
+		name: 'aria-checked',
+		valueSet: 'tristate'
+	},
+	{
+		name: 'aria-colcount'
+	},
+	{
+		name: 'aria-colindex'
+	},
+	{
+		name: 'aria-colspan'
+	},
+	{
+		name: 'aria-controls'
+	},
+	{
+		name: 'aria-current',
+		valueSet: 'current'
+	},
+	{
+		name: 'aria-describedat'
+	},
+	{
+		name: 'aria-describedby'
+	},
+	{
+		name: 'aria-disabled',
+		valueSet: 'b'
+	},
+	{
+		name: 'aria-dropeffect',
+		valueSet: 'dropeffect'
+	},
+	{
+		name: 'aria-errormessage'
+	},
+	{
+		name: 'aria-expanded',
+		valueSet: 'u'
+	},
+	{
+		name: 'aria-flowto'
+	},
+	{
+		name: 'aria-grabbed',
+		valueSet: 'u'
+	},
+	{
+		name: 'aria-haspopup',
+		valueSet: 'b'
+	},
+	{
+		name: 'aria-hidden',
+		valueSet: 'b'
+	},
+	{
+		name: 'aria-invalid',
+		valueSet: 'invalid'
+	},
+	{
+		name: 'aria-kbdshortcuts'
+	},
+	{
+		name: 'aria-label'
+	},
+	{
+		name: 'aria-labelledby'
+	},
+	{
+		name: 'aria-level'
+	},
+	{
+		name: 'aria-live',
+		valueSet: 'live'
+	},
+	{
+		name: 'aria-modal',
+		valueSet: 'b'
+	},
+	{
+		name: 'aria-multiline',
+		valueSet: 'b'
+	},
+	{
+		name: 'aria-multiselectable',
+		valueSet: 'b'
+	},
+	{
+		name: 'aria-orientation',
+		valueSet: 'orientation'
+	},
+	{
+		name: 'aria-owns'
+	},
+	{
+		name: 'aria-placeholder'
+	},
+	{
+		name: 'aria-posinset'
+	},
+	{
+		name: 'aria-pressed',
+		valueSet: 'tristate'
+	},
+	{
+		name: 'aria-readonly',
+		valueSet: 'b'
+	},
+	{
+		name: 'aria-relevant',
+		valueSet: 'relevant'
+	},
+	{
+		name: 'aria-required',
+		valueSet: 'b'
+	},
+	{
+		name: 'aria-roledescription'
+	},
+	{
+		name: 'aria-rowcount'
+	},
+	{
+		name: 'aria-rowindex'
+	},
+	{
+		name: 'aria-rowspan'
+	},
+	{
+		name: 'aria-selected',
+		valueSet: 'u'
+	},
+	{
+		name: 'aria-setsize'
+	},
+	{
+		name: 'aria-sort',
+		valueSet: 'sort'
+	},
+	{
+		name: 'aria-valuemax'
+	},
+	{
+		name: 'aria-valuemin'
+	},
+	{
+		name: 'aria-valuenow'
+	},
+	{
+		name: 'aria-valuetext'
+	},
+	{
+		name: 'accesskey'
+	},
+	{
+		name: 'class'
+	},
+	{
+		name: 'contenteditable',
+		valueSet: 'b'
+	},
+	{
+		name: 'contextmenu'
+	},
+	{
+		name: 'dir',
+		valueSet: 'd'
+	},
+	{
+		name: 'draggable',
+		valueSet: 'b'
+	},
+	{
+		name: 'dropzone'
+	},
+	{
+		name: 'hidden',
+		valueSet: 'v'
+	},
+	{
+		name: 'id'
+	},
+	{
+		name: 'itemid'
+	},
+	{
+		name: "itemprop"
+  },
+  {
+    "name": "itemref"
+  },
+  {
+    "name": "itemscope",
+    "valueSet": "v"
+  },
+  {
+    "name": "itemtype"
+  },
+  {
+    "name": "lang"
+  },
+  {
+    "name": "role",
+    "valueSet": "roles"
+  },
+  {
+    "name": "spellcheck",
+    "valueSet": "b"
+  },
+  {
+    "name": "style"
+  },
+  {
+    "name": "tabindex"
+  },
+  {
+    "name": "title"
+  },
+  {
+    "name": "translate",
+    "valueSet": "y"
+  }
 ];
 
-export const HTML5_EVENTS: IEntryData[] = [
+export const HTML5_EVENTS: IAttributeData[] = [
 	{ name: 'onabort' },
 	{ name: 'onblur' },
 	{ name: 'oncanplay' },
