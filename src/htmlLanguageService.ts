@@ -20,6 +20,7 @@ import { getSelectionRanges } from './services/htmlSelectionRange';
 
 export * from './htmlLanguageTypes';
 export * from 'vscode-languageserver-types';
+export { HTMLDataProvider } from './languageFacts';
 
 export interface LanguageService {
 	createScanner(input: string, initialOffset?: number): Scanner;
