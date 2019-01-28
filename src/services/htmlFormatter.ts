@@ -42,10 +42,10 @@ export function format(document: TextDocument, range: Range | undefined, options
 		}
 		range = Range.create(document.positionAt(startOffset), document.positionAt(endOffset));
 
-		//Do not modify if substring in inside an element
+		// Do not modify if substring starts in inside an element
+		// Ending inside an element is fine as it doesn't cause formatting errors
 		let firstHalf = value.substring(0, startOffset);
-		let secondHalf = value.substring(endOffset, value.length);
-		if(new RegExp(/.*[<][^>]*$/).test(firstHalf) && new RegExp(/^[^<]*[>].*/).test(secondHalf) ){ 
+		if (new RegExp(/.*[<][^>]*$/).test(firstHalf)) {
 			//return without modification
 			value = value.substring(startOffset, endOffset);
 			return [{
@@ -65,7 +65,7 @@ export function format(document: TextDocument, range: Range | undefined, options
 		range = Range.create(Position.create(0, 0), document.positionAt(value.length));
 	}
 	let htmlOptions: IBeautifyHTMLOptions = {
-		indent_size: options.insertSpaces ? tabSize : 1,
+		indent_size: tabSize,
 		indent_char: options.insertSpaces ? ' ' : '\t',
 		wrap_line_length: getFormatOption(options, 'wrapLineLength', 120),
 		unformatted: getTagsFormatOption(options, 'unformatted', void 0),
@@ -81,7 +81,7 @@ export function format(document: TextDocument, range: Range | undefined, options
 		eol: '\n'
 	};
 
-	let result = html_beautify(value, htmlOptions);
+	let result = html_beautify(trimLeft(value), htmlOptions);
 	if (initialIndentLevel > 0) {
 		let indent = options.insertSpaces ? repeat(' ', tabSize * initialIndentLevel) : repeat('\t', initialIndentLevel);
 		result = result.split('\n').join('\n' + indent);
@@ -93,6 +93,10 @@ export function format(document: TextDocument, range: Range | undefined, options
 		range: range,
 		newText: result
 	}];
+}
+
+function trimLeft(str: string) {
+	return str.replace(/^\s+/, '');
 }
 
 function getFormatOption(options: HTMLFormatConfiguration, key: keyof HTMLFormatConfiguration, dflt: any): any {

@@ -99,7 +99,61 @@ suite('JSON Formatter', () => {
 		format(content, expected);
 	});
 
-	test('range 3', () => {
+	test('range 4', () => {
+		var content = [
+			'<div  class = "foo">',
+			'  |<img  src = "foo"|>    ',
+			'  ',
+			' </div>'
+		].join('\n');
+
+		var expected = [
+			'<div  class = "foo">',
+			'  <img src="foo">    ',
+			'  ',
+			' </div>'
+		].join('\n');
+
+		format(content, expected);
+	});
+
+	test('range 5', () => {
+		var content = [
+			'<div  class = "foo">',
+			'  <|img  src = "foo">|    ',
+			'  ',
+			' </div>'
+		].join('\n');
+
+		var expected = [
+			'<div  class = "foo">',
+			'  <img  src = "foo">    ',
+			'  ',
+			' </div>'
+		].join('\n');
+
+		format(content, expected);
+	});
+
+	test('range 6', () => {
+		var content = [
+			'<div|  class = "foo">',
+			'  <img  src = "foo">    ',
+			'  ',
+			' </div>|'
+		].join('\n');
+
+		var expected = [
+			'<div  class = "foo">',
+			'  <img  src = "foo">    ',
+			'  ',
+			' </div>'
+		].join('\n');
+
+		format(content, expected);
+	});
+
+	test('range 7', () => {
 		var content = [
 			'<div |class= "foo"|>'
 		].join('\n');
@@ -147,7 +201,6 @@ suite('JSON Formatter', () => {
 		format(content, expected);
 	});
 
-
 	test('range with indent 3', () => {
 		var content = [
 			'<div  class = "foo">',
@@ -163,6 +216,95 @@ suite('JSON Formatter', () => {
 
 		format(content, expected);
 	});
+
+	test('range with indent 4', () => {
+		var content = [
+			'<div  class = "foo">',
+			'  <div>|</div>   <img  src = "foo"|>',
+			' </div>'
+		].join('\n');
+
+		var expected = [
+			'<div  class = "foo">',
+			'  <div></div> <img src="foo">',
+			' </div>'
+		].join('\n');
+
+		format(content, expected);
+	});
+
+	test('range with indent 4', () => {
+		var content = [
+			'<div  class = "foo">',
+			'  <div></div>|<img src = "foo">',
+			'    <img  src = "foo">|',
+			' </div>'
+		].join('\n');
+
+		var expected = [
+			'<div  class = "foo">',
+			'  <div></div><img src="foo">',
+			'  <img src="foo">',
+			' </div>'
+		].join('\n');
+
+		format(content, expected);
+	});
+
+	test('range with indent 5', () => {
+		var content = [
+			'<div  class = "foo">',
+			'   |<img src = "foo">',
+			'   <img  src = "foo">|',
+			' </div>'
+		].join('\n');
+
+		var expected = [
+			'<div  class = "foo">',
+			'  <img src="foo">',
+			'  <img src="foo">',
+			' </div>'
+		].join('\n');
+
+		format(content, expected);
+	});
+
+	test('range with indent 6', () => {
+		var content = [
+			'<div  class = "foo">',
+			'    |<img src = "foo">',
+			'    <img  src = "foo">|',
+			' </div>'
+		].join('\n');
+
+		var expected = [
+			'<div  class = "foo">',
+			'    <img src="foo">',
+			'    <img src="foo">',
+			' </div>'
+		].join('\n');
+
+		format(content, expected);
+	});
+
+	test('range with indent 7', () => {
+		var content = [
+			'<div  class = "foo">',
+			'    <div></div>|<img src = "foo">',
+			'      <img  src = "foo">|',
+			' </div>'
+		].join('\n');
+
+		var expected = [
+			'<div  class = "foo">',
+			'    <div></div><img src="foo">',
+			'    <img src="foo">',
+			' </div>'
+		].join('\n');
+
+		format(content, expected);
+	});
+
 
 	test('bug 36574', () => {
 		var content = [
