@@ -11,7 +11,7 @@ export class HTMLDataProvider implements IHTMLDataProvider {
 		return true;
 	}
 
-	private _tags: ITagData[];
+	private _tags: ITagData[] = [];
 	private _tagMap: { [t: string]: ITagData } = {};
 	private _globalAttributes: IAttributeData[];
 	private _attributeMap: { [a: string]: IAttributeData } = {};
@@ -28,9 +28,11 @@ export class HTMLDataProvider implements IHTMLDataProvider {
 
 		this._tags.forEach(t => {
 			this._tagMap[t.name] = t;
-			t.attributes.forEach(a => {
-				this._attributeMap[a.name] = a;
-			});
+			if (t.attributes) {
+				t.attributes.forEach(a => {
+					this._attributeMap[a.name] = a;
+				});
+			}
 		});
 
 		this._globalAttributes.forEach(a => {
