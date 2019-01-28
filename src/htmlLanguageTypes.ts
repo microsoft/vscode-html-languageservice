@@ -5,7 +5,6 @@
 'use strict';
 
 import { TextDocument, Position, Range } from 'vscode-languageserver-types';
-export { IEntryData, ITagEntryData, IAttributeEntryData, HTMLData } from './languageFacts';
 
 export interface HTMLFormatConfiguration {
 	tabSize?: number;
@@ -116,4 +115,31 @@ export interface HtmlContentContext {
 export interface ICompletionParticipant {
 	onHtmlAttributeValue?: (context: HtmlAttributeValueContext) => void;
 	onHtmlContent?: (context: HtmlContentContext) => void;
+}
+
+export interface IHTMLDataProvider {
+	getId(): string;
+	isApplicable(languageId: string): boolean;
+
+	provideTags(): ITagData[];
+	provideAttributes(tag: string): IAttributeData[];
+	provideValues(tag: string, attribute: string): IValueData[];
+}
+
+export interface ITagData {
+	name: string;
+	description?: string;
+	attributes: IAttributeData[];
+}
+
+export interface IAttributeData {
+	name: string;
+	description?: string;
+	valueSet?: string;
+	values?: IValueData[];
+}
+
+export interface IValueData {
+	name: string;
+	description?: string;
 }

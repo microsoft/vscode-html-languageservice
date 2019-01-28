@@ -33,7 +33,7 @@ export class HTMLCompletion {
 			items: []
 		};
 		let completionParticipants = this.completionParticipants;
-		let tagProviders = getAllDataProviders().filter(p => p.isApplicable(document.languageId) && (!settings || settings[p.getId()] !== false));
+		let dataProviders = getAllDataProviders().filter(p => p.isApplicable(document.languageId) && (!settings || settings[p.getId()] !== false));
 
 		let text = document.getText();
 		let offset = document.offsetAt(position);
@@ -56,13 +56,13 @@ export class HTMLCompletion {
 
 		function collectOpenTagSuggestions(afterOpenBracket: number, tagNameEnd?: number): CompletionList {
 			let range = getReplaceRange(afterOpenBracket, tagNameEnd);
-			tagProviders.forEach((provider) => {
-				provider.collectTags((tag, description) => {
+			dataProviders.forEach((provider) => {
+				provider.provideTags().forEach(tag => {
 					result.items.push({
-						label: tag,
+						label: tag.name,
 						kind: CompletionItemKind.Property,
-						documentation: description,
-						textEdit: TextEdit.replace(range, tag),
+						documentation: tag.description,
+						textEdit: TextEdit.replace(range, tag.name),
 						insertTextFormat: InsertTextFormat.PlainText
 					});
 				});
@@ -118,12 +118,12 @@ export class HTMLCompletion {
 				return result;
 			}
 
-			tagProviders.forEach(provider => {
-				provider.collectTags((tag, description) => {
+			dataProviders.forEach(provider => {
+				provider.provideTags().forEach(tag => {
 					result.items.push({
-						label: '/' + tag,
+						label: '/' + tag.name,
 						kind: CompletionItemKind.Property,
-						documentation: description,
+						documentation: tag.description,
 						filterText: '/' + tag + closeTag,
 						textEdit: TextEdit.replace(range, '/' + tag + closeTag),
 						insertTextFormat: InsertTextFormat.PlainText
@@ -165,18 +165,18 @@ export class HTMLCompletion {
 			let value = isFollowedBy(text, nameEnd, ScannerState.AfterAttributeName, TokenType.DelimiterAssign) ? '' : '="$1"';
 			let tag = currentTag.toLowerCase();
 			let seenAttributes = Object.create(null);
-			tagProviders.forEach(provider => {
-				provider.collectAttributes(tag, (attribute, type?: string, description?: string) => {
-					if (seenAttributes[attribute]) {
+			dataProviders.forEach(provider => {
+				provider.provideAttributes(tag).forEach(attr => {
+					if (seenAttributes[attr.name]) {
 						return;
 					}
-					seenAttributes[attribute] = true;
+					seenAttributes[attr.name] = true;
 
-					let codeSnippet = attribute;
+					let codeSnippet = attr.name;
 					let command;
-					if (type !== 'v' && value.length) {
+					if (attr.valueSet !== 'v' && value.length) {
 						codeSnippet = codeSnippet + value;
-						if (type) {
+						if (attr.valueSet) {
 							command = {
 								title: 'Suggest',
 								command: 'editor.action.triggerSuggest'
@@ -184,9 +184,9 @@ export class HTMLCompletion {
 						}
 					}
 					result.items.push({
-						label: attribute,
-						kind: type === 'handler' ? CompletionItemKind.Function : CompletionItemKind.Value,
-						documentation: description,
+						label: attr.name,
+						kind: attr.valueSet === 'handler' ? CompletionItemKind.Function : CompletionItemKind.Value,
+						documentation: attr.description,
 						textEdit: TextEdit.replace(range, codeSnippet),
 						insertTextFormat: InsertTextFormat.Snippet,
 						command
@@ -260,12 +260,11 @@ export class HTMLCompletion {
 				}
 			}
 
-			let value = scanner.getTokenText();
-			tagProviders.forEach(provider => {
-				provider.collectValues(tag, attribute, value => {
-					let insertText = addQuotes ? '"' + value + '"' : value;
+			dataProviders.forEach(provider => {
+				provider.provideValues(tag, attribute).forEach(value => {
+					let insertText = addQuotes ? '"' + value.name + '"' : value.name;
 					result.items.push({
-						label: value,
+						label: value.name,
 						filterText: insertText,
 						kind: CompletionItemKind.Unit,
 						textEdit: TextEdit.replace(range, insertText),

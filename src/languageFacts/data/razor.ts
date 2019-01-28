@@ -4,35 +4,41 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 
-import { IHTMLDataProvider } from '../dataProvider';
+import { IHTMLDataProvider } from '../../htmlLanguageTypes';
+
+const RAZOR_TAGS: { [tag: string]: string[] } = {
+	a: ['asp-action', 'asp-controller', 'asp-fragment', 'asp-host', 'asp-protocol', 'asp-route'],
+	div: ['asp-validation-summary'],
+	form: ['asp-action', 'asp-controller', 'asp-anti-forgery'],
+	input: ['asp-for', 'asp-format'],
+	label: ['asp-for'],
+	select: ['asp-for', 'asp-items'],
+	span: ['asp-validation-for']
+};
 
 export function getRazorDataProvider(): IHTMLDataProvider {
-	var customTags: { [tag: string]: string[] } = {
-		a: ['asp-action', 'asp-controller', 'asp-fragment', 'asp-host', 'asp-protocol', 'asp-route'],
-		div: ['asp-validation-summary'],
-		form: ['asp-action', 'asp-controller', 'asp-anti-forgery'],
-		input: ['asp-for', 'asp-format'],
-		label: ['asp-for'],
-		select: ['asp-for', 'asp-items'],
-		span: ['asp-validation-for']
-	};
 
 	return {
 		getId: () => 'razor',
 		isApplicable: languageId => languageId === 'razor',
-		collectTags: (collector: (tag: string, label: string) => void) => {
-			// no extra tags
+		provideTags() {
+			return [];
 		},
-		collectAttributes: (tag: string, collector: (attribute: string, type?: string) => void) => {
-			if (tag) {
-				var attributes = customTags[tag];
-				if (attributes) {
-					attributes.forEach(a => collector(a));
-				}
+		provideAttributes(tag: string) {
+			const attributes = RAZOR_TAGS[tag];
+
+			if (!attributes) {
+				return [];
 			}
+
+			return attributes.map(a => {
+				return {
+					name: a 
+				};
+			});
 		},
-		collectValues: (tag: string, attribute: string, collector: (value: string) => void) => {
-			// no values
+		provideValues(tag: string, attribute: string) {
+			return [];
 		}
 	};
 }
