@@ -143,3 +143,15 @@ export interface IValueData {
 	name: string;
 	description?: string;
 }
+
+export interface IValueSet {
+	name: string;
+	values: IValueData[];
+}
+
+export interface HTMLDataV1 {
+	version: 1;
+	tags?: ITagData[];
+	globalAttributes?: IAttributeData[];
+	valueSets?: IValueSet[];
+}

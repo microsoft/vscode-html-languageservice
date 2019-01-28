@@ -7,7 +7,7 @@
 import { getLanguageService, ITagData, IAttributeData } from '../htmlLanguageService';
 
 import { testCompletionFor } from './completionUtil';
-import { assertHover } from "./hoverUtil";
+import { assertHover } from './hoverUtil';
 import { HTMLDataProvider } from '../languageFacts';
 
 /**
@@ -34,20 +34,26 @@ suite('HTML Custom Tag Provider', () => {
 			]
 		}
 	];
-	
+
 	const globalAttributes: IAttributeData[] = [
 		{ name: 'fooAttr', description: 'Foo Attribute' },
 		{ name: 'xattr', description: 'X attributes', valueSet: 'x' }
 	];
-	
-	const valueSets = {
-		'x': [{
-			name: 'xval',
-			description: 'x value'
-		}]
-	};
+
+	const valueSets = [
+		{
+			name: 'x',
+			values: [
+				{
+					name: 'xval',
+					description: 'x value'
+				}
+			]
+		}
+	];
 
 	const provider = new HTMLDataProvider('test', {
+		version: 1,
 		tags,
 		globalAttributes,
 		valueSets
@@ -57,9 +63,7 @@ suite('HTML Custom Tag Provider', () => {
 
 	test('Completion', () => {
 		testCompletionFor('<|', {
-			items: [
-				{ label: 'foo', documentation: 'The foo element', resultText: '<foo' }
-			]
+			items: [{ label: 'foo', documentation: 'The foo element', resultText: '<foo' }]
 		});
 
 		testCompletionFor('<foo |', {
@@ -72,15 +76,11 @@ suite('HTML Custom Tag Provider', () => {
 		});
 
 		testCompletionFor('<foo baz=|', {
-			items: [
-				{ label: 'baz-val-1', resultText: `<foo baz="baz-val-1"` },
-			]
+			items: [{ label: 'baz-val-1', resultText: `<foo baz="baz-val-1"` }]
 		});
 
 		testCompletionFor('<foo xattr=|', {
-			items: [
-				{ label: 'xval', resultText: `<foo xattr="xval"` },
-			]
+			items: [{ label: 'xval', resultText: `<foo xattr="xval"` }]
 		});
 	});
 

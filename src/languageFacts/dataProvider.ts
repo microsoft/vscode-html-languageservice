@@ -4,13 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 
-import { ITagData, IAttributeData, IValueData, IHTMLDataProvider } from '../htmlLanguageTypes';
-
-export interface HTMLData {
-	tags?: ITagData[];
-	globalAttributes?: IAttributeData[];
-	valueSets?: { [setName: string]: IValueData[] };
-}
+import { ITagData, IAttributeData, IValueData, IHTMLDataProvider, HTMLDataV1 } from '../htmlLanguageTypes';
 
 export class HTMLDataProvider implements IHTMLDataProvider {
 	isApplicable() {
@@ -21,9 +15,14 @@ export class HTMLDataProvider implements IHTMLDataProvider {
 	private _tagMap: { [t: string]: ITagData } = {};
 	private _globalAttributes: IAttributeData[];
 	private _attributeMap: { [a: string]: IAttributeData } = {};
-	private _valueSets: { [setName: string]: IValueData[] } = {};
+	private _valueSetMap: { [setName: string]: IValueData[] } = {};
 
-	constructor(private readonly id: string, customData: HTMLData) {
+	/**
+	 * Currently, unversioned data uses the V1 implementation
+	 * In the future when the provider handles multiple versions of HTML custom data,
+	 * use the latest implementation for unversioned data
+	 */
+	constructor(private readonly id: string, customData: HTMLDataV1) {
 		this._tags = customData.tags || [];
 		this._globalAttributes = customData.globalAttributes || [];
 
@@ -39,7 +38,9 @@ export class HTMLDataProvider implements IHTMLDataProvider {
 		});
 
 		if (customData.valueSets) {
-			this._valueSets = customData.valueSets;
+			customData.valueSets.forEach(vs => {
+				this._valueSetMap[vs.name] = vs.values;
+			});
 		}
 	}
 
@@ -87,8 +88,8 @@ export class HTMLDataProvider implements IHTMLDataProvider {
 					}
 	
 					if (a.valueSet) {
-						if (this._valueSets[a.valueSet]) {
-							this._valueSets[a.valueSet].forEach(v => {
+						if (this._valueSetMap[a.valueSet]) {
+							this._valueSetMap[a.valueSet].forEach(v => {
 								values.push(v);
 							});
 						}
