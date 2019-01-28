@@ -11,7 +11,7 @@ export function getHTML5DataProvider() {
 	return new HTMLDataProvider('html5', {
 		tags: HTML5_TAGS,
 		globalAttributes: [...HTML5_GLOBAL_ATTRIBUTES, ...HTML5_EVENTS],
-		valueSetMap: HTML5_VALUE_MAP
+		valueSets: HTML5_VALUE_MAP
 	});
 }
 

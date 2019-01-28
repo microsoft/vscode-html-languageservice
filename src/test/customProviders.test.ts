@@ -40,7 +40,7 @@ suite('HTML Custom Tag Provider', () => {
 		{ name: 'xattr', description: 'X attributes', valueSet: 'x' }
 	];
 	
-	const valueSetMap = {
+	const valueSets = {
 		'x': [{
 			name: 'xval',
 			description: 'x value'
@@ -50,7 +50,7 @@ suite('HTML Custom Tag Provider', () => {
 	const provider = new HTMLDataProvider('test', {
 		tags,
 		globalAttributes,
-		valueSetMap
+		valueSets
 	});
 
 	getLanguageService({ customDataProviders: [provider] });

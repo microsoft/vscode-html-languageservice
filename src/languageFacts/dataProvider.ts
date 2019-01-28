@@ -9,7 +9,7 @@ import { ITagData, IAttributeData, IValueData, IHTMLDataProvider } from '../html
 export interface HTMLData {
 	tags?: ITagData[];
 	globalAttributes?: IAttributeData[];
-	valueSetMap?: { [setName: string]: IValueData[] };
+	valueSets?: { [setName: string]: IValueData[] };
 }
 
 export class HTMLDataProvider implements IHTMLDataProvider {
@@ -21,7 +21,7 @@ export class HTMLDataProvider implements IHTMLDataProvider {
 	private _tagMap: { [t: string]: ITagData } = {};
 	private _globalAttributes: IAttributeData[];
 	private _attributeMap: { [a: string]: IAttributeData } = {};
-	private _valueSetMap: { [setName: string]: IValueData[] } = {};
+	private _valueSets: { [setName: string]: IValueData[] } = {};
 
 	constructor(private readonly id: string, customData: HTMLData) {
 		this._tags = customData.tags || [];
@@ -38,8 +38,8 @@ export class HTMLDataProvider implements IHTMLDataProvider {
 			this._attributeMap[a.name] = a;
 		});
 
-		if (customData.valueSetMap) {
-			this._valueSetMap = customData.valueSetMap;
+		if (customData.valueSets) {
+			this._valueSets = customData.valueSets;
 		}
 	}
 
@@ -87,8 +87,8 @@ export class HTMLDataProvider implements IHTMLDataProvider {
 					}
 	
 					if (a.valueSet) {
-						if (this._valueSetMap[a.valueSet]) {
-							this._valueSetMap[a.valueSet].forEach(v => {
+						if (this._valueSets[a.valueSet]) {
+							this._valueSets[a.valueSet].forEach(v => {
 								values.push(v);
 							});
 						}
