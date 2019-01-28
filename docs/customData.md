@@ -15,9 +15,9 @@ The JSON can have 3 top level properties:
 
 ```jsonc
 {
-	"tags": [],
-	"globalAttributes": [],
-	"valueSets": []
+  "tags": [],
+  "globalAttributes": [],
+  "valueSets": []
 }
 ```
 
@@ -36,35 +36,35 @@ For example, for the following custom data:
 
 ```json
 {
-	"tags": [
-		{
-			"name": "foo",
-			"description": "The foo element",
-			"attributes": [
-				{ "name": "bar" },
-				{
-					"name": "baz",
-					"values": [
-						{
-							"name": "baz-val-1"
-						}
-					]
-				}
-			]
-		}
-	],
-	"globalAttributes": [
-		{ "name": "fooAttr", "description": "Foo Attribute" },
-		{ "name": "xattr", "description": "X attributes", "valueSet": "x" }
-	],
-	"valueSets": {
-		"x": [
-			{
-				"name": "xval",
-				"description": "x value"
-			}
-		]
-	}
+  "tags": [
+    {
+      "name": "foo",
+      "description": "The foo element",
+      "attributes": [
+        { "name": "bar" },
+        {
+          "name": "baz",
+          "values": [
+            {
+              "name": "baz-val-1"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "globalAttributes": [
+    { "name": "fooAttr", "description": "Foo Attribute" },
+    { "name": "xattr", "description": "X attributes", "valueSet": "x" }
+  ],
+  "valueSets": {
+    "x": [
+      {
+        "name": "xval",
+        "description": "x value"
+      }
+    ]
+  }
 }
 ```
 
