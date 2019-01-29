@@ -128,6 +128,17 @@ suite('HTML SelectionRange', () => {
 		assertRanges('<b|r class="foo"/>', [[1, 'br class="foo"'], [0, '<br class="foo"/>']]);
 	});
 
+	test('Nested', () => {
+		assertRanges('<div><div>|foo</div></div>', [[10, 'foo'], [5, '<div>foo</div>'], [0, '<div><div>foo</div></div>']]);
+
+		assertRanges('<div>\n<p>|foo</p>\n</div>', [
+			[9, 'foo'],
+			[6, '<p>foo</p>'],
+			[5, '\n<p>foo</p>\n'],
+			[0, '<div>\n<p>foo</p>\n</div>']
+		]);
+	});
+
 	test('Unhandled', () => {
 		// We do not handle comments. This semantic selection is handled by VS Code's default provider, which returns
 		// - foo

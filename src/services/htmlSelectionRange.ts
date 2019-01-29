@@ -9,12 +9,27 @@ import { TokenType } from '../htmlLanguageTypes';
 
 export function getSelectionRanges(document: TextDocument, position: Position) {
 	const applicableRanges = getApplicableRanges(document, position);
-	const ranges = applicableRanges.map(pair => {
-		return Range.create(
-			document.positionAt(pair[0]),
-			document.positionAt(pair[1])
-		);
-	});
+	const ranges = applicableRanges
+		/**
+		 * Filter duplicated ranges
+		 */
+		.filter((pair, i) => {
+			if (i === 0) {
+				return true;
+			}
+			const prev = applicableRanges[i - 1];
+			if (pair[0] === prev[0] && pair[1] === prev[1]) {
+				return false;
+			}
+			return true;
+		})
+		.map(pair => {
+			return Range.create(
+				document.positionAt(pair[0]),
+				document.positionAt(pair[1])
+			);
+		});
+	
 	return ranges;
 }
 
@@ -41,6 +56,7 @@ function getApplicableRanges(document: TextDocument, position: Position): number
 	 * For html like
 	 * `<div class="foo">bar</div>`
 	 */
+	result.unshift([currNode.start, currNode.end]);
 	
 	/**
 	 * Cursor inside `<div class="foo">`
