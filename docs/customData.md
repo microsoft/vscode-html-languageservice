@@ -57,14 +57,17 @@ For example, for the following custom data:
     { "name": "fooAttr", "description": "Foo Attribute" },
     { "name": "xattr", "description": "X attributes", "valueSet": "x" }
   ],
-  "valueSets": {
-    "x": [
-      {
-        "name": "xval",
-        "description": "x value"
-      }
-    ]
-  }
+  "valueSets": [
+    {
+      "name": "x",
+      "values": [
+        {
+          "name": "xval",
+          "description": "x value"
+        }
+      ]
+    }
+  ]
 }
 ```
 
