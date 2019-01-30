@@ -1,5 +1,5 @@
 // copied from js-beautify/js/lib/beautify-css.js
-// version: 1.9.0-beta4
+// version: 1.9.0-beta5
 /* AUTO-GENERATED. DO NOT MODIFY. */
 /*
 
