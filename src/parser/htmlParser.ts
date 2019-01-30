@@ -6,7 +6,7 @@
 
 import { createScanner } from './htmlScanner';
 import { findFirst } from '../utils/arrays';
-import { isEmptyElement } from '../languageFacts';
+import { isVoidElement } from '../languageFacts';
 import { TokenType } from '../htmlLanguageTypes';
 
 export class Node {
@@ -82,7 +82,7 @@ export function parse(text: string): HTMLDocument {
 			case TokenType.StartTagClose:
 				curr.end = scanner.getTokenEnd(); // might be later set to end tag position
 				curr.startTagEnd = scanner.getTokenEnd();
-				if (curr.tag && isEmptyElement(curr.tag) && curr.parent) {
+				if (curr.tag && isVoidElement(curr.tag) && curr.parent) {
 					curr.closed = true;
 					curr = curr.parent;
 				}

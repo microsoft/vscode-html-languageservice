@@ -7,7 +7,7 @@
 import { TextDocument, Position, CompletionList, CompletionItemKind, Range, TextEdit, InsertTextFormat, CompletionItem } from 'vscode-languageserver-types';
 import { HTMLDocument, Node } from '../parser/htmlParser';
 import { createScanner } from '../parser/htmlScanner';
-import { isEmptyElement } from '../languageFacts';
+import { isVoidElement } from '../languageFacts';
 import { getAllDataProviders } from '../languageFacts';
 import { CompletionConfiguration, ICompletionParticipant, ScannerState, TokenType } from '../htmlLanguageTypes';
 import { entities } from '../parser/htmlEntities';
@@ -137,7 +137,7 @@ export class HTMLCompletion {
 			if (settings && settings.hideAutoCompleteProposals) {
 				return result;
 			}
-			if (!isEmptyElement(tag)) {
+			if (!isVoidElement(tag)) {
 				let pos = document.positionAt(tagCloseEnd);
 				result.items.push({
 					label: '</' + tag + '>',
@@ -441,7 +441,7 @@ export class HTMLCompletion {
 		let char = document.getText().charAt(offset - 1);
 		if (char === '>') {
 			let node = htmlDocument.findNodeBefore(offset);
-			if (node && node.tag && !isEmptyElement(node.tag) && node.start < offset && (!node.endTagStart || node.endTagStart > offset)) {
+			if (node && node.tag && !isVoidElement(node.tag) && node.start < offset && (!node.endTagStart || node.endTagStart > offset)) {
 				let scanner = createScanner(document.getText(), node.start);
 				let token = scanner.scan();
 				while (token !== TokenType.EOS && scanner.getTokenEnd() <= offset) {

@@ -7,7 +7,7 @@ import { TextDocument, FoldingRange, FoldingRangeKind } from 'vscode-languageser
 
 import { TokenType } from '../htmlLanguageTypes';
 import { createScanner } from '../parser/htmlScanner';
-import { isEmptyElement } from '../languageFacts';
+import { isVoidElement } from '../languageFacts';
 
 function limitRanges(ranges: FoldingRange[], rangeLimit: number) {
 	ranges = ranges.sort((r1, r2) => {
@@ -109,7 +109,7 @@ export function getFoldingRanges(document: TextDocument, context: { rangeLimit?:
 				break;
 			}
 			case TokenType.StartTagClose:
-				if (!lastTagName || !isEmptyElement(lastTagName)) {
+				if (!lastTagName || !isVoidElement(lastTagName)) {
 					break;
 				}
 			// fallthrough

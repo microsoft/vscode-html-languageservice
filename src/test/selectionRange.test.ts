@@ -11,7 +11,7 @@ import { TextDocument } from 'vscode-languageserver-types';
 import { getLanguageService } from '../htmlLanguageService';
 
 function assertRanges(content: string, expected: (number | string)[][]): void {
-	let message = `Test ${content}`;
+	let message = `${content} gives selection range:\n`;
 
 	let offset = content.indexOf('|');
 	content = content.substr(0, offset) + content.substr(offset + 1);
@@ -24,7 +24,7 @@ function assertRanges(content: string, expected: (number | string)[][]): void {
 		return [document.offsetAt(r.start), document.getText(r)];
 	});
 
-	message += `\n${JSON.stringify(offsetPairs)} should equal to ${JSON.stringify(expected)}`;
+	message += `${JSON.stringify(offsetPairs)}\n but should give:\n${JSON.stringify(expected)}\n`;
 	assert.deepEqual(offsetPairs, expected, message);
 }
 
@@ -136,6 +136,31 @@ suite('HTML SelectionRange', () => {
 			[6, '<p>foo</p>'],
 			[5, '\n<p>foo</p>\n'],
 			[0, '<div>\n<p>foo</p>\n</div>']
+		]);
+	});
+
+	test('Void elements', () => {
+		assertRanges(`<meta charset='|UTF-8'>`, [
+			[15, 'UTF-8'],
+			[14, "'UTF-8'"],
+			[6, "charset='UTF-8'"],
+			[1, "meta charset='UTF-8'"],
+			[0, "<meta charset='UTF-8'>"]
+		]);
+
+		assertRanges(`<meta c|harset='UTF-8'>`, [
+			[6, 'charset'],
+			[6, "charset='UTF-8'"],
+			[1, "meta charset='UTF-8'"],
+			[0, "<meta charset='UTF-8'>"]
+		]);
+
+		assertRanges(`<html><meta c|harset='UTF-8'></html>`, [
+			[12, 'charset'],
+			[12, "charset='UTF-8'"],
+			[7, "meta charset='UTF-8'"],
+			[6, "<meta charset='UTF-8'>"],
+			[0, "<html><meta charset='UTF-8'></html>"]
 		]);
 	});
 

@@ -40,9 +40,20 @@ function getApplicableRanges(document: TextDocument, position: Position): number
 
 	let result = getAllParentTagRanges(currNode);
 	
-	// Self-closing tags
+	// Self-closing or void elements
 	if (currNode.startTagEnd && !currNode.endTagStart) {
-		result.unshift([currNode.start + 1, currNode.startTagEnd - 2]);
+		const closeRange = Range.create(document.positionAt(currNode.startTagEnd - 2), document.positionAt(currNode.startTagEnd));
+		const closeText = document.getText(closeRange);
+		
+		// Self-closing element
+		if (closeText === '/>') {
+			result.unshift([currNode.start + 1, currNode.startTagEnd - 2]);
+		}
+		// Void element
+		else {
+			result.unshift([currNode.start + 1, currNode.startTagEnd - 1]);
+		}
+		
 		const attributeLevelRanges = getAttributeLevelRanges(document, currNode, currOffset);
 		result = attributeLevelRanges.concat(result);
 		return result;
