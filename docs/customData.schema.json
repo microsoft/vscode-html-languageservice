@@ -27,34 +27,39 @@
           "attributes": {
             "type": "array",
             "items": {
-              "type": "object",
               "required": ["name"],
-              "properties": {
-                "name": {
-                  "type": "string"
-                },
-                "description": {
-                  "type": "string"
-                },
-                "valueSet": {
-                  "type": "string"
-                },
-                "values": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "required": ["name"],
-                    "properties": {
-                      "name": {
-                        "type": "string"
-                      },
-                      "description": {
-                        "type": "string"
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "valueSet": {
+                      "type": "string",
+                      "description": "Name of the matching attribute value set"
+                    },
+                    "values": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": ["name"],
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "description": {
+                            "type": "string"
+                          }
+                        }
                       }
                     }
                   }
                 }
-              }
+              ]
             }
           }
         }
@@ -65,14 +70,23 @@
       "type": "array",
       "items": {
         "required": ["name"],
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "valueSet": {
+                "type": "string",
+                "description": "Name of the matching attribute value set"
+              }
+            }
           }
-        }
+        ]
       }
     },
     "valueSets": {
@@ -80,25 +94,30 @@
       "type": "array",
       "items": {
         "required": ["name"],
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "values": {
-            "type": "array",
-            "items": {
-              "required": ["name"],
-              "properties": {
-                "name": {
-                  "type": "string"
-                },
-                "description": {
-                  "type": "string"
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "values": {
+                "type": "array",
+                "items": {
+                  "required": ["name"],
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
           }
-        }
+        ]
       }
     }
   }
