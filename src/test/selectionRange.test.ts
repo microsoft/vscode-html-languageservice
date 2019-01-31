@@ -13,7 +13,7 @@ import { getLanguageService } from '../htmlLanguageService';
 function assertRanges(content: string, expected: (number | string)[][]): void {
 	let message = `${content} gives selection range:\n`;
 
-	let offset = content.indexOf('|');
+	const offset = content.indexOf('|');
 	content = content.substr(0, offset) + content.substr(offset + 1);
 
 	const ls = getLanguageService();
