@@ -11,17 +11,33 @@ Both setting point to a list of JSON files. This document describes the shape of
 
 🚧 The data format is in experimental phase and subject to change. 🚧
 
-The JSON can have 3 top level properties:
+The JSON have one required property, `version` and 3 other top level properties:
 
 ```jsonc
 {
+  "version": 1,
   "tags": [],
   "globalAttributes": [],
   "valueSets": []
 }
 ```
 
-You can find their shapes at [htmlLanguageTypes.ts](../src/htmlLanguageTypes.ts) or the [JSON Schema](./customData.schema.json).
+Version denotes the schema version you are using. The latest schema version is V1.
+
+You can find other properties' shapes at [htmlLanguageTypes.ts](../src/htmlLanguageTypes.ts) or the [JSON Schema](./customData.schema.json).
+
+You might want to use the `json.schemas` setting to check your data against the schema and get auto-completion:
+
+```json
+{
+  "json.schemas": [
+    {
+      "fileMatch": ["/html.json"],
+      "url": "https://raw.githubusercontent.com/Microsoft/vscode-html-languageservice/master/docs/customData.schema.json"
+    }
+  ]
+}
+```
 
 [html5.ts](../src/languageFacts/data/html5.ts) contains that built-in dataset that conforms to the spec.
 
