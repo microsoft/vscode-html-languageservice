@@ -92,6 +92,13 @@
       "description": "Custom HTML global attributes",
       "type": "array",
       "items": {
+        "$ref": "#/properties/tags/items/properties/attributes/items"
+      }
+    },
+    "valueSets": {
+      "description": "A set of attribute value. When an attribute refers to an attribute set, its value completion will use valuse from that set",
+      "type": "array",
+      "items": {
         "type": "object",
         "required": ["name"],
         "defaultSnippets": [
@@ -107,78 +114,8 @@
           "name": {
             "type": "string"
           },
-          "description": {
-            "type": "string"
-          },
           "values": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "required": ["name"],
-              "defaultSnippets": [
-                {
-                  "body": {
-                    "name": "$1",
-                    "description": ""
-                  }
-                }
-              ],
-              "properties": {
-                "name": {
-                  "type": "string"
-                },
-                "description": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "valueSet": {
-            "type": "string",
-            "description": "Name of the matching attribute value set"
-          }
-        }
-      }
-    },
-    "valueSets": {
-      "description": "A set of attribute value. When an attribute refers to an attribute set, its value completion will use valuse from that set",
-      "type": "array",
-      "items": {
-        "type": "object",
-        "required": ["name"],
-        "defaultSnippets": [
-          {
-            "body": {
-              "name": "$1",
-              "description": ""
-            }
-          }
-        ],
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "values": {
-            "type": "array",
-            "items": {
-              "required": ["name"],
-              "defaultSnippets": [
-                {
-                  "body": {
-                    "name": "$1",
-                    "description": ""
-                  }
-                }
-              ],
-              "properties": {
-                "name": {
-                  "type": "string"
-                },
-                "description": {
-                  "type": "string"
-                }
-              }
-            }
+            "$ref": "#/properties/tags/items/properties/attributes/items/properties/values"
           }
         }
       }
