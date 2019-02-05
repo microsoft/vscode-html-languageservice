@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 
-import { TextDocument, Position, CompletionList, CompletionItemKind, Range, TextEdit, InsertTextFormat, CompletionItem } from 'vscode-languageserver-types';
+import { TextDocument, Position, CompletionList, CompletionItemKind, Range, TextEdit, InsertTextFormat, CompletionItem, MarkupKind } from 'vscode-languageserver-types';
 import { HTMLDocument, Node } from '../parser/htmlParser';
 import { createScanner } from '../parser/htmlScanner';
 import { isVoidElement } from '../languageFacts';
@@ -61,7 +61,10 @@ export class HTMLCompletion {
 					result.items.push({
 						label: tag.name,
 						kind: CompletionItemKind.Property,
-						documentation: tag.description,
+						documentation: {
+							kind: MarkupKind.Markdown,
+							value: tag.description || '',
+						},
 						textEdit: TextEdit.replace(range, tag.name),
 						insertTextFormat: InsertTextFormat.PlainText
 					});
@@ -123,7 +126,10 @@ export class HTMLCompletion {
 					result.items.push({
 						label: '/' + tag.name,
 						kind: CompletionItemKind.Property,
-						documentation: tag.description,
+						documentation: {
+							kind: MarkupKind.Markdown,
+							value: tag.description || '',
+						},
 						filterText: '/' + tag + closeTag,
 						textEdit: TextEdit.replace(range, '/' + tag + closeTag),
 						insertTextFormat: InsertTextFormat.PlainText
@@ -186,7 +192,10 @@ export class HTMLCompletion {
 					result.items.push({
 						label: attr.name,
 						kind: attr.valueSet === 'handler' ? CompletionItemKind.Function : CompletionItemKind.Value,
-						documentation: attr.description,
+						documentation: {
+							kind: MarkupKind.Markdown,
+							value: attr.description || '',
+						},
 						textEdit: TextEdit.replace(range, codeSnippet),
 						insertTextFormat: InsertTextFormat.Snippet,
 						command
