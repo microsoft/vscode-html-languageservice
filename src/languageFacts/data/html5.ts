@@ -510,7 +510,7 @@ export const HTML5_TAGS: ITagData[] = [
 		attributes: []
 	},
 	{
-		name: 'dbo',
+		name: 'bdo',
 		description:
 			'The bdo element represents explicit text directionality formatting control for its children. It allows authors to override the Unicode bidirectional algorithm by explicitly specifying a direction override. [BIDI]',
 		attributes: []
