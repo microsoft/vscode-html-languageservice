@@ -893,11 +893,7 @@
   },
   {
     "name": "main",
-    "attributes": [
-      {
-        "description": "<body\\>\n  <a href=\"#main-content\">Skip to main content</a>\n\n  <!-- navigation and header content -->\n\n  <main id=\"main-content\">\n    <!-- main page content -->\n  </main>\n</body>\n\n*   [WebAIM: \"Skip Navigation\" Links](https://webaim.org/techniques/skipnav/)\n\n### Reader mode\n\nBrowser reader mode functionality will look for the presence of the `main` element, as well as [heading](/en-US/docs/Web/HTML/Element/Heading_Elements) and [content sectioning elements](/en-US/docs/Web/HTML/Element#Content_sectioning) when converting content into a specialized reader view.\n\n*   [Building websites for Safari Reader Mode and other reading apps.](https://medium.com/@mandy.michael/building-websites-for-safari-reader-mode-and-other-reading-apps-1562913c86c9)"
-      }
-    ]
+    "attributes": []
   },
   {
     "name": "map",

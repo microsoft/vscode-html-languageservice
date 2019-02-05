@@ -36,6 +36,14 @@ htmlTags.forEach(t => {
 				a.description = matchingAttrDescription.description
 			}
 		})
+		
+		const moreAttrs = []
+		matchingTagDescription.attributes.forEach(ad => {
+			if (t.attributes.filter(a => a.name === ad.name).length === 0) {
+				moreAttrs.push(ad)
+			}
+		})
+		t.attributes = t.attributes.concat(moreAttrs)
 	}
 })
 
