@@ -17,9 +17,6 @@ function normalizeRef(url: string, languageId: string): string {
 	if (first === last && (first === '\'' || first === '\"')) {
 		url = url.substr(1, url.length - 2);
 	}
-	if (languageId === 'razor' && url[0] === '~') {
-		url = url.substr(1);
-	}
 	return url;
 }
 
@@ -28,9 +25,6 @@ function validateRef(url: string, languageId: string): boolean {
 		return false;
 	}
 	if (languageId === 'handlebars' && /{{.*}}/.test(url)) {
-		return false;
-	}
-	if (languageId === 'razor' && /@/.test(url)) {
 		return false;
 	}
 	try {

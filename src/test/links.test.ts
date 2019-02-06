@@ -14,7 +14,6 @@ suite('HTML Link Detection', () => {
 
 	const ext2lang: { [ext: string]: string } = {
 		html: 'html',
-		cshtml: 'razor',
 		hbs: 'handlebars'
 	};
 
@@ -76,10 +75,6 @@ suite('HTML Link Detection', () => {
 
 		testLinkCreation('http://foo/bar.hbs', '/class/class.js', 'http://foo/class/class.js');
 		testLinkCreation('http://foo/bar.hbs', '{{asset foo}}/class/class.js', null);
-
-		testLinkCreation('http://foo/xoo/bar.cshtml', './class.js', 'http://foo/xoo/class.js');
-		testLinkCreation('http://foo/xoo/bar.cshtml', '../@name', null);
-		testLinkCreation('http://foo/xoo/bar.cshtml', '~/img/image.jpg', 'http://foo/img/image.jpg');
 	});
 
 	test('Link detection', () => {
