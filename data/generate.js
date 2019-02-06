@@ -50,3 +50,48 @@ htmlTags.forEach(t => {
 const htmlDataSrc = `${PREFIX}${JSON.stringify(htmlTags, null, 2)}`
 
 fs.writeFileSync(path.resolve(__dirname, '../src/languageFacts/data/html5Tags.ts'), htmlDataSrc)
+console.log('Done writing html5Tags.ts')
+
+const ariaData = require('./ariaData.json')
+const ariaSpec = require('./ariaSpec.json')
+
+const ariaMap = {}
+
+ariaData.forEach(ad => {
+	ariaMap[ad.name] = {
+		...ad
+	}
+})
+ariaSpec.forEach(as => {
+	if (!ariaMap[as.name]) {
+		ariaMap[as.name] = {
+			...as
+		}
+	} else {
+		ariaMap[as.name] = {
+			...ariaMap[as.name],
+			...as
+		}
+	}
+})
+
+const ariaOut = []
+for (let a in ariaMap) {
+	ariaOut.push(ariaMap[a])
+}
+
+const ARIA_PREFIX = 
+`/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+'use strict';
+
+import { IAttributeData } from '../../htmlLanguageTypes';
+
+export const ARIA_ATTRIBUTES: IAttributeData[] = `
+
+const ariaDataSrc = `${ARIA_PREFIX}${JSON.stringify(ariaOut, null, 2)}`
+
+fs.writeFileSync(path.resolve(__dirname, '../src/languageFacts/data/html5Aria.ts'), ariaDataSrc)
+console.log('Done writing html5Aria.ts')
