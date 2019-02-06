@@ -4,7 +4,6 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 
-import { getRazorDataProvider } from './data/razor';
 import { getHTML5DataProvider } from './data/html5';
 import { IHTMLDataProvider } from '../htmlLanguageTypes';
 
@@ -12,9 +11,7 @@ export const builtinDataProviders: IHTMLDataProvider[] = [
 	getHTML5DataProvider()
 ];
 
-const customDataProviders: IHTMLDataProvider[] = [
-	getRazorDataProvider()
-];
+const customDataProviders: IHTMLDataProvider[] = [];
 
 export function getAllDataProviders(): IHTMLDataProvider[] {
 	return builtinDataProviders.concat(customDataProviders);
