@@ -61,10 +61,7 @@ export class HTMLCompletion {
 					result.items.push({
 						label: tag.name,
 						kind: CompletionItemKind.Property,
-						documentation: {
-							kind: MarkupKind.Markdown,
-							value: tag.description || '',
-						},
+						documentation: tag.description,
 						textEdit: TextEdit.replace(range, tag.name),
 						insertTextFormat: InsertTextFormat.PlainText
 					});
@@ -126,10 +123,7 @@ export class HTMLCompletion {
 					result.items.push({
 						label: '/' + tag.name,
 						kind: CompletionItemKind.Property,
-						documentation: {
-							kind: MarkupKind.Markdown,
-							value: tag.description || '',
-						},
+						documentation: tag.description,
 						filterText: '/' + tag + closeTag,
 						textEdit: TextEdit.replace(range, '/' + tag + closeTag),
 						insertTextFormat: InsertTextFormat.PlainText
@@ -192,10 +186,7 @@ export class HTMLCompletion {
 					result.items.push({
 						label: attr.name,
 						kind: attr.valueSet === 'handler' ? CompletionItemKind.Function : CompletionItemKind.Value,
-						documentation: {
-							kind: MarkupKind.Markdown,
-							value: attr.description || '',
-						},
+						documentation: attr.description,
 						textEdit: TextEdit.replace(range, codeSnippet),
 						insertTextFormat: InsertTextFormat.Snippet,
 						command
