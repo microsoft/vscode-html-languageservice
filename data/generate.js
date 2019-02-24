@@ -21,6 +21,35 @@ export const HTML5_TAGS: ITagData[] = `
 const htmlTags = require('./htmlTags.json')
 const htmlTagDescriptions = require('./mdnTagDescriptions.json')
 
+/**
+ * Temporary solution to convert MD to plain text to show in hover
+ * Todo@Pine: Redo this after adding Markdown support
+ */
+function getMarkdownToTextConverter() {
+	const remark = require('remark')
+	const strip = require('strip-markdown')
+
+	const converter = remark().use(strip)
+
+	return (md) => String(converter.processSync(md))
+}
+
+const mdToText = getMarkdownToTextConverter()
+
+htmlTagDescriptions.forEach(tag => {
+	if (tag.description) {
+		tag.description = mdToText(tag.description)
+
+		if (tag.attributes) {
+			tag.attributes.forEach(attr => {
+				if (attr.description) {
+					attr.description = mdToText(attr.description)
+				}
+			})
+		}
+	}
+})
+
 htmlTags.forEach(t => {
 	const matchingTagDescription = htmlTagDescriptions.filter(td => td.name === t.name)
 		? htmlTagDescriptions.filter(td => td.name === t.name)[0]
@@ -54,6 +83,10 @@ console.log('Done writing html5Tags.ts')
 
 const ariaData = require('./ariaData.json')
 const ariaSpec = require('./ariaSpec.json')
+
+ariaSpec.forEach(ariaItem => {
+	ariaItem.description = mdToText(ariaItem.description)
+})
 
 const ariaMap = {}
 
