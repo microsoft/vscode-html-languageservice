@@ -24,3 +24,13 @@ Installation
 ------------
 
     npm install --save vscode-html-languageservice
+
+License
+-------
+
+(MIT License)
+
+Copyright 2016-2019, Microsoft
+
+With the exceptions of `data/*.json`, which is built upon content from [Mozilla Developer Network](https://developer.mozilla.org/en-US/docs/Web)
+and distributed under CC BY-SA 2.5.
