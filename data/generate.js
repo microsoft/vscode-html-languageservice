@@ -7,6 +7,10 @@
 const fs = require('fs')
 const path = require('path')
 
+/*---------------------------------------------------------------------------------------------
+ * Tags
+ *--------------------------------------------------------------------------------------------*/
+
 const PREFIX =
 `/*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
@@ -76,10 +80,47 @@ htmlTags.forEach(t => {
 	}
 })
 
-const htmlDataSrc = `${PREFIX}${JSON.stringify(htmlTags, null, 2)}`
+const htmlDataSrc = `${PREFIX}${JSON.stringify(htmlTags, null, 2)};`
 
 fs.writeFileSync(path.resolve(__dirname, '../src/languageFacts/data/html5Tags.ts'), htmlDataSrc)
 console.log('Done writing html5Tags.ts')
+
+/*---------------------------------------------------------------------------------------------
+ * Events
+ *--------------------------------------------------------------------------------------------*/
+
+const EVENTS_PREFIX = 
+`/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+'use strict';
+
+import { IAttributeData } from '../../htmlLanguageTypes';
+
+export const HTML5_EVENTS: IAttributeData[] = `
+
+const htmlEvents = require('./htmlEvents.json')
+/**
+ * Todo@Pine Clean up new HTML events and drop the old events
+ */
+const oldEvents = require('./oldEvents.json')
+
+oldEvents.forEach(e => {
+	const match = htmlEvents.find(x => x.name === e.name)
+	if (match) {
+		e.description = match.description
+	}
+})
+
+const htmlEventsSrc = `${EVENTS_PREFIX}${JSON.stringify(oldEvents, null, 2)};`
+
+fs.writeFileSync(path.resolve(__dirname, '../src/languageFacts/data/html5Events.ts'), htmlEventsSrc)
+console.log('Done writing html5Events.ts')
+
+/*---------------------------------------------------------------------------------------------
+ * Aria
+ *--------------------------------------------------------------------------------------------*/
 
 const ariaData = require('./ariaData.json')
 const ariaSpec = require('./ariaSpec.json')
@@ -124,7 +165,7 @@ import { IAttributeData } from '../../htmlLanguageTypes';
 
 export const ARIA_ATTRIBUTES: IAttributeData[] = `
 
-const ariaDataSrc = `${ARIA_PREFIX}${JSON.stringify(ariaOut, null, 2)}`
+const ariaDataSrc = `${ARIA_PREFIX}${JSON.stringify(ariaOut, null, 2)};`
 
 fs.writeFileSync(path.resolve(__dirname, '../src/languageFacts/data/html5Aria.ts'), ariaDataSrc)
 console.log('Done writing html5Aria.ts')

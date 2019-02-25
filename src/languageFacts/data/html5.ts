@@ -8,6 +8,7 @@ import { HTMLDataProvider } from '../dataProvider';
 import { IAttributeData } from '../../htmlLanguageTypes';
 
 import { HTML5_TAGS } from './html5Tags';
+import { HTML5_EVENTS } from './html5Events';
 import { ARIA_ATTRIBUTES } from './html5Aria';
 
 export function getHTML5DataProvider() {
@@ -92,65 +93,6 @@ export const HTML5_GLOBAL_ATTRIBUTES: IAttributeData[] = [
 		name: 'translate',
 		valueSet: 'y'
 	}
-];
-
-export const HTML5_EVENTS: IAttributeData[] = [
-	{ name: 'onabort' },
-	{ name: 'onblur' },
-	{ name: 'oncanplay' },
-	{ name: 'oncanplaythrough' },
-	{ name: 'onchange' },
-	{ name: 'onclick' },
-	{ name: 'oncontextmenu' },
-	{ name: 'ondblclick' },
-	{ name: 'ondrag' },
-	{ name: 'ondragend' },
-	{ name: 'ondragenter' },
-	{ name: 'ondragleave' },
-	{ name: 'ondragover' },
-	{ name: 'ondragstart' },
-	{ name: 'ondrop' },
-	{ name: 'ondurationchange' },
-	{ name: 'onemptied' },
-	{ name: 'onended' },
-	{ name: 'onerror' },
-	{ name: 'onfocus' },
-	{ name: 'onformchange' },
-	{ name: 'onforminput' },
-	{ name: 'oninput' },
-	{ name: 'oninvalid' },
-	{ name: 'onkeydown' },
-	{ name: 'onkeypress' },
-	{ name: 'onkeyup' },
-	{ name: 'onload' },
-	{ name: 'onloadeddata' },
-	{ name: 'onloadedmetadata' },
-	{ name: 'onloadstart' },
-	{ name: 'onmousedown' },
-	{ name: 'onmousemove' },
-	{ name: 'onmouseout' },
-	{ name: 'onmouseover' },
-	{ name: 'onmouseup' },
-	{ name: 'onmousewheel' },
-	{ name: 'onpause' },
-	{ name: 'onplay' },
-	{ name: 'onplaying' },
-	{ name: 'onprogress' },
-	{ name: 'onratechange' },
-	{ name: 'onreset' },
-	{ name: 'onresize' },
-	{ name: 'onreadystatechange' },
-	{ name: 'onscroll' },
-	{ name: 'onseeked' },
-	{ name: 'onseeking' },
-	{ name: 'onselect' },
-	{ name: 'onshow' },
-	{ name: 'onstalled' },
-	{ name: 'onsubmit' },
-	{ name: 'onsuspend' },
-	{ name: 'ontimeupdate' },
-	{ name: 'onvolumechange' },
-	{ name: 'onwaiting' }
 ];
 
 export const HTML5_VALUE_MAP = [

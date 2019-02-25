@@ -1935,4 +1935,4 @@ export const HTML5_TAGS: ITagData[] = [
       }
     ]
   }
-]
+];

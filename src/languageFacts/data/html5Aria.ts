@@ -228,4 +228,4 @@ export const ARIA_ATTRIBUTES: IAttributeData[] = [
     "name": "aria-keyshortcuts",
     "description": "Indicates keyboard shortcuts that an author has implemented to activate or give focus to an element.\n"
   }
-]
+];
