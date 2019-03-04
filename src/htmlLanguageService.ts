@@ -64,5 +64,5 @@ export function getLanguageService(options?: LanguageServiceOptions): LanguageSe
 }
 
 export function newHTMLDataProvider(id: string, customData: HTMLDataV1) {
-	return new HTMLDataProvider(id, customData)
+	return new HTMLDataProvider(id, customData);
 }
