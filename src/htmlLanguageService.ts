@@ -13,14 +13,14 @@ import { findDocumentLinks } from './services/htmlLinks';
 import { findDocumentHighlights } from './services/htmlHighlighting';
 import { findDocumentSymbols } from './services/htmlSymbolsProvider';
 import { TextDocument, Position, CompletionList, Hover, Range, SymbolInformation, TextEdit, DocumentHighlight, DocumentLink, FoldingRange } from 'vscode-languageserver-types';
-import { Scanner, HTMLDocument, CompletionConfiguration, ICompletionParticipant, HTMLFormatConfiguration, DocumentContext, IHTMLDataProvider } from './htmlLanguageTypes';
+import { Scanner, HTMLDocument, CompletionConfiguration, ICompletionParticipant, HTMLFormatConfiguration, DocumentContext, IHTMLDataProvider, HTMLDataV1 } from './htmlLanguageTypes';
 import { getFoldingRanges } from './services/htmlFolding';
-import { handleCustomDataProviders } from './languageFacts';
 import { getSelectionRanges } from './services/htmlSelectionRange';
+import { handleCustomDataProviders } from './languageFacts/builtinDataProviders';
+import { HTMLDataProvider } from './languageFacts/dataProvider';
 
 export * from './htmlLanguageTypes';
 export * from 'vscode-languageserver-types';
-export { HTMLDataProvider } from './languageFacts';
 
 export interface LanguageService {
 	createScanner(input: string, initialOffset?: number): Scanner;
@@ -62,4 +62,8 @@ export function getLanguageService(options?: LanguageServiceOptions): LanguageSe
 		getSelectionRanges,
 		doTagComplete: htmlCompletion.doTagComplete.bind(htmlCompletion),
 	};
+}
+
+export function newHTMLDataProvider(id: string, customData: HTMLDataV1) : IHTMLDataProvider {
+	return new HTMLDataProvider(id, customData);
 }

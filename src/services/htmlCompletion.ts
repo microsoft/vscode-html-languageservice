@@ -7,13 +7,13 @@
 import { TextDocument, Position, CompletionList, CompletionItemKind, Range, TextEdit, InsertTextFormat, CompletionItem, MarkupKind } from 'vscode-languageserver-types';
 import { HTMLDocument, Node } from '../parser/htmlParser';
 import { createScanner } from '../parser/htmlScanner';
-import { isVoidElement } from '../languageFacts';
-import { getAllDataProviders } from '../languageFacts';
 import { CompletionConfiguration, ICompletionParticipant, ScannerState, TokenType } from '../htmlLanguageTypes';
 import { entities } from '../parser/htmlEntities';
 
 import * as nls from 'vscode-nls';
 import { isLetterOrDigit, endsWith, startsWith } from '../utils/strings';
+import { getAllDataProviders } from '../languageFacts/builtinDataProviders';
+import { isVoidElement } from '../languageFacts/fact';
 let localize = nls.loadMessageBundle();
 
 export class HTMLCompletion {
