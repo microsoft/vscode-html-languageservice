@@ -4,11 +4,10 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 
-import { getLanguageService, ITagData, IAttributeData } from '../htmlLanguageService';
+import { getLanguageService, ITagData, IAttributeData, newHTMLDataProvider } from '../htmlLanguageService';
 
 import { testCompletionFor } from './completionUtil';
 import { assertHover } from './hoverUtil';
-import { HTMLDataProvider } from '../languageFacts';
 
 /**
  * Todo@Pine:
@@ -52,7 +51,7 @@ suite('HTML Custom Tag Provider', () => {
 		}
 	];
 
-	const provider = new HTMLDataProvider('test', {
+	const provider = newHTMLDataProvider('test', {
 		version: 1,
 		tags,
 		globalAttributes,

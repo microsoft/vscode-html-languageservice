@@ -7,8 +7,8 @@
 import { HTMLDocument } from '../parser/htmlParser';
 import { createScanner } from '../parser/htmlScanner';
 import { TextDocument, Range, Position, Hover, MarkedString } from 'vscode-languageserver-types';
-import { getAllDataProviders } from '../languageFacts';
 import { TokenType } from '../htmlLanguageTypes';
+import { getAllDataProviders } from '../languageFacts/builtinDataProviders';
 
 export function doHover(document: TextDocument, position: Position, htmlDocument: HTMLDocument): Hover | null {
 	let offset = document.offsetAt(position);

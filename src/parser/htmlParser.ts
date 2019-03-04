@@ -6,8 +6,8 @@
 
 import { createScanner } from './htmlScanner';
 import { findFirst } from '../utils/arrays';
-import { isVoidElement } from '../languageFacts';
 import { TokenType } from '../htmlLanguageTypes';
+import { isVoidElement } from '../languageFacts/fact';
 
 export class Node {
 	public tag: string | undefined;
