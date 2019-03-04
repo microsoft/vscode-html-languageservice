@@ -1,3 +1,7 @@
+NEXT (3.0.0)
+==================
+  * Added API `htmlLanguageService.getSelectionRanges` returning selection ranges for a set of positions
+
 2.1.3 / 2018-04-16
 ==================
   * Added API `htmlLanguageService.getFoldingRanges` returning folding ranges for the given document

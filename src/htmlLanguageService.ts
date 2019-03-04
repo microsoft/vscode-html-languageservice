@@ -13,7 +13,7 @@ import { findDocumentLinks } from './services/htmlLinks';
 import { findDocumentHighlights } from './services/htmlHighlighting';
 import { findDocumentSymbols } from './services/htmlSymbolsProvider';
 import { TextDocument, Position, CompletionList, Hover, Range, SymbolInformation, TextEdit, DocumentHighlight, DocumentLink, FoldingRange } from 'vscode-languageserver-types';
-import { Scanner, HTMLDocument, CompletionConfiguration, ICompletionParticipant, HTMLFormatConfiguration, DocumentContext, IHTMLDataProvider } from './htmlLanguageTypes';
+import { Scanner, HTMLDocument, CompletionConfiguration, ICompletionParticipant, HTMLFormatConfiguration, DocumentContext, IHTMLDataProvider, SelectionRange } from './htmlLanguageTypes';
 import { getFoldingRanges } from './services/htmlFolding';
 import { handleCustomDataProviders } from './languageFacts';
 import { getSelectionRanges } from './services/htmlSelectionRange';
@@ -34,7 +34,7 @@ export interface LanguageService {
 	findDocumentSymbols(document: TextDocument, htmlDocument: HTMLDocument): SymbolInformation[];
 	doTagComplete(document: TextDocument, position: Position, htmlDocument: HTMLDocument): string | null;
 	getFoldingRanges(document: TextDocument, context?: { rangeLimit?: number }): FoldingRange[];
-	getSelectionRanges(document: TextDocument, position: Position): Range[];
+	getSelectionRanges(document: TextDocument, positions: Position[]): SelectionRange[][];
 }
 
 export interface LanguageServiceOptions {

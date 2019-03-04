@@ -19,9 +19,10 @@ function assertRanges(content: string, expected: (number | string)[][]): void {
 	const ls = getLanguageService();
 
 	const document = TextDocument.create('test://foo.html', 'html', 1, content);
-	const actualRanges = ls.getSelectionRanges(document, document.positionAt(offset));
-	const offsetPairs = actualRanges.map(r => {
-		return [document.offsetAt(r.start), document.getText(r)];
+	const actualRanges = ls.getSelectionRanges(document, [document.positionAt(offset)]);
+	assert.equal(actualRanges.length, 1);
+	const offsetPairs = actualRanges[0].map(r => {
+		return [document.offsetAt(r.range.start), document.getText(r.range)];
 	});
 
 	message += `${JSON.stringify(offsetPairs)}\n but should give:\n${JSON.stringify(expected)}\n`;

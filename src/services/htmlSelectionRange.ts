@@ -5,32 +5,40 @@
 import { Range, TextDocument, Position } from 'vscode-languageserver-types';
 import { createScanner } from '../parser/htmlScanner';
 import { parse, Node } from '../parser/htmlParser';
-import { TokenType } from '../htmlLanguageTypes';
+import { TokenType, SelectionRange, SelectionRangeKind } from '../htmlLanguageTypes';
 
-export function getSelectionRanges(document: TextDocument, position: Position) {
-	const applicableRanges = getApplicableRanges(document, position);
-	const ranges = applicableRanges
-		/**
-		 * Filter duplicated ranges
-		 */
-		.filter((pair, i) => {
-			if (i === 0) {
+export function getSelectionRanges(document: TextDocument, positions: Position[]): SelectionRange[][] {
+
+	function getSelectionRange(position: Position): SelectionRange[] {
+		const applicableRanges = getApplicableRanges(document, position);
+		const ranges = applicableRanges
+			/**
+			 * Filter duplicated ranges
+			 */
+			.filter((pair, i) => {
+				if (i === 0) {
+					return true;
+				}
+				const prev = applicableRanges[i - 1];
+				if (pair[0] === prev[0] && pair[1] === prev[1]) {
+					return false;
+				}
 				return true;
-			}
-			const prev = applicableRanges[i - 1];
-			if (pair[0] === prev[0] && pair[1] === prev[1]) {
-				return false;
-			}
-			return true;
-		})
-		.map(pair => {
-			return Range.create(
-				document.positionAt(pair[0]),
-				document.positionAt(pair[1])
-			);
-		});
-	
-	return ranges;
+			})
+			.map(pair => {
+				return {
+					range: Range.create(
+						document.positionAt(pair[0]),
+						document.positionAt(pair[1])
+					),
+					kind: SelectionRangeKind.Declaration
+				};
+			});
+
+		return ranges;
+	}
+
+	return positions.map(getSelectionRange);
 }
 
 function getApplicableRanges(document: TextDocument, position: Position): number[][] {
@@ -39,12 +47,12 @@ function getApplicableRanges(document: TextDocument, position: Position): number
 	const currNode = htmlDoc.findNodeAt(currOffset);
 
 	let result = getAllParentTagRanges(currNode);
-	
+
 	// Self-closing or void elements
 	if (currNode.startTagEnd && !currNode.endTagStart) {
 		const closeRange = Range.create(document.positionAt(currNode.startTagEnd - 2), document.positionAt(currNode.startTagEnd));
 		const closeText = document.getText(closeRange);
-		
+
 		// Self-closing element
 		if (closeText === '/>') {
 			result.unshift([currNode.start + 1, currNode.startTagEnd - 2]);
@@ -53,7 +61,7 @@ function getApplicableRanges(document: TextDocument, position: Position): number
 		else {
 			result.unshift([currNode.start + 1, currNode.startTagEnd - 1]);
 		}
-		
+
 		const attributeLevelRanges = getAttributeLevelRanges(document, currNode, currOffset);
 		result = attributeLevelRanges.concat(result);
 		return result;
@@ -62,13 +70,13 @@ function getApplicableRanges(document: TextDocument, position: Position): number
 	if (!currNode.startTagEnd || !currNode.endTagStart) {
 		return result;
 	}
-	
+
 	/**
 	 * For html like
 	 * `<div class="foo">bar</div>`
 	 */
 	result.unshift([currNode.start, currNode.end]);
-	
+
 	/**
 	 * Cursor inside `<div class="foo">`
 	 */
@@ -120,7 +128,7 @@ function getAllParentTagRanges(initialNode: Node) {
 		currNode = currNode.parent;
 		getNodeRanges(currNode).forEach(r => result.push(r));
 	}
-	
+
 	return result;
 }
 
@@ -135,13 +143,13 @@ function getAttributeLevelRanges(document: TextDocument, currNode: Node, currOff
 
 	const scanner = createScanner(currNodeText);
 	let token = scanner.scan();
-	
+
 	/**
 	 * For text like
 	 * <div class="foo">bar</div>
 	 */
 	const positionOffset = currNode.start;
-	
+
 	const result = [];
 
 	let isInsideAttribute = false;
@@ -158,7 +166,7 @@ function getAttributeLevelRanges(document: TextDocument, currNode: Node, currOff
 					// `class`
 					result.unshift([scanner.getTokenOffset(), scanner.getTokenEnd()]);
 				}
-				
+
 				isInsideAttribute = true;
 				attrStart = scanner.getTokenOffset();
 				break;
@@ -174,7 +182,7 @@ function getAttributeLevelRanges(document: TextDocument, currNode: Node, currOff
 					result.push([attrStart, scanner.getTokenEnd()]);
 					break;
 				}
-				
+
 				if (relativeOffset >= scanner.getTokenOffset() && relativeOffset <= scanner.getTokenEnd()) {
 					// `"foo"`
 					result.unshift([scanner.getTokenOffset(), scanner.getTokenEnd()]);
@@ -195,7 +203,7 @@ function getAttributeLevelRanges(document: TextDocument, currNode: Node, currOff
 		}
 		token = scanner.scan();
 	}
-	
+
 	return result.map(pair => {
 		return [pair[0] + positionOffset, pair[1] + positionOffset];
 	});
