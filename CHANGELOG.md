@@ -2,7 +2,6 @@ NEXT (3.0.0)
 ==================
   * Added API `htmlLanguageService.getSelectionRanges` returning selection ranges for a set of positions
   * New API `newHTMLDataProvider`
-  * generate es6
 
 2.1.3 / 2018-04-16
 ==================
