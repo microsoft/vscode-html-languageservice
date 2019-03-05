@@ -29,8 +29,8 @@ export function binarySearch<T>(array: T[], key: T, comparator: (op1: T, op2: T)
 		high = array.length - 1;
 
 	while (low <= high) {
-		let mid = ((low + high) / 2) | 0;
-		let comp = comparator(array[mid], key);
+		const mid = ((low + high) / 2) | 0;
+		const comp = comparator(array[mid], key);
 		if (comp < 0) {
 			low = mid + 1;
 		} else if (comp > 0) {

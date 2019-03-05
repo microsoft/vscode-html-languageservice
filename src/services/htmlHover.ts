@@ -10,17 +10,17 @@ import { TokenType } from '../htmlLanguageTypes';
 import { getAllDataProviders } from '../languageFacts/builtinDataProviders';
 
 export function doHover(document: TextDocument, position: Position, htmlDocument: HTMLDocument): Hover | null {
-	let offset = document.offsetAt(position);
-	let node = htmlDocument.findNodeAt(offset);
+	const offset = document.offsetAt(position);
+	const node = htmlDocument.findNodeAt(offset);
 	if (!node || !node.tag) {
 		return null;
 	}
-	let dataProviders = getAllDataProviders().filter(p => p.isApplicable(document.languageId));
+	const dataProviders = getAllDataProviders().filter(p => p.isApplicable(document.languageId));
 
 	function getTagHover(currTag: string, range: Range, open: boolean): Hover | null {
 		currTag = currTag.toLowerCase();
 
-		for (let provider of dataProviders) {
+		for (const provider of dataProviders) {
 			let hover = null;
 
 			provider.provideTags().forEach(tag => {
@@ -39,7 +39,7 @@ export function doHover(document: TextDocument, position: Position, htmlDocument
 	}
 
 	function getTagNameRange(tokenType: TokenType, startOffset: number): Range | null {
-		let scanner = createScanner(document.getText(), startOffset);
+		const scanner = createScanner(document.getText(), startOffset);
 		let token = scanner.scan();
 		while (token !== TokenType.EOS && (scanner.getTokenEnd() < offset || scanner.getTokenEnd() === offset && token !== tokenType)) {
 			token = scanner.scan();
@@ -51,14 +51,14 @@ export function doHover(document: TextDocument, position: Position, htmlDocument
 	}
 
 	if (node.endTagStart && offset >= node.endTagStart) {
-		let tagRange = getTagNameRange(TokenType.EndTag, node.endTagStart);
+		const tagRange = getTagNameRange(TokenType.EndTag, node.endTagStart);
 		if (tagRange) {
 			return getTagHover(node.tag, tagRange, false);
 		}
 		return null;
 	}
 
-	let tagRange = getTagNameRange(TokenType.StartTag, node.start);
+	const tagRange = getTagNameRange(TokenType.StartTag, node.start);
 	if (tagRange) {
 		return getTagHover(node.tag, tagRange, true);
 	}

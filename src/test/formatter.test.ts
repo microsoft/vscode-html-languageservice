@@ -11,22 +11,22 @@ suite('JSON Formatter', () => {
 
 	function format(unformatted: string, expected: string, insertSpaces = true) {
 		let range: Range | undefined = void 0;
-		let uri = 'test://test.html';
+		const uri = 'test://test.html';
 
-		let rangeStart = unformatted.indexOf('|');
-		let rangeEnd = unformatted.lastIndexOf('|');
+		const rangeStart = unformatted.indexOf('|');
+		const rangeEnd = unformatted.lastIndexOf('|');
 		if (rangeStart !== -1 && rangeEnd !== -1) {
 			// remove '|'
 			unformatted = unformatted.substring(0, rangeStart) + unformatted.substring(rangeStart + 1, rangeEnd) + unformatted.substring(rangeEnd + 1);
 			var unformattedDoc = TextDocument.create(uri, 'html', 0, unformatted);
-			let startPos = unformattedDoc.positionAt(rangeStart);
-			let endPos = unformattedDoc.positionAt(rangeEnd - 1);
+			const startPos = unformattedDoc.positionAt(rangeStart);
+			const endPos = unformattedDoc.positionAt(rangeEnd - 1);
 			range = Range.create(startPos, endPos);
 		}
 
 		var document = TextDocument.create(uri, 'html', 0, unformatted);
-		let edits = getLanguageService().format(document, range, { tabSize: 2, insertSpaces: insertSpaces, unformatted: '' });
-		let formatted = TextDocument.applyEdits(document, edits);
+		const edits = getLanguageService().format(document, range, { tabSize: 2, insertSpaces: insertSpaces, unformatted: '' });
+		const formatted = TextDocument.applyEdits(document, edits);
 		assert.equal(formatted, expected);
 	}
 

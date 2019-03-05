@@ -21,22 +21,22 @@ export interface ExpectedHtmlContent {
 
 suite('HTML Completion Participant', () => {
 
-  let prepareDocument = (value: string): { document: TextDocument, position: Position } => {
-    let offset = value.indexOf('|');
+  const prepareDocument = (value: string): { document: TextDocument, position: Position } => {
+    const offset = value.indexOf('|');
     value = value.substr(0, offset) + value.substr(offset + 1);
-    let document = TextDocument.create('test://test/test.html', 'html', 0, value);
-    let position = document.positionAt(offset);
+    const document = TextDocument.create('test://test/test.html', 'html', 0, value);
+    const position = document.positionAt(offset);
     return { document, position };
   };
 
-  let testHtmlAttributeValues = (value: string, expected: ExpectedHtmlAttributeValue[]): void => {
-    let ls = htmlLanguageService.getLanguageService();
-    let { document, position } = prepareDocument(value);
+  const testHtmlAttributeValues = (value: string, expected: ExpectedHtmlAttributeValue[]): void => {
+    const ls = htmlLanguageService.getLanguageService();
+    const { document, position } = prepareDocument(value);
 
-    let actuals: ExpectedHtmlAttributeValue[] = [];
+    const actuals: ExpectedHtmlAttributeValue[] = [];
     const participant: htmlLanguageService.ICompletionParticipant = {
       onHtmlAttributeValue: (context: HtmlAttributeValueContext) => {
-        let replaceContent = document.getText().substring(document.offsetAt(context.range.start), document.offsetAt(context.range.end));
+        const replaceContent = document.getText().substring(document.offsetAt(context.range.start), document.offsetAt(context.range.end));
         assert.equal(context.document, document);
         assert.equal(context.position, position);
         actuals.push({
@@ -48,28 +48,28 @@ suite('HTML Completion Participant', () => {
       }
     };
     ls.setCompletionParticipants([participant]);
-    let htmlDoc = ls.parseHTMLDocument(document);
-    let list = ls.doComplete(document, position, htmlDoc);
+    const htmlDoc = ls.parseHTMLDocument(document);
+    const list = ls.doComplete(document, position, htmlDoc);
 
-    let c = (a1: ExpectedHtmlAttributeValue, a2: ExpectedHtmlAttributeValue) => {
+    const c = (a1: ExpectedHtmlAttributeValue, a2: ExpectedHtmlAttributeValue) => {
       return new String(a1.tag + a1.attribute + a1.value).localeCompare(a2.tag + a2.attribute + a2.value);
     };
     assert.deepEqual(actuals.sort(c), expected.sort(c));
   };
 
-  let testHtmlContent = (value: string, expected: ExpectedHtmlContent[]): void => {
-    let ls = htmlLanguageService.getLanguageService();
-    let { document, position } = prepareDocument(value);
+  const testHtmlContent = (value: string, expected: ExpectedHtmlContent[]): void => {
+    const ls = htmlLanguageService.getLanguageService();
+    const { document, position } = prepareDocument(value);
 
-    let actuals: {}[] = [];
+    const actuals: {}[] = [];
     const participant: htmlLanguageService.ICompletionParticipant = {
       onHtmlContent: (context: HtmlContentContext) => {
         actuals.push(Object.create(null));
       }
     };
     ls.setCompletionParticipants([participant]);
-    let htmlDoc = ls.parseHTMLDocument(document);
-    let list = ls.doComplete(document, position, htmlDoc);
+    const htmlDoc = ls.parseHTMLDocument(document);
+    const list = ls.doComplete(document, position, htmlDoc);
     assert.deepEqual(actuals.length, expected.length);
   };
 

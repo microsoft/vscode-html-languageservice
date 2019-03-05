@@ -12,7 +12,7 @@ export const enum CharCode {
  * @returns the directory name of a path.
  */
 export function dirname(path: string): string {
-	var idx = ~path.lastIndexOf('/') || ~path.lastIndexOf('\\');
+	const idx = ~path.lastIndexOf('/') || ~path.lastIndexOf('\\');
 	if (idx === 0) {
 		return '.';
 	} else if (~idx === 0) {
@@ -26,7 +26,7 @@ export function dirname(path: string): string {
  * @returns the base name of a path.
  */
 export function basename(path: string): string {
-	var idx = ~path.lastIndexOf('/') || ~path.lastIndexOf('\\');
+	const idx = ~path.lastIndexOf('/') || ~path.lastIndexOf('\\');
 	if (idx === 0) {
 		return path;
 	} else if (~idx === path.length - 1) {
@@ -41,7 +41,7 @@ export function basename(path: string): string {
  */
 export function extname(path: string): string {
 	path = basename(path);
-	var idx = ~path.lastIndexOf('.');
+	const idx = ~path.lastIndexOf('.');
 	return idx ? path.substring(~idx) : '';
 }
 
@@ -52,13 +52,13 @@ export const join: (...parts: string[]) => string = function () {
 
 	let value = '';
 	for (let i = 0; i < arguments.length; i++) {
-		let part = arguments[i];
+		const part = arguments[i];
 		if (i > 0) {
 			// add the separater between two parts unless
 			// there already is one
-			let last = value.charCodeAt(value.length - 1);
+			const last = value.charCodeAt(value.length - 1);
 			if (last !== CharCode.Slash && last !== CharCode.Backslash) {
-				let next = part.charCodeAt(0);
+				const next = part.charCodeAt(0);
 				if (next !== CharCode.Slash && next !== CharCode.Backslash) {
 
 					value += '/';

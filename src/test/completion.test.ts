@@ -364,7 +364,7 @@ suite('HTML Completion', () => {
 	});
 
 	test('Complete aria', function (): any {
-		let expectedAriaAttributes = [
+		const expectedAriaAttributes = [
 			{ label: 'aria-activedescendant' },
 			{ label: 'aria-atomic' },
 			{ label: 'aria-autocomplete' },

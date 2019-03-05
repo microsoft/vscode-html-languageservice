@@ -24,14 +24,14 @@ export class Node {
 	public get lastChild(): Node | undefined { return this.children.length ? this.children[this.children.length - 1] : void 0; }
 
 	public findNodeBefore(offset: number): Node {
-		let idx = findFirst(this.children, c => offset <= c.start) - 1;
+		const idx = findFirst(this.children, c => offset <= c.start) - 1;
 		if (idx >= 0) {
-			let child = this.children[idx];
+			const child = this.children[idx];
 			if (offset > child.start) {
 				if (offset < child.end) {
 					return child.findNodeBefore(offset);
 				}
-				let lastChild = child.lastChild;
+				const lastChild = child.lastChild;
 				if (lastChild && lastChild.end === child.end) {
 					return child.findNodeBefore(offset);
 				}
@@ -42,9 +42,9 @@ export class Node {
 	}
 
 	public findNodeAt(offset: number): Node {
-		let idx = findFirst(this.children, c => offset <= c.start) - 1;
+		const idx = findFirst(this.children, c => offset <= c.start) - 1;
 		if (idx >= 0) {
-			let child = this.children[idx];
+			const child = this.children[idx];
 			if (offset > child.start && offset <= child.end) {
 				return child.findNodeAt(offset);
 			}
@@ -60,9 +60,9 @@ export interface HTMLDocument {
 }
 
 export function parse(text: string): HTMLDocument {
-	let scanner = createScanner(text);
+	const scanner = createScanner(text);
 
-	let htmlDocument = new Node(0, text.length, [], void 0);
+	const htmlDocument = new Node(0, text.length, [], void 0);
 	let curr = htmlDocument;
 	let endTagStart: number = -1;
 	let endTagName: string | null = null;
@@ -71,7 +71,7 @@ export function parse(text: string): HTMLDocument {
 	while (token !== TokenType.EOS) {
 		switch (token) {
 			case TokenType.StartTagOpen:
-				let child = new Node(scanner.getTokenOffset(), text.length, [], curr);
+				const child = new Node(scanner.getTokenOffset(), text.length, [], curr);
 				curr.children.push(child);
 				curr = child;
 				break;
@@ -122,7 +122,7 @@ export function parse(text: string): HTMLDocument {
 				}
 				break;
 			case TokenType.AttributeName: {
-				let attributeName = pendingAttribute = scanner.getTokenText();
+				pendingAttribute = scanner.getTokenText();
 				let attributes = curr.attributes;
 				if (!attributes) {
 					curr.attributes = attributes = {};
@@ -131,8 +131,8 @@ export function parse(text: string): HTMLDocument {
 				break;
 			}
 			case TokenType.AttributeValue: {
-				let value = scanner.getTokenText();
-				let attributes = curr.attributes;
+				const value = scanner.getTokenText();
+				const attributes = curr.attributes;
 				if (attributes && pendingAttribute) {
 					attributes[pendingAttribute] = value;
 					pendingAttribute = null;

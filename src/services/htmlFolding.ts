@@ -21,11 +21,11 @@ function limitRanges(ranges: FoldingRange[], rangeLimit: number) {
 	// compute each range's nesting level in 'nestingLevels'.
 	// count the number of ranges for each level in 'nestingLevelCounts'
 	let top: FoldingRange | undefined = void 0;
-	let previous: FoldingRange[] = [];
-	let nestingLevels: number[] = [];
-	let nestingLevelCounts: number[] = [];
+	const previous: FoldingRange[] = [];
+	const nestingLevels: number[] = [];
+	const nestingLevelCounts: number[] = [];
 
-	let setNestingLevel = (index: number, level: number) => {
+	const setNestingLevel = (index: number, level: number) => {
 		nestingLevels[index] = level;
 		if (level < 30) {
 			nestingLevelCounts[level] = (nestingLevelCounts[level] || 0) + 1;
@@ -34,7 +34,7 @@ function limitRanges(ranges: FoldingRange[], rangeLimit: number) {
 
 	// compute nesting levels and sanitize
 	for (let i = 0; i < ranges.length; i++) {
-		let entry = ranges[i];
+		const entry = ranges[i];
 		if (!top) {
 			top = entry;
 			setNestingLevel(i, 0);
@@ -60,7 +60,7 @@ function limitRanges(ranges: FoldingRange[], rangeLimit: number) {
 	let entries = 0;
 	let maxLevel = 0;
 	for (let i = 0; i < nestingLevelCounts.length; i++) {
-		let n = nestingLevelCounts[i];
+		const n = nestingLevelCounts[i];
 		if (n) {
 			if (n + entries > rangeLimit) {
 				maxLevel = i;
@@ -70,9 +70,9 @@ function limitRanges(ranges: FoldingRange[], rangeLimit: number) {
 		}
 	}
 
-	let result = [];
+	const result = [];
 	for (let i = 0; i < ranges.length; i++) {
-		let level = nestingLevels[i];
+		const level = nestingLevels[i];
 		if (typeof level === 'number') {
 			if (level < maxLevel || (level === maxLevel && entries++ < rangeLimit)) {
 				result.push(ranges[i]);
@@ -85,8 +85,8 @@ function limitRanges(ranges: FoldingRange[], rangeLimit: number) {
 export function getFoldingRanges(document: TextDocument, context: { rangeLimit?: number }): FoldingRange[] {
 	const scanner = createScanner(document.getText());
 	let token = scanner.scan();
-	let ranges: FoldingRange[] = [];
-	let stack: { startLine: number, tagName: string }[] = [];
+	const ranges: FoldingRange[] = [];
+	const stack: { startLine: number, tagName: string }[] = [];
 	let lastTagName = null;
 	let prevStart = -1;
 
@@ -98,8 +98,8 @@ export function getFoldingRanges(document: TextDocument, context: { rangeLimit?:
 	while (token !== TokenType.EOS) {
 		switch (token) {
 			case TokenType.StartTag: {
-				let tagName = scanner.getTokenText();
-				let startLine = document.positionAt(scanner.getTokenOffset()).line;
+				const tagName = scanner.getTokenText();
+				const startLine = document.positionAt(scanner.getTokenOffset()).line;
 				stack.push({ startLine, tagName });
 				lastTagName = tagName;
 				break;
@@ -120,11 +120,11 @@ export function getFoldingRanges(document: TextDocument, context: { rangeLimit?:
 					i--;
 				}
 				if (i >= 0) {
-					let stackElement = stack[i];
+					const stackElement = stack[i];
 					stack.length = i;
-					let line = document.positionAt(scanner.getTokenOffset()).line;
-					let startLine = stackElement.startLine;
-					let endLine = line - 1;
+					const line = document.positionAt(scanner.getTokenOffset()).line;
+					const startLine = stackElement.startLine;
+					const endLine = line - 1;
 					if (endLine > startLine && prevStart !== startLine) {
 						addRange({ startLine, endLine });
 					}
@@ -133,8 +133,8 @@ export function getFoldingRanges(document: TextDocument, context: { rangeLimit?:
 			}
 			case TokenType.Comment: {
 				let startLine = document.positionAt(scanner.getTokenOffset()).line;
-				let text = scanner.getTokenText();
-				let m = text.match(/^\s*#(region\b)|(endregion\b)/);
+				const text = scanner.getTokenText();
+				const m = text.match(/^\s*#(region\b)|(endregion\b)/);
 				if (m) {
 					if (m[1]) { // start pattern match
 						stack.push({ startLine, tagName: '' }); // empty tagName marks region
@@ -144,9 +144,9 @@ export function getFoldingRanges(document: TextDocument, context: { rangeLimit?:
 							i--;
 						}
 						if (i >= 0) {
-							let stackElement = stack[i];
+							const stackElement = stack[i];
 							stack.length = i;
-							let endLine = startLine;
+							const endLine = startLine;
 							startLine = stackElement.startLine;
 							if (endLine > startLine && prevStart !== startLine) {
 								addRange({ startLine, endLine, kind: FoldingRangeKind.Region });
@@ -154,7 +154,7 @@ export function getFoldingRanges(document: TextDocument, context: { rangeLimit?:
 						}
 					}
 				} else {
-					let endLine = document.positionAt(scanner.getTokenOffset() + scanner.getTokenLength()).line;
+					const endLine = document.positionAt(scanner.getTokenOffset() + scanner.getTokenLength()).line;
 					if (startLine < endLine) {
 						addRange({ startLine, endLine, kind: FoldingRangeKind.Comment });
 					}
@@ -165,9 +165,9 @@ export function getFoldingRanges(document: TextDocument, context: { rangeLimit?:
 		token = scanner.scan();
 	}
 
-	let rangeLimit = context && context.rangeLimit || Number.MAX_VALUE;
+	const rangeLimit = context && context.rangeLimit || Number.MAX_VALUE;
 	if (ranges.length > rangeLimit) {
-		ranges = limitRanges(ranges, rangeLimit);
+		return limitRanges(ranges, rangeLimit);
 	}
 	return ranges;
 }

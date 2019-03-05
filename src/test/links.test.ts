@@ -25,17 +25,17 @@ suite('HTML Link Detection', () => {
 	}
 
 	function testLinkCreation(modelUrl: string, tokenContent: string, expected: string | null): void {
-		let langId = ext2lang[modelUrl.substr(modelUrl.lastIndexOf('.') + 1)] || 'html';
-		let document = TextDocument.create(modelUrl, langId, 0, `<a href="${tokenContent}">`);
-		let ls = htmlLanguageService.getLanguageService();
-		let links = ls.findDocumentLinks(document, getDocumentContext(modelUrl));
+		const langId = ext2lang[modelUrl.substr(modelUrl.lastIndexOf('.') + 1)] || 'html';
+		const document = TextDocument.create(modelUrl, langId, 0, `<a href="${tokenContent}">`);
+		const ls = htmlLanguageService.getLanguageService();
+		const links = ls.findDocumentLinks(document, getDocumentContext(modelUrl));
 		assert.equal(links[0] && links[0].target, expected);
 	}
 
 	function testLinkDetection(value: string, expectedLinks: { offset: number, target: string; }[]): void {
-		let document = TextDocument.create('http://test/data/abc/test.html', 'html', 0, value);
-		let ls = htmlLanguageService.getLanguageService();
-		let links = ls.findDocumentLinks(document, getDocumentContext(document.uri));
+		const document = TextDocument.create('http://test/data/abc/test.html', 'html', 0, value);
+		const ls = htmlLanguageService.getLanguageService();
+		const links = ls.findDocumentLinks(document, getDocumentContext(document.uri));
 		assert.deepEqual(links.map(l => ({ offset: l.range.start.character, target: l.target })), expectedLinks);
 	}
 

@@ -16,12 +16,12 @@ interface ExpectedIndentRange {
 }
 
 function assertRanges(lines: string[], expected: ExpectedIndentRange[], message?: string, nRanges?: number): void {
-	let document = TextDocument.create('test://foo/bar.json', 'json', 1, lines.join('\n'));
-	let workspace = {
+	const document = TextDocument.create('test://foo/bar.json', 'json', 1, lines.join('\n'));
+	const workspace = {
 		settings: {},
 		folders: [{ name: 'foo', uri: 'test://foo' }]
 	};
-	let actual = getFoldingRanges(document, { rangeLimit: nRanges });
+	const actual = getFoldingRanges(document, { rangeLimit: nRanges });
 
 	let actualRanges = [];
 	for (let i = 0; i < actual.length; i++) {
@@ -37,7 +37,7 @@ function r(startLine: number, endLine: number, kind?: string): ExpectedIndentRan
 
 suite('HTML Folding', () => {
 	test('Fold one level', () => {
-		let input = [
+		const input = [
 			/*0*/'<html>',
 			/*1*/'Hello',
 			/*2*/'</html>'
@@ -46,7 +46,7 @@ suite('HTML Folding', () => {
 	});
 
 	test('Fold two level', () => {
-		let input = [
+		const input = [
 			/*0*/'<html>',
 			/*1*/'<head>',
 			/*2*/'Hello',
@@ -57,7 +57,7 @@ suite('HTML Folding', () => {
 	});
 
 	test('Fold siblings', () => {
-		let input = [
+		const input = [
 			/*0*/'<html>',
 			/*1*/'<head>',
 			/*2*/'Head',
@@ -71,7 +71,7 @@ suite('HTML Folding', () => {
 	});
 
 	test('Fold self-closing tags', () => {
-		let input = [
+		const input = [
 			/*0*/'<div>',
 			/*1*/'<a href="top"/>',
 			/*2*/'<img src="s">',
@@ -86,7 +86,7 @@ suite('HTML Folding', () => {
 	});
 
 	test('Fold comment', () => {
-		let input = [
+		const input = [
 			/*0*/'<!--',
 			/*1*/' multi line',
 			/*2*/'-->',
@@ -97,7 +97,7 @@ suite('HTML Folding', () => {
 	});
 
 	test('Fold regions', () => {
-		let input = [
+		const input = [
 			/*0*/'<!-- #region -->',
 			/*1*/'<!-- #region -->',
 			/*2*/'<!-- #endregion -->',
@@ -109,7 +109,7 @@ suite('HTML Folding', () => {
 
 
 	test('Fold incomplete', () => {
-		let input = [
+		const input = [
 			/*0*/'<body>',
 			/*1*/'<div></div>',
 			/*2*/'Hello',
@@ -120,7 +120,7 @@ suite('HTML Folding', () => {
 	});
 
 	test('Fold incomplete 2', () => {
-		let input = [
+		const input = [
 			/*0*/'<be><div>',
 			/*1*/'<!-- #endregion -->',
 			/*2*/'</div>',
@@ -129,7 +129,7 @@ suite('HTML Folding', () => {
 	});
 
 	test('Fold intersecting region', () => {
-		let input = [
+		const input = [
 			/*0*/'<body>',
 			/*1*/'<!-- #region -->',
 			/*2*/'Hello',
@@ -141,7 +141,7 @@ suite('HTML Folding', () => {
 	});
 
 	test('Fold intersecting region 2', () => {
-		let input = [
+		const input = [
 			/*0*/'<!-- #region -->',
 			/*1*/'<body>',
 			/*2*/'Hello',
@@ -153,7 +153,7 @@ suite('HTML Folding', () => {
 	});
 
 	test('Test limit', () => {
-		let input = [
+		const input = [
 			/* 0*/'<div>',
 			/* 1*/' <span>',
 			/* 2*/'  <b>',

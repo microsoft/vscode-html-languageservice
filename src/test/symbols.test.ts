@@ -16,15 +16,15 @@ suite('HTML Symbols', () => {
 		return Promise.resolve(result);
 	}
 
-	let assertSymbols = function (symbols: SymbolInformation[], expected: SymbolInformation[]) {
+	const assertSymbols = function (symbols: SymbolInformation[], expected: SymbolInformation[]) {
 		assert.deepEqual(symbols, expected);
 	};
 
-	let testSymbolsFor = function (value: string, expected: SymbolInformation[]) {
-		let ls = htmlLanguageService.getLanguageService();
-		let document = TextDocument.create(TEST_URI, 'html', 0, value);
-		let htmlDoc = ls.parseHTMLDocument(document);
-		let symbols = ls.findDocumentSymbols(document, htmlDoc);
+	const testSymbolsFor = function (value: string, expected: SymbolInformation[]) {
+		const ls = htmlLanguageService.getLanguageService();
+		const document = TextDocument.create(TEST_URI, 'html', 0, value);
+		const htmlDoc = ls.parseHTMLDocument(document);
+		const symbols = ls.findDocumentSymbols(document, htmlDoc);
 		assertSymbols(symbols, expected);
 	};
 

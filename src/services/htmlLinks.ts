@@ -11,8 +11,8 @@ import Uri from 'vscode-uri';
 import { TokenType, DocumentContext } from '../htmlLanguageTypes';
 
 function normalizeRef(url: string, languageId: string): string {
-	let first = url[0];
-	let last = url[url.length - 1];
+	const first = url[0];
+	const last = url[url.length - 1];
 	if (first === last && (first === '\'' || first === '\"')) {
 		url = url.substr(1, url.length - 2);
 	}
@@ -46,7 +46,7 @@ function getWorkspaceUrl(documentUri: string, tokenContent: string, documentCont
 
 	if (/^\/\//i.test(tokenContent)) {
 		// Absolute link (that does not name the protocol)
-		let pickedScheme = strings.startsWith(documentUri, 'https://') ? 'https' : 'http';
+		const pickedScheme = strings.startsWith(documentUri, 'https://') ? 'https' : 'http';
 		return pickedScheme + ':' + tokenContent.replace(/^\s*/g, '');
 	}
 	if (documentContext) {
@@ -56,7 +56,7 @@ function getWorkspaceUrl(documentUri: string, tokenContent: string, documentCont
 }
 
 function createLink(document: TextDocument, documentContext: DocumentContext, attributeValue: string, startOffset: number, endOffset: number, base: string | undefined): DocumentLink | null {
-	let tokenContent = normalizeRef(attributeValue, document.languageId);
+	const tokenContent = normalizeRef(attributeValue, document.languageId);
 	if (!validateRef(tokenContent, document.languageId)) {
 		return null;
 	}
@@ -64,7 +64,7 @@ function createLink(document: TextDocument, documentContext: DocumentContext, at
 		startOffset++;
 		endOffset--;
 	}
-	let workspaceUrl = getWorkspaceUrl(document.uri, tokenContent, documentContext, base);
+	const workspaceUrl = getWorkspaceUrl(document.uri, tokenContent, documentContext, base);
 	if (!workspaceUrl || !isValidURI(workspaceUrl)) {
 		return null;
 	}
@@ -84,11 +84,11 @@ function isValidURI(uri: string) {
 }
 
 export function findDocumentLinks(document: TextDocument, documentContext: DocumentContext): DocumentLink[] {
-	let newLinks: DocumentLink[] = [];
+	const newLinks: DocumentLink[] = [];
 
-	let rootAbsoluteUrl: Uri | null = null;
+	const rootAbsoluteUrl: Uri | null = null;
 
-	let scanner = createScanner(document.getText(), 0);
+	const scanner = createScanner(document.getText(), 0);
 	let token = scanner.scan();
 	let afterHrefOrSrc = false;
 	let afterBase = false;
@@ -97,19 +97,19 @@ export function findDocumentLinks(document: TextDocument, documentContext: Docum
 		switch (token) {
 			case TokenType.StartTag:
 				if (!base) {
-					let tagName = scanner.getTokenText().toLowerCase();
+					const tagName = scanner.getTokenText().toLowerCase();
 					afterBase = tagName === 'base';
 				}
 				break;
 			case TokenType.AttributeName:
-				let attributeName = scanner.getTokenText().toLowerCase();
+				const attributeName = scanner.getTokenText().toLowerCase();
 				afterHrefOrSrc = attributeName === 'src' || attributeName === 'href';
 				break;
 			case TokenType.AttributeValue:
 				if (afterHrefOrSrc) {
-					let attributeValue = scanner.getTokenText();
+					const attributeValue = scanner.getTokenText();
 					if (!afterBase) { // don't highlight the base link itself
-						let link = createLink(document, documentContext, attributeValue, scanner.getTokenOffset(), scanner.getTokenEnd(), base);
+						const link = createLink(document, documentContext, attributeValue, scanner.getTokenOffset(), scanner.getTokenEnd(), base);
 						if (link) {
 							newLinks.push(link);
 						}

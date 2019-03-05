@@ -21,7 +21,7 @@ function asPromise<T>(result: T): Promise<T> {
 }
 
 function assertCompletion(completions: CompletionList, expected: ItemDescription, document: TextDocument, offset: number) {
-	let matches = completions.items.filter(completion => {
+	const matches = completions.items.filter(completion => {
 		return completion.label === expected.label;
 	});
 	if (expected.notAvailable) {
@@ -30,7 +30,7 @@ function assertCompletion(completions: CompletionList, expected: ItemDescription
 	}
 
 	assert.equal(matches.length, 1, expected.label + " should only existing once: Actual: " + completions.items.map(c => c.label).join(', '));
-	let match = matches[0];
+	const match = matches[0];
 	if (expected.documentation) {
 		assert.equal(match.documentation, expected.documentation);
 	}
@@ -43,20 +43,20 @@ function assertCompletion(completions: CompletionList, expected: ItemDescription
 }
 
 export function testCompletionFor(value: string, expected: { count?: number, items?: ItemDescription[] }, settings?: htmlLanguageService.CompletionConfiguration, lsOptions?: htmlLanguageService.LanguageServiceOptions): void {
-	let offset = value.indexOf('|');
+	const offset = value.indexOf('|');
 	value = value.substr(0, offset) + value.substr(offset + 1);
 
-	let ls = htmlLanguageService.getLanguageService(lsOptions);
+	const ls = htmlLanguageService.getLanguageService(lsOptions);
 
-	let document = TextDocument.create('test://test/test.html', 'html', 0, value);
-	let position = document.positionAt(offset);
-	let htmlDoc = ls.parseHTMLDocument(document);
-	let list = ls.doComplete(document, position, htmlDoc, settings);
+	const document = TextDocument.create('test://test/test.html', 'html', 0, value);
+	const position = document.positionAt(offset);
+	const htmlDoc = ls.parseHTMLDocument(document);
+	const list = ls.doComplete(document, position, htmlDoc, settings);
 
 	// no duplicate labels
-	let labels = list.items.map(i => i.label).sort();
+	const labels = list.items.map(i => i.label).sort();
 	let previous = null;
-	for (let label of labels) {
+	for (const label of labels) {
 		assert.ok(previous !== label, `Duplicate label ${label} in ${labels.join(',')}`);
 		previous = label;
 	}
@@ -64,21 +64,21 @@ export function testCompletionFor(value: string, expected: { count?: number, ite
 		assert.equal(list.items, expected.count);
 	}
 	if (expected.items) {
-		for (let item of expected.items) {
+		for (const item of expected.items) {
 			assertCompletion(list, item, document, offset);
 		}
 	}
 }
 
 export function testTagCompletion(value: string, expected: string | null): void {
-	let offset = value.indexOf('|');
+	const offset = value.indexOf('|');
 	value = value.substr(0, offset) + value.substr(offset + 1);
 
-	let ls = htmlLanguageService.getLanguageService();
+	const ls = htmlLanguageService.getLanguageService();
 
-	let document = TextDocument.create('test://test/test.html', 'html', 0, value);
-	let position = document.positionAt(offset);
-	let htmlDoc = ls.parseHTMLDocument(document);
-	let actual = ls.doTagComplete(document, position, htmlDoc);
+	const document = TextDocument.create('test://test/test.html', 'html', 0, value);
+	const position = document.positionAt(offset);
+	const htmlDoc = ls.parseHTMLDocument(document);
+	const actual = ls.doTagComplete(document, position, htmlDoc);
 	assert.equal(actual, expected);
 }

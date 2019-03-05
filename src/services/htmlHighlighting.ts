@@ -9,14 +9,14 @@ import { TextDocument, Range, Position, DocumentHighlightKind, DocumentHighlight
 import { TokenType } from '../htmlLanguageTypes';
 
 export function findDocumentHighlights(document: TextDocument, position: Position, htmlDocument: HTMLDocument): DocumentHighlight[] {
-	let offset = document.offsetAt(position);
-	let node = htmlDocument.findNodeAt(offset);
+	const offset = document.offsetAt(position);
+	const node = htmlDocument.findNodeAt(offset);
 	if (!node.tag) {
 		return [];
 	}
-	let result = [];
-	let startTagRange = getTagNameRange(TokenType.StartTag, document, node.start);
-	let endTagRange = typeof node.endTagStart === 'number' && getTagNameRange(TokenType.EndTag, document, node.endTagStart);
+	const result = [];
+	const startTagRange = getTagNameRange(TokenType.StartTag, document, node.start);
+	const endTagRange = typeof node.endTagStart === 'number' && getTagNameRange(TokenType.EndTag, document, node.endTagStart);
 	if (startTagRange && covers(startTagRange, position) || endTagRange && covers(endTagRange, position)) {
 		if (startTagRange) {
 			result.push({ kind: DocumentHighlightKind.Read, range: startTagRange });
@@ -37,7 +37,7 @@ function covers(range: Range, position: Position) {
 }
 
 function getTagNameRange(tokenType: TokenType, document: TextDocument, startOffset: number): Range | null {
-	let scanner = createScanner(document.getText(), startOffset);
+	const scanner = createScanner(document.getText(), startOffset);
 	let token = scanner.scan();
 	while (token !== TokenType.EOS && token !== tokenType) {
 		token = scanner.scan();

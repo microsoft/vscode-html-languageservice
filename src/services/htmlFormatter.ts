@@ -12,7 +12,7 @@ export function format(document: TextDocument, range: Range | undefined, options
 	let value = document.getText();
 	let includesEnd = true;
 	let initialIndentLevel = 0;
-	let tabSize = options.tabSize || 4;
+	const tabSize = options.tabSize || 4;
 	if (range) {
 		let startOffset = document.offsetAt(range.start);
 
@@ -43,7 +43,7 @@ export function format(document: TextDocument, range: Range | undefined, options
 
 		// Do not modify if substring starts in inside an element
 		// Ending inside an element is fine as it doesn't cause formatting errors
-		let firstHalf = value.substring(0, startOffset);
+		const firstHalf = value.substring(0, startOffset);
 		if (new RegExp(/.*[<][^>]*$/).test(firstHalf)) {
 			//return without modification
 			value = value.substring(startOffset, endOffset);
@@ -57,13 +57,13 @@ export function format(document: TextDocument, range: Range | undefined, options
 		value = value.substring(startOffset, endOffset);
 
 		if (startOffset !== 0) {
-			let startOfLineOffset = document.offsetAt(Position.create(range.start.line, 0));
+			const startOfLineOffset = document.offsetAt(Position.create(range.start.line, 0));
 			initialIndentLevel = computeIndentLevel(document.getText(), startOfLineOffset, options);
 		}
 	} else {
 		range = Range.create(Position.create(0, 0), document.positionAt(value.length));
 	}
-	let htmlOptions: IBeautifyHTMLOptions = {
+	const htmlOptions: IBeautifyHTMLOptions = {
 		indent_size: tabSize,
 		indent_char: options.insertSpaces ? ' ' : '\t',
 		wrap_line_length: getFormatOption(options, 'wrapLineLength', 120),
@@ -82,7 +82,7 @@ export function format(document: TextDocument, range: Range | undefined, options
 
 	let result = html_beautify(trimLeft(value), htmlOptions);
 	if (initialIndentLevel > 0) {
-		let indent = options.insertSpaces ? repeat(' ', tabSize * initialIndentLevel) : repeat('\t', initialIndentLevel);
+		const indent = options.insertSpaces ? repeat(' ', tabSize * initialIndentLevel) : repeat('\t', initialIndentLevel);
 		result = result.split('\n').join('\n' + indent);
 		if (range.start.character === 0) {
 			result = indent + result; // keep the indent
@@ -100,7 +100,7 @@ function trimLeft(str: string) {
 
 function getFormatOption(options: HTMLFormatConfiguration, key: keyof HTMLFormatConfiguration, dflt: any): any {
 	if (options && options.hasOwnProperty(key)) {
-		let value = options[key];
+		const value = options[key];
 		if (value !== null) {
 			return value;
 		}
@@ -109,7 +109,7 @@ function getFormatOption(options: HTMLFormatConfiguration, key: keyof HTMLFormat
 }
 
 function getTagsFormatOption(options: HTMLFormatConfiguration, key: keyof HTMLFormatConfiguration, dflt: string[] | undefined): string[] | undefined {
-	let list = <string>getFormatOption(options, key, null);
+	const list = <string>getFormatOption(options, key, null);
 	if (typeof list === 'string') {
 		if (list.length > 0) {
 			return list.split(',').map(t => t.trim().toLowerCase());
@@ -122,9 +122,9 @@ function getTagsFormatOption(options: HTMLFormatConfiguration, key: keyof HTMLFo
 function computeIndentLevel(content: string, offset: number, options: HTMLFormatConfiguration): number {
 	let i = offset;
 	let nChars = 0;
-	let tabSize = options.tabSize || 4;
+	const tabSize = options.tabSize || 4;
 	while (i < content.length) {
-		let ch = content.charAt(i);
+		const ch = content.charAt(i);
 		if (ch === ' ') {
 			nChars++;
 		} else if (ch === '\t') {
@@ -138,9 +138,9 @@ function computeIndentLevel(content: string, offset: number, options: HTMLFormat
 }
 
 function getEOL(document: TextDocument): string {
-	let text = document.getText();
+	const text = document.getText();
 	if (document.lineCount > 1) {
-		let to = document.offsetAt(Position.create(1, 0));
+		const to = document.offsetAt(Position.create(1, 0));
 		let from = to;
 		while (from > 0 && isEOL(text, from - 1)) {
 			from--;
