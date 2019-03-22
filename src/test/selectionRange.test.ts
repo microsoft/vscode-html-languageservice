@@ -162,6 +162,10 @@ suite('HTML SelectionRange', () => {
 			[0, "<html><meta charset='UTF-8'></html>"]
 		]);
 	});
+	
+	test('Unmatching tags', () => {
+		assertRanges('<div></div|1>', [[0, "<div></div1>"]]);
+	});
 
 	test('Unhandled', () => {
 		// We do not handle comments. This semantic selection is handled by VS Code's default provider, which returns

@@ -50,6 +50,12 @@ function getApplicableRanges(document: TextDocument, position: Position): number
 
 	// Self-closing or void elements
 	if (currNode.startTagEnd && !currNode.endTagStart) {
+
+		// THe rare case of unmatching tag pairs like <div></div1>
+		if (currNode.startTagEnd !== currNode.end) {
+			return [[currNode.start, currNode.end]];
+		}
+
 		const closeRange = Range.create(document.positionAt(currNode.startTagEnd - 2), document.positionAt(currNode.startTagEnd));
 		const closeText = document.getText(closeRange);
 
