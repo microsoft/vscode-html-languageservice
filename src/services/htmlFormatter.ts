@@ -66,6 +66,7 @@ export function format(document: TextDocument, range: Range | undefined, options
 	const htmlOptions: IBeautifyHTMLOptions = {
 		indent_size: tabSize,
 		indent_char: options.insertSpaces ? ' ' : '\t',
+		indent_empty_lines: getFormatOption(options, 'indentEmptyLines', false),
 		wrap_line_length: getFormatOption(options, 'wrapLineLength', 120),
 		unformatted: getTagsFormatOption(options, 'unformatted', void 0),
 		content_unformatted: getTagsFormatOption(options, 'contentUnformatted', void 0),
