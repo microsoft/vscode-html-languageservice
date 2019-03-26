@@ -49,6 +49,7 @@ export interface SelectionRange {
 export interface HTMLFormatConfiguration {
 	tabSize?: number;
 	insertSpaces?: boolean;
+	indentEmptyLines?: boolean;
 	wrapLineLength?: number;
 	unformatted?: string;
 	contentUnformatted?: string;
