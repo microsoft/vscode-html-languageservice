@@ -64,6 +64,6 @@ export function getLanguageService(options?: LanguageServiceOptions): LanguageSe
 	};
 }
 
-export function newHTMLDataProvider(id: string, customData: HTMLDataV1) : IHTMLDataProvider {
+export function newHTMLDataProvider(id: string, customData: HTMLDataV1): IHTMLDataProvider {
 	return new HTMLDataProvider(id, customData);
 }
