@@ -175,7 +175,7 @@ export class HTMLCompletion {
 					let command;
 					if (attr.valueSet !== 'v' && value.length) {
 						codeSnippet = codeSnippet + value;
-						if (attr.valueSet) {
+						if (attr.valueSet || attr.name === 'style') {
 							command = {
 								title: 'Suggest',
 								command: 'editor.action.triggerSuggest'
