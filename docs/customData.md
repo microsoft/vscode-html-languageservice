@@ -45,7 +45,7 @@ You might want to use the `json.schemas` setting to check your data against the 
 
 Custom data receives the following language features:
 
-- Completion on tag, attirbute and attribute value
+- Completion on tag, attribute and attribute value
 - Hover on tag (here's the [issue](https://github.com/Microsoft/vscode-html-languageservice/issues/47) for hover on attribute / attribute-name)
 
 For example, for the following custom data:
