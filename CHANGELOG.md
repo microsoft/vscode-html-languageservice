@@ -1,4 +1,4 @@
-NEXT (3.0.0)
+3.0.0 / 2019-06-12
 ==================
   * Added API `htmlLanguageService.getSelectionRanges` returning selection ranges for a set of positions
   * New API `newHTMLDataProvider`
