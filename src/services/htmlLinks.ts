@@ -6,7 +6,7 @@
 import { createScanner } from '../parser/htmlScanner';
 import { TextDocument, Range, DocumentLink } from 'vscode-languageserver-types';
 import * as strings from '../utils/strings';
-import Uri from 'vscode-uri';
+import { URI as Uri } from 'vscode-uri';
 
 import { TokenType, DocumentContext } from '../htmlLanguageTypes';
 
@@ -26,11 +26,7 @@ function validateRef(url: string, languageId: string): boolean {
 	if (languageId === 'handlebars' && /{{.*}}/.test(url)) {
 		return false;
 	}
-	try {
-		return !!Uri.parse(url);
-	} catch (e) {
-		return false;
-	}
+	return /\b(w[\w\d+.-]*:\/\/)?[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|\/?))/.test(url);
 }
 
 function getWorkspaceUrl(documentUri: string, tokenContent: string, documentContext: DocumentContext, base: string | undefined): string | null {
