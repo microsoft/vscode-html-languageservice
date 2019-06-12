@@ -11,8 +11,8 @@ import { format } from './services/htmlFormatter';
 import { findDocumentLinks } from './services/htmlLinks';
 import { findDocumentHighlights } from './services/htmlHighlighting';
 import { findDocumentSymbols } from './services/htmlSymbolsProvider';
-import { TextDocument, Position, CompletionList, Hover, Range, SymbolInformation, TextEdit, DocumentHighlight, DocumentLink, FoldingRange } from 'vscode-languageserver-types';
-import { Scanner, HTMLDocument, CompletionConfiguration, ICompletionParticipant, HTMLFormatConfiguration, DocumentContext, IHTMLDataProvider, SelectionRange, HTMLDataV1 } from './htmlLanguageTypes';
+import { TextDocument, Position, CompletionList, Hover, Range, SymbolInformation, TextEdit, DocumentHighlight, DocumentLink, FoldingRange, SelectionRange } from 'vscode-languageserver-types';
+import { Scanner, HTMLDocument, CompletionConfiguration, ICompletionParticipant, HTMLFormatConfiguration, DocumentContext, IHTMLDataProvider, HTMLDataV1 } from './htmlLanguageTypes';
 import { getFoldingRanges } from './services/htmlFolding';
 import { getSelectionRanges } from './services/htmlSelectionRange';
 import { handleCustomDataProviders } from './languageFacts/builtinDataProviders';
@@ -33,7 +33,7 @@ export interface LanguageService {
 	findDocumentSymbols(document: TextDocument, htmlDocument: HTMLDocument): SymbolInformation[];
 	doTagComplete(document: TextDocument, position: Position, htmlDocument: HTMLDocument): string | null;
 	getFoldingRanges(document: TextDocument, context?: { rangeLimit?: number }): FoldingRange[];
-	getSelectionRanges(document: TextDocument, positions: Position[]): SelectionRange[][];
+	getSelectionRanges(document: TextDocument, positions: Position[]): SelectionRange[];
 }
 
 export interface LanguageServiceOptions {

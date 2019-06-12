@@ -2,46 +2,37 @@
  * Until SelectionRange lands in LSP, we'll return Range from server and convert it to
  * SelectionRange on client side
  */
-import { Range, TextDocument, Position } from 'vscode-languageserver-types';
+import { Range, TextDocument, Position, SelectionRange } from 'vscode-languageserver-types';
 import { createScanner } from '../parser/htmlScanner';
 import { parse, Node } from '../parser/htmlParser';
-import { TokenType, SelectionRange, SelectionRangeKind } from '../htmlLanguageTypes';
+import { TokenType } from '../htmlLanguageTypes';
 
-export function getSelectionRanges(document: TextDocument, positions: Position[]): SelectionRange[][] {
+export function getSelectionRanges(document: TextDocument, positions: Position[]): SelectionRange[] {
 
-	function getSelectionRange(position: Position): SelectionRange[] {
+	function getSelectionRange(position: Position): SelectionRange {
 		const applicableRanges = getApplicableRanges(document, position);
-		const ranges = applicableRanges
-			/**
-			 * Filter duplicated ranges
-			 */
-			.filter((pair, i) => {
-				if (i === 0) {
-					return true;
-				}
-				const prev = applicableRanges[i - 1];
-				if (pair[0] === prev[0] && pair[1] === prev[1]) {
-					return false;
-				}
-				return true;
-			})
-			.map(pair => {
-				return {
-					range: Range.create(
-						document.positionAt(pair[0]),
-						document.positionAt(pair[1])
-					),
-					kind: SelectionRangeKind.Declaration
-				};
-			});
-
-		return ranges;
+		let prev : [number, number] | undefined = undefined;
+		let current: SelectionRange | undefined = undefined;
+		for (let index = applicableRanges.length - 1; index >= 0; index--) {
+			const range = applicableRanges[index];
+			if (!prev || range[0] !== prev[0] || range[1] !== prev[1]) {
+				current = SelectionRange.create(Range.create(
+					document.positionAt(applicableRanges[index][0]),
+					document.positionAt(applicableRanges[index][1])
+				), current);
+			}
+			prev = range;
+		}
+		if (!current) {
+			current = SelectionRange.create(Range.create(position, position));
+		}
+		return current;
 	}
 
 	return positions.map(getSelectionRange);
 }
 
-function getApplicableRanges(document: TextDocument, position: Position): number[][] {
+function getApplicableRanges(document: TextDocument, position: Position): [number, number][] {
 	const htmlDoc = parse(document.getText());
 	const currOffset = document.offsetAt(position);
 	const currNode = htmlDoc.findNodeAt(currOffset);
@@ -112,10 +103,10 @@ function getApplicableRanges(document: TextDocument, position: Position): number
 	}
 }
 
-function getAllParentTagRanges(initialNode: Node) {
+function getAllParentTagRanges(initialNode: Node): [number, number][] {
 	let currNode = initialNode;
 
-	const getNodeRanges = (n: Node) => {
+	const getNodeRanges = (n: Node) : [number, number][] => {
 		if (n.startTagEnd && n.endTagStart && n.startTagEnd < n.endTagStart) {
 			return [
 				[n.startTagEnd, n.endTagStart],
@@ -128,7 +119,7 @@ function getAllParentTagRanges(initialNode: Node) {
 		];
 	};
 
-	const result: number[][] = [];
+	const result: [number, number][] = [];
 
 	while (currNode.parent) {
 		currNode = currNode.parent;
@@ -138,7 +129,7 @@ function getAllParentTagRanges(initialNode: Node) {
 	return result;
 }
 
-function getAttributeLevelRanges(document: TextDocument, currNode: Node, currOffset: number) {
+function getAttributeLevelRanges(document: TextDocument, currNode: Node, currOffset: number) : [number, number][] {
 	const currNodeRange = Range.create(document.positionAt(currNode.start), document.positionAt(currNode.end));
 	const currNodeText = document.getText(currNodeRange);
 	const relativeOffset = currOffset - currNode.start;

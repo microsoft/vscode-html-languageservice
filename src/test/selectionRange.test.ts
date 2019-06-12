@@ -5,7 +5,7 @@
 
 import 'mocha';
 import * as assert from 'assert';
-import { TextDocument } from 'vscode-languageserver-types';
+import { TextDocument, SelectionRange } from 'vscode-languageserver-types';
 import { getLanguageService } from '../htmlLanguageService';
 
 function assertRanges(content: string, expected: (number | string)[][]): void {
@@ -19,9 +19,12 @@ function assertRanges(content: string, expected: (number | string)[][]): void {
 	const document = TextDocument.create('test://foo.html', 'html', 1, content);
 	const actualRanges = ls.getSelectionRanges(document, [document.positionAt(offset)]);
 	assert.equal(actualRanges.length, 1);
-	const offsetPairs = actualRanges[0].map(r => {
-		return [document.offsetAt(r.range.start), document.getText(r.range)];
-	});
+	const offsetPairs: [number, string][] = [];
+	let curr : SelectionRange | undefined = actualRanges[0];
+	while (curr) {
+		offsetPairs.push([document.offsetAt(curr.range.start), document.getText(curr.range)]);
+		curr = curr.parent;
+	}
 
 	message += `${JSON.stringify(offsetPairs)}\n but should give:\n${JSON.stringify(expected)}\n`;
 	assert.deepEqual(offsetPairs, expected, message);
@@ -171,9 +174,9 @@ suite('HTML SelectionRange', () => {
 		// We do not handle comments. This semantic selection is handled by VS Code's default provider, which returns
 		// - foo
 		// - <!-- foo -->
-		assertRanges('<!-- f|oo -->', []);
+		assertRanges('<!-- f|oo -->', [[6, '']]);
 
 		// Same for DOCTYPE
-		assertRanges('<!DOCTYPE h|tml>', []);
+		assertRanges('<!DOCTYPE h|tml>', [[11, '']]);
 	});
 });
