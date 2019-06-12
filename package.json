@@ -32,12 +32,13 @@
     "vscode-uri": "1.0.6"
   },
   "scripts": {
-    "prepublishOnly": "npm run clean && npm run compile-esm && npm run test",
+    "prepublishOnly": "npm run clean && npm run compile-esm && npm run test && npm run remove-sourcemap-refs",
     "postpublish": "node ./build/post-publish.js",
     "compile": "tsc -p ./src && cpy ./src/beautify/*.js ./lib/umd/beautify",
     "compile-esm": "tsc -p ./src/tsconfig.esm.json && cpy ./src/beautify/esm/*.js ./lib/esm/beautify",
     "watch": "cpy ./src/beautify/*.js ./lib/umd/beautify && tsc -w -p ./src",
     "clean": "rimraf lib",
+    "remove-sourcemap-refs": "node ./build/remove-sourcemap-refs.js",
     "test": "npm run compile && mocha && npm run lint",
     "lint": "tslint src/**/*.ts",
     "install-types-next": "yarn add vscode-languageserver-types@next -f -S",
