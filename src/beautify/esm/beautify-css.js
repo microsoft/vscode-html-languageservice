@@ -1638,4 +1638,4 @@ module.exports.Options = Options;
 /***/ })
 /******/ ]);
 
-export const css_beautify = legacy_beautify_css;
+export var css_beautify = legacy_beautify_css;

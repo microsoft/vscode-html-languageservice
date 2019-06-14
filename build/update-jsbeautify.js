@@ -109,5 +109,5 @@ update('js-beautify', 'js/lib/beautify-css.js', './src/beautify/esm/beautify-css
     }
     return contents.substring(0, index1) +
         contents.substring(index2, index3) +
-        `\nexport const css_beautify = legacy_beautify_css;`;
+        `\nexport var css_beautify = legacy_beautify_css;`;
 });
