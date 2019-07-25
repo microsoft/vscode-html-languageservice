@@ -29,9 +29,9 @@ function validateRef(url: string, languageId: string): boolean {
 	return /\b(w[\w\d+.-]*:\/\/)?[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|\/?))/.test(url);
 }
 
-function getWorkspaceUrl(documentUri: string, tokenContent: string, documentContext: DocumentContext, base: string | undefined): string | null {
+function getWorkspaceUrl(documentUri: string, tokenContent: string, documentContext: DocumentContext, base: string | undefined): string | undefined {
 	if (/^\s*javascript\:/i.test(tokenContent) || /^\s*\#/i.test(tokenContent) || /[\n\r]/.test(tokenContent)) {
-		return null;
+		return undefined;
 	}
 	tokenContent = tokenContent.replace(/^\s*/g, '');
 
@@ -51,10 +51,10 @@ function getWorkspaceUrl(documentUri: string, tokenContent: string, documentCont
 	return tokenContent;
 }
 
-function createLink(document: TextDocument, documentContext: DocumentContext, attributeValue: string, startOffset: number, endOffset: number, base: string | undefined): DocumentLink | null {
+function createLink(document: TextDocument, documentContext: DocumentContext, attributeValue: string, startOffset: number, endOffset: number, base: string | undefined): DocumentLink | undefined {
 	const tokenContent = normalizeRef(attributeValue, document.languageId);
 	if (!validateRef(tokenContent, document.languageId)) {
-		return null;
+		return undefined;
 	}
 	if (tokenContent.length < attributeValue.length) {
 		startOffset++;
@@ -62,7 +62,7 @@ function createLink(document: TextDocument, documentContext: DocumentContext, at
 	}
 	const workspaceUrl = getWorkspaceUrl(document.uri, tokenContent, documentContext, base);
 	if (!workspaceUrl || !isValidURI(workspaceUrl)) {
-		return null;
+		return undefined;
 	}
 	return {
 		range: Range.create(document.positionAt(startOffset), document.positionAt(endOffset)),

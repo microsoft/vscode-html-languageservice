@@ -1,3 +1,7 @@
+3.0.3 /
+==================
+  * DocumentContext.resolveReference can also return undefined (if the ref is invalid)
+
 3.0.0 / 2019-06-12
 ==================
   * Added API `htmlLanguageService.getSelectionRanges` returning selection ranges for a set of positions

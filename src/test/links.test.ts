@@ -19,7 +19,11 @@ suite('HTML Link Detection', () => {
 	function getDocumentContext(documentUrl: string): htmlLanguageService.DocumentContext {
 		return {
 			resolveReference: (ref, base = documentUrl) => {
-				return url.resolve(base, ref);
+				try {
+					return url.resolve(base, ref);
+				} catch (e) {
+					return undefined;
+				}
 			}
 		};
 	}
@@ -88,6 +92,9 @@ suite('HTML Link Detection', () => {
 		testLinkDetection('<html><base href=".."><img src="foo.png"></html>', [{ offset: 32, target: 'http://test/data/foo.png' }]);
 		testLinkDetection('<html><base href="."><img src="foo.png"></html>', [{ offset: 31, target: 'http://test/data/abc/foo.png' }]);
 		testLinkDetection('<html><base href="/docs/"><img src="foo.png"></html>', [{ offset: 36, target: 'http://test/docs/foo.png' }]);
+
+
+		testLinkDetection('<a href="mailto:<%- mail %>@<%- domain %>" > <% - mail %>@<% - domain %> </a>', []);
 	});
 
 });

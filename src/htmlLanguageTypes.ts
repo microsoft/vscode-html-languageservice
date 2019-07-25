@@ -95,7 +95,7 @@ export declare type HTMLDocument = {
 };
 
 export interface DocumentContext {
-	resolveReference(ref: string, base?: string): string;
+	resolveReference(ref: string, base?: string): string | undefined;
 }
 
 export interface HtmlAttributeValueContext {
