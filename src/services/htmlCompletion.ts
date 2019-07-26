@@ -266,6 +266,7 @@ export class HTMLCompletion {
 						label: value.name,
 						filterText: insertText,
 						kind: CompletionItemKind.Unit,
+						documentation: value.description,
 						textEdit: TextEdit.replace(range, insertText),
 						insertTextFormat: InsertTextFormat.PlainText
 					});

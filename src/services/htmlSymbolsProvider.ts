@@ -38,17 +38,19 @@ function provideFileSymbolsInternal(document: TextDocument, node: Node, containe
 function nodeToName(node: Node): string {
 	let name = node.tag;
 
-	if (node.attributes) {
-		const id = node.attributes['id'];
-		const classes = node.attributes['class'];
+	const id = node.attributes['id'] && node.attributes['id'].value
+		? node.attributes['id'].value.attrValue
+		: null;
+	const classes = node.attributes['class'] && node.attributes['class'].value
+		? node.attributes['class'].value.attrValue
+		: null;
 
-		if (id) {
-			name += `#${id.replace(/[\"\']/g, '')}`;
-		}
+	if (id) {
+		name += `#${id.replace(/[\"\']/g, '')}`;
+	}
 
-		if (classes) {
-			name += classes.replace(/[\"\']/g, '').split(/\s+/).map(className => `.${className}`).join('');
-		}
+	if (classes) {
+		name += classes.replace(/[\"\']/g, '').split(/\s+/).map(className => `.${className}`).join('');
 	}
 
 	return name || '?';

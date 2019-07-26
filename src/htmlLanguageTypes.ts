@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { TextDocument, Position, Range } from 'vscode-languageserver-types';
+import { TextDocument, Position, Range, MarkupContent } from 'vscode-languageserver-types';
 
 export interface HTMLFormatConfiguration {
 	tabSize?: number;
@@ -27,6 +27,18 @@ export interface CompletionConfiguration {
 	hideAutoCompleteProposals?: boolean;
 }
 
+export interface AttributeWithLocation {
+	attr: string;
+	start: number;
+	end: number;
+	value: AttributeValueWithLocation | null;
+}
+export interface AttributeValueWithLocation {
+	attrValue: string;
+	start: number;
+	end: number;
+}
+
 export interface Node {
 	tag: string | undefined;
 	start: number;
@@ -35,7 +47,7 @@ export interface Node {
 	endTagStart: number | undefined;
 	children: Node[];
 	parent?: Node;
-	attributes?: { [name: string]: string | null } | undefined;
+	attributes: { [name: string]: AttributeWithLocation };
 }
 
 export enum TokenType {
@@ -119,20 +131,20 @@ export interface ICompletionParticipant {
 
 export interface ITagData {
 	name: string;
-	description?: string;
+	description?: string | MarkupContent;
 	attributes: IAttributeData[];
 }
 
 export interface IAttributeData {
 	name: string;
-	description?: string;
+	description?: string | MarkupContent;
 	valueSet?: string;
 	values?: IValueData[];
 }
 
 export interface IValueData {
 	name: string;
-	description?: string;
+	description?: string | MarkupContent;
 }
 
 export interface IValueSet {
