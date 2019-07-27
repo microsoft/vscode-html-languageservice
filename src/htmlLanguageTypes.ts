@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { TextDocument, Position, Range, MarkupContent } from 'vscode-languageserver-types';
+import { TextDocument, Position, Range, MarkupContent, MarkupKind } from 'vscode-languageserver-types';
 
 export interface HTMLFormatConfiguration {
 	tabSize?: number;
@@ -154,4 +154,70 @@ export interface IHTMLDataProvider {
 	provideTags(): ITagData[];
 	provideAttributes(tag: string): IAttributeData[];
 	provideValues(tag: string, attribute: string): IValueData[];
+}
+
+/**
+ * Describes what LSP capabilities the client supports
+ */
+export interface ClientCapabilities {
+	/**
+	 * The text document client capabilities
+	 */
+	textDocument?: {
+		/**
+		 * Capabilities specific to completions.
+		 */
+		completion?: {
+			/**
+			 * The client supports the following `CompletionItem` specific
+			 * capabilities.
+			 */
+			completionItem?: {
+				/**
+				 * Client supports the follow content formats for the documentation
+				 * property. The order describes the preferred format of the client.
+				 */
+				documentationFormat?: MarkupKind[];
+			};
+
+		};
+		/**
+		 * Capabilities specific to hovers.
+		 */
+		hover?: {
+			/**
+			 * Client supports the follow content formats for the content
+			 * property. The order describes the preferred format of the client.
+			 */
+			contentFormat?: MarkupKind[];
+		};
+	};
+}
+
+export namespace ClientCapabilities {
+	export const LATEST: ClientCapabilities = {
+		textDocument: {
+			completion: {
+				completionItem: {
+					documentationFormat: [MarkupKind.Markdown, MarkupKind.PlainText]
+				}
+			},
+			hover: {
+				contentFormat: [MarkupKind.Markdown, MarkupKind.PlainText]
+			}
+		}
+	};
+}
+
+export interface LanguageServiceOptions {
+	/**
+	 * Provide data that could enhance the service's understanding of
+	 * HTML tag / attribute / attribute-value
+	 */
+	customDataProviders?: IHTMLDataProvider[];
+
+	/**
+	 * Describes the LSP capabilities the client supports.
+	 */
+	clientCapabilities?: ClientCapabilities;
 }

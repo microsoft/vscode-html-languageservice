@@ -6,19 +6,22 @@
 import { TextDocument, Position, CompletionList, CompletionItemKind, Range, TextEdit, InsertTextFormat, CompletionItem, MarkupKind } from 'vscode-languageserver-types';
 import { HTMLDocument, Node } from '../parser/htmlParser';
 import { createScanner } from '../parser/htmlScanner';
-import { CompletionConfiguration, ICompletionParticipant, ScannerState, TokenType } from '../htmlLanguageTypes';
+import { CompletionConfiguration, ICompletionParticipant, ScannerState, TokenType, ClientCapabilities } from '../htmlLanguageTypes';
 import { entities } from '../parser/htmlEntities';
 
 import * as nls from 'vscode-nls';
 import { isLetterOrDigit, endsWith, startsWith } from '../utils/strings';
 import { getAllDataProviders } from '../languageFacts/builtinDataProviders';
 import { isVoidElement } from '../languageFacts/fact';
+import { isDefined } from '../utils/object';
 const localize = nls.loadMessageBundle();
 
 export class HTMLCompletion {
 	completionParticipants: ICompletionParticipant[];
 
-	constructor() {
+	private supportsMarkdown: boolean | undefined;
+
+	constructor(private clientCapabilities: ClientCapabilities | undefined) {
 		this.completionParticipants = [];
 	}
 
@@ -27,6 +30,11 @@ export class HTMLCompletion {
 	}
 
 	doComplete(document: TextDocument, position: Position, htmlDocument: HTMLDocument, settings?: CompletionConfiguration): CompletionList {
+		const result = this._doComplete(document, position, htmlDocument, settings);
+		return this.convertCompletionList(result);
+	}
+
+	private _doComplete(document: TextDocument, position: Position, htmlDocument: HTMLDocument, settings?: CompletionConfiguration): CompletionList {
 		const result: CompletionList = {
 			isIncomplete: false,
 			items: []
@@ -469,7 +477,36 @@ export class HTMLCompletion {
 		}
 		return null;
 	}
+
+	private convertCompletionList(list: CompletionList) {
+		if (!this.doesSupportMarkdown()) {
+			list.items.forEach(item => {
+				if (item.documentation && typeof item.documentation !== 'string') {
+					item.documentation = {
+						kind: 'plaintext',
+						value: item.documentation.value
+					};
+				}
+			});
+		}
+
+		return list;
+	}
+
+	private doesSupportMarkdown() {
+		if (!this.clientCapabilities) {
+			this.supportsMarkdown = true;
+			return this.supportsMarkdown;
+		}
+
+ 		if (!isDefined(this.supportsMarkdown)) {
+			const hover = this.clientCapabilities.textDocument && this.clientCapabilities.textDocument.hover;
+			this.supportsMarkdown = hover && hover.contentFormat && Array.isArray(hover.contentFormat) && hover.contentFormat.indexOf(MarkupKind.Markdown) !== -1;
+		}
+		return this.supportsMarkdown;
+	}
 }
+
 
 function isQuote(s: string): boolean {
 	return /^["']*$/.test(s);

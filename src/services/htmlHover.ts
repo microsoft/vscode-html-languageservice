@@ -3,149 +3,202 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { HTMLDocument, Node } from '../parser/htmlParser';
+import { HTMLDocument } from '../parser/htmlParser';
 import { createScanner } from '../parser/htmlScanner';
-import { TextDocument, Range, Position, Hover, MarkedString } from 'vscode-languageserver-types';
-import { TokenType } from '../htmlLanguageTypes';
+import { TextDocument, Range, Position, Hover, MarkedString, MarkupContent, MarkupKind } from 'vscode-languageserver-types';
+import { TokenType, ClientCapabilities } from '../htmlLanguageTypes';
 import { getAllDataProviders } from '../languageFacts/builtinDataProviders';
+import { isDefined } from '../utils/object';
+import { isArray } from 'util';
 
-export function doHover(document: TextDocument, position: Position, htmlDocument: HTMLDocument): Hover | null {
-	const offset = document.offsetAt(position);
-	const node = htmlDocument.findNodeAt(offset);
-	if (!node || !node.tag) {
-		return null;
-	}
-	const dataProviders = getAllDataProviders().filter(p => p.isApplicable(document.languageId));
+export class HTMLHover {
+	private supportsMarkdown: boolean | undefined;
 
-	function getTagHover(currTag: string, range: Range, open: boolean): Hover | null {
-		currTag = currTag.toLowerCase();
+	constructor(private clientCapabilities: ClientCapabilities | undefined) {}
 
-		for (const provider of dataProviders) {
-			let hover: Hover | null = null;
+	doHover(document: TextDocument, position: Position, htmlDocument: HTMLDocument): Hover | null {
+		const convertContents = this.convertContents.bind(this);
 
-			provider.provideTags().forEach(tag => {
-				if (tag.name.toLowerCase() === currTag.toLowerCase()) {
-					const tagLabel = open ? '<' + currTag + '>' : '</' + currTag + '>';
-					const tagDescription = tag.description || '';
-					if (typeof tagDescription === 'string') {
-						hover = { contents: [{ language: 'html', value: tagLabel }, MarkedString.fromPlainText(tagDescription)], range };
-					} else {
-						hover = { contents: tagDescription, range };
+		const offset = document.offsetAt(position);
+		const node = htmlDocument.findNodeAt(offset);
+		if (!node || !node.tag) {
+			return null;
+		}
+		const dataProviders = getAllDataProviders().filter(p => p.isApplicable(document.languageId));
+
+		function getTagHover(currTag: string, range: Range, open: boolean): Hover | null {
+			currTag = currTag.toLowerCase();
+
+			for (const provider of dataProviders) {
+				let hover: Hover | null = null;
+
+				provider.provideTags().forEach(tag => {
+					if (tag.name.toLowerCase() === currTag.toLowerCase()) {
+						const tagLabel = open ? '<' + currTag + '>' : '</' + currTag + '>';
+						const tagDescription = tag.description || '';
+						if (typeof tagDescription === 'string') {
+							hover = { contents: [{ language: 'html', value: tagLabel }, MarkedString.fromPlainText(tagDescription)], range };
+						} else {
+							hover = { contents: tagDescription, range };
+						}
 					}
+				});
+
+				if (hover) {
+					(hover as Hover).contents = convertContents((hover as Hover).contents);
+					return hover;
 				}
-			});
-
-			if (hover) {
-				return hover;
 			}
+			return null;
 		}
-		return null;
-	}
 
-	function getAttrHover(currTag: string, currAttr: string, range: Range): Hover | null {
-		currTag = currTag.toLowerCase();
+		function getAttrHover(currTag: string, currAttr: string, range: Range): Hover | null {
+			currTag = currTag.toLowerCase();
 
-		for (const provider of dataProviders) {
-			let hover: Hover | null = null;
+			for (const provider of dataProviders) {
+				let hover: Hover | null = null;
 
-			provider.provideAttributes(currTag).forEach(attr => {
-				if (currAttr === attr.name && attr.description) {
-					if (typeof attr.description === 'string') {
-						hover = { contents: [MarkedString.fromPlainText(attr.description)], range };
-					} else {
-						hover = { contents: attr.description, range };
+				provider.provideAttributes(currTag).forEach(attr => {
+					if (currAttr === attr.name && attr.description) {
+						if (typeof attr.description === 'string') {
+							hover = { contents: [MarkedString.fromPlainText(attr.description)], range };
+						} else {
+							hover = { contents: attr.description, range };
+						}
 					}
+				});
+
+				if (hover) {
+					(hover as Hover).contents = convertContents((hover as Hover).contents);
+					return hover;
 				}
-			});
-
-			if (hover) {
-				return hover;
 			}
+			return null;
 		}
-		return null;
-	}
 
-	function getAttrValueHover(currTag: string, currAttr: string, currAttrValue: string, range: Range): Hover | null {
-		currTag = currTag.toLowerCase();
+		function getAttrValueHover(currTag: string, currAttr: string, currAttrValue: string, range: Range): Hover | null {
+			currTag = currTag.toLowerCase();
 
-		for (const provider of dataProviders) {
-			let hover: Hover | null = null;
+			for (const provider of dataProviders) {
+				let hover: Hover | null = null;
 
-			provider.provideValues(currTag, currAttr).forEach(attrValue => {
-				if (currAttrValue === attrValue.name && attrValue.description) {
-					if (typeof attrValue.description === 'string') {
-						hover = { contents: [MarkedString.fromPlainText(attrValue.description)], range };
-					} else {
-						hover = { contents: attrValue.description, range };
+				provider.provideValues(currTag, currAttr).forEach(attrValue => {
+					if (currAttrValue === attrValue.name && attrValue.description) {
+						if (typeof attrValue.description === 'string') {
+							hover = { contents: [MarkedString.fromPlainText(attrValue.description)], range };
+						} else {
+							hover = { contents: attrValue.description, range };
+						}
 					}
+				});
+
+				if (hover) {
+					(hover as Hover).contents = convertContents((hover as Hover).contents);
+					return hover;
 				}
-			});
-
-			if (hover) {
-				return hover;
 			}
+			return null;
 		}
-		return null;
-	}
 
-	function getTagNameRange(tokenType: TokenType, startOffset: number): Range | null {
-		const scanner = createScanner(document.getText(), startOffset);
-		let token = scanner.scan();
-		while (token !== TokenType.EOS && (scanner.getTokenEnd() < offset || scanner.getTokenEnd() === offset && token !== tokenType)) {
-			token = scanner.scan();
+		function getTagNameRange(tokenType: TokenType, startOffset: number): Range | null {
+			const scanner = createScanner(document.getText(), startOffset);
+			let token = scanner.scan();
+			while (token !== TokenType.EOS && (scanner.getTokenEnd() < offset || scanner.getTokenEnd() === offset && token !== tokenType)) {
+				token = scanner.scan();
+			}
+			if (token === tokenType && offset <= scanner.getTokenEnd()) {
+				return { start: document.positionAt(scanner.getTokenOffset()), end: document.positionAt(scanner.getTokenEnd()) };
+			}
+			return null;
 		}
-		if (token === tokenType && offset <= scanner.getTokenEnd()) {
-			return { start: document.positionAt(scanner.getTokenOffset()), end: document.positionAt(scanner.getTokenEnd()) };
-		}
-		return null;
-	}
 
-	if (node.endTagStart && offset >= node.endTagStart) {
-		const tagRange = getTagNameRange(TokenType.EndTag, node.endTagStart);
+		if (node.endTagStart && offset >= node.endTagStart) {
+			const tagRange = getTagNameRange(TokenType.EndTag, node.endTagStart);
+			if (tagRange) {
+				return getTagHover(node.tag, tagRange, false);
+			}
+			return null;
+		}
+
+		const tagRange = getTagNameRange(TokenType.StartTag, node.start);
 		if (tagRange) {
-			return getTagHover(node.tag, tagRange, false);
+			return getTagHover(node.tag, tagRange, true);
 		}
-		return null;
-	}
 
-	const tagRange = getTagNameRange(TokenType.StartTag, node.start);
-	if (tagRange) {
-		return getTagHover(node.tag, tagRange, true);
-	}
+		const attrRange = getTagNameRange(TokenType.AttributeName, node.start);
+		if (attrRange) {
+			const tag = node.tag;
+			const attr = document.getText(attrRange);
+			return getAttrHover(tag, attr, attrRange);
+		}
 
-	const attrRange = getTagNameRange(TokenType.AttributeName, node.start);
-	if (attrRange) {
-		const tag = node.tag;
-		const attr = document.getText(attrRange);
-		return getAttrHover(tag, attr, attrRange);
-	}
+		function scanAttrAndAttrValue(nodeStart: number, attrValueStart: number) {
+			const scanner = createScanner(document.getText(), nodeStart);
+			let token = scanner.scan();
+			let prevAttr = undefined;
+			while (token !== TokenType.EOS && (scanner.getTokenEnd() <= attrValueStart)) {
+				token = scanner.scan();
+				if (token === TokenType.AttributeName) {
+					prevAttr = scanner.getTokenText();
+				}
+			}
 
-	function scanAttrAndAttrValue(nodeStart: number, attrValueStart: number) {
-		const scanner = createScanner(document.getText(), nodeStart);
-		let token = scanner.scan();
-		let prevAttr = undefined;
-		while (token !== TokenType.EOS && (scanner.getTokenEnd() <= attrValueStart)) {
-			token = scanner.scan();
-			if (token === TokenType.AttributeName) {
-				prevAttr = scanner.getTokenText();
+			return prevAttr;
+		}
+
+		const attrValueRange = getTagNameRange(TokenType.AttributeValue, node.start);
+		if (attrValueRange) {
+			const tag = node.tag;
+			const attrValue = trimQuotes(document.getText(attrValueRange));
+			const matchAttr = scanAttrAndAttrValue(node.start, document.offsetAt(attrValueRange.start));
+
+			if (matchAttr) {
+				return getAttrValueHover(tag, matchAttr, attrValue, attrValueRange);
 			}
 		}
 
-		return prevAttr;
+		return null;
 	}
 
-	const attrValueRange = getTagNameRange(TokenType.AttributeValue, node.start);
-	if (attrValueRange) {
-		const tag = node.tag;
-		const attrValue = trimQuotes(document.getText(attrValueRange));
-		const matchAttr = scanAttrAndAttrValue(node.start, document.offsetAt(attrValueRange.start));
-
-		if (matchAttr) {
-			return getAttrValueHover(tag, matchAttr, attrValue, attrValueRange);
+	private convertContents(contents: MarkupContent | MarkedString | MarkedString[]): MarkupContent | MarkedString | MarkedString[] {
+		if (!this.doesSupportMarkdown()) {
+			if (typeof contents === 'string') {
+				return contents;
+			}
+			// MarkupContent
+			else if ('kind' in contents) {
+				return {
+					kind: 'plaintext',
+					value: contents.value
+				};
+			}
+			// MarkedString[]
+			else if (isArray(contents)) {
+				contents.map(c => {
+					return typeof c === 'string' ? c : c.value;
+				});
+			}
+			// MarkedString
+			else {
+				return contents.value;
+			}
 		}
+
+		return contents;
 	}
 
-	return null;
+	private doesSupportMarkdown() {
+		if (!this.clientCapabilities) {
+			this.supportsMarkdown = true;
+			return this.supportsMarkdown;
+		}
+
+		if (!isDefined(this.supportsMarkdown)) {
+			const hover = this.clientCapabilities.textDocument && this.clientCapabilities.textDocument.hover;
+			this.supportsMarkdown = hover && hover.contentFormat && Array.isArray(hover.contentFormat) && hover.contentFormat.indexOf(MarkupKind.Markdown) !== -1;
+		}
+		return this.supportsMarkdown;
+	}
 }
 
 function trimQuotes(s: string) {
