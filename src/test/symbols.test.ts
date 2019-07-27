@@ -35,9 +35,9 @@ suite('HTML Symbols', () => {
 	});
 
 	test('Id and classes', function () {
-		var content = '<html id=\'root\'><body id="Foo" class="bar"><div class="a b"></div></body></html>';
+		const content = '<html id=\'root\'><body id="Foo" class="bar"><div class="a b"></div></body></html>';
 
-		var expected = [
+		const expected = [
 			{ name: 'html#root', kind: SymbolKind.Field, containerName: '', location: Location.create(TEST_URI, Range.create(0, 0, 0, 80)) },
 			{ name: 'body#Foo.bar', kind: SymbolKind.Field, containerName: 'html#root', location: Location.create(TEST_URI, Range.create(0, 16, 0, 73)) },
 			{ name: 'div.a.b', kind: SymbolKind.Field, containerName: 'body#Foo.bar', location: Location.create(TEST_URI, Range.create(0, 43, 0, 66)) },
@@ -47,9 +47,9 @@ suite('HTML Symbols', () => {
 	});
 
 	test('Self closing', function () {
-		var content = '<html><br id="Foo"><br id=Bar></html>';
+		const content = '<html><br id="Foo"><br id=Bar></html>';
 
-		var expected = [
+		const expected = [
 			{ name: 'html', kind: SymbolKind.Field, containerName: '', location: Location.create(TEST_URI, Range.create(0, 0, 0, 37)) },
 			{ name: 'br#Foo', kind: SymbolKind.Field, containerName: 'html', location: Location.create(TEST_URI, Range.create(0, 6, 0, 19)) },
 			{ name: 'br#Bar', kind: SymbolKind.Field, containerName: 'html', location: Location.create(TEST_URI, Range.create(0, 19, 0, 30)) },
@@ -59,9 +59,9 @@ suite('HTML Symbols', () => {
 	});
 
 	test('No attrib', function () {
-		var content = '<html><body><div></div></body></html>';
+		const content = '<html><body><div></div></body></html>';
 
-		var expected = [
+		const expected = [
 			{ name: 'html', kind: SymbolKind.Field, containerName: '', location: Location.create(TEST_URI, Range.create(0, 0, 0, 37)) },
 			{ name: 'body', kind: SymbolKind.Field, containerName: 'html', location: Location.create(TEST_URI, Range.create(0, 6, 0, 30)) },
 			{ name: 'div', kind: SymbolKind.Field, containerName: 'body', location: Location.create(TEST_URI, Range.create(0, 12, 0, 23)) }
