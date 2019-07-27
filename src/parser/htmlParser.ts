@@ -8,27 +8,13 @@ import { findFirst } from '../utils/arrays';
 import { TokenType } from '../htmlLanguageTypes';
 import { isVoidElement } from '../languageFacts/fact';
 
-export interface AttributeWithLocation {
-	attr: string;
-	start: number;
-	end: number;
-	value: AttributeValueWithLocation | null;
-}
-export interface AttributeValueWithLocation {
-	attrValue: string;
-	start: number;
-	end: number;
-}
-
 export class Node {
 	public tag: string | undefined;
 	public closed: boolean = false;
 	public startTagEnd: number | undefined;
 	public endTagStart: number | undefined;
-	public attributes: { [name: string]: AttributeWithLocation } = {};
-	public get attributeNames(): string[] {
-		return Object.keys(this.attributes);
-	}
+	public attributes: { [name: string]: string | null } | undefined;
+	public get attributeNames(): string[] { return this.attributes ? Object.keys(this.attributes) : []; }
 	constructor(public start: number, public end: number, public children: Node[], public parent?: Node) {
 	}
 	public isSameTag(tagInLowerCase: string) {
@@ -137,22 +123,18 @@ export function parse(text: string): HTMLDocument {
 				break;
 			case TokenType.AttributeName: {
 				pendingAttribute = scanner.getTokenText();
-				curr.attributes[pendingAttribute] = {
-					attr: pendingAttribute,
-					start: scanner.getTokenOffset(),
-					end: scanner.getTokenEnd(),
-					value: null
-				};
+				let attributes = curr.attributes;
+				if (!attributes) {
+					curr.attributes = attributes = {};
+				}
+				attributes[pendingAttribute] = null; // Support valueless attributes such as 'checked'
 				break;
 			}
 			case TokenType.AttributeValue: {
 				const value = scanner.getTokenText();
-				if (pendingAttribute && curr.attributes[pendingAttribute]) {
-					curr.attributes[pendingAttribute].value = {
-						attrValue: value,
-						start: scanner.getTokenOffset(),
-						end: scanner.getTokenEnd()
-					};
+				const attributes = curr.attributes;
+				if (attributes && pendingAttribute) {
+					attributes[pendingAttribute] = value;
 					pendingAttribute = null;
 				}
 				break;

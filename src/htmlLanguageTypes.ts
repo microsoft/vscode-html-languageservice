@@ -27,18 +27,6 @@ export interface CompletionConfiguration {
 	hideAutoCompleteProposals?: boolean;
 }
 
-export interface AttributeWithLocation {
-	attr: string;
-	start: number;
-	end: number;
-	value: AttributeValueWithLocation | null;
-}
-export interface AttributeValueWithLocation {
-	attrValue: string;
-	start: number;
-	end: number;
-}
-
 export interface Node {
 	tag: string | undefined;
 	start: number;
@@ -47,7 +35,7 @@ export interface Node {
 	endTagStart: number | undefined;
 	children: Node[];
 	parent?: Node;
-	attributes: { [name: string]: AttributeWithLocation };
+	attributes?: { [name: string]: string | null } | undefined;
 }
 
 export enum TokenType {

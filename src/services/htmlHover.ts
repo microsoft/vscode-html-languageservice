@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { HTMLDocument, AttributeValueWithLocation, AttributeWithLocation } from '../parser/htmlParser';
+import { HTMLDocument, Node } from '../parser/htmlParser';
 import { createScanner } from '../parser/htmlScanner';
 import { TextDocument, Range, Position, Hover, MarkedString } from 'vscode-languageserver-types';
 import { TokenType } from '../htmlLanguageTypes';
@@ -88,7 +88,6 @@ export function doHover(document: TextDocument, position: Position, htmlDocument
 		return null;
 	}
 
-
 	function getTagNameRange(tokenType: TokenType, startOffset: number): Range | null {
 		const scanner = createScanner(document.getText(), startOffset);
 		let token = scanner.scan();
@@ -121,24 +120,26 @@ export function doHover(document: TextDocument, position: Position, htmlDocument
 		return getAttrHover(tag, attr, attrRange);
 	}
 
+	function scanAttrAndAttrValue(nodeStart: number, attrValueStart: number) {
+		const scanner = createScanner(document.getText(), nodeStart);
+		let token = scanner.scan();
+		let prevAttr = undefined;
+		while (token !== TokenType.EOS && (scanner.getTokenEnd() <= attrValueStart)) {
+			token = scanner.scan();
+			if (token === TokenType.AttributeName) {
+				prevAttr = scanner.getTokenText();
+			}
+		}
+
+		return prevAttr;
+	}
+
 	const attrValueRange = getTagNameRange(TokenType.AttributeValue, node.start);
 	if (attrValueRange) {
 		const tag = node.tag;
 		const attrValue = trimQuotes(document.getText(attrValueRange));
-		let matchAttr;
-		node.attributeNames.forEach(nodeAttr => {
-			if (node.attributes[nodeAttr] && node.attributes[nodeAttr].value !== null) {
-				if (
-					(node.attributes[nodeAttr].value as AttributeValueWithLocation).start ===
-						document.offsetAt(attrValueRange.start) &&
-					(node.attributes[nodeAttr].value as AttributeValueWithLocation).end ===
-						document.offsetAt(attrValueRange.end)
-				) {
-					matchAttr = nodeAttr;
-				}
-			}
-		});
-		
+		const matchAttr = scanAttrAndAttrValue(node.start, document.offsetAt(attrValueRange.start));
+
 		if (matchAttr) {
 			return getAttrValueHover(tag, matchAttr, attrValue, attrValueRange);
 		}

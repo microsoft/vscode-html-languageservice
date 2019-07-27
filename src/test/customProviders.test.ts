@@ -121,5 +121,7 @@ suite('HTML Custom Tag Provider', () => {
 
 		assertHover2('<foo bar="|baz"></foo>', { kind: 'markdown', value: 'The `<foo bar="baz">` attribute' }, '"baz"');
 		assertHover2('<foo xattr="|xval"></foo>', { kind: 'markdown', value: '`xval` value' }, '"xval"');
+
+		assertHover2('<foo foo="xval" xattr="|xval"></foo>', { kind: 'markdown', value: '`xval` value' }, '"xval"');
 	});
 });
