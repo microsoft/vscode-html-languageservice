@@ -6,26 +6,31 @@
 import { getLanguageService, ITagData, IAttributeData, newHTMLDataProvider } from '../htmlLanguageService';
 
 import { testCompletionFor } from './completionUtil';
-import { assertHover } from './hoverUtil';
-
-/**
- * Todo@Pine:
- * Once we have HTML attribute completion/hover documentation
- * Test them too
- */
+import { assertHover, assertHover2 } from './hoverUtil';
+import { IValueSet } from '../htmlLanguageTypes';
 
 suite('HTML Custom Tag Provider', () => {
 	const tags: ITagData[] = [
 		{
 			name: 'foo',
-			description: 'The foo element',
+			description: {
+				kind: 'markdown',
+				value: 'The `<foo>` element'
+			},
 			attributes: [
-				{ name: 'bar' },
 				{
-					name: 'baz',
+					name: 'bar',
+					description: {
+						kind: 'markdown',
+						value: 'The `<foo bar>` attribute'
+					},
 					values: [
 						{
-							name: 'baz-val-1'
+							name: 'baz',
+							description: {
+								kind: 'markdown',
+								value: 'The `<foo bar="baz">` attribute'
+							}
 						}
 					]
 				}
@@ -34,17 +39,20 @@ suite('HTML Custom Tag Provider', () => {
 	];
 
 	const globalAttributes: IAttributeData[] = [
-		{ name: 'fooAttr', description: 'Foo Attribute' },
-		{ name: 'xattr', description: 'X attributes', valueSet: 'x' }
+		{ name: 'fooAttr', description: { kind: 'markdown', value: '`fooAttr` Attribute' } },
+		{ name: 'xattr', description: { kind: 'markdown', value: '`xattr` attributes' }, valueSet: 'x' }
 	];
 
-	const valueSets = [
+	const valueSets: IValueSet[] = [
 		{
 			name: 'x',
 			values: [
 				{
 					name: 'xval',
-					description: 'x value'
+					description: {
+						kind: 'markdown',
+						value: '`xval` value'
+					}
 				}
 			]
 		}
@@ -61,28 +69,59 @@ suite('HTML Custom Tag Provider', () => {
 
 	test('Completion', () => {
 		testCompletionFor('<|', {
-			items: [{ label: 'foo', documentation: 'The foo element', resultText: '<foo' }]
+			items: [{ label: 'foo', documentation: { kind: 'markdown', value: 'The `<foo>` element' }, resultText: '<foo' }]
 		});
 
 		testCompletionFor('<foo |', {
 			items: [
-				{ label: 'bar', resultText: `<foo bar="$1"` },
-				{ label: 'baz', resultText: `<foo baz="$1"` },
-				{ label: 'fooAttr', resultText: `<foo fooAttr="$1"` },
-				{ label: 'xattr', resultText: `<foo xattr="$1"` }
+				{
+					label: 'bar',
+					documentation: { kind: 'markdown', value: 'The `<foo bar>` attribute' },
+					resultText: `<foo bar="$1"`
+				},
+				{
+					label: 'fooAttr',
+					documentation: { kind: 'markdown', value: '`fooAttr` Attribute' },
+					resultText: `<foo fooAttr="$1"`
+				},
+				{
+					label: 'xattr',
+					documentation: { kind: 'markdown', value: '`xattr` attributes' },
+					resultText: `<foo xattr="$1"`
+				}
 			]
 		});
 
-		testCompletionFor('<foo baz=|', {
-			items: [{ label: 'baz-val-1', resultText: `<foo baz="baz-val-1"` }]
+		testCompletionFor('<foo bar=|', {
+			items: [
+				{
+					label: 'baz',
+					documentation: { kind: 'markdown', value: 'The `<foo bar="baz">` attribute' },
+					resultText: `<foo bar="baz"`
+				}
+			]
 		});
 
 		testCompletionFor('<foo xattr=|', {
-			items: [{ label: 'xval', resultText: `<foo xattr="xval"` }]
+			items: [
+				{
+					label: 'xval',
+					documentation: { kind: 'markdown', value: '`xval` value' },
+					resultText: `<foo xattr="xval"`
+				}
+			]
 		});
 	});
 
 	test('Hover', () => {
-		assertHover('<f|oo></foo>', '<foo>', 1);
+		assertHover2('<f|oo></foo>', { kind: 'markdown', value: 'The `<foo>` element' }, 'foo');
+
+		assertHover2('<foo |bar></foo>', { kind: 'markdown', value: 'The `<foo bar>` attribute' }, 'bar');
+		assertHover2('<foo |xattr></foo>', { kind: 'markdown', value: '`xattr` attributes' }, 'xattr');
+
+		assertHover2('<foo bar="|baz"></foo>', { kind: 'markdown', value: 'The `<foo bar="baz">` attribute' }, '"baz"');
+		assertHover2('<foo xattr="|xval"></foo>', { kind: 'markdown', value: '`xval` value' }, '"xval"');
+
+		assertHover2('<foo foo="xval" xattr="|xval"></foo>', { kind: 'markdown', value: '`xval` value' }, '"xval"');
 	});
 });

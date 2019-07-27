@@ -6,13 +6,13 @@
 import { createScanner } from './parser/htmlScanner';
 import { parse } from './parser/htmlParser';
 import { HTMLCompletion } from './services/htmlCompletion';
-import { doHover } from './services/htmlHover';
+import { HTMLHover } from './services/htmlHover';
 import { format } from './services/htmlFormatter';
 import { findDocumentLinks } from './services/htmlLinks';
 import { findDocumentHighlights } from './services/htmlHighlighting';
 import { findDocumentSymbols } from './services/htmlSymbolsProvider';
 import { TextDocument, Position, CompletionList, Hover, Range, SymbolInformation, TextEdit, DocumentHighlight, DocumentLink, FoldingRange, SelectionRange } from 'vscode-languageserver-types';
-import { Scanner, HTMLDocument, CompletionConfiguration, ICompletionParticipant, HTMLFormatConfiguration, DocumentContext, IHTMLDataProvider, HTMLDataV1 } from './htmlLanguageTypes';
+import { Scanner, HTMLDocument, CompletionConfiguration, ICompletionParticipant, HTMLFormatConfiguration, DocumentContext, IHTMLDataProvider, HTMLDataV1, LanguageServiceOptions } from './htmlLanguageTypes';
 import { getFoldingRanges } from './services/htmlFolding';
 import { getSelectionRanges } from './services/htmlSelectionRange';
 import { handleCustomDataProviders } from './languageFacts/builtinDataProviders';
@@ -36,12 +36,9 @@ export interface LanguageService {
 	getSelectionRanges(document: TextDocument, positions: Position[]): SelectionRange[];
 }
 
-export interface LanguageServiceOptions {
-	customDataProviders?: IHTMLDataProvider[];
-}
-
 export function getLanguageService(options?: LanguageServiceOptions): LanguageService {
-	const htmlCompletion = new HTMLCompletion();
+	const htmlHover = new HTMLHover(options && options.clientCapabilities);
+	const htmlCompletion = new HTMLCompletion(options && options.clientCapabilities);
 
 	if (options && options.customDataProviders) {
 		handleCustomDataProviders(options.customDataProviders);
@@ -52,7 +49,7 @@ export function getLanguageService(options?: LanguageServiceOptions): LanguageSe
 		parseHTMLDocument: document => parse(document.getText()),
 		doComplete: htmlCompletion.doComplete.bind(htmlCompletion),
 		setCompletionParticipants: htmlCompletion.setCompletionParticipants.bind(htmlCompletion),
-		doHover,
+		doHover: htmlHover.doHover.bind(htmlHover),
 		format,
 		findDocumentHighlights,
 		findDocumentLinks,

@@ -5,7 +5,7 @@
 
 import * as assert from 'assert';
 import * as htmlLanguageService from '../htmlLanguageService';
-import { TextDocument } from 'vscode-languageserver-types';
+import { TextDocument, MarkupContent } from 'vscode-languageserver-types';
 
 export function assertHover(value: string, expectedHoverLabel: string | undefined, expectedHoverOffset: number | undefined): void {
 	const offset = value.indexOf('|');
@@ -21,3 +21,29 @@ export function assertHover(value: string, expectedHoverLabel: string | undefine
 	assert.equal(hover && Array.isArray(hover.contents) && (<any> hover.contents[0]).value, expectedHoverLabel);
 	assert.equal(hover && document.offsetAt(hover.range!.start), expectedHoverOffset);
 }
+
+export function assertHover2(value: string, contents: string | MarkupContent, rangeText: string): void {
+	const offset = value.indexOf('|');
+	value = value.substr(0, offset) + value.substr(offset + 1);
+
+	const document = TextDocument.create('test://test/test.html', 'html', 0, value);
+
+	const position = document.positionAt(offset);
+	const ls = htmlLanguageService.getLanguageService();
+	const htmlDoc = ls.parseHTMLDocument(document);
+
+	const hover = ls.doHover(document, position, htmlDoc);
+	if (hover) {
+		if (typeof contents === 'string') {
+			assert.equal(hover.contents, contents);
+		} else {
+			assert.equal((hover.contents as MarkupContent).kind, contents.kind);
+			assert.equal((hover.contents as MarkupContent).value, contents.value);
+		}
+
+		if (hover.range) {
+			assert.equal(rangeText, document.getText(hover.range));
+		}
+	}
+}
+

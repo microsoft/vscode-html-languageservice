@@ -6,11 +6,11 @@
 import * as assert from 'assert';
 import * as htmlLanguageService from '../htmlLanguageService';
 
-import { CompletionList, TextDocument, CompletionItemKind } from 'vscode-languageserver-types';
+import { CompletionList, TextDocument, CompletionItemKind, MarkupContent } from 'vscode-languageserver-types';
 
 interface ItemDescription {
 	label: string;
-	documentation?: string;
+	documentation?: string | MarkupContent;
 	kind?: CompletionItemKind;
 	resultText?: string;
 	notAvailable?: boolean;
@@ -32,7 +32,11 @@ function assertCompletion(completions: CompletionList, expected: ItemDescription
 	assert.equal(matches.length, 1, expected.label + " should only existing once: Actual: " + completions.items.map(c => c.label).join(', '));
 	const match = matches[0];
 	if (expected.documentation) {
-		assert.equal(match.documentation, expected.documentation);
+		if (typeof expected.documentation === 'string') {
+			assert.equal(match.documentation, expected.documentation);
+		} else {
+			assert.equal((match.documentation as MarkupContent).value, expected.documentation.value);
+		}
 	}
 	if (expected.kind) {
 		assert.equal(match.kind, expected.kind);
