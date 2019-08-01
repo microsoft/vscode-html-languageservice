@@ -494,13 +494,13 @@ export class HTMLCompletion {
 	}
 
 	private doesSupportMarkdown() {
-		if (!this.clientCapabilities) {
-			this.supportsMarkdown = true;
-			return this.supportsMarkdown;
-		}
-
  		if (!isDefined(this.supportsMarkdown)) {
-			const hover = this.clientCapabilities.textDocument && this.clientCapabilities.textDocument.hover;
+			if (!isDefined(this.clientCapabilities)) {
+				this.supportsMarkdown = true;
+				return this.supportsMarkdown;
+			}
+
+			const hover = this.clientCapabilities && this.clientCapabilities.textDocument && this.clientCapabilities.textDocument.hover;
 			this.supportsMarkdown = hover && hover.contentFormat && Array.isArray(hover.contentFormat) && hover.contentFormat.indexOf(MarkupKind.Markdown) !== -1;
 		}
 		return this.supportsMarkdown;
