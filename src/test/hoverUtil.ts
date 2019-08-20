@@ -7,7 +7,7 @@ import * as assert from 'assert';
 import * as htmlLanguageService from '../htmlLanguageService';
 import { TextDocument, MarkupContent } from 'vscode-languageserver-types';
 
-export function assertHover(value: string, expectedHoverLabel: string | undefined, expectedHoverOffset: number | undefined): void {
+export function assertHover(value: string, expectedHoverContent: MarkupContent | undefined, expectedHoverOffset: number | undefined): void {
 	const offset = value.indexOf('|');
 	value = value.substr(0, offset) + value.substr(offset + 1);
 
@@ -18,7 +18,7 @@ export function assertHover(value: string, expectedHoverLabel: string | undefine
 	const htmlDoc = ls.parseHTMLDocument(document);
 
 	const hover = ls.doHover(document, position, htmlDoc);
-	assert.equal(hover && Array.isArray(hover.contents) && (<any> hover.contents[0]).value, expectedHoverLabel);
+	assert.deepEqual(hover && hover.contents, expectedHoverContent);
 	assert.equal(hover && document.offsetAt(hover.range!.start), expectedHoverOffset);
 }
 

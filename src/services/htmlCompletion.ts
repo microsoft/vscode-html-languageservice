@@ -14,6 +14,8 @@ import { isLetterOrDigit, endsWith, startsWith } from '../utils/strings';
 import { getAllDataProviders } from '../languageFacts/builtinDataProviders';
 import { isVoidElement } from '../languageFacts/fact';
 import { isDefined } from '../utils/object';
+import { normalizeMarkupContent } from '../utils/markup';
+import { generateMarkupcontent } from '../languageFacts/dataProvider';
 const localize = nls.loadMessageBundle();
 
 export class HTMLCompletion {
@@ -68,7 +70,7 @@ export class HTMLCompletion {
 					result.items.push({
 						label: tag.name,
 						kind: CompletionItemKind.Property,
-						documentation: tag.description,
+						documentation: generateMarkupcontent(tag),
 						textEdit: TextEdit.replace(range, tag.name),
 						insertTextFormat: InsertTextFormat.PlainText
 					});
@@ -130,7 +132,7 @@ export class HTMLCompletion {
 					result.items.push({
 						label: '/' + tag.name,
 						kind: CompletionItemKind.Property,
-						documentation: tag.description,
+						documentation: generateMarkupcontent(tag),
 						filterText: '/' + tag + closeTag,
 						textEdit: TextEdit.replace(range, '/' + tag + closeTag),
 						insertTextFormat: InsertTextFormat.PlainText
@@ -190,10 +192,11 @@ export class HTMLCompletion {
 							};
 						}
 					}
+					
 					result.items.push({
 						label: attr.name,
 						kind: attr.valueSet === 'handler' ? CompletionItemKind.Function : CompletionItemKind.Value,
-						documentation: attr.description,
+						documentation: generateMarkupcontent(attr),
 						textEdit: TextEdit.replace(range, codeSnippet),
 						insertTextFormat: InsertTextFormat.Snippet,
 						command
@@ -270,11 +273,12 @@ export class HTMLCompletion {
 			dataProviders.forEach(provider => {
 				provider.provideValues(tag, attribute).forEach(value => {
 					const insertText = addQuotes ? '"' + value.name + '"' : value.name;
+
 					result.items.push({
 						label: value.name,
 						filterText: insertText,
 						kind: CompletionItemKind.Unit,
-						documentation: value.description,
+						documentation: generateMarkupcontent(value),
 						textEdit: TextEdit.replace(range, insertText),
 						insertTextFormat: InsertTextFormat.PlainText
 					});

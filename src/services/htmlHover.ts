@@ -10,6 +10,7 @@ import { TokenType, ClientCapabilities } from '../htmlLanguageTypes';
 import { getAllDataProviders } from '../languageFacts/builtinDataProviders';
 import { isDefined } from '../utils/object';
 import { isArray } from 'util';
+import { generateMarkupcontent } from '../languageFacts/dataProvider';
 
 export class HTMLHover {
 	private supportsMarkdown: boolean | undefined;
@@ -35,12 +36,9 @@ export class HTMLHover {
 				provider.provideTags().forEach(tag => {
 					if (tag.name.toLowerCase() === currTag.toLowerCase()) {
 						const tagLabel = open ? '<' + currTag + '>' : '</' + currTag + '>';
-						const tagDescription = tag.description || '';
-						if (typeof tagDescription === 'string') {
-							hover = { contents: [{ language: 'html', value: tagLabel }, MarkedString.fromPlainText(tagDescription)], range };
-						} else {
-							hover = { contents: tagDescription, range };
-						}
+						const markupContent = generateMarkupcontent(tag);
+						markupContent.value = '```html\n' + tagLabel + '\n```\n' + markupContent.value;
+						hover = { contents: markupContent, range };
 					}
 				});
 
@@ -60,11 +58,7 @@ export class HTMLHover {
 
 				provider.provideAttributes(currTag).forEach(attr => {
 					if (currAttr === attr.name && attr.description) {
-						if (typeof attr.description === 'string') {
-							hover = { contents: [MarkedString.fromPlainText(attr.description)], range };
-						} else {
-							hover = { contents: attr.description, range };
-						}
+						hover = { contents: generateMarkupcontent(attr), range };
 					}
 				});
 
@@ -84,11 +78,7 @@ export class HTMLHover {
 
 				provider.provideValues(currTag, currAttr).forEach(attrValue => {
 					if (currAttrValue === attrValue.name && attrValue.description) {
-						if (typeof attrValue.description === 'string') {
-							hover = { contents: [MarkedString.fromPlainText(attrValue.description)], range };
-						} else {
-							hover = { contents: attrValue.description, range };
-						}
+						hover = { contents: generateMarkupcontent(attrValue), range };
 					}
 				});
 

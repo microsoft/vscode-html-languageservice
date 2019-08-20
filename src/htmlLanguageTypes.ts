@@ -117,10 +117,16 @@ export interface ICompletionParticipant {
 	onHtmlContent?: (context: HtmlContentContext) => void;
 }
 
+export interface IReference {
+	name: string;
+	url: string;
+}
+
 export interface ITagData {
 	name: string;
 	description?: string | MarkupContent;
 	attributes: IAttributeData[];
+	references?: IReference[];
 }
 
 export interface IAttributeData {
@@ -128,11 +134,13 @@ export interface IAttributeData {
 	description?: string | MarkupContent;
 	valueSet?: string;
 	values?: IValueData[];
+	references?: IReference[];
 }
 
 export interface IValueData {
 	name: string;
 	description?: string | MarkupContent;
+	references?: IReference[];
 }
 
 export interface IValueSet {

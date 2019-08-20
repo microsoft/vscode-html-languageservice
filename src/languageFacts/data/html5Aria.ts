@@ -2,229 +2,374 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 
 import { IAttributeData } from '../../htmlLanguageTypes';
 
 export const ARIA_ATTRIBUTES: IAttributeData[] = [
   {
     "name": "aria-activedescendant",
-    "description": "Identifies the currently active element when DOM focus is on a composite widget, textbox, group, or application.\n"
+    "description": {
+      "kind": "markdown",
+      "value": "Identifies the currently active element when DOM focus is on a [`composite`](https://www.w3.org/TR/wai-aria-1.1/#composite) widget, [`textbox`](https://www.w3.org/TR/wai-aria-1.1/#textbox), [`group`](https://www.w3.org/TR/wai-aria-1.1/#group), or [`application`](https://www.w3.org/TR/wai-aria-1.1/#application)."
+    }
   },
   {
     "name": "aria-atomic",
     "valueSet": "b",
-    "description": "Indicates whether assistive technologies will present all, or only parts of, the changed region based on the change notifications defined by the aria-relevant attribute.\n"
+    "description": {
+      "kind": "markdown",
+      "value": "Indicates whether [assistive technologies](https://www.w3.org/TR/wai-aria-1.1/#dfn-assistive-technology) will present all, or only parts of, the changed region based on the change notifications defined by the [`aria-relevant`](https://www.w3.org/TR/wai-aria-1.1/#aria-relevant) attribute."
+    }
   },
   {
     "name": "aria-autocomplete",
     "valueSet": "autocomplete",
-    "description": "Indicates whether inputting text could trigger display of one or more predictions of the user's intended value for an input and specifies how predictions would be presented if they are made.\n"
+    "description": {
+      "kind": "markdown",
+      "value": "Indicates whether inputting text could trigger display of one or more predictions of the user's intended value for an input and specifies how predictions would be presented if they are made."
+    }
   },
   {
     "name": "aria-busy",
     "valueSet": "b",
-    "description": "Indicates an element is being modified and that assistive technologies MAY want to wait until the modifications are complete before exposing them to the user.\n"
+    "description": {
+      "kind": "markdown",
+      "value": "Indicates an element is being modified and that assistive technologies _MAY_ want to wait until the modifications are complete before exposing them to the user."
+    }
   },
   {
     "name": "aria-checked",
     "valueSet": "tristate",
-    "description": "Indicates the current \"checked\" state of checkboxes, radio buttons, and other widgets. See related aria-pressed and aria-selected.\n"
+    "description": {
+      "kind": "markdown",
+      "value": "Indicates the current \"checked\" [state](https://www.w3.org/TR/wai-aria-1.1/#dfn-state) of checkboxes, radio buttons, and other [widgets](https://www.w3.org/TR/wai-aria-1.1/#dfn-widget). See related [`aria-pressed`](https://www.w3.org/TR/wai-aria-1.1/#aria-pressed) and [`aria-selected`](https://www.w3.org/TR/wai-aria-1.1/#aria-selected)."
+    }
   },
   {
     "name": "aria-colcount",
-    "description": "Defines the total number of columns in a table, grid, or treegrid. See related aria-colindex.\n"
+    "description": {
+      "kind": "markdown",
+      "value": "Defines the total number of columns in a [`table`](https://www.w3.org/TR/wai-aria-1.1/#table), [`grid`](https://www.w3.org/TR/wai-aria-1.1/#grid), or [`treegrid`](https://www.w3.org/TR/wai-aria-1.1/#treegrid). See related [`aria-colindex`](https://www.w3.org/TR/wai-aria-1.1/#aria-colindex)."
+    }
   },
   {
     "name": "aria-colindex",
-    "description": "Defines an element's column index or position with respect to the total number of columns within a table, grid, or treegrid. See related aria-colcount and aria-colspan.\n"
+    "description": {
+      "kind": "markdown",
+      "value": "Defines an [element's](https://www.w3.org/TR/wai-aria-1.1/#dfn-element) column index or position with respect to the total number of columns within a [`table`](https://www.w3.org/TR/wai-aria-1.1/#table), [`grid`](https://www.w3.org/TR/wai-aria-1.1/#grid), or [`treegrid`](https://www.w3.org/TR/wai-aria-1.1/#treegrid). See related [`aria-colcount`](https://www.w3.org/TR/wai-aria-1.1/#aria-colcount) and [`aria-colspan`](https://www.w3.org/TR/wai-aria-1.1/#aria-colspan)."
+    }
   },
   {
     "name": "aria-colspan",
-    "description": "Defines the number of columns spanned by a cell or gridcell within a table, grid, or treegrid. See related aria-colindex and aria-rowspan.\n"
+    "description": {
+      "kind": "markdown",
+      "value": "Defines the number of columns spanned by a cell or gridcell within a [`table`](https://www.w3.org/TR/wai-aria-1.1/#table), [`grid`](https://www.w3.org/TR/wai-aria-1.1/#grid), or [`treegrid`](https://www.w3.org/TR/wai-aria-1.1/#treegrid). See related [`aria-colindex`](https://www.w3.org/TR/wai-aria-1.1/#aria-colindex) and [`aria-rowspan`](https://www.w3.org/TR/wai-aria-1.1/#aria-rowspan)."
+    }
   },
   {
     "name": "aria-controls",
-    "description": "Identifies the element (or elements) whose contents or presence are controlled by the current element. See related aria-owns.\n"
+    "description": {
+      "kind": "markdown",
+      "value": "Identifies the [element](https://www.w3.org/TR/wai-aria-1.1/#dfn-element) (or elements) whose contents or presence are controlled by the current element. See related [`aria-owns`](https://www.w3.org/TR/wai-aria-1.1/#aria-owns)."
+    }
   },
   {
     "name": "aria-current",
     "valueSet": "current",
-    "description": "Indicates the element that represents the current item within a container or set of related elements.\n"
+    "description": {
+      "kind": "markdown",
+      "value": "Indicates the [element](https://www.w3.org/TR/wai-aria-1.1/#dfn-element) that represents the current item within a container or set of related elements."
+    }
   },
   {
     "name": "aria-describedat"
   },
   {
     "name": "aria-describedby",
-    "description": "Identifies the element (or elements) that describes the object. See related aria-labelledby.\n"
+    "description": {
+      "kind": "markdown",
+      "value": "Identifies the [element](https://www.w3.org/TR/wai-aria-1.1/#dfn-element) (or elements) that describes the [object](https://www.w3.org/TR/wai-aria-1.1/#dfn-object). See related [`aria-labelledby`](https://www.w3.org/TR/wai-aria-1.1/#aria-labelledby)."
+    }
   },
   {
     "name": "aria-disabled",
     "valueSet": "b",
-    "description": "Indicates that the element is perceivable but disabled, so it is not editable or otherwise operable. See related aria-hidden and aria-readonly.\n"
+    "description": {
+      "kind": "markdown",
+      "value": "Indicates that the [element](https://www.w3.org/TR/wai-aria-1.1/#dfn-element) is [perceivable](https://www.w3.org/TR/wai-aria-1.1/#dfn-perceivable) but disabled, so it is not editable or otherwise [operable](https://www.w3.org/TR/wai-aria-1.1/#dfn-operable). See related [`aria-hidden`](https://www.w3.org/TR/wai-aria-1.1/#aria-hidden) and [`aria-readonly`](https://www.w3.org/TR/wai-aria-1.1/#aria-readonly)."
+    }
   },
   {
     "name": "aria-dropeffect",
     "valueSet": "dropeffect",
-    "description": "\\[Deprecated in ARIA 1.1] Indicates what functions can be performed when a dragged object is released on the drop target.\n"
+    "description": {
+      "kind": "markdown",
+      "value": "\\[Deprecated in ARIA 1.1\\] Indicates what functions can be performed when a dragged object is released on the drop target."
+    }
   },
   {
     "name": "aria-errormessage",
-    "description": "Identifies the element that provides an error message for the object. See related aria-invalid and aria-describedby.\n"
+    "description": {
+      "kind": "markdown",
+      "value": "Identifies the [element](https://www.w3.org/TR/wai-aria-1.1/#dfn-element) that provides an error message for the [object](https://www.w3.org/TR/wai-aria-1.1/#dfn-object). See related [`aria-invalid`](https://www.w3.org/TR/wai-aria-1.1/#aria-invalid) and [`aria-describedby`](https://www.w3.org/TR/wai-aria-1.1/#aria-describedby)."
+    }
   },
   {
     "name": "aria-expanded",
     "valueSet": "u",
-    "description": "Indicates whether the element, or another grouping element it controls, is currently expanded or collapsed.\n"
+    "description": {
+      "kind": "markdown",
+      "value": "Indicates whether the element, or another grouping element it controls, is currently expanded or collapsed."
+    }
   },
   {
     "name": "aria-flowto",
-    "description": "Identifies the next element (or elements) in an alternate reading order of content which, at the user's discretion, allows assistive technology to override the general default of reading in document source order.\n"
+    "description": {
+      "kind": "markdown",
+      "value": "Identifies the next [element](https://www.w3.org/TR/wai-aria-1.1/#dfn-element) (or elements) in an alternate reading order of content which, at the user's discretion, allows assistive technology to override the general default of reading in document source order."
+    }
   },
   {
     "name": "aria-grabbed",
     "valueSet": "u",
-    "description": "\\[Deprecated in ARIA 1.1] Indicates an element's \"grabbed\" state in a drag-and-drop operation.\n"
+    "description": {
+      "kind": "markdown",
+      "value": "\\[Deprecated in ARIA 1.1\\] Indicates an element's \"grabbed\" [state](https://www.w3.org/TR/wai-aria-1.1/#dfn-state) in a drag-and-drop operation."
+    }
   },
   {
     "name": "aria-haspopup",
     "valueSet": "b",
-    "description": "Indicates the availability and type of interactive popup element, such as menu or dialog, that can be triggered by an element.\n"
+    "description": {
+      "kind": "markdown",
+      "value": "Indicates the availability and type of interactive popup element, such as menu or dialog, that can be triggered by an [element](https://www.w3.org/TR/wai-aria-1.1/#dfn-element)."
+    }
   },
   {
     "name": "aria-hidden",
     "valueSet": "b",
-    "description": "Indicates whether the element is exposed to an accessibility API. See related aria-disabled.\n"
+    "description": {
+      "kind": "markdown",
+      "value": "Indicates whether the [element](https://www.w3.org/TR/wai-aria-1.1/#dfn-element) is exposed to an accessibility API. See related [`aria-disabled`](https://www.w3.org/TR/wai-aria-1.1/#aria-disabled)."
+    }
   },
   {
     "name": "aria-invalid",
     "valueSet": "invalid",
-    "description": "Indicates the entered value does not conform to the format expected by the application. See related aria-errormessage.\n"
+    "description": {
+      "kind": "markdown",
+      "value": "Indicates the entered value does not conform to the format expected by the application. See related [`aria-errormessage`](https://www.w3.org/TR/wai-aria-1.1/#aria-errormessage)."
+    }
   },
   {
     "name": "aria-kbdshortcuts"
   },
   {
     "name": "aria-label",
-    "description": "Defines a string value that labels the current element. See related aria-labelledby.\n"
+    "description": {
+      "kind": "markdown",
+      "value": "Defines a string value that labels the current element. See related [`aria-labelledby`](https://www.w3.org/TR/wai-aria-1.1/#aria-labelledby)."
+    }
   },
   {
     "name": "aria-labelledby",
-    "description": "Identifies the element (or elements) that labels the current element. See related aria-describedby.\n"
+    "description": {
+      "kind": "markdown",
+      "value": "Identifies the [element](https://www.w3.org/TR/wai-aria-1.1/#dfn-element) (or elements) that labels the current element. See related [`aria-describedby`](https://www.w3.org/TR/wai-aria-1.1/#aria-describedby)."
+    }
   },
   {
     "name": "aria-level",
-    "description": "Defines the hierarchical level of an element within a structure.\n"
+    "description": {
+      "kind": "markdown",
+      "value": "Defines the hierarchical level of an [element](https://www.w3.org/TR/wai-aria-1.1/#dfn-element) within a structure."
+    }
   },
   {
     "name": "aria-live",
     "valueSet": "live",
-    "description": "Indicates that an element will be updated, and describes the types of updates the user agents, assistive technologies, and user can expect from the live region.\n"
+    "description": {
+      "kind": "markdown",
+      "value": "Indicates that an [element](https://www.w3.org/TR/wai-aria-1.1/#dfn-element) will be updated, and describes the types of updates the [user agents](https://www.w3.org/TR/wai-aria-1.1/#dfn-user-agent), [assistive technologies](https://www.w3.org/TR/wai-aria-1.1/#dfn-assistive-technology), and user can expect from the [live region](https://www.w3.org/TR/wai-aria-1.1/#dfn-live-region)."
+    }
   },
   {
     "name": "aria-modal",
     "valueSet": "b",
-    "description": "Indicates whether an element is modal when displayed.\n"
+    "description": {
+      "kind": "markdown",
+      "value": "Indicates whether an [element](https://www.w3.org/TR/wai-aria-1.1/#dfn-element) is modal when displayed."
+    }
   },
   {
     "name": "aria-multiline",
     "valueSet": "b",
-    "description": "Indicates whether a text box accepts multiple lines of input or only a single line.\n"
+    "description": {
+      "kind": "markdown",
+      "value": "Indicates whether a text box accepts multiple lines of input or only a single line."
+    }
   },
   {
     "name": "aria-multiselectable",
     "valueSet": "b",
-    "description": "Indicates that the user may select more than one item from the current selectable descendants.\n"
+    "description": {
+      "kind": "markdown",
+      "value": "Indicates that the user may select more than one item from the current selectable descendants."
+    }
   },
   {
     "name": "aria-orientation",
     "valueSet": "orientation",
-    "description": "Indicates whether the element's orientation is horizontal, vertical, or unknown/ambiguous.\n"
+    "description": {
+      "kind": "markdown",
+      "value": "Indicates whether the element's orientation is horizontal, vertical, or unknown/ambiguous."
+    }
   },
   {
     "name": "aria-owns",
-    "description": "Identifies an element (or elements) in order to define a visual, functional, or contextual parent/child relationship between DOM elements where the DOM hierarchy cannot be used to represent the relationship. See related aria-controls.\n"
+    "description": {
+      "kind": "markdown",
+      "value": "Identifies an [element](https://www.w3.org/TR/wai-aria-1.1/#dfn-element) (or elements) in order to define a visual, functional, or contextual parent/child [relationship](https://www.w3.org/TR/wai-aria-1.1/#dfn-relationship) between DOM elements where the DOM hierarchy cannot be used to represent the relationship. See related [`aria-controls`](https://www.w3.org/TR/wai-aria-1.1/#aria-controls)."
+    }
   },
   {
     "name": "aria-placeholder",
-    "description": "Defines a short hint (a word or short phrase) intended to aid the user with data entry when the control has no value. A hint could be a sample value or a brief description of the expected format.\n"
+    "description": {
+      "kind": "markdown",
+      "value": "Defines a short hint (a word or short phrase) intended to aid the user with data entry when the control has no value. A hint could be a sample value or a brief description of the expected format."
+    }
   },
   {
     "name": "aria-posinset",
-    "description": "Defines an element's number or position in the current set of listitems or treeitems. Not required if all elements in the set are present in the DOM. See related aria-setsize.\n"
+    "description": {
+      "kind": "markdown",
+      "value": "Defines an [element](https://www.w3.org/TR/wai-aria-1.1/#dfn-element)'s number or position in the current set of listitems or treeitems. Not required if all elements in the set are present in the DOM. See related [`aria-setsize`](https://www.w3.org/TR/wai-aria-1.1/#aria-setsize)."
+    }
   },
   {
     "name": "aria-pressed",
     "valueSet": "tristate",
-    "description": "Indicates the current \"pressed\" state of toggle buttons. See related aria-checked and aria-selected.\n"
+    "description": {
+      "kind": "markdown",
+      "value": "Indicates the current \"pressed\" [state](https://www.w3.org/TR/wai-aria-1.1/#dfn-state) of toggle buttons. See related [`aria-checked`](https://www.w3.org/TR/wai-aria-1.1/#aria-checked) and [`aria-selected`](https://www.w3.org/TR/wai-aria-1.1/#aria-selected)."
+    }
   },
   {
     "name": "aria-readonly",
     "valueSet": "b",
-    "description": "Indicates that the element is not editable, but is otherwise operable. See related aria-disabled.\n"
+    "description": {
+      "kind": "markdown",
+      "value": "Indicates that the [element](https://www.w3.org/TR/wai-aria-1.1/#dfn-element) is not editable, but is otherwise [operable](https://www.w3.org/TR/wai-aria-1.1/#dfn-operable). See related [`aria-disabled`](https://www.w3.org/TR/wai-aria-1.1/#aria-disabled)."
+    }
   },
   {
     "name": "aria-relevant",
     "valueSet": "relevant",
-    "description": "Indicates what notifications the user agent will trigger when the accessibility tree within a live region is modified. See related aria-atomic.\n"
+    "description": {
+      "kind": "markdown",
+      "value": "Indicates what notifications the user agent will trigger when the accessibility tree within a live region is modified. See related [`aria-atomic`](https://www.w3.org/TR/wai-aria-1.1/#aria-atomic)."
+    }
   },
   {
     "name": "aria-required",
     "valueSet": "b",
-    "description": "Indicates that user input is required on the element before a form may be submitted.\n"
+    "description": {
+      "kind": "markdown",
+      "value": "Indicates that user input is required on the [element](https://www.w3.org/TR/wai-aria-1.1/#dfn-element) before a form may be submitted."
+    }
   },
   {
     "name": "aria-roledescription",
-    "description": "Defines a human-readable, author-localized description for the role of an element.\n"
+    "description": {
+      "kind": "markdown",
+      "value": "Defines a human-readable, author-localized description for the [role](https://www.w3.org/TR/wai-aria-1.1/#dfn-role) of an [element](https://www.w3.org/TR/wai-aria-1.1/#dfn-element)."
+    }
   },
   {
     "name": "aria-rowcount",
-    "description": "Defines the total number of rows in a table, grid, or treegrid. See related aria-rowindex.\n"
+    "description": {
+      "kind": "markdown",
+      "value": "Defines the total number of rows in a [`table`](https://www.w3.org/TR/wai-aria-1.1/#table), [`grid`](https://www.w3.org/TR/wai-aria-1.1/#grid), or [`treegrid`](https://www.w3.org/TR/wai-aria-1.1/#treegrid). See related [`aria-rowindex`](https://www.w3.org/TR/wai-aria-1.1/#aria-rowindex)."
+    }
   },
   {
     "name": "aria-rowindex",
-    "description": "Defines an element's row index or position with respect to the total number of rows within a table, grid, or treegrid. See related aria-rowcount and aria-rowspan.\n"
+    "description": {
+      "kind": "markdown",
+      "value": "Defines an [element's](https://www.w3.org/TR/wai-aria-1.1/#dfn-element) row index or position with respect to the total number of rows within a [`table`](https://www.w3.org/TR/wai-aria-1.1/#table), [`grid`](https://www.w3.org/TR/wai-aria-1.1/#grid), or [`treegrid`](https://www.w3.org/TR/wai-aria-1.1/#treegrid). See related [`aria-rowcount`](https://www.w3.org/TR/wai-aria-1.1/#aria-rowcount) and [`aria-rowspan`](https://www.w3.org/TR/wai-aria-1.1/#aria-rowspan)."
+    }
   },
   {
     "name": "aria-rowspan",
-    "description": "Defines the number of rows spanned by a cell or gridcell within a table, grid, or treegrid. See related aria-rowindex and aria-colspan.\n"
+    "description": {
+      "kind": "markdown",
+      "value": "Defines the number of rows spanned by a cell or gridcell within a [`table`](https://www.w3.org/TR/wai-aria-1.1/#table), [`grid`](https://www.w3.org/TR/wai-aria-1.1/#grid), or [`treegrid`](https://www.w3.org/TR/wai-aria-1.1/#treegrid). See related [`aria-rowindex`](https://www.w3.org/TR/wai-aria-1.1/#aria-rowindex) and [`aria-colspan`](https://www.w3.org/TR/wai-aria-1.1/#aria-colspan)."
+    }
   },
   {
     "name": "aria-selected",
     "valueSet": "u",
-    "description": "Indicates the current \"selected\" state of various widgets. See related aria-checked and aria-pressed.\n"
+    "description": {
+      "kind": "markdown",
+      "value": "Indicates the current \"selected\" [state](https://www.w3.org/TR/wai-aria-1.1/#dfn-state) of various [widgets](https://www.w3.org/TR/wai-aria-1.1/#dfn-widget). See related [`aria-checked`](https://www.w3.org/TR/wai-aria-1.1/#aria-checked) and [`aria-pressed`](https://www.w3.org/TR/wai-aria-1.1/#aria-pressed)."
+    }
   },
   {
     "name": "aria-setsize",
-    "description": "Defines the number of items in the current set of listitems or treeitems. Not required if all elements in the set are present in the DOM. See related aria-posinset.\n"
+    "description": {
+      "kind": "markdown",
+      "value": "Defines the number of items in the current set of listitems or treeitems. Not required if all elements in the set are present in the DOM. See related [`aria-posinset`](https://www.w3.org/TR/wai-aria-1.1/#aria-posinset)."
+    }
   },
   {
     "name": "aria-sort",
     "valueSet": "sort",
-    "description": "Indicates if items in a table or grid are sorted in ascending or descending order.\n"
+    "description": {
+      "kind": "markdown",
+      "value": "Indicates if items in a table or grid are sorted in ascending or descending order."
+    }
   },
   {
     "name": "aria-valuemax",
-    "description": "Defines the maximum allowed value for a range widget.\n"
+    "description": {
+      "kind": "markdown",
+      "value": "Defines the maximum allowed value for a range [widget](https://www.w3.org/TR/wai-aria-1.1/#dfn-widget)."
+    }
   },
   {
     "name": "aria-valuemin",
-    "description": "Defines the minimum allowed value for a range widget.\n"
+    "description": {
+      "kind": "markdown",
+      "value": "Defines the minimum allowed value for a range [widget](https://www.w3.org/TR/wai-aria-1.1/#dfn-widget)."
+    }
   },
   {
     "name": "aria-valuenow",
-    "description": "Defines the current value for a range widget. See related aria-valuetext.\n"
+    "description": {
+      "kind": "markdown",
+      "value": "Defines the current value for a range [widget](https://www.w3.org/TR/wai-aria-1.1/#dfn-widget). See related [`aria-valuetext`](https://www.w3.org/TR/wai-aria-1.1/#aria-valuetext)."
+    }
   },
   {
     "name": "aria-valuetext",
-    "description": "Defines the human readable text alternative of aria-valuenow for a range widget.\n"
+    "description": {
+      "kind": "markdown",
+      "value": "Defines the human readable text alternative of [`aria-valuenow`](https://www.w3.org/TR/wai-aria-1.1/#aria-valuenow) for a range [widget](https://www.w3.org/TR/wai-aria-1.1/#dfn-widget)."
+    }
   },
   {
     "name": "aria-details",
-    "description": "Identifies the element that provides a detailed, extended description for the object. See related aria-describedby.\n"
+    "description": {
+      "kind": "markdown",
+      "value": "Identifies the [element](https://www.w3.org/TR/wai-aria-1.1/#dfn-element) that provides a detailed, extended description for the [object](https://www.w3.org/TR/wai-aria-1.1/#dfn-object). See related [`aria-describedby`](https://www.w3.org/TR/wai-aria-1.1/#aria-describedby)."
+    }
   },
   {
     "name": "aria-keyshortcuts",
-    "description": "Indicates keyboard shortcuts that an author has implemented to activate or give focus to an element.\n"
+    "description": {
+      "kind": "markdown",
+      "value": "Indicates keyboard shortcuts that an author has implemented to activate or give focus to an element."
+    }
   }
 ];

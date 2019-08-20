@@ -253,7 +253,7 @@ execa@^1.0.0:
     signal-exit "^3.0.0"
     strip-eof "^1.0.0"
 
-extend@^3.0.0:
+extend@3.0.2, extend@^3.0.0:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/extend/-/extend-3.0.2.tgz#f8b1136b4071fbd8eb140aff858b1019ec2915fa"
 
@@ -505,6 +505,13 @@ mdast-util-compact@^1.0.0:
   resolved "https://registry.yarnpkg.com/mdast-util-compact/-/mdast-util-compact-1.0.2.tgz#c12ebe16fffc84573d3e19767726de226e95f649"
   dependencies:
     unist-util-visit "^1.1.0"
+
+mdn-browser-compat-data@^0.0.89:
+  version "0.0.89"
+  resolved "https://registry.yarnpkg.com/mdn-browser-compat-data/-/mdn-browser-compat-data-0.0.89.tgz#4e98a23d28d6098e83cdfff4e96f1ccb1ab38d7a"
+  integrity sha512-2TSk8H1FD8IewO6PUBi7XSDW3cVcJsG9DPU8KkLDA856VnWxw6e7RofbDr7dCqWG8tNMGJgJc5kI4osW4R7vzw==
+  dependencies:
+    extend "3.0.2"
 
 mem@^4.0.0:
   version "4.2.0"
