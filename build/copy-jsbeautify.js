@@ -18,5 +18,11 @@ function copy(from, to) {
 
 let srcLocation = path.join(__dirname, '..', 'src');
 
-copy(path.join(__dirname, '..', 'src', 'beautify'), path.join(__dirname, '..', 'lib', 'umd', 'beautify'));
-copy(path.join(__dirname, '..', 'src', 'beautify', 'esm'), path.join(__dirname, '..', 'lib', 'esm', 'beautify'));
+const umdDir = path.join(__dirname, '..', 'lib', 'umd', 'beautify');
+if (fs.existsSync(umdDir)) {
+	copy(path.join(__dirname, '..', 'src', 'beautify'), path.join(__dirname, '..', 'lib', 'umd', 'beautify'));
+}
+const esmDir = path.join(__dirname, '..', 'lib', 'esm', 'beautify');
+if (fs.existsSync(esmDir)) {
+	copy(path.join(__dirname, '..', 'src', 'beautify', 'esm'));
+}
