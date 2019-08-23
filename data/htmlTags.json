@@ -785,10 +785,6 @@
     "description": "The table element represents data with more than one dimension, in the form of a table.",
     "attributes": [
       {
-        "name": "sortable",
-        "valueSet": "v"
-      },
-      {
         "name": "border"
       }
     ]
