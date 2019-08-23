@@ -325,6 +325,17 @@ suite('HTML Completion', () => {
 			]
 		});		
 	});
+	
+	test('References', () => {
+		const doc =
+			'The div element has no special meaning at all. It represents its children. It can be used with the class, lang, and title attributes to mark up semantics common to a group of consecutive elements.' +
+			'\n\n' +
+			'[MDN Reference](https://developer.mozilla.org/docs/Web/HTML/Element/div)';
+
+		testCompletionFor('<d|', {
+			items: [{ label: 'div', resultText: '<div', documentation: { kind: 'markdown', value: doc } }]
+		});
+	});
 
 	test('Case sensitivity', function () {
 		testCompletionFor('<LI></|', {

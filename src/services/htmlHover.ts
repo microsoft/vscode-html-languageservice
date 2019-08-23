@@ -10,6 +10,7 @@ import { TokenType, ClientCapabilities } from '../htmlLanguageTypes';
 import { getAllDataProviders } from '../languageFacts/builtinDataProviders';
 import { isDefined } from '../utils/object';
 import { isArray } from 'util';
+import { generateDocumentation } from '../languageFacts/dataProvider';
 
 export class HTMLHover {
 	private supportsMarkdown: boolean | undefined;
@@ -18,6 +19,7 @@ export class HTMLHover {
 
 	doHover(document: TextDocument, position: Position, htmlDocument: HTMLDocument): Hover | null {
 		const convertContents = this.convertContents.bind(this);
+		const doesSupportMarkdown = this.doesSupportMarkdown();
 
 		const offset = document.offsetAt(position);
 		const node = htmlDocument.findNodeAt(offset);
@@ -35,12 +37,9 @@ export class HTMLHover {
 				provider.provideTags().forEach(tag => {
 					if (tag.name.toLowerCase() === currTag.toLowerCase()) {
 						const tagLabel = open ? '<' + currTag + '>' : '</' + currTag + '>';
-						const tagDescription = tag.description || '';
-						if (typeof tagDescription === 'string') {
-							hover = { contents: [{ language: 'html', value: tagLabel }, MarkedString.fromPlainText(tagDescription)], range };
-						} else {
-							hover = { contents: tagDescription, range };
-						}
+						const markupContent = generateDocumentation(tag, doesSupportMarkdown);
+						markupContent.value = '```html\n' + tagLabel + '\n```\n' + markupContent.value;
+						hover = { contents: markupContent, range };
 					}
 				});
 
@@ -60,11 +59,7 @@ export class HTMLHover {
 
 				provider.provideAttributes(currTag).forEach(attr => {
 					if (currAttr === attr.name && attr.description) {
-						if (typeof attr.description === 'string') {
-							hover = { contents: [MarkedString.fromPlainText(attr.description)], range };
-						} else {
-							hover = { contents: attr.description, range };
-						}
+						hover = { contents: generateDocumentation(attr, doesSupportMarkdown), range };
 					}
 				});
 
@@ -84,11 +79,7 @@ export class HTMLHover {
 
 				provider.provideValues(currTag, currAttr).forEach(attrValue => {
 					if (currAttrValue === attrValue.name && attrValue.description) {
-						if (typeof attrValue.description === 'string') {
-							hover = { contents: [MarkedString.fromPlainText(attrValue.description)], range };
-						} else {
-							hover = { contents: attrValue.description, range };
-						}
+						hover = { contents: generateDocumentation(attrValue, doesSupportMarkdown), range };
 					}
 				});
 
@@ -187,7 +178,7 @@ export class HTMLHover {
 		return contents;
 	}
 
-	private doesSupportMarkdown() {
+	private doesSupportMarkdown(): boolean {
 		if (!isDefined(this.supportsMarkdown)) {
 			if (!isDefined(this.clientCapabilities)) {
 				this.supportsMarkdown = true;
@@ -197,7 +188,7 @@ export class HTMLHover {
 			const hover = this.clientCapabilities && this.clientCapabilities.textDocument && this.clientCapabilities.textDocument.hover;
 			this.supportsMarkdown = hover && hover.contentFormat && Array.isArray(hover.contentFormat) && hover.contentFormat.indexOf(MarkupKind.Markdown) !== -1;
 		}
-		return this.supportsMarkdown;
+		return <boolean>this.supportsMarkdown;
 	}
 }
 

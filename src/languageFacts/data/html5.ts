@@ -4,95 +4,20 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { HTMLDataProvider } from '../dataProvider';
-import { IAttributeData } from '../../htmlLanguageTypes';
 
 import { HTML5_TAGS } from './html5Tags';
 import { HTML5_EVENTS } from './html5Events';
 import { ARIA_ATTRIBUTES } from './html5Aria';
+import { HTML5_GLOBAL_ATTRIBUTES } from './html5GlobalAttributes';
 
 export function getHTML5DataProvider() {
 	return new HTMLDataProvider('html5', {
 		version: 1,
 		tags: HTML5_TAGS,
-		globalAttributes: [...HTML5_GLOBAL_ATTRIBUTES, ...HTML5_EVENTS],
+		globalAttributes: [...ARIA_ATTRIBUTES, ...HTML5_GLOBAL_ATTRIBUTES, ...HTML5_EVENTS],
 		valueSets: HTML5_VALUE_MAP
 	});
 }
-
-export const HTML5_GLOBAL_ATTRIBUTES: IAttributeData[] = [
-	...ARIA_ATTRIBUTES,
-	{
-		name: 'accesskey'
-	},
-	{
-		name: 'class'
-	},
-	{
-		name: 'contenteditable',
-		valueSet: 'b'
-	},
-	{
-		name: 'contextmenu'
-	},
-	{
-		name: 'dir',
-		valueSet: 'd'
-	},
-	{
-		name: 'draggable',
-		valueSet: 'b'
-	},
-	{
-		name: 'dropzone'
-	},
-	{
-		name: 'hidden',
-		valueSet: 'v'
-	},
-	{
-		name: 'id'
-	},
-	{
-		name: 'itemid'
-	},
-	{
-		name: 'itemprop'
-	},
-	{
-		name: 'itemref'
-	},
-	{
-		name: 'itemscope',
-		valueSet: 'v'
-	},
-	{
-		name: 'itemtype'
-	},
-	{
-		name: 'lang'
-	},
-	{
-		name: 'role',
-		valueSet: 'roles'
-	},
-	{
-		name: 'spellcheck',
-		valueSet: 'b'
-	},
-	{
-		name: 'style'
-	},
-	{
-		name: 'tabindex'
-	},
-	{
-		name: 'title'
-	},
-	{
-		name: 'translate',
-		valueSet: 'y'
-	}
-];
 
 export const HTML5_VALUE_MAP = [
 	{

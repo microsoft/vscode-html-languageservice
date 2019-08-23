@@ -18,6 +18,7 @@
     "@types/mocha": "2.2.42",
     "@types/node": "^10.12.21",
     "js-beautify": "^1.10.1",
+    "mdn-browser-compat-data": "^0.0.89",
     "mocha": "^6.2.0",
     "remark": "^11.0.0",
     "rimraf": "^2.6.3",

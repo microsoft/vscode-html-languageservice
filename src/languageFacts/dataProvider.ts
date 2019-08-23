@@ -4,6 +4,8 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { ITagData, IAttributeData, IValueData, IHTMLDataProvider, HTMLDataV1 } from '../htmlLanguageTypes';
+import { MarkupContent } from 'vscode-languageserver-types';
+import { normalizeMarkupContent } from '../utils/markup';
 
 export class HTMLDataProvider implements IHTMLDataProvider {
 	isApplicable() {
@@ -56,11 +58,7 @@ export class HTMLDataProvider implements IHTMLDataProvider {
 	provideAttributes(tag: string) {
 		const attributes: IAttributeData[] = [];
 		const processAttribute = (a: IAttributeData) => {
-			attributes.push({
-				name: a.name,
-				description: a.description,
-				valueSet: a.valueSet
-			});
+			attributes.push(a);
 		};
 
 		if (this._tagMap[tag]) {
@@ -108,4 +106,37 @@ export class HTMLDataProvider implements IHTMLDataProvider {
 
 		return values;
 	}
+}
+
+/**
+ * Generate Documentation used in hover/complete
+ * From `documentation` and `references`
+ */
+export function generateDocumentation(item: ITagData | IAttributeData | IValueData, doesSupportMarkdown: boolean): MarkupContent {
+	const result: MarkupContent = {
+		kind: doesSupportMarkdown ? 'markdown' : 'plaintext',
+		value: ''
+	};
+	
+	if (item.description) {
+		const normalizedDescription = normalizeMarkupContent(item.description);
+		if (normalizedDescription) {
+			result.value += normalizedDescription.value;
+		}
+	}
+	
+	if (item.references && item.references.length > 0) {
+		result.value += `\n\n`;
+		if (doesSupportMarkdown) {
+			result.value += item.references.map(r => {
+				return `[${r.name}](${r.url})`;
+			}).join(' | ');
+		} else {
+			result.value += item.references.map(r => {
+				return `${r.name}: ${r.url}`;
+			}).join('\n');
+		}
+	}
+	
+	return result;
 }

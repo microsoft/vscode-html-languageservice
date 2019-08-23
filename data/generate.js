@@ -6,6 +6,7 @@
 
 const fs = require('fs')
 const path = require('path')
+const bcd = require('mdn-browser-compat-data')
 
 /*---------------------------------------------------------------------------------------------
  * Tags
@@ -25,35 +26,6 @@ export const HTML5_TAGS: ITagData[] = `
 const htmlTags = require('./htmlTags.json')
 const htmlTagDescriptions = require('./mdnTagDescriptions.json')
 
-/**
- * Temporary solution to convert MD to plain text to show in hover
- * Todo@Pine: Redo this after adding Markdown support
- */
-function getMarkdownToTextConverter() {
-	const remark = require('remark')
-	const strip = require('strip-markdown')
-
-	const converter = remark().use(strip)
-
-	return (md) => String(converter.processSync(md))
-}
-
-const mdToText = getMarkdownToTextConverter()
-
-htmlTagDescriptions.forEach(tag => {
-	if (tag.description) {
-		tag.description = mdToText(tag.description)
-
-		if (tag.attributes) {
-			tag.attributes.forEach(attr => {
-				if (attr.description) {
-					attr.description = mdToText(attr.description)
-				}
-			})
-		}
-	}
-})
-
 htmlTags.forEach(t => {
 	const matchingTagDescription = htmlTagDescriptions.filter(td => td.name === t.name)
 		? htmlTagDescriptions.filter(td => td.name === t.name)[0]
@@ -66,7 +38,12 @@ htmlTags.forEach(t => {
 				: null
 				
 			if (matchingAttrDescription) {
-				a.description = matchingAttrDescription.description
+				if (matchingAttrDescription.description) {
+					a.description = {
+						kind: 'markdown',
+						value: matchingAttrDescription.description
+					}
+				}
 			}
 		})
 		
@@ -80,10 +57,77 @@ htmlTags.forEach(t => {
 	}
 })
 
+htmlTags.forEach(t => {
+	if (t.description) {
+		t.description = {
+			kind: 'markdown',
+			value: t.description
+		}
+	}
+})
+
+const bcdHTMLElements = bcd.html.elements
+htmlTags.forEach(t => {
+	if (bcdHTMLElements[t.name]) {
+		const bcdMatchingTag = bcdHTMLElements[t.name]
+		if (bcdMatchingTag.__compat && bcdMatchingTag.__compat.mdn_url) {
+			if (!t.references) {
+				t.references =[];
+			}
+			t.references.push({
+				name: 'MDN Reference',
+				url: bcdMatchingTag.__compat.mdn_url
+			})
+		}
+	}
+})
+
 const htmlDataSrc = `${PREFIX}${JSON.stringify(htmlTags, null, 2)};`
 
 fs.writeFileSync(path.resolve(__dirname, '../src/languageFacts/data/html5Tags.ts'), htmlDataSrc)
 console.log('Done writing html5Tags.ts')
+
+/*---------------------------------------------------------------------------------------------
+ * Global Attributes
+ *--------------------------------------------------------------------------------------------*/
+
+const GLOBAL_ATTRS_PREFIX =
+`/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+'use strict';
+
+import { IAttributeData } from '../../htmlLanguageTypes';
+
+export const HTML5_GLOBAL_ATTRIBUTES: IAttributeData[] = `
+
+const htmlGlobalAttributes = require('./htmlGlobalAttributes.json')
+
+const bcdGlobalAttributes = bcd.html.global_attributes
+
+htmlGlobalAttributes.forEach(a => {
+	if (a.description) {
+		a.description = {
+			kind: 'markdown',
+			value: a.description
+		}
+	}
+	if (bcdGlobalAttributes[a.name] && bcdGlobalAttributes[a.name].__compat && bcdGlobalAttributes[a.name].__compat.mdn_url) {
+		if (!a.references) {
+			a.references = [];
+		}
+		a.references.push({
+			name: 'MDN Reference',
+			url: bcdGlobalAttributes[a.name].__compat.mdn_url
+		})
+	}
+})
+
+const htmlGlobalAttributesSrc = `${GLOBAL_ATTRS_PREFIX}${JSON.stringify(htmlGlobalAttributes, null, 2)};`
+
+fs.writeFileSync(path.resolve(__dirname, '../src/languageFacts/data/html5GlobalAttributes.ts'), htmlGlobalAttributesSrc)
+console.log('Done writing html5GlobalAttributes.ts')
 
 /*---------------------------------------------------------------------------------------------
  * Events
@@ -109,7 +153,12 @@ const oldEvents = require('./oldEvents.json')
 oldEvents.forEach(e => {
 	const match = htmlEvents.find(x => x.name === e.name)
 	if (match) {
-		e.description = match.description
+		if (match.description) {
+			e.description = {
+				kind: 'markdown',
+				value: match.description
+			}
+		}
 	}
 })
 
@@ -126,9 +175,13 @@ const ariaData = require('./ariaData.json')
 const ariaSpec = require('./ariaSpec.json')
 
 ariaSpec.forEach(ariaItem => {
-	ariaItem.description = mdToText(ariaItem.description)
+	if (ariaItem.description) {
+		ariaItem.description = {
+			kind: 'markdown',
+			value: ariaItem.description
+		}
+	}
 })
-
 const ariaMap = {}
 
 ariaData.forEach(ad => {

@@ -14,6 +14,7 @@ import { isLetterOrDigit, endsWith, startsWith } from '../utils/strings';
 import { getAllDataProviders } from '../languageFacts/builtinDataProviders';
 import { isVoidElement } from '../languageFacts/fact';
 import { isDefined } from '../utils/object';
+import { generateDocumentation } from '../languageFacts/dataProvider';
 const localize = nls.loadMessageBundle();
 
 export class HTMLCompletion {
@@ -41,6 +42,7 @@ export class HTMLCompletion {
 		};
 		const completionParticipants = this.completionParticipants;
 		const dataProviders = getAllDataProviders().filter(p => p.isApplicable(document.languageId) && (!settings || settings[p.getId()] !== false));
+		const doesSupportMarkdown = this.doesSupportMarkdown();
 
 		const text = document.getText();
 		const offset = document.offsetAt(position);
@@ -68,7 +70,7 @@ export class HTMLCompletion {
 					result.items.push({
 						label: tag.name,
 						kind: CompletionItemKind.Property,
-						documentation: tag.description,
+						documentation: generateDocumentation(tag, doesSupportMarkdown),
 						textEdit: TextEdit.replace(range, tag.name),
 						insertTextFormat: InsertTextFormat.PlainText
 					});
@@ -130,7 +132,7 @@ export class HTMLCompletion {
 					result.items.push({
 						label: '/' + tag.name,
 						kind: CompletionItemKind.Property,
-						documentation: tag.description,
+						documentation: generateDocumentation(tag, doesSupportMarkdown),
 						filterText: '/' + tag + closeTag,
 						textEdit: TextEdit.replace(range, '/' + tag + closeTag),
 						insertTextFormat: InsertTextFormat.PlainText
@@ -190,10 +192,11 @@ export class HTMLCompletion {
 							};
 						}
 					}
+					
 					result.items.push({
 						label: attr.name,
 						kind: attr.valueSet === 'handler' ? CompletionItemKind.Function : CompletionItemKind.Value,
-						documentation: attr.description,
+						documentation: generateDocumentation(attr, doesSupportMarkdown),
 						textEdit: TextEdit.replace(range, codeSnippet),
 						insertTextFormat: InsertTextFormat.Snippet,
 						command
@@ -270,11 +273,12 @@ export class HTMLCompletion {
 			dataProviders.forEach(provider => {
 				provider.provideValues(tag, attribute).forEach(value => {
 					const insertText = addQuotes ? '"' + value.name + '"' : value.name;
+
 					result.items.push({
 						label: value.name,
 						filterText: insertText,
 						kind: CompletionItemKind.Unit,
-						documentation: value.description,
+						documentation: generateDocumentation(value, doesSupportMarkdown),
 						textEdit: TextEdit.replace(range, insertText),
 						insertTextFormat: InsertTextFormat.PlainText
 					});
@@ -493,7 +497,7 @@ export class HTMLCompletion {
 		return list;
 	}
 
-	private doesSupportMarkdown() {
+	private doesSupportMarkdown(): boolean {
  		if (!isDefined(this.supportsMarkdown)) {
 			if (!isDefined(this.clientCapabilities)) {
 				this.supportsMarkdown = true;
@@ -503,7 +507,7 @@ export class HTMLCompletion {
 			const hover = this.clientCapabilities && this.clientCapabilities.textDocument && this.clientCapabilities.textDocument.hover;
 			this.supportsMarkdown = hover && hover.contentFormat && Array.isArray(hover.contentFormat) && hover.contentFormat.indexOf(MarkupKind.Markdown) !== -1;
 		}
-		return this.supportsMarkdown;
+		return <boolean>this.supportsMarkdown;
 	}
 }
 
