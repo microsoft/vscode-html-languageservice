@@ -20,9 +20,9 @@ let srcLocation = path.join(__dirname, '..', 'src');
 
 const umdDir = path.join(__dirname, '..', 'lib', 'umd', 'beautify');
 if (fs.existsSync(umdDir)) {
-	copy(path.join(__dirname, '..', 'src', 'beautify'), path.join(__dirname, '..', 'lib', 'umd', 'beautify'));
+	copy(path.join(__dirname, '..', 'src', 'beautify'), umdDir);
 }
 const esmDir = path.join(__dirname, '..', 'lib', 'esm', 'beautify');
 if (fs.existsSync(esmDir)) {
-	copy(path.join(__dirname, '..', 'src', 'beautify', 'esm'));
+	copy(path.join(__dirname, '..', 'src', 'beautify', 'esm'), esmDir);
 }
