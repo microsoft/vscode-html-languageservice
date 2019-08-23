@@ -10,7 +10,7 @@ import { TokenType, ClientCapabilities } from '../htmlLanguageTypes';
 import { getAllDataProviders } from '../languageFacts/builtinDataProviders';
 import { isDefined } from '../utils/object';
 import { isArray } from 'util';
-import { generateMarkupcontent } from '../languageFacts/dataProvider';
+import { generateDocumentation } from '../languageFacts/dataProvider';
 
 export class HTMLHover {
 	private supportsMarkdown: boolean | undefined;
@@ -19,6 +19,7 @@ export class HTMLHover {
 
 	doHover(document: TextDocument, position: Position, htmlDocument: HTMLDocument): Hover | null {
 		const convertContents = this.convertContents.bind(this);
+		const doesSupportMarkdown = this.doesSupportMarkdown();
 
 		const offset = document.offsetAt(position);
 		const node = htmlDocument.findNodeAt(offset);
@@ -36,7 +37,7 @@ export class HTMLHover {
 				provider.provideTags().forEach(tag => {
 					if (tag.name.toLowerCase() === currTag.toLowerCase()) {
 						const tagLabel = open ? '<' + currTag + '>' : '</' + currTag + '>';
-						const markupContent = generateMarkupcontent(tag);
+						const markupContent = generateDocumentation(tag, doesSupportMarkdown);
 						markupContent.value = '```html\n' + tagLabel + '\n```\n' + markupContent.value;
 						hover = { contents: markupContent, range };
 					}
@@ -58,7 +59,7 @@ export class HTMLHover {
 
 				provider.provideAttributes(currTag).forEach(attr => {
 					if (currAttr === attr.name && attr.description) {
-						hover = { contents: generateMarkupcontent(attr), range };
+						hover = { contents: generateDocumentation(attr, doesSupportMarkdown), range };
 					}
 				});
 
@@ -78,7 +79,7 @@ export class HTMLHover {
 
 				provider.provideValues(currTag, currAttr).forEach(attrValue => {
 					if (currAttrValue === attrValue.name && attrValue.description) {
-						hover = { contents: generateMarkupcontent(attrValue), range };
+						hover = { contents: generateDocumentation(attrValue, doesSupportMarkdown), range };
 					}
 				});
 
@@ -177,7 +178,7 @@ export class HTMLHover {
 		return contents;
 	}
 
-	private doesSupportMarkdown() {
+	private doesSupportMarkdown(): boolean {
 		if (!isDefined(this.supportsMarkdown)) {
 			if (!isDefined(this.clientCapabilities)) {
 				this.supportsMarkdown = true;
@@ -187,7 +188,7 @@ export class HTMLHover {
 			const hover = this.clientCapabilities && this.clientCapabilities.textDocument && this.clientCapabilities.textDocument.hover;
 			this.supportsMarkdown = hover && hover.contentFormat && Array.isArray(hover.contentFormat) && hover.contentFormat.indexOf(MarkupKind.Markdown) !== -1;
 		}
-		return this.supportsMarkdown;
+		return <boolean>this.supportsMarkdown;
 	}
 }
 

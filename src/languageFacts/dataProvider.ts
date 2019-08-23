@@ -58,7 +58,7 @@ export class HTMLDataProvider implements IHTMLDataProvider {
 	provideAttributes(tag: string) {
 		const attributes: IAttributeData[] = [];
 		const processAttribute = (a: IAttributeData) => {
-			attributes.push({ ...a });
+			attributes.push(a);
 		};
 
 		if (this._tagMap[tag]) {
@@ -109,12 +109,12 @@ export class HTMLDataProvider implements IHTMLDataProvider {
 }
 
 /**
- * Generate MarkupContent used in hover/complete
+ * Generate Documentation used in hover/complete
  * From `documentation` and `references`
  */
-export function generateMarkupcontent(item: ITagData | IAttributeData | IValueData): MarkupContent {
+export function generateDocumentation(item: ITagData | IAttributeData | IValueData, doesSupportMarkdown: boolean): MarkupContent {
 	const result: MarkupContent = {
-		kind: 'markdown',
+		kind: doesSupportMarkdown ? 'markdown' : 'plaintext',
 		value: ''
 	};
 	
@@ -127,9 +127,15 @@ export function generateMarkupcontent(item: ITagData | IAttributeData | IValueDa
 	
 	if (item.references && item.references.length > 0) {
 		result.value += `\n\n`;
-		result.value += item.references.map(r => {
-			return `[${r.name}](${r.url})`;
-		}).join(' | ');
+		if (doesSupportMarkdown) {
+			result.value += item.references.map(r => {
+				return `[${r.name}](${r.url})`;
+			}).join(' | ');
+		} else {
+			result.value += item.references.map(r => {
+				return `${r.name}: ${r.url}`;
+			}).join('\n');
+		}
 	}
 	
 	return result;
