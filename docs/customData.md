@@ -2,8 +2,8 @@
 
 In VS Code, there are two ways of loading custom HTML datasets:
 
-1. With setting `html.experimental.customData`
-2. With an extension that contributes `contributes.html.experimental.customData`
+1. With setting `html.customData`
+2. With an extension that contributes `contributes.html.customData`
 
 Both setting point to a list of JSON files. This document describes the shape of the JSON files.
 
@@ -15,7 +15,7 @@ The JSON have one required property, `version` and 3 other top level properties:
 
 ```jsonc
 {
-  "version": 1,
+  "version": 1.1,
   "tags": [],
   "globalAttributes": [],
   "valueSets": []
@@ -93,3 +93,26 @@ For example, for the following custom data:
 - Completion on `<foo |` will also provide the global attributes `fooAttr` and `xattr`
 - Completion on `<foo xattr=>` will provide all values in valueSet `x`, which is `xval`
 - Hover on `foo` will show `The foo element`
+
+### Additional properties
+
+For either `tag`, `attribute` or `attributeValue`, you can provide a `references` property of the following form
+
+```json
+{
+  "tags": [
+    {
+      "name": "foo",
+      "description": "The foo element",
+      "references": [
+        {
+          "name": "My foo element reference",
+          "url": "https://www.foo.com/element/foo"
+        }
+      ]
+    }
+  ]
+}
+```
+
+It will be displayed in Markdown form in completion and hover as `[My foo element reference](https://www.foo.com/element/foo)`.
