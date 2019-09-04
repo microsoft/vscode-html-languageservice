@@ -22,22 +22,11 @@ The JSON have one required property, `version` and 3 other top level properties:
 }
 ```
 
-Version denotes the schema version you are using. The latest schema version is V1.
+Version denotes the schema version you are using. The latest schema version is `V1.1`.
 
 You can find other properties' shapes at [htmlLanguageTypes.ts](../src/htmlLanguageTypes.ts) or the [JSON Schema](./customData.schema.json).
 
-You might want to use the `json.schemas` setting to check your data against the schema and get auto-completion:
-
-```json
-{
-  "json.schemas": [
-    {
-      "fileMatch": ["/html.json"],
-      "url": "https://raw.githubusercontent.com/Microsoft/vscode-html-languageservice/master/docs/customData.schema.json"
-    }
-  ]
-}
-```
+You should suffix your custom data file with `.html-data.json`, so VS Code will load the most recent schema for the JSON file to offer auto completion and error checking.
 
 [html5.ts](../src/languageFacts/data/html5.ts) contains that built-in dataset that conforms to the spec.
 
