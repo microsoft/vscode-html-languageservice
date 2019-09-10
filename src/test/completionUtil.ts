@@ -13,6 +13,7 @@ interface ItemDescription {
 	documentation?: string | MarkupContent;
 	kind?: CompletionItemKind;
 	resultText?: string;
+	filterText?: string;
 	notAvailable?: boolean;
 }
 
@@ -43,6 +44,9 @@ function assertCompletion(completions: CompletionList, expected: ItemDescription
 	}
 	if (expected.resultText && match.textEdit) {
 		assert.equal(TextDocument.applyEdits(document, [match.textEdit]), expected.resultText);
+	}
+	if (expected.filterText) {
+		assert.equal(expected.filterText, expected.filterText);
 	}
 }
 

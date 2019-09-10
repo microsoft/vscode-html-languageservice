@@ -487,4 +487,20 @@ suite('HTML Completion', () => {
 			]
 		});
 	});
+
+	/**
+	 * For https://github.com/microsoft/vscode/issues/80600
+	 * When completing within <div> <| </div>, it prompts suggestion </div>
+	 * that would replace whole line.
+	 * If you have typed out `<div>`, this suggestion should be filtered out.
+	 * Todo @Pine: make this incomplete completion list, and only include
+	 * close tag suggestion after typing out </|
+	 */
+	test('filterText for close tag suggestion', () => 
+		testCompletionFor('<div> <| </div>', {
+			items: [
+				{ label: '/div', filterText: '</div' }
+			]
+		})
+	);
 });

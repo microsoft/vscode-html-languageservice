@@ -107,7 +107,7 @@ export class HTMLCompletion {
 					const item: CompletionItem = {
 						label: '/' + tag,
 						kind: CompletionItemKind.Property,
-						filterText: '/' + tag + closeTag,
+						filterText: '/' + tag,
 						textEdit: TextEdit.replace(range, '/' + tag + closeTag),
 						insertTextFormat: InsertTextFormat.PlainText
 					};
@@ -116,7 +116,7 @@ export class HTMLCompletion {
 					if (startIndent !== null && endIndent !== null && startIndent !== endIndent) {
 						const insertText = startIndent + '</' + tag + closeTag;
 						item.textEdit = TextEdit.replace(getReplaceRange(afterOpenBracket - 1 - endIndent.length), insertText);
-						item.filterText = endIndent + '</' + tag + closeTag;
+						item.filterText = endIndent + '</' + tag;
 					}
 					result.items.push(item);
 					return result;
