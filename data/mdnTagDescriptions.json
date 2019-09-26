@@ -293,7 +293,7 @@
       },
       {
         "name": "formaction",
-        "description": "The URI of a program that processes the information submitted by the button. If specified, it overrides the `[action](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form#attr-action)` attribute of the button's form owner."
+        "description": "The URI of a program that processes the information submitted by the button. If specified, it overrides the [`action`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form#attr-action) attribute of the button's form owner."
       },
       {
         "name": "formenctype",
@@ -522,7 +522,7 @@
       },
       {
         "name": "action",
-        "description": "The URI of a program that processes the form information. This value can be overridden by a `[formaction](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button#attr-formaction)` attribute on a [`<button>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button \"The HTML <button> element represents a clickable button, which can be used in forms or anywhere in a document that needs simple, standard button functionality.\") or [`<input>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input \"The HTML <input> element is used to create interactive controls for web-based forms in order to accept data from the user; a wide variety of types of input data and control widgets are available, depending on the device and user agent.\") element."
+        "description": "The URI of a program that processes the form information. This value can be overridden by a `[formaction](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button#attr-formaction) attribute on a [`<button>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button \"The HTML <button> element represents a clickable button, which can be used in forms or anywhere in a document that needs simple, standard button functionality.\") or [`<input>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input \"The HTML <input> element is used to create interactive controls for web-based forms in order to accept data from the user; a wide variety of types of input data and control widgets are available, depending on the device and user agent.\") element."
       },
       {
         "name": "autocapitalize",
