@@ -46,7 +46,7 @@ function assertCompletion(completions: CompletionList, expected: ItemDescription
 		assert.equal(TextDocument.applyEdits(document, [match.textEdit]), expected.resultText);
 	}
 	if (expected.filterText) {
-		assert.equal(expected.filterText, expected.filterText);
+		assert.equal(match.filterText, expected.filterText);
 	}
 }
 
