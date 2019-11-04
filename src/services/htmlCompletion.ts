@@ -3,7 +3,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { TextDocument, Position, CompletionList, CompletionItemKind, Range, TextEdit, InsertTextFormat, CompletionItem, MarkupKind } from 'vscode-languageserver-types';
+import { Position, CompletionList, CompletionItemKind, Range, TextEdit, InsertTextFormat, CompletionItem, MarkupKind } from 'vscode-languageserver-types';
+import { TextDocument } from 'vscode-languageserver-textdocument';
 import { HTMLDocument, Node } from '../parser/htmlParser';
 import { createScanner } from '../parser/htmlScanner';
 import { CompletionConfiguration, ICompletionParticipant, ScannerState, TokenType, ClientCapabilities } from '../htmlLanguageTypes';

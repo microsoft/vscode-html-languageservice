@@ -5,7 +5,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { TextDocument } from 'vscode-languageserver-types';
+import { TextDocument } from 'vscode-languageserver-textdocument';
 import * as htmlLanguageService from '../htmlLanguageService';
 import * as url from 'url';
 

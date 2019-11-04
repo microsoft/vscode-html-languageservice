@@ -4,7 +4,8 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { createScanner } from '../parser/htmlScanner';
-import { TextDocument, Range, DocumentLink } from 'vscode-languageserver-types';
+import { Range, DocumentLink } from 'vscode-languageserver-types';
+import { TextDocument } from 'vscode-languageserver-textdocument';
 import * as strings from '../utils/strings';
 import { URI as Uri } from 'vscode-uri';
 

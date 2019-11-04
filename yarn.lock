@@ -997,10 +997,15 @@ vfile@^4.0.0:
     unist-util-stringify-position "^2.0.0"
     vfile-message "^2.0.0"
 
-vscode-languageserver-types@^3.15.0-next.5:
-  version "3.15.0-next.5"
-  resolved "https://registry.yarnpkg.com/vscode-languageserver-types/-/vscode-languageserver-types-3.15.0-next.5.tgz#863d711bf47b338ff5e63ae19fb20d4fcd4d713b"
-  integrity sha512-7hrELhTeWieUgex3+6692KjCkcmO/+V/bFItM5MHGcBotzwmjEuXjapLLYTYhIspuJ1ibRSik5MhX5YwLpsPiw==
+vscode-languageserver-textdocument@^1.0.0-next.2:
+  version "1.0.0-next.2"
+  resolved "https://registry.yarnpkg.com/vscode-languageserver-textdocument/-/vscode-languageserver-textdocument-1.0.0-next.2.tgz#0324c50e93c32e39a151ba635a4ac61dbf6aa760"
+  integrity sha512-omA1bS2ENVnhYnenmGGNQjAdxz3FbGgNvGOKrppAS1KxdYrOczxon+AQF0JswRwE0yxwhFwEFDvB4e5earYCww==
+
+vscode-languageserver-types@^3.15.0-next.6:
+  version "3.15.0-next.6"
+  resolved "https://registry.yarnpkg.com/vscode-languageserver-types/-/vscode-languageserver-types-3.15.0-next.6.tgz#7a990d00c39ad4e744335afb4cc422a3e687ff25"
+  integrity sha512-+4jfvmZ26oFMSX6EgPRB75PWHoT8pzyWuSSWk0erC4hTzmJq2gWxVLh20bZutZjMmiivawvPshtM3XZhX2SttA==
 
 vscode-nls@^4.1.1:
   version "4.1.1"

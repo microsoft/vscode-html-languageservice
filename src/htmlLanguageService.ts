@@ -11,7 +11,8 @@ import { format } from './services/htmlFormatter';
 import { findDocumentLinks } from './services/htmlLinks';
 import { findDocumentHighlights } from './services/htmlHighlighting';
 import { findDocumentSymbols } from './services/htmlSymbolsProvider';
-import { TextDocument, Position, CompletionList, Hover, Range, SymbolInformation, TextEdit, DocumentHighlight, DocumentLink, FoldingRange, SelectionRange } from 'vscode-languageserver-types';
+import { Position, CompletionList, Hover, Range, SymbolInformation, TextEdit, DocumentHighlight, DocumentLink, FoldingRange, SelectionRange } from 'vscode-languageserver-types';
+import { TextDocument } from 'vscode-languageserver-textdocument';
 import { Scanner, HTMLDocument, CompletionConfiguration, ICompletionParticipant, HTMLFormatConfiguration, DocumentContext, IHTMLDataProvider, HTMLDataV1, LanguageServiceOptions } from './htmlLanguageTypes';
 import { getFoldingRanges } from './services/htmlFolding';
 import { getSelectionRanges } from './services/htmlSelectionRange';
@@ -19,6 +20,7 @@ import { handleCustomDataProviders } from './languageFacts/builtinDataProviders'
 import { HTMLDataProvider } from './languageFacts/dataProvider';
 
 export * from './htmlLanguageTypes';
+export { TextDocument } from 'vscode-languageserver-textdocument';
 export * from 'vscode-languageserver-types';
 
 export interface LanguageService {

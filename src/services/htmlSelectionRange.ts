@@ -2,7 +2,8 @@
  * Until SelectionRange lands in LSP, we'll return Range from server and convert it to
  * SelectionRange on client side
  */
-import { Range, TextDocument, Position, SelectionRange } from 'vscode-languageserver-types';
+import { Range, Position, SelectionRange } from 'vscode-languageserver-types';
+import { TextDocument } from 'vscode-languageserver-textdocument';
 import { createScanner } from '../parser/htmlScanner';
 import { parse, Node } from '../parser/htmlParser';
 import { TokenType } from '../htmlLanguageTypes';

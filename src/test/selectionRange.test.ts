@@ -5,7 +5,8 @@
 
 import 'mocha';
 import * as assert from 'assert';
-import { TextDocument, SelectionRange } from 'vscode-languageserver-types';
+import { SelectionRange } from 'vscode-languageserver-types';
+import { TextDocument } from 'vscode-languageserver-textdocument';
 import { getLanguageService } from '../htmlLanguageService';
 
 function assertRanges(content: string, expected: (number | string)[][]): void {

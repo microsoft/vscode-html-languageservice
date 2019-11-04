@@ -5,7 +5,8 @@
 
 import { HTMLDocument } from '../parser/htmlParser';
 import { createScanner } from '../parser/htmlScanner';
-import { TextDocument, Range, Position, DocumentHighlightKind, DocumentHighlight } from 'vscode-languageserver-types';
+import { Range, Position, DocumentHighlightKind, DocumentHighlight } from 'vscode-languageserver-types';
+import { TextDocument } from 'vscode-languageserver-textdocument';
 import { TokenType } from '../htmlLanguageTypes';
 
 export function findDocumentHighlights(document: TextDocument, position: Position, htmlDocument: HTMLDocument): DocumentHighlight[] {

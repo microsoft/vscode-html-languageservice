@@ -3,7 +3,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { TextDocument, Position, Range, MarkupContent, MarkupKind } from 'vscode-languageserver-types';
+import { Position, Range, MarkupContent, MarkupKind } from 'vscode-languageserver-types';
+import { TextDocument } from 'vscode-languageserver-textdocument';
 
 export interface HTMLFormatConfiguration {
 	tabSize?: number;

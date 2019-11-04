@@ -6,7 +6,8 @@
 import * as assert from 'assert';
 import * as htmlLanguageService from '../htmlLanguageService';
 
-import { CompletionList, TextDocument, CompletionItemKind, MarkupContent } from 'vscode-languageserver-types';
+import { CompletionList, CompletionItemKind, MarkupContent } from 'vscode-languageserver-types';
+import { TextDocument } from 'vscode-languageserver-textdocument';
 
 interface ItemDescription {
 	label: string;

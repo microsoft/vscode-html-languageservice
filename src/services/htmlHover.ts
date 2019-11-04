@@ -5,7 +5,8 @@
 
 import { HTMLDocument } from '../parser/htmlParser';
 import { createScanner } from '../parser/htmlScanner';
-import { TextDocument, Range, Position, Hover, MarkedString, MarkupContent, MarkupKind } from 'vscode-languageserver-types';
+import { Range, Position, Hover, MarkedString, MarkupContent, MarkupKind } from 'vscode-languageserver-types';
+import { TextDocument } from 'vscode-languageserver-textdocument';
 import { TokenType, ClientCapabilities } from '../htmlLanguageTypes';
 import { getAllDataProviders } from '../languageFacts/builtinDataProviders';
 import { isDefined } from '../utils/object';
