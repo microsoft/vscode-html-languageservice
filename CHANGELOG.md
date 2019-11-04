@@ -1,3 +1,7 @@
+3.0.4 / 
+==================
+  * Use `TextDocument` from `vscode-languageserver-textdocument`
+
 3.0.3 / 2019-07-25
 ==================
   * DocumentContext.resolveReference can also return undefined (if the ref is invalid)
