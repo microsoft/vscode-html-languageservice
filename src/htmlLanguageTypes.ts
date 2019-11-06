@@ -150,7 +150,7 @@ export interface IValueSet {
 }
 
 export interface HTMLDataV1 {
-	version: 1;
+	version: 1 | 1.1;
 	tags?: ITagData[];
 	globalAttributes?: IAttributeData[];
 	valueSets?: IValueSet[];

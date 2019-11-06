@@ -3,11 +3,12 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { getHTML5DataProvider } from './data/html5';
 import { IHTMLDataProvider } from '../htmlLanguageTypes';
+import { HTMLDataProvider } from './dataProvider';
+import { htmlData } from './data/webCustomData';
 
 export const builtinDataProviders: IHTMLDataProvider[] = [
-	getHTML5DataProvider()
+	new HTMLDataProvider('html5', htmlData)
 ];
 
 const customDataProviders: IHTMLDataProvider[] = [];

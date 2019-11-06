@@ -18,13 +18,11 @@
     "@types/mocha": "^5.2.7",
     "@types/node": "^10.12.21",
     "js-beautify": "^1.10.2",
-    "mdn-browser-compat-data": "^0.0.89",
     "mocha": "^6.2.1",
-    "remark": "^11.0.1",
     "rimraf": "^3.0.0",
-    "strip-markdown": "^3.1.1",
     "tslint": "^5.20.0",
-    "typescript": "^3.6.3"
+    "typescript": "^3.6.3",
+    "vscode-web-custom-data": "^0.1.1"
   },
   "dependencies": {
     "vscode-languageserver-textdocument": "^1.0.0-next.4",
@@ -46,6 +44,7 @@
     "copy-jsbeautify": "node ./build/copy-jsbeautify.js",
     "update-jsbeautify": "yarn add js-beautify && node ./build/update-jsbeautify.js",
     "update-jsbeautify-next": "yarn add js-beautify@next && node ./build/update-jsbeautify.js",
+    "update-data": "node ./build/generateData.js",
     "preversion": "npm test",
     "postversion": "git push && git push --tags"
   }
