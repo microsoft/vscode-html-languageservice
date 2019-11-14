@@ -475,9 +475,6 @@ suite('HTML Scanner', () => {
 			]
 		}
 		]);
-	});
-
-	test('Tag with Empty Attribute Value', () => {
 		assertTokens([{
 			input: '<abc foo=\'bar\'>',
 			tokens: [
@@ -496,6 +493,19 @@ suite('HTML Scanner', () => {
 	test('Tag with empty attributes', () => {
 		assertTokens([{
 			input: '<abc foo="">',
+			tokens: [
+				{ offset: 0, type: TokenType.StartTagOpen },
+				{ offset: 1, type: TokenType.StartTag, content: 'abc' },
+				{ offset: 4, type: TokenType.Whitespace },
+				{ offset: 5, type: TokenType.AttributeName },
+				{ offset: 8, type: TokenType.DelimiterAssign },
+				{ offset: 9, type: TokenType.AttributeValue },
+				{ offset: 11, type: TokenType.StartTagClose }
+			]
+		}
+		]);
+		assertTokens([{
+			input: `<abc foo=''>`,
 			tokens: [
 				{ offset: 0, type: TokenType.StartTagOpen },
 				{ offset: 1, type: TokenType.StartTag, content: 'abc' },
@@ -561,6 +571,19 @@ suite('HTML Scanner', () => {
 				{ offset: 8, type: TokenType.DelimiterAssign },
 				{ offset: 9, type: TokenType.AttributeValue },
 				{ offset: 12, type: TokenType.StartTagSelfClose }
+			]
+		}
+		]);
+		assertTokens([{
+			input: '<abc foo=http://example.com/foo/bar/>',
+			tokens: [
+				{ offset: 0, type: TokenType.StartTagOpen },
+				{ offset: 1, type: TokenType.StartTag, content: 'abc' },
+				{ offset: 4, type: TokenType.Whitespace },
+				{ offset: 5, type: TokenType.AttributeName },
+				{ offset: 8, type: TokenType.DelimiterAssign },
+				{ offset: 9, type: TokenType.AttributeValue },
+				{ offset: 35, type: TokenType.StartTagSelfClose }
 			]
 		}
 		]);

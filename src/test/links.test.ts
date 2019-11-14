@@ -36,11 +36,11 @@ suite('HTML Link Detection', () => {
 		assert.equal(links[0] && links[0].target, expected);
 	}
 
-	function testLinkDetection(value: string, expectedLinks: { offset: number, target: string; }[]): void {
+	function testLinkDetection(value: string, expectedLinks: { offset: number, length: number, target: string; }[]): void {
 		const document = TextDocument.create('http://test/data/abc/test.html', 'html', 0, value);
 		const ls = htmlLanguageService.getLanguageService();
 		const links = ls.findDocumentLinks(document, getDocumentContext(document.uri));
-		assert.deepEqual(links.map(l => ({ offset: l.range.start.character, target: l.target })), expectedLinks);
+		assert.deepEqual(links.map(l => ({ offset: l.range.start.character, length: l.range.end.character - l.range.start.character, target: l.target })), expectedLinks);
 	}
 
 	test('Link creation', () => {
@@ -81,18 +81,18 @@ suite('HTML Link Detection', () => {
 	});
 
 	test('Link detection', () => {
-		testLinkDetection('<img src="foo.png">', [{ offset: 10, target: 'http://test/data/abc/foo.png' }]);
-		testLinkDetection('<a href="http://server/foo.html">', [{ offset: 9, target: 'http://server/foo.html' }]);
+		testLinkDetection('<img src="foo.png">', [{ offset: 10, length: 7, target: 'http://test/data/abc/foo.png' }]);
+		testLinkDetection('<a href="http://server/foo.html">', [{ offset: 9, length: 22, target: 'http://server/foo.html' }]);
 		testLinkDetection('<img src="">', []);
-		testLinkDetection('<LINK HREF="a.html">', [{ offset: 12, target: 'http://test/data/abc/a.html' }]);
+		testLinkDetection('<LINK HREF="a.html">', [{ offset: 12, length: 6, target: 'http://test/data/abc/a.html' }]);
 		testLinkDetection('<LINK HREF="a.html\n>\n', []);
+		testLinkDetection('<a href=http://www.example.com></a>', [{ offset: 8, length: 22, target: 'http://www.example.com' }]);
 
-		testLinkDetection('<html><base href="docs/"><img src="foo.png"></html>', [{ offset: 35, target: 'http://test/data/abc/docs/foo.png' }]);
-		testLinkDetection('<html><base href="http://www.example.com/page.html"><img src="foo.png"></html>', [{ offset: 62, target: 'http://www.example.com/foo.png' }]);
-		testLinkDetection('<html><base href=".."><img src="foo.png"></html>', [{ offset: 32, target: 'http://test/data/foo.png' }]);
-		testLinkDetection('<html><base href="."><img src="foo.png"></html>', [{ offset: 31, target: 'http://test/data/abc/foo.png' }]);
-		testLinkDetection('<html><base href="/docs/"><img src="foo.png"></html>', [{ offset: 36, target: 'http://test/docs/foo.png' }]);
-
+		testLinkDetection('<html><base href="docs/"><img src="foo.png"></html>', [{ offset: 35, length: 7, target: 'http://test/data/abc/docs/foo.png' }]);
+		testLinkDetection('<html><base href="http://www.example.com/page.html"><img src="foo.png"></html>', [{ offset: 62, length: 7, target: 'http://www.example.com/foo.png' }]);
+		testLinkDetection('<html><base href=".."><img src="foo.png"></html>', [{ offset: 32, length: 7, target: 'http://test/data/foo.png' }]);
+		testLinkDetection('<html><base href="."><img src="foo.png"></html>', [{ offset: 31, length: 7, target: 'http://test/data/abc/foo.png' }]);
+		testLinkDetection('<html><base href="/docs/"><img src="foo.png"></html>', [{ offset: 36, length: 7, target: 'http://test/docs/foo.png' }]);
 
 		testLinkDetection('<a href="mailto:<%- mail %>@<%- domain %>" > <% - mail %>@<% - domain %> </a>', []);
 	});

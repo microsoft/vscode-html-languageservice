@@ -333,8 +333,12 @@ export function createScanner(input: string, initialOffset = 0, initialState: Sc
 				if (stream.skipWhitespace()) {
 					return finishToken(offset, TokenType.Whitespace);
 				}
-				const attributeValue = stream.advanceIfRegExp(/^[^\s"'`=<>\/]+/);
+				let attributeValue = stream.advanceIfRegExp(/^[^\s"'`=<>]+/);
 				if (attributeValue.length > 0) {
+					if (stream.peekChar() === _RAN && stream.peekChar(-1) === _FSL) { // <foo bar=http://foo/>
+						stream.goBack(1);
+						attributeValue = attributeValue.substr(0, attributeValue.length - 1);
+					}
 					if (lastAttributeName === 'type') {
 						lastTypeValue = attributeValue;
 					}
