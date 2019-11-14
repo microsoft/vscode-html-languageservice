@@ -37,7 +37,7 @@ suite('HTML Link Detection', () => {
 	}
 
 	function testLinkDetection(value: string, expectedLinks: { offset: number, length: number, target: string; }[]): void {
-		const document = TextDocument.create('http://test/data/abc/test.html', 'html', 0, value);
+		const document = TextDocument.create('file:///test/data/abc/test.html', 'html', 0, value);
 		const ls = htmlLanguageService.getLanguageService();
 		const links = ls.findDocumentLinks(document, getDocumentContext(document.uri));
 		assert.deepEqual(links.map(l => ({ offset: l.range.start.character, length: l.range.end.character - l.range.start.character, target: l.target })), expectedLinks);
@@ -46,7 +46,7 @@ suite('HTML Link Detection', () => {
 	test('Link creation', () => {
 		testLinkCreation('http://model/1.html', 'javascript:void;', null);
 		testLinkCreation('http://model/1.html', ' \tjavascript:alert(7);', null);
-		testLinkCreation('http://model/1.html', ' #relative', null);
+		testLinkCreation('http://model/1.html', ' #relative', 'http://model/1.html#relative');
 		testLinkCreation('http://model/1.html', 'file:///C:\\Alex\\src\\path\\to\\file.txt', 'file:///C:\\Alex\\src\\path\\to\\file.txt');
 		testLinkCreation('http://model/1.html', 'http://www.microsoft.com/', 'http://www.microsoft.com/');
 		testLinkCreation('http://model/1.html', 'https://www.microsoft.com/', 'https://www.microsoft.com/');
@@ -58,7 +58,7 @@ suite('HTML Link Detection', () => {
 
 		testLinkCreation('file:///C:/Alex/src/path/to/file.html', 'javascript:void;', null);
 		testLinkCreation('file:///C:/Alex/src/path/to/file.html', ' \tjavascript:alert(7);', null);
-		testLinkCreation('file:///C:/Alex/src/path/to/file.html', ' #relative', null);
+		testLinkCreation('file:///C:/Alex/src/path/to/file.html', ' #relative', 'file:///C:/Alex/src/path/to/file.html#relative');
 		testLinkCreation('file:///C:/Alex/src/path/to/file.html', 'file:///C:\\Alex\\src\\path\\to\\file.txt', 'file:///C:\\Alex\\src\\path\\to\\file.txt');
 		testLinkCreation('file:///C:/Alex/src/path/to/file.html', 'http://www.microsoft.com/', 'http://www.microsoft.com/');
 		testLinkCreation('file:///C:/Alex/src/path/to/file.html', 'https://www.microsoft.com/', 'https://www.microsoft.com/');
@@ -81,20 +81,25 @@ suite('HTML Link Detection', () => {
 	});
 
 	test('Link detection', () => {
-		testLinkDetection('<img src="foo.png">', [{ offset: 10, length: 7, target: 'http://test/data/abc/foo.png' }]);
+		testLinkDetection('<img src="foo.png">', [{ offset: 10, length: 7, target: 'file:///test/data/abc/foo.png' }]);
 		testLinkDetection('<a href="http://server/foo.html">', [{ offset: 9, length: 22, target: 'http://server/foo.html' }]);
 		testLinkDetection('<img src="">', []);
-		testLinkDetection('<LINK HREF="a.html">', [{ offset: 12, length: 6, target: 'http://test/data/abc/a.html' }]);
+		testLinkDetection('<LINK HREF="a.html">', [{ offset: 12, length: 6, target: 'file:///test/data/abc/a.html' }]);
 		testLinkDetection('<LINK HREF="a.html\n>\n', []);
 		testLinkDetection('<a href=http://www.example.com></a>', [{ offset: 8, length: 22, target: 'http://www.example.com' }]);
 
-		testLinkDetection('<html><base href="docs/"><img src="foo.png"></html>', [{ offset: 35, length: 7, target: 'http://test/data/abc/docs/foo.png' }]);
+		testLinkDetection('<html><base href="docs/"><img src="foo.png"></html>', [{ offset: 35, length: 7, target: 'file:///test/data/abc/docs/foo.png' }]);
 		testLinkDetection('<html><base href="http://www.example.com/page.html"><img src="foo.png"></html>', [{ offset: 62, length: 7, target: 'http://www.example.com/foo.png' }]);
-		testLinkDetection('<html><base href=".."><img src="foo.png"></html>', [{ offset: 32, length: 7, target: 'http://test/data/foo.png' }]);
-		testLinkDetection('<html><base href="."><img src="foo.png"></html>', [{ offset: 31, length: 7, target: 'http://test/data/abc/foo.png' }]);
-		testLinkDetection('<html><base href="/docs/"><img src="foo.png"></html>', [{ offset: 36, length: 7, target: 'http://test/docs/foo.png' }]);
+		testLinkDetection('<html><base href=".."><img src="foo.png"></html>', [{ offset: 32, length: 7, target: 'file:///test/data/foo.png' }]);
+		testLinkDetection('<html><base href="."><img src="foo.png"></html>', [{ offset: 31, length: 7, target: 'file:///test/data/abc/foo.png' }]);
+		testLinkDetection('<html><base href="/docs/"><img src="foo.png"></html>', [{ offset: 36, length: 7, target: 'file:///docs/foo.png' }]);
 
 		testLinkDetection('<a href="mailto:<%- mail %>@<%- domain %>" > <% - mail %>@<% - domain %> </a>', []);
+	});
+
+	test('Local targets', () => {
+		testLinkDetection('<body><h1 id="title"></h1><a href="#title"</a></body>', [{ offset: 35, length: 6, target: 'file:///test/data/abc/test.html#1,14' }]);
+		testLinkDetection('<body><h1 id="title"></h1><a href="file:///test/data/abc/test.html#title"</a></body>', [{ offset: 35, length: 37, target: 'file:///test/data/abc/test.html#1,14' }]);
 	});
 
 });

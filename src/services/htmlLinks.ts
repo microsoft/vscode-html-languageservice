@@ -11,7 +11,7 @@ import { URI as Uri } from 'vscode-uri';
 
 import { TokenType, DocumentContext } from '../htmlLanguageTypes';
 
-function normalizeRef(url: string, languageId: string): string {
+function normalizeRef(url: string): string {
 	const first = url[0];
 	const last = url[url.length - 1];
 	if (first === last && (first === '\'' || first === '\"')) {
@@ -31,7 +31,7 @@ function validateRef(url: string, languageId: string): boolean {
 }
 
 function getWorkspaceUrl(documentUri: string, tokenContent: string, documentContext: DocumentContext, base: string | undefined): string | undefined {
-	if (/^\s*javascript\:/i.test(tokenContent) || /^\s*\#/i.test(tokenContent) || /[\n\r]/.test(tokenContent)) {
+	if (/^\s*javascript\:/i.test(tokenContent) || /[\n\r]/.test(tokenContent)) {
 		return undefined;
 	}
 	tokenContent = tokenContent.replace(/^\s*/g, '');
@@ -40,7 +40,9 @@ function getWorkspaceUrl(documentUri: string, tokenContent: string, documentCont
 		// Absolute link that needs no treatment
 		return tokenContent;
 	}
-
+	if (/^\#/i.test(tokenContent)) {
+		return documentUri + tokenContent;
+	}
 	if (/^\/\//i.test(tokenContent)) {
 		// Absolute link (that does not name the protocol)
 		const pickedScheme = strings.startsWith(documentUri, 'https://') ? 'https' : 'http';
@@ -53,7 +55,7 @@ function getWorkspaceUrl(documentUri: string, tokenContent: string, documentCont
 }
 
 function createLink(document: TextDocument, documentContext: DocumentContext, attributeValue: string, startOffset: number, endOffset: number, base: string | undefined): DocumentLink | undefined {
-	const tokenContent = normalizeRef(attributeValue, document.languageId);
+	const tokenContent = normalizeRef(attributeValue);
 	if (!validateRef(tokenContent, document.languageId)) {
 		return undefined;
 	}
@@ -83,13 +85,13 @@ function isValidURI(uri: string) {
 export function findDocumentLinks(document: TextDocument, documentContext: DocumentContext): DocumentLink[] {
 	const newLinks: DocumentLink[] = [];
 
-	const rootAbsoluteUrl: Uri | null = null;
-
 	const scanner = createScanner(document.getText(), 0);
 	let token = scanner.scan();
-	let afterHrefOrSrc = false;
+	let lastAttributeName: string | undefined = undefined;
 	let afterBase = false;
 	let base: string | undefined = void 0;
+	const idLocations: { [id: string]: number | undefined } = {};
+
 	while (token !== TokenType.EOS) {
 		switch (token) {
 			case TokenType.StartTag:
@@ -99,11 +101,10 @@ export function findDocumentLinks(document: TextDocument, documentContext: Docum
 				}
 				break;
 			case TokenType.AttributeName:
-				const attributeName = scanner.getTokenText().toLowerCase();
-				afterHrefOrSrc = attributeName === 'src' || attributeName === 'href';
+				lastAttributeName = scanner.getTokenText().toLowerCase();
 				break;
 			case TokenType.AttributeValue:
-				if (afterHrefOrSrc) {
+				if (lastAttributeName === 'src' || lastAttributeName === 'href') {
 					const attributeValue = scanner.getTokenText();
 					if (!afterBase) { // don't highlight the base link itself
 						const link = createLink(document, documentContext, attributeValue, scanner.getTokenOffset(), scanner.getTokenEnd(), base);
@@ -112,17 +113,32 @@ export function findDocumentLinks(document: TextDocument, documentContext: Docum
 						}
 					}
 					if (afterBase && typeof base === 'undefined') {
-						base = normalizeRef(attributeValue, document.languageId);
+						base = normalizeRef(attributeValue);
 						if (base && documentContext) {
 							base = documentContext.resolveReference(base, document.uri);
 						}
 					}
 					afterBase = false;
-					afterHrefOrSrc = false;
+					lastAttributeName = undefined;
+				} else if (lastAttributeName === 'id') {
+					const id = normalizeRef(scanner.getTokenText());
+					idLocations[id] = scanner.getTokenOffset();
 				}
 				break;
 		}
 		token = scanner.scan();
+	}
+	// change local links with ids to actual positions
+	for (const link of newLinks) {
+		const localWithHash = document.uri + '#';
+		if (link.target && strings.startsWith(link.target, localWithHash)) {
+			const target = link.target.substr(localWithHash.length);
+			const offset = idLocations[target];
+			if (offset !== undefined) {
+				const pos = document.positionAt(offset);
+				link.target = `${localWithHash}${pos.line + 1},${pos.character + 1}`;
+			}
+		}
 	}
 	return newLinks;
 }
