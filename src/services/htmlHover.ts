@@ -10,13 +10,12 @@ import { TextDocument } from 'vscode-languageserver-textdocument';
 import { TokenType, ClientCapabilities } from '../htmlLanguageTypes';
 import { getAllDataProviders } from '../languageFacts/builtinDataProviders';
 import { isDefined } from '../utils/object';
-import { isArray } from 'util';
 import { generateDocumentation } from '../languageFacts/dataProvider';
 
 export class HTMLHover {
 	private supportsMarkdown: boolean | undefined;
 
-	constructor(private clientCapabilities: ClientCapabilities | undefined) {}
+	constructor(private clientCapabilities: ClientCapabilities | undefined) { }
 
 	doHover(document: TextDocument, position: Position, htmlDocument: HTMLDocument): Hover | null {
 		const convertContents = this.convertContents.bind(this);
@@ -165,7 +164,7 @@ export class HTMLHover {
 				};
 			}
 			// MarkedString[]
-			else if (isArray(contents)) {
+			else if (Array.isArray(contents)) {
 				contents.map(c => {
 					return typeof c === 'string' ? c : c.value;
 				});
@@ -201,7 +200,7 @@ function trimQuotes(s: string) {
 	if (s[0] === `'` || s[0] === `"`) {
 		s = s.slice(1);
 	}
-	
+
 	if (s[s.length - 1] === `'` || s[s.length - 1] === `"`) {
 		s = s.slice(0, -1);
 	}
