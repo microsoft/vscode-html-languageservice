@@ -37,7 +37,13 @@ export class HTMLHover {
 				provider.provideTags().forEach(tag => {
 					if (tag.name.toLowerCase() === currTag.toLowerCase()) {
 						const tagLabel = open ? '<' + currTag + '>' : '</' + currTag + '>';
-						const markupContent = generateDocumentation(tag, doesSupportMarkdown);
+						let markupContent = generateDocumentation(tag, doesSupportMarkdown);
+						if (!markupContent) {
+							markupContent =	{
+								kind: doesSupportMarkdown ? 'markdown' : 'plaintext',
+								value: ''
+							}; 
+						}
 						markupContent.value = '```html\n' + tagLabel + '\n```\n' + markupContent.value;
 						hover = { contents: markupContent, range };
 					}
@@ -59,7 +65,12 @@ export class HTMLHover {
 
 				provider.provideAttributes(currTag).forEach(attr => {
 					if (currAttr === attr.name && attr.description) {
-						hover = { contents: generateDocumentation(attr, doesSupportMarkdown), range };
+						const contentsDoc = generateDocumentation(attr, doesSupportMarkdown);
+						if (contentsDoc) {
+							hover = { contents: contentsDoc, range };
+						} else {
+							hover = null;
+						}
 					}
 				});
 
@@ -79,7 +90,12 @@ export class HTMLHover {
 
 				provider.provideValues(currTag, currAttr).forEach(attrValue => {
 					if (currAttrValue === attrValue.name && attrValue.description) {
-						hover = { contents: generateDocumentation(attrValue, doesSupportMarkdown), range };
+						const contentsDoc = generateDocumentation(attrValue, doesSupportMarkdown);
+						if (contentsDoc) {
+							hover = { contents: contentsDoc, range };
+						} else {
+							hover = null;
+						}
 					}
 				});
 

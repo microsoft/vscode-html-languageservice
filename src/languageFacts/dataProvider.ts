@@ -112,7 +112,7 @@ export class HTMLDataProvider implements IHTMLDataProvider {
  * Generate Documentation used in hover/complete
  * From `documentation` and `references`
  */
-export function generateDocumentation(item: ITagData | IAttributeData | IValueData, doesSupportMarkdown: boolean): MarkupContent {
+export function generateDocumentation(item: ITagData | IAttributeData | IValueData, doesSupportMarkdown: boolean): MarkupContent | undefined {
 	const result: MarkupContent = {
 		kind: doesSupportMarkdown ? 'markdown' : 'plaintext',
 		value: ''
@@ -138,5 +138,9 @@ export function generateDocumentation(item: ITagData | IAttributeData | IValueDa
 		}
 	}
 	
+	if (result.value === '') {
+		return undefined;
+	}
+
 	return result;
 }
