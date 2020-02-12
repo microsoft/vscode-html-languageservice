@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { TextDocument, Position, Range } from "vscode-languageserver-types";
+import { TextDocument, Position } from "vscode-languageserver-types";
 import { HTMLDocument } from "../parser/htmlParser";
 
 export function findMatchingTagPosition(

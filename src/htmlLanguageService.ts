@@ -13,6 +13,7 @@ import { findDocumentHighlights } from './services/htmlHighlighting';
 import { findDocumentSymbols } from './services/htmlSymbolsProvider';
 import { doRename } from './services/htmlRename';
 import { findMatchingTagPosition } from './services/htmlMatchingTagPosition';
+import { findSyncedRegions } from './services/htmlSyncedRegions';
 import { Position, CompletionList, Hover, Range, SymbolInformation, TextEdit, DocumentHighlight, DocumentLink, FoldingRange, SelectionRange, WorkspaceEdit } from 'vscode-languageserver-types';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { Scanner, HTMLDocument, CompletionConfiguration, ICompletionParticipant, HTMLFormatConfiguration, DocumentContext, IHTMLDataProvider, HTMLDataV1, LanguageServiceOptions } from './htmlLanguageTypes';
@@ -40,6 +41,7 @@ export interface LanguageService {
 	getSelectionRanges(document: TextDocument, positions: Position[]): SelectionRange[];
 	doRename(document: TextDocument, position: Position, newName: string, htmlDocument: HTMLDocument): WorkspaceEdit | null;
 	findMatchingTagPosition(document: TextDocument, position: Position, htmlDocument: HTMLDocument): Position | null;
+	findSyncedRegions(document: TextDocument, position: Position, htmlDocument: HTMLDocument): Range[] | null;
 }
 
 export function getLanguageService(options?: LanguageServiceOptions): LanguageService {
@@ -64,7 +66,8 @@ export function getLanguageService(options?: LanguageServiceOptions): LanguageSe
 		getSelectionRanges,
 		doTagComplete: htmlCompletion.doTagComplete.bind(htmlCompletion),
 		doRename,
-		findMatchingTagPosition
+		findMatchingTagPosition,
+		findSyncedRegions
 	};
 }
 
