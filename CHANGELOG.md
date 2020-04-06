@@ -1,6 +1,7 @@
 3.0.4 / 
 ==================
   * Use `TextDocument` from `vscode-languageserver-textdocument`
+  * Fix formatting for `<p>` tags with optional closing 
 
 3.0.3 / 2019-07-25
 ==================
