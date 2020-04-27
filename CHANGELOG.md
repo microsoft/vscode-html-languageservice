@@ -1,7 +1,8 @@
-3.0.4 / 
+3.1.0 /
 ==================
   * Use `TextDocument` from `vscode-languageserver-textdocument`
   * Fix formatting for `<p>` tags with optional closing 
+  * New API `findOnTypeRenameRanges`
 
 3.0.3 / 2019-07-25
 ==================

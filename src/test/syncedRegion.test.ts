@@ -24,7 +24,7 @@ export function testMatchingTagPosition(value: string, expected: OffsetWithText[
   const position = document.positionAt(offset);
   const htmlDoc = ls.parseHTMLDocument(document);
 
-  const syncedRegions = ls.findSyncedRegions(document, position, htmlDoc);
+  const syncedRegions = ls.findOnTypeRenameRanges(document, position, htmlDoc);
   if (!syncedRegions) {
     if (expected.length > 0) {
       assert.fail(`No synced regions for ${originalValue} but expecting\n${JSON.stringify(expected)}`);

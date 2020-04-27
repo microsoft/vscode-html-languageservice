@@ -6,7 +6,7 @@
 import { TextDocument, Position, Range } from 'vscode-languageserver-types';
 import { HTMLDocument } from '../parser/htmlParser';
 
-export function findSyncedRegions(
+export function findOnTypeRenameRanges(
   document: TextDocument,
   position: Position,
   htmlDocument: HTMLDocument
