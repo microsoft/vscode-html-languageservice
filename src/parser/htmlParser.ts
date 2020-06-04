@@ -60,7 +60,7 @@ export interface HTMLDocument {
 }
 
 export function parse(text: string): HTMLDocument {
-	const scanner = createScanner(text);
+	const scanner = createScanner(text, undefined, undefined, true);
 
 	const htmlDocument = new Node(0, text.length, [], void 0);
 	let curr = htmlDocument;
@@ -79,11 +79,18 @@ export function parse(text: string): HTMLDocument {
 				curr.tag = scanner.getTokenText();
 				break;
 			case TokenType.StartTagClose:
-				curr.end = scanner.getTokenEnd(); // might be later set to end tag position
-				curr.startTagEnd = scanner.getTokenEnd();
-				if (curr.tag && isVoidElement(curr.tag) && curr.parent) {
-					curr.closed = true;
-					curr = curr.parent;
+				if (curr.parent) {
+					curr.end = scanner.getTokenEnd(); // might be later set to end tag position
+					if (scanner.getTokenLength()) {
+						curr.startTagEnd = scanner.getTokenEnd();
+						if (curr.tag && isVoidElement(curr.tag)) {
+							curr.closed = true;
+							curr = curr.parent;
+						}
+					} else {
+						// pseudo close token from an incomplete start tag
+						curr = curr.parent;
+					}
 				}
 				break;
 			case TokenType.StartTagSelfClose:

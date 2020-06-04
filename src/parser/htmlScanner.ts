@@ -157,7 +157,7 @@ const htmlScriptContents: { [key: string]: boolean } = {
 	'text/x-handlebars-template': true
 };
 
-export function createScanner(input: string, initialOffset = 0, initialState: ScannerState = ScannerState.WithinContent): Scanner {
+export function createScanner(input: string, initialOffset = 0, initialState: ScannerState = ScannerState.WithinContent, emitPseudoCloseTags = false): Scanner {
 
 	const stream = new MultiLineStream(input, initialOffset);
 	let state = initialState;
@@ -189,7 +189,7 @@ export function createScanner(input: string, initialOffset = 0, initialState: Sc
 		const offset = stream.pos();
 		const oldState = state;
 		const token = internalScan();
-		if (token !== TokenType.EOS && offset === stream.pos()) {
+		if (token !== TokenType.EOS && offset === stream.pos() && !(emitPseudoCloseTags && (token ===  TokenType.StartTagClose || token === TokenType.EndTagClose))) {
 			console.log('Scanner.scan has not advanced at offset ' + offset + ', state before: ' + oldState + ' after: ' + state);
 			stream.advance(1);
 			return finishToken(offset, TokenType.Unknown);
@@ -263,7 +263,11 @@ export function createScanner(input: string, initialOffset = 0, initialState: Sc
 					state = ScannerState.WithinContent;
 					return finishToken(offset, TokenType.EndTagClose);
 				}
-				errorMessage = localize('error.tagNameExpected', 'Closing bracket expected.');
+				if (emitPseudoCloseTags && stream.peekChar() === _LAN) { // <
+					state = ScannerState.WithinContent;
+					return finishToken(offset, TokenType.EndTagClose, localize('error.closingBracketMissing', 'Closing bracket missing.'));
+				}
+				errorMessage = localize('error.closingBracketExpected', 'Closing bracket expected.');
 				break;
 			case ScannerState.AfterOpeningStartTag:
 				lastTag = nextElementName();
@@ -314,6 +318,10 @@ export function createScanner(input: string, initialOffset = 0, initialState: Sc
 						state = ScannerState.WithinContent;
 					}
 					return finishToken(offset, TokenType.StartTagClose);
+				}
+				if (emitPseudoCloseTags && stream.peekChar() === _LAN) { // <
+					state = ScannerState.WithinContent;
+					return finishToken(offset, TokenType.StartTagClose, localize('error.closingBracketMissing', 'Closing bracket missing.'));
 				}
 				stream.advance(1);
 				return finishToken(offset, TokenType.Unknown, localize('error.unexpectedCharacterInTag', 'Unexpected character in tag.'));

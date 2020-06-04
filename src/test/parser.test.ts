@@ -61,6 +61,11 @@ suite('HTML Parser', () => {
 		assertDocument('<h1><div><span></h1>', [{ tag: 'h1', start: 0, end: 20, endTagStart: 15, closed: true, children: [{ tag: 'div', start: 4, end: 15, endTagStart: void 0, closed: false, children: [{ tag: 'span', start: 9, end: 15, endTagStart: void 0, closed: false, children: [] }] }] }]);
 	});
 
+	test('MissingBrackets', () => {
+		assertDocument('<div><div</div>', [{ tag: 'div', start: 0, end: 15, endTagStart: 9, closed: true, children: [{ tag: 'div', start: 5, end: 9, endTagStart: void 0, closed: false, children: [] }] }]);
+		assertDocument('<div><div></div</div>', [{ tag: 'div', start: 0, end: 21, endTagStart: 15, closed: true, children: [{ tag: 'div', start: 5, end: 15, endTagStart: 10, closed: true, children: [] }] }]);
+	});
+
 	test('FindNodeBefore', () => {
 		const str = '<div><input type="button"><span><br><hr></span></div>';
 		assertNodeBefore(str, 0, void 0);
