@@ -63,6 +63,7 @@ suite('HTML Parser', () => {
 
 	test('MissingBrackets', () => {
 		assertDocument('<div><div</div>', [{ tag: 'div', start: 0, end: 15, endTagStart: 9, closed: true, children: [{ tag: 'div', start: 5, end: 9, endTagStart: void 0, closed: false, children: [] }] }]);
+		assertDocument('<div><div\n</div>', [{ tag: 'div', start: 0, end: 16, endTagStart: 10, closed: true, children: [{ tag: 'div', start: 5, end: 10, endTagStart: void 0, closed: false, children: [] }] }]);
 		assertDocument('<div><div></div</div>', [{ tag: 'div', start: 0, end: 21, endTagStart: 15, closed: true, children: [{ tag: 'div', start: 5, end: 15, endTagStart: 10, closed: true, children: [] }] }]);
 	});
 
