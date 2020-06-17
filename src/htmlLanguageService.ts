@@ -19,14 +19,15 @@ import { TextDocument } from 'vscode-languageserver-textdocument';
 import { Scanner, HTMLDocument, CompletionConfiguration, ICompletionParticipant, HTMLFormatConfiguration, DocumentContext, IHTMLDataProvider, HTMLDataV1, LanguageServiceOptions } from './htmlLanguageTypes';
 import { getFoldingRanges } from './services/htmlFolding';
 import { getSelectionRanges } from './services/htmlSelectionRange';
-import { handleCustomDataProviders } from './languageFacts/builtinDataProviders';
 import { HTMLDataProvider } from './languageFacts/dataProvider';
+import { HTMLDataManager } from './languageFacts/dataManager';
 
 export * from './htmlLanguageTypes';
 export { TextDocument } from 'vscode-languageserver-textdocument';
 export * from 'vscode-languageserver-types';
 
 export interface LanguageService {
+	setDataProviders(useDefaultDataProvider: boolean, customDataProviders: IHTMLDataProvider[]): void;
 	createScanner(input: string, initialOffset?: number): Scanner;
 	parseHTMLDocument(document: TextDocument): HTMLDocument;
 	findDocumentHighlights(document: TextDocument, position: Position, htmlDocument: HTMLDocument): DocumentHighlight[];
@@ -45,14 +46,13 @@ export interface LanguageService {
 }
 
 export function getLanguageService(options?: LanguageServiceOptions): LanguageService {
-	const htmlHover = new HTMLHover(options && options.clientCapabilities);
-	const htmlCompletion = new HTMLCompletion(options && options.clientCapabilities);
+	const dataManager = new HTMLDataManager(options);
 
-	if (options && options.customDataProviders) {
-		handleCustomDataProviders(options.customDataProviders);
-	}
+	const htmlHover = new HTMLHover(options && options.clientCapabilities, dataManager);
+	const htmlCompletion = new HTMLCompletion(options && options.clientCapabilities, dataManager);
 
 	return {
+		setDataProviders: dataManager.setDataProviders.bind(dataManager),
 		createScanner,
 		parseHTMLDocument: document => parse(document.getText()),
 		doComplete: htmlCompletion.doComplete.bind(htmlCompletion),
@@ -71,6 +71,6 @@ export function getLanguageService(options?: LanguageServiceOptions): LanguageSe
 	};
 }
 
-export function newHTMLDataProvider(id: string, customData: HTMLDataV1) : IHTMLDataProvider {
+export function newHTMLDataProvider(id: string, customData: HTMLDataV1): IHTMLDataProvider {
 	return new HTMLDataProvider(id, customData);
 }

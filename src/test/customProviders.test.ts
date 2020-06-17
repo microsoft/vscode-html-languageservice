@@ -6,8 +6,8 @@
 import { getLanguageService, ITagData, IAttributeData, newHTMLDataProvider } from '../htmlLanguageService';
 
 import { testCompletionFor } from './completionUtil';
-import { assertHover, assertHover2 } from './hoverUtil';
-import { IValueSet } from '../htmlLanguageTypes';
+import { assertHover2 } from './hoverUtil';
+import { IValueSet, LanguageServiceOptions } from '../htmlLanguageTypes';
 
 suite('HTML Custom Tag Provider', () => {
 	const tags: ITagData[] = [
@@ -64,13 +64,14 @@ suite('HTML Custom Tag Provider', () => {
 		globalAttributes,
 		valueSets
 	});
+	const languageOptions: LanguageServiceOptions = { customDataProviders: [provider] };
 
 	getLanguageService({ customDataProviders: [provider] });
 
 	test('Completion', () => {
 		testCompletionFor('<|', {
 			items: [{ label: 'foo', documentation: { kind: 'markdown', value: 'The `<foo>` element' }, resultText: '<foo' }]
-		});
+		}, undefined, languageOptions);
 
 		testCompletionFor('<foo |', {
 			items: [
@@ -90,7 +91,7 @@ suite('HTML Custom Tag Provider', () => {
 					resultText: `<foo xattr="$1"`
 				}
 			]
-		});
+		}, undefined, languageOptions);
 
 		testCompletionFor('<foo bar=|', {
 			items: [
@@ -100,7 +101,7 @@ suite('HTML Custom Tag Provider', () => {
 					resultText: `<foo bar="baz"`
 				}
 			]
-		});
+		}, undefined, languageOptions);
 
 		testCompletionFor('<foo xattr=|', {
 			items: [
@@ -110,18 +111,18 @@ suite('HTML Custom Tag Provider', () => {
 					resultText: `<foo xattr="xval"`
 				}
 			]
-		});
+		}, undefined, languageOptions);
 	});
 
 	test('Hover', () => {
-		assertHover2('<f|oo></foo>', { kind: 'markdown', value: '```html\n<foo>\n```\nThe `<foo>` element' }, 'foo');
+		assertHover2('<f|oo></foo>', { kind: 'markdown', value: '```html\n<foo>\n```\nThe `<foo>` element' }, 'foo', languageOptions);
 
-		assertHover2('<foo |bar></foo>', { kind: 'markdown', value: 'The `<foo bar>` attribute' }, 'bar');
-		assertHover2('<foo |xattr></foo>', { kind: 'markdown', value: '`xattr` attributes' }, 'xattr');
+		assertHover2('<foo |bar></foo>', { kind: 'markdown', value: 'The `<foo bar>` attribute' }, 'bar', languageOptions);
+		assertHover2('<foo |xattr></foo>', { kind: 'markdown', value: '`xattr` attributes' }, 'xattr', languageOptions);
 
-		assertHover2('<foo bar="|baz"></foo>', { kind: 'markdown', value: 'The `<foo bar="baz">` attribute' }, '"baz"');
-		assertHover2('<foo xattr="|xval"></foo>', { kind: 'markdown', value: '`xval` value' }, '"xval"');
+		assertHover2('<foo bar="|baz"></foo>', { kind: 'markdown', value: 'The `<foo bar="baz">` attribute' }, '"baz"', languageOptions);
+		assertHover2('<foo xattr="|xval"></foo>', { kind: 'markdown', value: '`xval` value' }, '"xval"', languageOptions);
 
-		assertHover2('<foo foo="xval" xattr="|xval"></foo>', { kind: 'markdown', value: '`xval` value' }, '"xval"');
+		assertHover2('<foo foo="xval" xattr="|xval"></foo>', { kind: 'markdown', value: '`xval` value' }, '"xval"', languageOptions);
 	});
 });

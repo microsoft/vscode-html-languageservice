@@ -8,14 +8,14 @@ import { createScanner } from '../parser/htmlScanner';
 import { Range, Position, Hover, MarkedString, MarkupContent, MarkupKind } from 'vscode-languageserver-types';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { TokenType, ClientCapabilities } from '../htmlLanguageTypes';
-import { getAllDataProviders } from '../languageFacts/builtinDataProviders';
+import { HTMLDataManager } from '../languageFacts/dataManager';
 import { isDefined } from '../utils/object';
 import { generateDocumentation } from '../languageFacts/dataProvider';
 
 export class HTMLHover {
 	private supportsMarkdown: boolean | undefined;
 
-	constructor(private clientCapabilities: ClientCapabilities | undefined) { }
+	constructor(private clientCapabilities: ClientCapabilities | undefined, private dataManager: HTMLDataManager) { }
 
 	doHover(document: TextDocument, position: Position, htmlDocument: HTMLDocument): Hover | null {
 		const convertContents = this.convertContents.bind(this);
@@ -26,7 +26,7 @@ export class HTMLHover {
 		if (!node || !node.tag) {
 			return null;
 		}
-		const dataProviders = getAllDataProviders().filter(p => p.isApplicable(document.languageId));
+		const dataProviders = this.dataManager.getDataProviders().filter(p => p.isApplicable(document.languageId));
 
 		function getTagHover(currTag: string, range: Range, open: boolean): Hover | null {
 			currTag = currTag.toLowerCase();
@@ -39,10 +39,10 @@ export class HTMLHover {
 						const tagLabel = open ? '<' + currTag + '>' : '</' + currTag + '>';
 						let markupContent = generateDocumentation(tag, doesSupportMarkdown);
 						if (!markupContent) {
-							markupContent =	{
+							markupContent = {
 								kind: doesSupportMarkdown ? 'markdown' : 'plaintext',
 								value: ''
-							}; 
+							};
 						}
 						markupContent.value = '```html\n' + tagLabel + '\n```\n' + markupContent.value;
 						hover = { contents: markupContent, range };

@@ -6,7 +6,7 @@
 import * as assert from 'assert';
 import * as htmlLanguageService from '../htmlLanguageService';
 
-import { CompletionList, CompletionItemKind, MarkupContent } from 'vscode-languageserver-types';
+import { CompletionList, CompletionItemKind, MarkupContent, TextEdit } from 'vscode-languageserver-types';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 
 interface ItemDescription {
@@ -44,7 +44,8 @@ function assertCompletion(completions: CompletionList, expected: ItemDescription
 		assert.equal(match.kind, expected.kind);
 	}
 	if (expected.resultText && match.textEdit) {
-		assert.equal(TextDocument.applyEdits(document, [match.textEdit]), expected.resultText);
+		const edit = TextEdit.is(match.textEdit) ? match.textEdit : TextEdit.replace(match.textEdit.replace, match.textEdit.newText);
+		assert.equal(TextDocument.applyEdits(document, [edit]), expected.resultText);
 	}
 	if (expected.filterText) {
 		assert.equal(match.filterText, expected.filterText);

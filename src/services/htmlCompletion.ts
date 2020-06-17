@@ -12,7 +12,7 @@ import { entities } from '../parser/htmlEntities';
 
 import * as nls from 'vscode-nls';
 import { isLetterOrDigit, endsWith, startsWith } from '../utils/strings';
-import { getAllDataProviders } from '../languageFacts/builtinDataProviders';
+import { HTMLDataManager } from '../languageFacts/dataManager';
 import { isVoidElement } from '../languageFacts/fact';
 import { isDefined } from '../utils/object';
 import { generateDocumentation } from '../languageFacts/dataProvider';
@@ -23,7 +23,7 @@ export class HTMLCompletion {
 
 	private supportsMarkdown: boolean | undefined;
 
-	constructor(private clientCapabilities: ClientCapabilities | undefined) {
+	constructor(private clientCapabilities: ClientCapabilities | undefined, private dataManager: HTMLDataManager) {
 		this.completionParticipants = [];
 	}
 
@@ -42,7 +42,7 @@ export class HTMLCompletion {
 			items: []
 		};
 		const completionParticipants = this.completionParticipants;
-		const dataProviders = getAllDataProviders().filter(p => p.isApplicable(document.languageId) && (!settings || settings[p.getId()] !== false));
+		const dataProviders = this.dataManager.getDataProviders().filter(p => p.isApplicable(document.languageId) && (!settings || settings[p.getId()] !== false));
 		const doesSupportMarkdown = this.doesSupportMarkdown();
 
 		const text = document.getText();
@@ -193,7 +193,7 @@ export class HTMLCompletion {
 							};
 						}
 					}
-					
+
 					result.items.push({
 						label: attr.name,
 						kind: attr.valueSet === 'handler' ? CompletionItemKind.Function : CompletionItemKind.Value,
@@ -353,7 +353,7 @@ export class HTMLCompletion {
 				case TokenType.StartTagOpen:
 					if (scanner.getTokenEnd() === offset) {
 						const endPos = scanNextForEndPos(TokenType.StartTag);
-						if (position.line === 0) {			
+						if (position.line === 0) {
 							suggestDoctype(offset, endPos);
 						}
 						return collectTagSuggestions(offset, endPos);
@@ -499,7 +499,7 @@ export class HTMLCompletion {
 	}
 
 	private doesSupportMarkdown(): boolean {
- 		if (!isDefined(this.supportsMarkdown)) {
+		if (!isDefined(this.supportsMarkdown)) {
 			if (!isDefined(this.clientCapabilities)) {
 				this.supportsMarkdown = true;
 				return this.supportsMarkdown;

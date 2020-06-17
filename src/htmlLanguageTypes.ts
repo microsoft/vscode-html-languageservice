@@ -220,6 +220,13 @@ export namespace ClientCapabilities {
 
 export interface LanguageServiceOptions {
 	/**
+	 * Unless set to false, the default HTML data provider will be used 
+	 * along with the providers from customDataProviders.
+	 * Defaults to true.
+	 */
+	useDefaultDataProvider?: boolean;
+
+	/**
 	 * Provide data that could enhance the service's understanding of
 	 * HTML tag / attribute / attribute-value
 	 */

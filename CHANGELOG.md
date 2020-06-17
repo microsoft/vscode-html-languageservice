@@ -3,6 +3,9 @@
   * Use `TextDocument` from `vscode-languageserver-textdocument`
   * Fix formatting for `<p>` tags with optional closing 
   * New API `findOnTypeRenameRanges`
+ * `LanguageServiceOptions.customDataProviders` allows you to use custom datasets for tags / attributes and attribute-values.
+* new API `LanguageService.setDataProviders` to update the data providers.
+
 
 3.0.3 / 2019-07-25
 ==================

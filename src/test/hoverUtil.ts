@@ -23,14 +23,14 @@ export function assertHover(value: string, expectedHoverContent: MarkupContent |
 	assert.equal(hover && document.offsetAt(hover.range!.start), expectedHoverOffset);
 }
 
-export function assertHover2(value: string, contents: string | MarkupContent, rangeText: string): void {
+export function assertHover2(value: string, contents: string | MarkupContent, rangeText: string, lsOptions?: htmlLanguageService.LanguageServiceOptions): void {
 	const offset = value.indexOf('|');
 	value = value.substr(0, offset) + value.substr(offset + 1);
 
 	const document = TextDocument.create('test://test/test.html', 'html', 0, value);
 
 	const position = document.positionAt(offset);
-	const ls = htmlLanguageService.getLanguageService();
+	const ls = htmlLanguageService.getLanguageService(lsOptions);
 	const htmlDoc = ls.parseHTMLDocument(document);
 
 	const hover = ls.doHover(document, position, htmlDoc);
