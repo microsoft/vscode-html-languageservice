@@ -3,8 +3,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Position, Range, MarkupContent, MarkupKind } from 'vscode-languageserver-types';
+import { Position, Range, MarkupContent, MarkupKind, DocumentUri } from 'vscode-languageserver-types';
 import { TextDocument } from 'vscode-languageserver-textdocument';
+
+export { TextDocument } from 'vscode-languageserver-textdocument';
+export * from 'vscode-languageserver-types';
 
 export interface HTMLFormatConfiguration {
 	tabSize?: number;
@@ -96,7 +99,7 @@ export declare type HTMLDocument = {
 };
 
 export interface DocumentContext {
-	resolveReference(ref: string, base?: string): string | undefined;
+	resolveReference(ref: string, base: string): string | undefined;
 }
 
 export interface HtmlAttributeValueContext {
@@ -233,7 +236,57 @@ export interface LanguageServiceOptions {
 	customDataProviders?: IHTMLDataProvider[];
 
 	/**
+	 * Abstract file system access away from the service.
+	 * Used for path completion, etc.
+	 */
+	fileSystemProvider?: FileSystemProvider;	
+
+	/**
 	 * Describes the LSP capabilities the client supports.
 	 */
 	clientCapabilities?: ClientCapabilities;
+}
+
+export enum FileType {
+	/**
+	 * The file type is unknown.
+	 */
+	Unknown = 0,
+	/**
+	 * A regular file.
+	 */
+	File = 1,
+	/**
+	 * A directory.
+	 */
+	Directory = 2,
+	/**
+	 * A symbolic link to a file.
+	 */
+	SymbolicLink = 64
+}
+
+export interface FileStat {
+	/**
+	 * The type of the file, e.g. is a regular file, a directory, or symbolic link
+	 * to a file.
+	 */
+	type: FileType;
+	/**
+	 * The creation timestamp in milliseconds elapsed since January 1, 1970 00:00:00 UTC.
+	 */
+	ctime: number;
+	/**
+	 * The modification timestamp in milliseconds elapsed since January 1, 1970 00:00:00 UTC.
+	 */
+	mtime: number;
+	/**
+	 * The size in bytes.
+	 */
+	size: number;
+}
+
+export interface FileSystemProvider {
+	stat(uri: DocumentUri): Promise<FileStat>;
+	readDirectory?(uri: DocumentUri): Promise<[string, FileType][]>;
 }

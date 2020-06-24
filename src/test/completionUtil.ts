@@ -22,7 +22,7 @@ function asPromise<T>(result: T): Promise<T> {
 	return Promise.resolve(result);
 }
 
-function assertCompletion(completions: CompletionList, expected: ItemDescription, document: TextDocument, offset: number) {
+export function assertCompletion(completions: CompletionList, expected: ItemDescription, document: TextDocument) {
 	const matches = completions.items.filter(completion => {
 		return completion.label === expected.label;
 	});
@@ -75,7 +75,7 @@ export function testCompletionFor(value: string, expected: { count?: number, ite
 	}
 	if (expected.items) {
 		for (const item of expected.items) {
-			assertCompletion(list, item, document, offset);
+			assertCompletion(list, item, document);
 		}
 	}
 }

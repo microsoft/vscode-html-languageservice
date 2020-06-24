@@ -7,7 +7,7 @@ import { HTMLDocument } from '../parser/htmlParser';
 import { createScanner } from '../parser/htmlScanner';
 import { Range, Position, Hover, MarkedString, MarkupContent, MarkupKind } from 'vscode-languageserver-types';
 import { TextDocument } from 'vscode-languageserver-textdocument';
-import { TokenType, ClientCapabilities } from '../htmlLanguageTypes';
+import { TokenType, LanguageServiceOptions } from '../htmlLanguageTypes';
 import { HTMLDataManager } from '../languageFacts/dataManager';
 import { isDefined } from '../utils/object';
 import { generateDocumentation } from '../languageFacts/dataProvider';
@@ -15,7 +15,7 @@ import { generateDocumentation } from '../languageFacts/dataProvider';
 export class HTMLHover {
 	private supportsMarkdown: boolean | undefined;
 
-	constructor(private clientCapabilities: ClientCapabilities | undefined, private dataManager: HTMLDataManager) { }
+	constructor(private lsOptions: LanguageServiceOptions, private dataManager: HTMLDataManager) { }
 
 	doHover(document: TextDocument, position: Position, htmlDocument: HTMLDocument): Hover | null {
 		const convertContents = this.convertContents.bind(this);
@@ -44,7 +44,6 @@ export class HTMLHover {
 								value: ''
 							};
 						}
-						markupContent.value = '```html\n' + tagLabel + '\n```\n' + markupContent.value;
 						hover = { contents: markupContent, range };
 					}
 				});
@@ -196,13 +195,13 @@ export class HTMLHover {
 
 	private doesSupportMarkdown(): boolean {
 		if (!isDefined(this.supportsMarkdown)) {
-			if (!isDefined(this.clientCapabilities)) {
+			if (!isDefined(this.lsOptions.clientCapabilities)) {
 				this.supportsMarkdown = true;
 				return this.supportsMarkdown;
 			}
 
-			const hover = this.clientCapabilities && this.clientCapabilities.textDocument && this.clientCapabilities.textDocument.hover;
-			this.supportsMarkdown = hover && hover.contentFormat && Array.isArray(hover.contentFormat) && hover.contentFormat.indexOf(MarkupKind.Markdown) !== -1;
+			const contentFormat = this.lsOptions.clientCapabilities?.textDocument?.hover?.contentFormat;
+			this.supportsMarkdown = Array.isArray(contentFormat) && contentFormat.indexOf(MarkupKind.Markdown) !== -1;
 		}
 		return <boolean>this.supportsMarkdown;
 	}

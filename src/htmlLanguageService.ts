@@ -14,17 +14,17 @@ import { findDocumentSymbols } from './services/htmlSymbolsProvider';
 import { doRename } from './services/htmlRename';
 import { findMatchingTagPosition } from './services/htmlMatchingTagPosition';
 import { findOnTypeRenameRanges } from './services/htmlSyncedRegions';
-import { Position, CompletionList, Hover, Range, SymbolInformation, TextEdit, DocumentHighlight, DocumentLink, FoldingRange, SelectionRange, WorkspaceEdit } from 'vscode-languageserver-types';
-import { TextDocument } from 'vscode-languageserver-textdocument';
-import { Scanner, HTMLDocument, CompletionConfiguration, ICompletionParticipant, HTMLFormatConfiguration, DocumentContext, IHTMLDataProvider, HTMLDataV1, LanguageServiceOptions } from './htmlLanguageTypes';
+import {
+	Scanner, HTMLDocument, CompletionConfiguration, ICompletionParticipant, HTMLFormatConfiguration, DocumentContext,
+	IHTMLDataProvider, HTMLDataV1, LanguageServiceOptions, TextDocument, SelectionRange, WorkspaceEdit,
+	Position, CompletionList, Hover, Range, SymbolInformation, TextEdit, DocumentHighlight, DocumentLink, FoldingRange
+} from './htmlLanguageTypes';
 import { getFoldingRanges } from './services/htmlFolding';
 import { getSelectionRanges } from './services/htmlSelectionRange';
 import { HTMLDataProvider } from './languageFacts/dataProvider';
 import { HTMLDataManager } from './languageFacts/dataManager';
 
 export * from './htmlLanguageTypes';
-export { TextDocument } from 'vscode-languageserver-textdocument';
-export * from 'vscode-languageserver-types';
 
 export interface LanguageService {
 	setDataProviders(useDefaultDataProvider: boolean, customDataProviders: IHTMLDataProvider[]): void;
@@ -32,6 +32,7 @@ export interface LanguageService {
 	parseHTMLDocument(document: TextDocument): HTMLDocument;
 	findDocumentHighlights(document: TextDocument, position: Position, htmlDocument: HTMLDocument): DocumentHighlight[];
 	doComplete(document: TextDocument, position: Position, htmlDocument: HTMLDocument, options?: CompletionConfiguration): CompletionList;
+	doComplete2(document: TextDocument, position: Position, htmlDocument: HTMLDocument, documentContext: DocumentContext, options?: CompletionConfiguration): Promise<CompletionList>;
 	setCompletionParticipants(registeredCompletionParticipants: ICompletionParticipant[]): void;
 	doHover(document: TextDocument, position: Position, htmlDocument: HTMLDocument): Hover | null;
 	format(document: TextDocument, range: Range | undefined, options: HTMLFormatConfiguration): TextEdit[];
@@ -45,17 +46,20 @@ export interface LanguageService {
 	findOnTypeRenameRanges(document: TextDocument, position: Position, htmlDocument: HTMLDocument): Range[] | null;
 }
 
-export function getLanguageService(options?: LanguageServiceOptions): LanguageService {
+const defaultLanguageServiceOptions = {};
+
+export function getLanguageService(options: LanguageServiceOptions = defaultLanguageServiceOptions): LanguageService {
 	const dataManager = new HTMLDataManager(options);
 
-	const htmlHover = new HTMLHover(options && options.clientCapabilities, dataManager);
-	const htmlCompletion = new HTMLCompletion(options && options.clientCapabilities, dataManager);
+	const htmlHover = new HTMLHover(options, dataManager);
+	const htmlCompletion = new HTMLCompletion(options, dataManager);
 
 	return {
 		setDataProviders: dataManager.setDataProviders.bind(dataManager),
 		createScanner,
 		parseHTMLDocument: document => parse(document.getText()),
 		doComplete: htmlCompletion.doComplete.bind(htmlCompletion),
+		doComplete2: htmlCompletion.doComplete2.bind(htmlCompletion),
 		setCompletionParticipants: htmlCompletion.setCompletionParticipants.bind(htmlCompletion),
 		doHover: htmlHover.doHover.bind(htmlHover),
 		format,

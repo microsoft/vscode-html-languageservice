@@ -15,11 +15,11 @@ suite('HTML Hover', () => {
 
 		const htmlContent: MarkupContent = {
 			kind: 'markdown',
-			value: '```html\n<html>\n```\n' + descriptionAndReference
+			value: descriptionAndReference
 		};
 		const closeHtmlContent: MarkupContent = {
 			kind: 'markdown',
-			value: '```html\n</html>\n```\n' + descriptionAndReference
+			value: descriptionAndReference
 		};
 
 		assertHover('|<html></html>', void 0, void 0);

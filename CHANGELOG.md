@@ -2,14 +2,14 @@
 ==================
   * Use `TextDocument` from `vscode-languageserver-textdocument`
   * Fix formatting for `<p>` tags with optional closing 
-  * New API `findOnTypeRenameRanges`
- * `LanguageServiceOptions.customDataProviders` allows you to use custom datasets for tags / attributes and attribute-values.
-* new API `LanguageService.setDataProviders` to update the data providers.
-
+  * New API `LanguageService.findOnTypeRenameRanges`. For a given position, find the matching close tag so they can be renamed synchronously.
+  * New API `LanguageServiceOptions.customDataProviders` to add the knowledge of custom tags, attributes and attribute-values and `LanguageService.setDataProviders` to update the data providers.
+  * New API `LanguageServiceOptions.fileSystemProvider` with `FileSystemProvider` to query the file system (currently used for path completion)
+  * New API `LanguageService.doComplete2` which is synchronous and also returns path completion proposals when `LanguageServiceOptions.fileSystemProvider` is provided.
 
 3.0.3 / 2019-07-25
 ==================
-  * DocumentContext.resolveReference can also return undefined (if the ref is invalid)
+  * `DocumentContext.resolveReference` can also return undefined (if the ref is invalid)
 
 3.0.0 / 2019-06-12
 ==================

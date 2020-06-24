@@ -7,7 +7,7 @@
 import * as assert from 'assert';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import * as htmlLanguageService from '../htmlLanguageService';
-import * as url from 'url';
+import { getDocumentContext } from './testUtil/documentContext';
 
 suite('HTML Link Detection', () => {
 
@@ -16,30 +16,18 @@ suite('HTML Link Detection', () => {
 		hbs: 'handlebars'
 	};
 
-	function getDocumentContext(documentUrl: string): htmlLanguageService.DocumentContext {
-		return {
-			resolveReference: (ref, base = documentUrl) => {
-				try {
-					return url.resolve(base, ref);
-				} catch (e) {
-					return undefined;
-				}
-			}
-		};
-	}
-
 	function testLinkCreation(modelUrl: string, tokenContent: string, expected: string | null): void {
 		const langId = ext2lang[modelUrl.substr(modelUrl.lastIndexOf('.') + 1)] || 'html';
 		const document = TextDocument.create(modelUrl, langId, 0, `<a href="${tokenContent}">`);
 		const ls = htmlLanguageService.getLanguageService();
-		const links = ls.findDocumentLinks(document, getDocumentContext(modelUrl));
+		const links = ls.findDocumentLinks(document, getDocumentContext());
 		assert.equal(links[0] && links[0].target, expected);
 	}
 
 	function testLinkDetection(value: string, expectedLinks: { offset: number, length: number, target: string; }[]): void {
 		const document = TextDocument.create('file:///test/data/abc/test.html', 'html', 0, value);
 		const ls = htmlLanguageService.getLanguageService();
-		const links = ls.findDocumentLinks(document, getDocumentContext(document.uri));
+		const links = ls.findDocumentLinks(document, getDocumentContext());
 		assert.deepEqual(links.map(l => ({ offset: l.range.start.character, length: l.range.end.character - l.range.start.character, target: l.target })), expectedLinks);
 	}
 

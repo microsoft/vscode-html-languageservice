@@ -115,7 +115,7 @@ suite('HTML Custom Tag Provider', () => {
 	});
 
 	test('Hover', () => {
-		assertHover2('<f|oo></foo>', { kind: 'markdown', value: '```html\n<foo>\n```\nThe `<foo>` element' }, 'foo', languageOptions);
+		assertHover2('<f|oo></foo>', { kind: 'markdown', value: 'The `<foo>` element' }, 'foo', languageOptions);
 
 		assertHover2('<foo |bar></foo>', { kind: 'markdown', value: 'The `<foo bar>` attribute' }, 'bar', languageOptions);
 		assertHover2('<foo |xattr></foo>', { kind: 'markdown', value: '`xattr` attributes' }, 'xattr', languageOptions);

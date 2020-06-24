@@ -10,8 +10,8 @@ import { htmlData } from './data/webCustomData';
 export class HTMLDataManager {
 	private dataProviders: IHTMLDataProvider[] = [];
 
-	constructor(options?: { useDefaultDataProvider?: boolean, customDataProviders?: IHTMLDataProvider[] }) {
-		this.setDataProviders(options?.useDefaultDataProvider !== false, options?.customDataProviders || []);
+	constructor(options: { useDefaultDataProvider?: boolean, customDataProviders?: IHTMLDataProvider[] }) {
+		this.setDataProviders(options.useDefaultDataProvider !== false, options.customDataProviders || []);
 	}
 	setDataProviders(builtIn: boolean, providers: IHTMLDataProvider[]) {
 		this.dataProviders = [];

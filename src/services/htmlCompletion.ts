@@ -7,7 +7,7 @@ import { Position, CompletionList, CompletionItemKind, Range, TextEdit, InsertTe
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { HTMLDocument, Node } from '../parser/htmlParser';
 import { createScanner } from '../parser/htmlScanner';
-import { CompletionConfiguration, ICompletionParticipant, ScannerState, TokenType, ClientCapabilities } from '../htmlLanguageTypes';
+import { CompletionConfiguration, ICompletionParticipant, ScannerState, TokenType, LanguageServiceOptions, DocumentContext } from '../htmlLanguageTypes';
 import { entities } from '../parser/htmlEntities';
 
 import * as nls from 'vscode-nls';
@@ -16,6 +16,7 @@ import { HTMLDataManager } from '../languageFacts/dataManager';
 import { isVoidElement } from '../languageFacts/fact';
 import { isDefined } from '../utils/object';
 import { generateDocumentation } from '../languageFacts/dataProvider';
+import { PathCompletionParticipant } from './pathCompletion';
 const localize = nls.loadMessageBundle();
 
 export class HTMLCompletion {
@@ -23,12 +24,33 @@ export class HTMLCompletion {
 
 	private supportsMarkdown: boolean | undefined;
 
-	constructor(private clientCapabilities: ClientCapabilities | undefined, private dataManager: HTMLDataManager) {
+	constructor(private lsOptions: LanguageServiceOptions, private dataManager: HTMLDataManager) {
 		this.completionParticipants = [];
 	}
 
 	setCompletionParticipants(registeredCompletionParticipants: ICompletionParticipant[]) {
 		this.completionParticipants = registeredCompletionParticipants || [];
+	}
+
+	public async doComplete2(document: TextDocument, position: Position, htmlDocument: HTMLDocument, documentContext: DocumentContext, settings?: CompletionConfiguration): Promise<CompletionList> {
+		if (!this.lsOptions.fileSystemProvider || !this.lsOptions.fileSystemProvider.readDirectory) {
+			return this.doComplete(document, position, htmlDocument, settings);
+		}
+
+		const participant: PathCompletionParticipant = new PathCompletionParticipant(this.lsOptions.fileSystemProvider.readDirectory);
+		const contributedParticipants = this.completionParticipants;
+		this.completionParticipants = [participant as ICompletionParticipant].concat(contributedParticipants);
+
+		const result = this.doComplete(document, position, htmlDocument, settings);
+		try {
+			const pathCompletionResult = await participant.computeCompletions(document, documentContext);
+			return {
+				isIncomplete: result.isIncomplete || pathCompletionResult.isIncomplete,
+				items: pathCompletionResult.items.concat(result.items)
+			};
+		} finally {
+			this.completionParticipants = contributedParticipants;
+		}
 	}
 
 	doComplete(document: TextDocument, position: Position, htmlDocument: HTMLDocument, settings?: CompletionConfiguration): CompletionList {
@@ -500,13 +522,13 @@ export class HTMLCompletion {
 
 	private doesSupportMarkdown(): boolean {
 		if (!isDefined(this.supportsMarkdown)) {
-			if (!isDefined(this.clientCapabilities)) {
+			if (!isDefined(this.lsOptions.clientCapabilities)) {
 				this.supportsMarkdown = true;
 				return this.supportsMarkdown;
 			}
 
-			const hover = this.clientCapabilities && this.clientCapabilities.textDocument && this.clientCapabilities.textDocument.hover;
-			this.supportsMarkdown = hover && hover.contentFormat && Array.isArray(hover.contentFormat) && hover.contentFormat.indexOf(MarkupKind.Markdown) !== -1;
+			const documentationFormat = this.lsOptions.clientCapabilities.textDocument?.completion?.completionItem?.documentationFormat;
+			this.supportsMarkdown = Array.isArray(documentationFormat) && documentationFormat.indexOf(MarkupKind.Markdown) !== -1;
 		}
 		return <boolean>this.supportsMarkdown;
 	}
