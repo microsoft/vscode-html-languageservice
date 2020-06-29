@@ -23,6 +23,7 @@ import { getFoldingRanges } from './services/htmlFolding';
 import { getSelectionRanges } from './services/htmlSelectionRange';
 import { HTMLDataProvider } from './languageFacts/dataProvider';
 import { HTMLDataManager } from './languageFacts/dataManager';
+import { htmlData } from './data/webCustomData';
 
 export * from './htmlLanguageTypes';
 
@@ -78,3 +79,8 @@ export function getLanguageService(options: LanguageServiceOptions = defaultLang
 export function newHTMLDataProvider(id: string, customData: HTMLDataV1): IHTMLDataProvider {
 	return new HTMLDataProvider(id, customData);
 }
+
+export function getDefaultHTMLDataProvider(): IHTMLDataProvider {
+	return newHTMLDataProvider('default', htmlData);
+}
+

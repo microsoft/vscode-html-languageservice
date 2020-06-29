@@ -4,6 +4,7 @@
   * Fix formatting for `<p>` tags with optional closing 
   * New API `LanguageService.findOnTypeRenameRanges`. For a given position, find the matching close tag so they can be renamed synchronously.
   * New API `LanguageServiceOptions.customDataProviders` to add the knowledge of custom tags, attributes and attribute-values and `LanguageService.setDataProviders` to update the data providers.
+  * New API `getDefaultHTMLDataProvider` to get the default HTML data provider and `newHTMLDataProvider` to create a new provider from data.
   * New API `LanguageServiceOptions.fileSystemProvider` with `FileSystemProvider` to query the file system (currently used for path completion)
   * New API `LanguageService.doComplete2` which is synchronous and also returns path completion proposals when `LanguageServiceOptions.fileSystemProvider` is provided.
 
