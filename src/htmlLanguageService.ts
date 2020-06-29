@@ -23,7 +23,7 @@ import { getFoldingRanges } from './services/htmlFolding';
 import { getSelectionRanges } from './services/htmlSelectionRange';
 import { HTMLDataProvider } from './languageFacts/dataProvider';
 import { HTMLDataManager } from './languageFacts/dataManager';
-import { htmlData } from './data/webCustomData';
+import { htmlData } from './languageFacts/data/webCustomData';
 
 export * from './htmlLanguageTypes';
 
