@@ -62,5 +62,8 @@ suite('HTML synced regions', () => {
 
     testMatchingTagPosition('<div| ></div>', [[1, 'div'], [8, 'div']]);
     testMatchingTagPosition('<div| id="foo"></div>', [[1, 'div'], [16, 'div']]);
+
+    testMatchingTagPosition('<|></>', [[1, ''], [4, '']]);
+    testMatchingTagPosition('<><div></div></|>', [[1, ''], [15, '']]);
   });
 });
