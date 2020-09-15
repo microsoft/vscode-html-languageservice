@@ -195,10 +195,9 @@ export class HTMLCompletion {
 			}
 			const range = getReplaceRange(nameStart, replaceEnd);
 			const value = isFollowedBy(text, nameEnd, ScannerState.AfterAttributeName, TokenType.DelimiterAssign) ? '' : '="$1"';
-			const tag = currentTag.toLowerCase();
 			const seenAttributes = Object.create(null);
 			dataProviders.forEach(provider => {
-				provider.provideAttributes(tag).forEach(attr => {
+				provider.provideAttributes(currentTag).forEach(attr => {
 					if (seenAttributes[attr.name]) {
 						return;
 					}
@@ -281,10 +280,9 @@ export class HTMLCompletion {
 				addQuotes = true;
 			}
 
-			const tag = currentTag.toLowerCase();
-			const attribute = currentAttributeName.toLowerCase();
-
 			if (completionParticipants.length > 0) {
+				const tag = currentTag.toLowerCase();
+				const attribute = currentAttributeName.toLowerCase();
 				const fullRange = getReplaceRange(valueStart, valueEnd);
 				for (const participant of completionParticipants) {
 					if (participant.onHtmlAttributeValue) {
@@ -294,7 +292,7 @@ export class HTMLCompletion {
 			}
 
 			dataProviders.forEach(provider => {
-				provider.provideValues(tag, attribute).forEach(value => {
+				provider.provideValues(currentTag, currentAttributeName).forEach(value => {
 					const insertText = addQuotes ? '"' + value.name + '"' : value.name;
 
 					result.items.push({

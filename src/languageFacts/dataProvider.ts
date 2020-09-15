@@ -15,7 +15,6 @@ export class HTMLDataProvider implements IHTMLDataProvider {
 	private _tags: ITagData[] = [];
 	private _tagMap: { [t: string]: ITagData } = {};
 	private _globalAttributes: IAttributeData[];
-	private _attributeMap: { [a: string]: IAttributeData } = {};
 	private _valueSetMap: { [setName: string]: IValueData[] } = {};
 
 	/**
@@ -28,16 +27,7 @@ export class HTMLDataProvider implements IHTMLDataProvider {
 		this._globalAttributes = customData.globalAttributes || [];
 
 		this._tags.forEach(t => {
-			this._tagMap[t.name] = t;
-			if (t.attributes) {
-				t.attributes.forEach(a => {
-					this._attributeMap[a.name] = a;
-				});
-			}
-		});
-
-		this._globalAttributes.forEach(a => {
-			this._attributeMap[a.name] = a;
+			this._tagMap[t.name.toLowerCase()] = t;
 		});
 
 		if (customData.valueSets) {
@@ -61,15 +51,11 @@ export class HTMLDataProvider implements IHTMLDataProvider {
 			attributes.push(a);
 		};
 
-		if (this._tagMap[tag]) {
-			this._tagMap[tag].attributes.forEach(a => {
-				processAttribute(a);
-			});
+		const tagEntry = this._tagMap[tag.toLowerCase()];
+		if (tagEntry) {
+			tagEntry.attributes.forEach(processAttribute);
 		}
-
-		this._globalAttributes.forEach(ga => {
-			processAttribute(ga);
-		});
+		this._globalAttributes.forEach(processAttribute);
 
 		return attributes;
 	}
@@ -77,15 +63,17 @@ export class HTMLDataProvider implements IHTMLDataProvider {
 	provideValues(tag: string, attribute: string) {
 		const values: IValueData[] = [];
 
+		attribute = attribute.toLowerCase();
+
 		const processAttributes = (attributes: IAttributeData[]) => {
 			attributes.forEach(a => {
-				if (a.name === attribute) {
+				if (a.name.toLowerCase() === attribute) {
 					if (a.values) {
 						a.values.forEach(v => {
 							values.push(v);
 						});
 					}
-	
+
 					if (a.valueSet) {
 						if (this._valueSetMap[a.valueSet]) {
 							this._valueSetMap[a.valueSet].forEach(v => {
@@ -96,12 +84,13 @@ export class HTMLDataProvider implements IHTMLDataProvider {
 				}
 			});
 		};
-		
-		if (!this._tagMap[tag]) {
+
+		const tagEntry = this._tagMap[tag.toLowerCase()];
+		if (!tagEntry) {
 			return [];
 		}
 
-		processAttributes(this._tagMap[tag].attributes);
+		processAttributes(tagEntry.attributes);
 		processAttributes(this._globalAttributes);
 
 		return values;
@@ -117,14 +106,14 @@ export function generateDocumentation(item: ITagData | IAttributeData | IValueDa
 		kind: doesSupportMarkdown ? 'markdown' : 'plaintext',
 		value: ''
 	};
-	
+
 	if (item.description) {
 		const normalizedDescription = normalizeMarkupContent(item.description);
 		if (normalizedDescription) {
 			result.value += normalizedDescription.value;
 		}
 	}
-	
+
 	if (item.references && item.references.length > 0) {
 		result.value += `\n\n`;
 		if (doesSupportMarkdown) {
@@ -137,7 +126,7 @@ export function generateDocumentation(item: ITagData | IAttributeData | IValueDa
 			}).join('\n');
 		}
 	}
-	
+
 	if (result.value === '') {
 		return undefined;
 	}

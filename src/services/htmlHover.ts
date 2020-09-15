@@ -29,14 +29,11 @@ export class HTMLHover {
 		const dataProviders = this.dataManager.getDataProviders().filter(p => p.isApplicable(document.languageId));
 
 		function getTagHover(currTag: string, range: Range, open: boolean): Hover | null {
-			currTag = currTag.toLowerCase();
-
 			for (const provider of dataProviders) {
 				let hover: Hover | null = null;
 
 				provider.provideTags().forEach(tag => {
 					if (tag.name.toLowerCase() === currTag.toLowerCase()) {
-						const tagLabel = open ? '<' + currTag + '>' : '</' + currTag + '>';
 						let markupContent = generateDocumentation(tag, doesSupportMarkdown);
 						if (!markupContent) {
 							markupContent = {
@@ -57,8 +54,6 @@ export class HTMLHover {
 		}
 
 		function getAttrHover(currTag: string, currAttr: string, range: Range): Hover | null {
-			currTag = currTag.toLowerCase();
-
 			for (const provider of dataProviders) {
 				let hover: Hover | null = null;
 
@@ -82,8 +77,6 @@ export class HTMLHover {
 		}
 
 		function getAttrValueHover(currTag: string, currAttr: string, currAttrValue: string, range: Range): Hover | null {
-			currTag = currTag.toLowerCase();
-
 			for (const provider of dataProviders) {
 				let hover: Hover | null = null;
 

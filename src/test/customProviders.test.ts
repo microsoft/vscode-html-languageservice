@@ -35,6 +35,18 @@ suite('HTML Custom Tag Provider', () => {
 					]
 				}
 			]
+		},
+		{
+			name: 'Bar',
+			description: {
+				kind: 'markdown',
+				value: 'The `<Bar>` element'
+			},
+			attributes: [
+				{
+					name: 'Xoo'
+				}
+			]
 		}
 	];
 
@@ -70,7 +82,10 @@ suite('HTML Custom Tag Provider', () => {
 
 	test('Completion', () => {
 		testCompletionFor('<|', {
-			items: [{ label: 'foo', documentation: { kind: 'markdown', value: 'The `<foo>` element' }, resultText: '<foo' }]
+			items: [
+				{ label: 'foo', documentation: { kind: 'markdown', value: 'The `<foo>` element' }, resultText: '<foo' },
+				{ label: 'Bar', documentation: { kind: 'markdown', value: 'The `<Bar>` element' }, resultText: '<Bar' }
+			]
 		}, undefined, languageOptions);
 
 		testCompletionFor('<foo |', {
@@ -109,6 +124,14 @@ suite('HTML Custom Tag Provider', () => {
 					label: 'xval',
 					documentation: { kind: 'markdown', value: '`xval` value' },
 					resultText: `<foo xattr="xval"`
+				}
+			]
+		}, undefined, languageOptions);
+
+		testCompletionFor('<Bar |', {
+			items: [
+				{
+					label: 'Xoo'
 				}
 			]
 		}, undefined, languageOptions);
