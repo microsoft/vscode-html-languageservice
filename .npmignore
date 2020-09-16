@@ -4,7 +4,6 @@ lib/*/*/*.d.ts
 !lib/*/*/htmlScanner.d.ts
 lib/*/test/
 src/
-test/
 build/
 .eslintrc
 .gitignore
@@ -13,3 +12,4 @@ yarn.lock
 tslint.json
 .travis.yml
 gulpfile.js
+.mocharc.json
