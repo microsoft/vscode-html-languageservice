@@ -18,7 +18,7 @@
 			"args": [
 				"--timeout",
 				"999999",
-				"--colors"
+				"./lib/umd/test/*.js"
 			],
 			"cwd": "${workspaceRoot}",
 			"runtimeExecutable": null,

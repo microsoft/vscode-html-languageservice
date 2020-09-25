@@ -28,6 +28,32 @@ Installation
 
     npm install --save vscode-html-languageservice
 
+Development
+-----------
+
+- clone this repo, run yarn
+- `yarn test` to compile and run tests
+
+
+How can I run and debug the service?
+
+- open the folder in VSCode.
+- set breakpoints, e.g. in `htmlCompletion.ts`
+- run the Unit tests from the run viewlet and wait until a breakpoint is hit:
+![image](https://user-images.githubusercontent.com/6461412/94239202-bdad4e80-ff11-11ea-99c3-cb9dbeb1c0b2.png)
+
+
+How can I run and debug the service inside an instance of VSCode?
+
+- run VSCode out of sources setup as described here: https://github.com/Microsoft/vscode/wiki/How-to-Contribute
+- use `yarn link vscode-html-languageservice` in `vscode/extensions/html-language-features/server` to run VSCode with the latest changes in `vscode-html-languageservice`
+- run VSCode out of source (`vscode/scripts/code.sh|bat`) and open a `.html` file
+- in VSCode window that is open on the `vscode-html-languageservice` sources, run command `Debug: Attach to Node process` and pick the `code-oss` process with the `html-language-features` path
+![image](https://user-images.githubusercontent.com/6461412/94239296-dfa6d100-ff11-11ea-8e30-6444cf5defb8.png)
+- set breakpoints, e.g. in `htmlCompletion.ts`
+- in the instance run from sources, invoke code completion in the `.html` file
+
+
 License
 -------
 
