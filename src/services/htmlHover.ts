@@ -11,6 +11,9 @@ import { TokenType, LanguageServiceOptions } from '../htmlLanguageTypes';
 import { HTMLDataManager } from '../languageFacts/dataManager';
 import { isDefined } from '../utils/object';
 import { generateDocumentation } from '../languageFacts/dataProvider';
+import { entities } from '../parser/htmlEntities'; 
+import { localize } from 'vscode-nls';
+import { isLetterOrDigit } from '../utils/strings';
 
 export class HTMLHover {
 	private supportsMarkdown: boolean | undefined;
@@ -23,6 +26,7 @@ export class HTMLHover {
 
 		const offset = document.offsetAt(position);
 		const node = htmlDocument.findNodeAt(offset);
+		const text = document.getText();
 		if (!node || !node.tag) {
 			return null;
 		}
@@ -99,6 +103,29 @@ export class HTMLHover {
 			return null;
 		}
 
+		function getEntityHover(currEntity: string, range: Range): Hover | null {
+			for (const entity in entities) {
+				let hover: Hover | null = null;
+
+				const label = '&' + entity;
+
+				if (currEntity === label) {
+					const contentsDoc = localize('entity.propose', `Character entity representing '${entities[entity]}'`);
+					if (contentsDoc) {
+						hover = { contents: contentsDoc, range };
+					}  else {
+						hover = null;
+					}
+				}
+
+				if (hover) {
+					(hover as Hover).contents = convertContents((hover as Hover).contents);
+					return hover;
+				}
+			}
+			return null;
+		}
+
 		function getTagNameRange(tokenType: TokenType, startOffset: number): Range | null {
 			const scanner = createScanner(document.getText(), startOffset);
 			let token = scanner.scan();
@@ -108,6 +135,23 @@ export class HTMLHover {
 			if (token === tokenType && offset <= scanner.getTokenEnd()) {
 				return { start: document.positionAt(scanner.getTokenOffset()), end: document.positionAt(scanner.getTokenEnd()) };
 			}
+			return null;
+		}
+
+		function getEntityRange(): Range | null {
+			let k = offset - 1;
+			let characterStart = position.character;
+
+			while (k >= 0 && isLetterOrDigit(text, k)) {
+				k--;
+				characterStart--;
+			}
+
+			if (k >= 0 && text[k] === '&') {
+				const range = Range.create(Position.create(position.line, characterStart - 1), position);
+				return range;
+			}
+
 			return null;
 		}
 
@@ -129,6 +173,11 @@ export class HTMLHover {
 			const tag = node.tag;
 			const attr = document.getText(attrRange);
 			return getAttrHover(tag, attr, attrRange);
+		}
+
+		const entityRange = getEntityRange();
+		if (entityRange) {
+			return getEntityHover(text, entityRange);
 		}
 
 		function scanAttrAndAttrValue(nodeStart: number, attrValueStart: number) {
