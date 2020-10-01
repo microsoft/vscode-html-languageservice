@@ -166,8 +166,16 @@ export class HTMLHover {
 				characterStart--;
 			}
 
+			let n = k + 1;
+			let characterEnd = characterStart + 1;
+			
+			while (isLetterOrDigit(text, n)) {
+				n++;
+				characterEnd++;
+			}
+
 			if (k >= 0 && text[k] === '&') {
-				const range = Range.create(Position.create(position.line, characterStart - 1), position);
+				const range = Range.create(Position.create(position.line, characterStart), Position.create(position.line, characterEnd));
 				return range;
 			}
 
