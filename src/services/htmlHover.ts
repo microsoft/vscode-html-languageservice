@@ -128,7 +128,6 @@ export class HTMLHover {
 					}
 
 					hex += code;
-
 					const contentsDoc = localize('entity.propose', `Character entity representing '${entities[entity]}', unicode equivalent '${hex}'`);
 					if (contentsDoc) {
 						hover = { contents: contentsDoc, range };
@@ -178,9 +177,9 @@ export class HTMLHover {
 				let range: Range | null = null;
 
 				if (text[n] === ';') {
-					range = Range.create(Position.create(position.line, characterStart - 1), Position.create(position.line, characterEnd + 1));
+					range = Range.create(Position.create(position.line, characterStart), Position.create(position.line, characterEnd + 1));
 				} else {
-					range = Range.create(Position.create(position.line, characterStart - 1), Position.create(position.line, characterEnd));
+					range = Range.create(Position.create(position.line, characterStart), Position.create(position.line, characterEnd));
 				}
 
 				return range;
