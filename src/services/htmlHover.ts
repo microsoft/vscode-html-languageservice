@@ -14,6 +14,9 @@ import { generateDocumentation } from '../languageFacts/dataProvider';
 import { entities } from '../parser/htmlEntities'; 
 import { localize } from 'vscode-nls';
 import { isLetterOrDigit } from '../utils/strings';
+import * as nls from 'vscode-nls';
+const localize = nls.loadMessageBundle();
+
 
 export class HTMLHover {
 	private supportsMarkdown: boolean | undefined;
