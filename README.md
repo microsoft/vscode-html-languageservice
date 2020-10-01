@@ -1,4 +1,4 @@
-# vscode-html-languageservice
+# vscode-html-language service
 HTML language service extracted from VSCode to be reused, e.g in the Monaco editor.
 
 [![npm Package](https://img.shields.io/npm/v/vscode-html-languageservice.svg?style=flat-square)](https://www.npmjs.org/package/vscode-html-languageservice)
