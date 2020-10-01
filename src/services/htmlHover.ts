@@ -12,7 +12,6 @@ import { HTMLDataManager } from '../languageFacts/dataManager';
 import { isDefined } from '../utils/object';
 import { generateDocumentation } from '../languageFacts/dataProvider';
 import { entities } from '../parser/htmlEntities'; 
-import { localize } from 'vscode-nls';
 import { isLetterOrDigit } from '../utils/strings';
 import * as nls from 'vscode-nls';
 const localize = nls.loadMessageBundle();
@@ -106,17 +105,34 @@ export class HTMLHover {
 			return null;
 		}
 
-		function getEntityHover(currEntity: string, range: Range): Hover | null {
+		function getEntityHover(text: string, range: Range): Hover | null {
+			let currEntity = filterEntity(text);
+
 			for (const entity in entities) {
 				let hover: Hover | null = null;
 
 				const label = '&' + entity;
 
 				if (currEntity === label) {
-					const contentsDoc = localize('entity.propose', `Character entity representing '${entities[entity]}'`);
+					let code = entities[entity].charCodeAt(0).toString(16).toUpperCase();
+					let hex = 'U+';
+
+					if (code.length < 4) {
+						const zeroes = 4 - code.length;
+						let k = 0;
+
+						while (k < zeroes) {
+							hex += '0';
+							k += 1;
+						}
+					}
+
+					hex += code;
+
+					const contentsDoc = localize('entity.propose', `Character entity representing '${entities[entity]}', unicode equivalent '${hex}'`);
 					if (contentsDoc) {
 						hover = { contents: contentsDoc, range };
-					}  else {
+					} else {
 						hover = null;
 					}
 				}
