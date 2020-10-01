@@ -167,7 +167,7 @@ export class HTMLHover {
 			}
 
 			let n = k + 1;
-			let characterEnd = characterStart + 1;
+			let characterEnd = characterStart;
 			
 			while (isLetterOrDigit(text, n)) {
 				n++;
@@ -175,7 +175,14 @@ export class HTMLHover {
 			}
 
 			if (k >= 0 && text[k] === '&') {
-				const range = Range.create(Position.create(position.line, characterStart), Position.create(position.line, characterEnd));
+				let range: Range | null = null;
+
+				if (text[n] === ';') {
+					range = Range.create(Position.create(position.line, characterStart - 1), Position.create(position.line, characterEnd + 1));
+				} else {
+					range = Range.create(Position.create(position.line, characterStart - 1), Position.create(position.line, characterEnd));
+				}
+
 				return range;
 			}
 
