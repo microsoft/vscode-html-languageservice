@@ -182,6 +182,26 @@ export class HTMLHover {
 			return null;
 		}
 
+		function filterEntity(text: string): string {
+			let k = offset - 1;
+			let newText = '&';
+
+			while(k >= 0 && isLetterOrDigit(text,k)) {
+				k--;
+			}
+			
+			k = k + 1;
+
+			while(isLetterOrDigit(text,k)){
+				newText += text[k];
+				k += 1;
+			}
+
+			newText += ';';
+
+			return newText;
+		}
+
 		if (node.endTagStart && offset >= node.endTagStart) {
 			const tagRange = getTagNameRange(TokenType.EndTag, node.endTagStart);
 			if (tagRange) {
