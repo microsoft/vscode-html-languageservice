@@ -94,6 +94,8 @@ export interface IBeautifyHTMLOptions {
      * wrap each attribute except first and align ('force-aligned')
      * wrap each attribute ('force-expand-multiline')
      * multiple attributes are allowed per line, attributes that wrap will align vertically ('aligned-multiple')
+     * preserve wrapping of attributes ('preserve')
+     * preserve wrapping of attributes but align ('preserve-aligned')
      * wrap only when line length is reached ('auto')
      *
      * default auto
