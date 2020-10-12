@@ -24,7 +24,7 @@ and the Monaco editor.
  - *getSelectionRanges* return the selection ranges for the given document.
  ...
 
- For a complete API see [htmlLanguageService.ts](./src/htmlLanguageService.ts) and [htmlLanguageTypes.ts](./src/htmlLanguageTypes.ts) 
+ For the complete API see [htmlLanguageService.ts](./src/htmlLanguageService.ts) and [htmlLanguageTypes.ts](./src/htmlLanguageTypes.ts) 
 
 Installation
 ------------
