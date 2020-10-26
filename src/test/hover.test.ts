@@ -7,7 +7,7 @@ import { assertHover, assertHover2 } from './hoverUtil';
 import { MarkupContent } from 'vscode-languageserver-types';
 
 suite('HTML Hover', () => {
-	test('Single', function(): any {
+	test('Single', function (): any {
 		const descriptionAndReference =
 			'The html element represents the root of an HTML document.' +
 			'\n\n' +
@@ -24,7 +24,7 @@ suite('HTML Hover', () => {
 
 		const entityDescription = `Character entity representing '\u00A0', unicode equivalent 'U+00A0'`;
 
-		
+
 		assertHover('|<html></html>', void 0, void 0);
 		assertHover('<|html></html>', htmlContent, 1);
 		assertHover('<h|tml></html>', htmlContent, 1);
@@ -38,7 +38,7 @@ suite('HTML Hover', () => {
 		assertHover('<html></htm|l>', closeHtmlContent, 8);
 		assertHover('<html></html|>', closeHtmlContent, 8);
 		assertHover('<html></html>|', void 0, void 0);
-		
+
 		assertHover2('<html>|&nbsp;</html>', '', '');
 		assertHover2('<html>&|nbsp;</html>', entityDescription, 'nbsp;');
 		assertHover2('<html>&n|bsp;</html>', entityDescription, 'nbsp;');

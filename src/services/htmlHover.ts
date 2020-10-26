@@ -11,7 +11,7 @@ import { TokenType, LanguageServiceOptions } from '../htmlLanguageTypes';
 import { HTMLDataManager } from '../languageFacts/dataManager';
 import { isDefined } from '../utils/object';
 import { generateDocumentation } from '../languageFacts/dataProvider';
-import { entities } from '../parser/htmlEntities'; 
+import { entities } from '../parser/htmlEntities';
 import { isLetterOrDigit } from '../utils/strings';
 import * as nls from 'vscode-nls';
 const localize = nls.loadMessageBundle();
@@ -167,7 +167,7 @@ export class HTMLHover {
 
 			let n = k + 1;
 			let characterEnd = characterStart;
-			
+
 			while (isLetterOrDigit(text, n)) {
 				n++;
 				characterEnd++;
@@ -192,13 +192,13 @@ export class HTMLHover {
 			let k = offset - 1;
 			let newText = '&';
 
-			while(k >= 0 && isLetterOrDigit(text,k)) {
+			while (k >= 0 && isLetterOrDigit(text, k)) {
 				k--;
 			}
-			
+
 			k = k + 1;
 
-			while(isLetterOrDigit(text,k)){
+			while (isLetterOrDigit(text, k)) {
 				newText += text[k];
 				k += 1;
 			}
