@@ -11,6 +11,11 @@ import { TokenType, LanguageServiceOptions } from '../htmlLanguageTypes';
 import { HTMLDataManager } from '../languageFacts/dataManager';
 import { isDefined } from '../utils/object';
 import { generateDocumentation } from '../languageFacts/dataProvider';
+import { entities } from '../parser/htmlEntities';
+import { isLetterOrDigit } from '../utils/strings';
+import * as nls from 'vscode-nls';
+const localize = nls.loadMessageBundle();
+
 
 export class HTMLHover {
 	private supportsMarkdown: boolean | undefined;
@@ -23,6 +28,7 @@ export class HTMLHover {
 
 		const offset = document.offsetAt(position);
 		const node = htmlDocument.findNodeAt(offset);
+		const text = document.getText();
 		if (!node || !node.tag) {
 			return null;
 		}
@@ -99,6 +105,45 @@ export class HTMLHover {
 			return null;
 		}
 
+		function getEntityHover(text: string, range: Range): Hover | null {
+			let currEntity = filterEntity(text);
+
+			for (const entity in entities) {
+				let hover: Hover | null = null;
+
+				const label = '&' + entity;
+
+				if (currEntity === label) {
+					let code = entities[entity].charCodeAt(0).toString(16).toUpperCase();
+					let hex = 'U+';
+
+					if (code.length < 4) {
+						const zeroes = 4 - code.length;
+						let k = 0;
+
+						while (k < zeroes) {
+							hex += '0';
+							k += 1;
+						}
+					}
+
+					hex += code;
+					const contentsDoc = localize('entity.propose', `Character entity representing '${entities[entity]}', unicode equivalent '${hex}'`);
+					if (contentsDoc) {
+						hover = { contents: contentsDoc, range };
+					} else {
+						hover = null;
+					}
+				}
+
+				if (hover) {
+					(hover as Hover).contents = convertContents((hover as Hover).contents);
+					return hover;
+				}
+			}
+			return null;
+		}
+
 		function getTagNameRange(tokenType: TokenType, startOffset: number): Range | null {
 			const scanner = createScanner(document.getText(), startOffset);
 			let token = scanner.scan();
@@ -109,6 +154,58 @@ export class HTMLHover {
 				return { start: document.positionAt(scanner.getTokenOffset()), end: document.positionAt(scanner.getTokenEnd()) };
 			}
 			return null;
+		}
+
+		function getEntityRange(): Range | null {
+			let k = offset - 1;
+			let characterStart = position.character;
+
+			while (k >= 0 && isLetterOrDigit(text, k)) {
+				k--;
+				characterStart--;
+			}
+
+			let n = k + 1;
+			let characterEnd = characterStart;
+
+			while (isLetterOrDigit(text, n)) {
+				n++;
+				characterEnd++;
+			}
+
+			if (k >= 0 && text[k] === '&') {
+				let range: Range | null = null;
+
+				if (text[n] === ';') {
+					range = Range.create(Position.create(position.line, characterStart), Position.create(position.line, characterEnd + 1));
+				} else {
+					range = Range.create(Position.create(position.line, characterStart), Position.create(position.line, characterEnd));
+				}
+
+				return range;
+			}
+
+			return null;
+		}
+
+		function filterEntity(text: string): string {
+			let k = offset - 1;
+			let newText = '&';
+
+			while (k >= 0 && isLetterOrDigit(text, k)) {
+				k--;
+			}
+
+			k = k + 1;
+
+			while (isLetterOrDigit(text, k)) {
+				newText += text[k];
+				k += 1;
+			}
+
+			newText += ';';
+
+			return newText;
 		}
 
 		if (node.endTagStart && offset >= node.endTagStart) {
@@ -129,6 +226,11 @@ export class HTMLHover {
 			const tag = node.tag;
 			const attr = document.getText(attrRange);
 			return getAttrHover(tag, attr, attrRange);
+		}
+
+		const entityRange = getEntityRange();
+		if (entityRange) {
+			return getEntityHover(text, entityRange);
 		}
 
 		function scanAttrAndAttrValue(nodeStart: number, attrValueStart: number) {
