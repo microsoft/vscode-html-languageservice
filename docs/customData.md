@@ -26,7 +26,7 @@ Version denotes the schema version you are using. The latest schema version is `
 
 You can find other properties' shapes at [htmlLanguageTypes.ts](../src/htmlLanguageTypes.ts) or the [JSON Schema](./customData.schema.json).
 
-You should suffix your custom data file with `.html-data.json`, so VS Code will load the most recent schema for the JSON file to offer auto completion and error checking.
+When working with VSCode, you should suffix your custom data file with `.html-data.json`, so VS Code will load the most recent schema for the JSON file.
 
 [html5.ts](../src/languageFacts/data/html5.ts) contains that built-in dataset that conforms to the spec.
 
