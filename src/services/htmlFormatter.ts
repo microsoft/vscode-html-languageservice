@@ -79,7 +79,10 @@ export function format(document: TextDocument, range: Range | undefined, options
 		extra_liners: getTagsFormatOption(options, 'extraLiners', void 0),
 		wrap_attributes: getFormatOption(options, 'wrapAttributes', 'auto'),
 		wrap_attributes_indent_size: getFormatOption(options, 'wrapAttributesIndentSize', void 0),
-		eol: '\n'
+		eol: '\n',
+		indent_scripts: getFormatOption(options, 'indentScripts', 'normal'),
+		templating: getTemplatingFormatOption(options, 'all'),
+		unformatted_content_delimiter: getFormatOption(options, 'unformattedContentDelimiter', ''),
 	};
 
 	let result = html_beautify(trimLeft(value), htmlOptions);
@@ -119,6 +122,14 @@ function getTagsFormatOption(options: HTMLFormatConfiguration, key: keyof HTMLFo
 		return [];
 	}
 	return dflt;
+}
+
+function getTemplatingFormatOption(options: HTMLFormatConfiguration, dflt: string): ('auto' | 'none' | 'django' | 'erb' | 'handlebars' | 'php')[] | undefined {
+	const value = getFormatOption(options, 'templating', dflt);
+	if (value === true) {
+		return ['auto'];
+	}
+	return ['none'];
 }
 
 function computeIndentLevel(content: string, offset: number, options: HTMLFormatConfiguration): number {

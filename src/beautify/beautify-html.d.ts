@@ -57,7 +57,7 @@ export interface IBeautifyHTMLOptions {
      * "keep"|"separate"|"normal"
      * default normal
      */
-    indent_scripts?: "keep"|"separate"|"normal";
+    indent_scripts?: 'keep' | 'separate' | 'normal';
 
     /**
      * whether existing line breaks before elements should be preserved. Only works before elements, not inside tags or for text.
@@ -116,7 +116,7 @@ export interface IBeautifyHTMLOptions {
      * List of templating languages (auto,none,django,erb,handlebars,php)
      * default ["auto"] = all in html
      */
-    templating?: 'auto' | 'none' | 'django' | 'erb' | 'handlebars' | 'php';
+    templating?: ('auto' | 'none' | 'django' | 'erb' | 'handlebars' | 'php')[];
 
     /**
      * Keep text content together between this string

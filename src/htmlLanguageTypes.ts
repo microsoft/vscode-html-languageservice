@@ -24,6 +24,10 @@ export interface HTMLFormatConfiguration {
 	indentHandlebars?: boolean;
 	endWithNewline?: boolean;
 	extraLiners?: string;
+	indentScripts?: 'keep' | 'separate' | 'normal';
+	templating?: boolean;
+	unformattedContentDelimiter?: string;
+
 }
 
 export interface CompletionConfiguration {
@@ -239,7 +243,7 @@ export interface LanguageServiceOptions {
 	 * Abstract file system access away from the service.
 	 * Used for path completion, etc.
 	 */
-	fileSystemProvider?: FileSystemProvider;	
+	fileSystemProvider?: FileSystemProvider;
 
 	/**
 	 * Describes the LSP capabilities the client supports.
