@@ -115,7 +115,9 @@ export function generateDocumentation(item: ITagData | IAttributeData | IValueDa
 	}
 
 	if (item.references && item.references.length > 0 && settings.references !== false) {
-		result.value += `\n\n`;
+		if (result.value.length) {
+			result.value += `\n\n`;
+		}
 		if (doesSupportMarkdown) {
 			result.value += item.references.map(r => {
 				return `[${r.name}](${r.url})`;

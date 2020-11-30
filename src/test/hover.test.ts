@@ -46,5 +46,17 @@ suite('HTML Hover', () => {
 		assertHover2('<html>&nbs|p;</html>', entityDescription, 'nbsp;');
 		assertHover2('<html>&nbsp|;</html>', entityDescription, 'nbsp;');
 		assertHover2('<html>&nbsp;|</html>', '', '');
+
+		const noDescription: MarkupContent = {
+			kind: 'markdown',
+			value: '[MDN Reference](https://developer.mozilla.org/docs/Web/HTML/Element/html)'
+		};
+		assertHover2('<html|></html>', noDescription, 'html', undefined, { documentation: false });
+
+		const noReferences: MarkupContent = {
+			kind: 'markdown',
+			value: 'The html element represents the root of an HTML document.'
+		};
+		assertHover2('<html|></html>', noReferences, 'html', undefined, { references: false });
 	});
 });

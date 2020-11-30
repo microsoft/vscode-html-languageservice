@@ -7,6 +7,7 @@ import * as assert from 'assert';
 import * as htmlLanguageService from '../htmlLanguageService';
 import { MarkupContent } from 'vscode-languageserver-types';
 import { TextDocument } from 'vscode-languageserver-textdocument';
+import { HoverSettings } from '../htmlLanguageTypes';
 
 export function assertHover(value: string, expectedHoverContent: MarkupContent | undefined, expectedHoverOffset: number | undefined): void {
 	const offset = value.indexOf('|');
@@ -23,7 +24,7 @@ export function assertHover(value: string, expectedHoverContent: MarkupContent |
 	assert.equal(hover && document.offsetAt(hover.range!.start), expectedHoverOffset);
 }
 
-export function assertHover2(value: string, contents: string | MarkupContent, rangeText: string, lsOptions?: htmlLanguageService.LanguageServiceOptions): void {
+export function assertHover2(value: string, contents: string | MarkupContent, rangeText: string, lsOptions?: htmlLanguageService.LanguageServiceOptions, hoverSettings?: HoverSettings): void {
 	const offset = value.indexOf('|');
 	value = value.substr(0, offset) + value.substr(offset + 1);
 
@@ -33,7 +34,7 @@ export function assertHover2(value: string, contents: string | MarkupContent, ra
 	const ls = htmlLanguageService.getLanguageService(lsOptions);
 	const htmlDoc = ls.parseHTMLDocument(document);
 
-	const hover = ls.doHover(document, position, htmlDoc);
+	const hover = ls.doHover(document, position, htmlDoc, hoverSettings);
 	if (hover) {
 		if (typeof contents === 'string') {
 			assert.equal(hover.contents, contents);
