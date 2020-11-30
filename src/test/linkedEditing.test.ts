@@ -24,10 +24,10 @@ export function testMatchingTagPosition(value: string, expected: OffsetWithText[
   const position = document.positionAt(offset);
   const htmlDoc = ls.parseHTMLDocument(document);
 
-  const syncedRegions = ls.findOnTypeRenameRanges(document, position, htmlDoc);
+  const syncedRegions = ls.findLinkedEditingRanges(document, position, htmlDoc);
   if (!syncedRegions) {
     if (expected.length > 0) {
-      assert.fail(`No synced regions for ${originalValue} but expecting\n${JSON.stringify(expected)}`);
+      assert.fail(`No linked editing ranges for ${originalValue} but expecting\n${JSON.stringify(expected)}`);
     } else {
       return;
     }
@@ -40,8 +40,8 @@ export function testMatchingTagPosition(value: string, expected: OffsetWithText[
   assert.deepStrictEqual(actual, expected, `Actual\n${JSON.stringify(actual)}\ndoes not match expected:\n${JSON.stringify(expected)}`);
 }
 
-suite('HTML synced regions', () => {
-  test('Synced regions', () => {
+suite('HTML Linked Editing', () => {
+  test('Linked Editing', () => {
     testMatchingTagPosition('|<div></div>', []);
     testMatchingTagPosition('<|div></div>', [[1, 'div'], [7, 'div']]);
     testMatchingTagPosition('<d|iv></div>', [[1, 'div'], [7, 'div']]);

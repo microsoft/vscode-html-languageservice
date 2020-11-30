@@ -13,7 +13,7 @@ import { findDocumentHighlights } from './services/htmlHighlighting';
 import { findDocumentSymbols } from './services/htmlSymbolsProvider';
 import { doRename } from './services/htmlRename';
 import { findMatchingTagPosition } from './services/htmlMatchingTagPosition';
-import { findOnTypeRenameRanges } from './services/htmlSyncedRegions';
+import { findLinkedEditingRanges } from './services/htmlLinkedEditing';
 import {
 	Scanner, HTMLDocument, CompletionConfiguration, ICompletionParticipant, HTMLFormatConfiguration, DocumentContext,
 	IHTMLDataProvider, HTMLDataV1, LanguageServiceOptions, TextDocument, SelectionRange, WorkspaceEdit,
@@ -44,7 +44,9 @@ export interface LanguageService {
 	getSelectionRanges(document: TextDocument, positions: Position[]): SelectionRange[];
 	doRename(document: TextDocument, position: Position, newName: string, htmlDocument: HTMLDocument): WorkspaceEdit | null;
 	findMatchingTagPosition(document: TextDocument, position: Position, htmlDocument: HTMLDocument): Position | null;
+	/** Deprecated, Use findLinkedEditingRanges instead */
 	findOnTypeRenameRanges(document: TextDocument, position: Position, htmlDocument: HTMLDocument): Range[] | null;
+	findLinkedEditingRanges(document: TextDocument, position: Position, htmlDocument: HTMLDocument): Range[] | null;
 }
 
 const defaultLanguageServiceOptions = {};
@@ -72,7 +74,8 @@ export function getLanguageService(options: LanguageServiceOptions = defaultLang
 		doTagComplete: htmlCompletion.doTagComplete.bind(htmlCompletion),
 		doRename,
 		findMatchingTagPosition,
-		findOnTypeRenameRanges
+		findOnTypeRenameRanges: findLinkedEditingRanges,
+		findLinkedEditingRanges
 	};
 }
 
