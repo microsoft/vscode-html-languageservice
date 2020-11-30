@@ -17,7 +17,7 @@ import { findOnTypeRenameRanges } from './services/htmlSyncedRegions';
 import {
 	Scanner, HTMLDocument, CompletionConfiguration, ICompletionParticipant, HTMLFormatConfiguration, DocumentContext,
 	IHTMLDataProvider, HTMLDataV1, LanguageServiceOptions, TextDocument, SelectionRange, WorkspaceEdit,
-	Position, CompletionList, Hover, Range, SymbolInformation, TextEdit, DocumentHighlight, DocumentLink, FoldingRange
+	Position, CompletionList, Hover, Range, SymbolInformation, TextEdit, DocumentHighlight, DocumentLink, FoldingRange, HoverSettings
 } from './htmlLanguageTypes';
 import { getFoldingRanges } from './services/htmlFolding';
 import { getSelectionRanges } from './services/htmlSelectionRange';
@@ -35,7 +35,7 @@ export interface LanguageService {
 	doComplete(document: TextDocument, position: Position, htmlDocument: HTMLDocument, options?: CompletionConfiguration): CompletionList;
 	doComplete2(document: TextDocument, position: Position, htmlDocument: HTMLDocument, documentContext: DocumentContext, options?: CompletionConfiguration): Promise<CompletionList>;
 	setCompletionParticipants(registeredCompletionParticipants: ICompletionParticipant[]): void;
-	doHover(document: TextDocument, position: Position, htmlDocument: HTMLDocument): Hover | null;
+	doHover(document: TextDocument, position: Position, htmlDocument: HTMLDocument, options?: HoverSettings): Hover | null;
 	format(document: TextDocument, range: Range | undefined, options: HTMLFormatConfiguration): TextEdit[];
 	findDocumentLinks(document: TextDocument, documentContext: DocumentContext): DocumentLink[];
 	findDocumentSymbols(document: TextDocument, htmlDocument: HTMLDocument): SymbolInformation[];

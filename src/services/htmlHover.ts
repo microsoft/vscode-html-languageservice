@@ -7,7 +7,7 @@ import { HTMLDocument } from '../parser/htmlParser';
 import { createScanner } from '../parser/htmlScanner';
 import { Range, Position, Hover, MarkedString, MarkupContent, MarkupKind } from 'vscode-languageserver-types';
 import { TextDocument } from 'vscode-languageserver-textdocument';
-import { TokenType, LanguageServiceOptions } from '../htmlLanguageTypes';
+import { TokenType, LanguageServiceOptions, HoverSettings } from '../htmlLanguageTypes';
 import { HTMLDataManager } from '../languageFacts/dataManager';
 import { isDefined } from '../utils/object';
 import { generateDocumentation } from '../languageFacts/dataProvider';
@@ -22,7 +22,7 @@ export class HTMLHover {
 
 	constructor(private lsOptions: LanguageServiceOptions, private dataManager: HTMLDataManager) { }
 
-	doHover(document: TextDocument, position: Position, htmlDocument: HTMLDocument): Hover | null {
+	doHover(document: TextDocument, position: Position, htmlDocument: HTMLDocument, options?: HoverSettings): Hover | null {
 		const convertContents = this.convertContents.bind(this);
 		const doesSupportMarkdown = this.doesSupportMarkdown();
 
@@ -40,7 +40,7 @@ export class HTMLHover {
 
 				provider.provideTags().forEach(tag => {
 					if (tag.name.toLowerCase() === currTag.toLowerCase()) {
-						let markupContent = generateDocumentation(tag, doesSupportMarkdown);
+						let markupContent = generateDocumentation(tag, options, doesSupportMarkdown);
 						if (!markupContent) {
 							markupContent = {
 								kind: doesSupportMarkdown ? 'markdown' : 'plaintext',
@@ -65,7 +65,7 @@ export class HTMLHover {
 
 				provider.provideAttributes(currTag).forEach(attr => {
 					if (currAttr === attr.name && attr.description) {
-						const contentsDoc = generateDocumentation(attr, doesSupportMarkdown);
+						const contentsDoc = generateDocumentation(attr, options, doesSupportMarkdown);
 						if (contentsDoc) {
 							hover = { contents: contentsDoc, range };
 						} else {
@@ -88,7 +88,7 @@ export class HTMLHover {
 
 				provider.provideValues(currTag, currAttr).forEach(attrValue => {
 					if (currAttrValue === attrValue.name && attrValue.description) {
-						const contentsDoc = generateDocumentation(attrValue, doesSupportMarkdown);
+						const contentsDoc = generateDocumentation(attrValue, options, doesSupportMarkdown);
 						if (contentsDoc) {
 							hover = { contents: contentsDoc, range };
 						} else {

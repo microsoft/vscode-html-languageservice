@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { ITagData, IAttributeData, IValueData, IHTMLDataProvider, HTMLDataV1 } from '../htmlLanguageTypes';
+import { ITagData, IAttributeData, IValueData, IHTMLDataProvider, HTMLDataV1, HoverSettings } from '../htmlLanguageTypes';
 import { MarkupContent } from 'vscode-languageserver-types';
 import { normalizeMarkupContent } from '../utils/markup';
 
@@ -101,20 +101,20 @@ export class HTMLDataProvider implements IHTMLDataProvider {
  * Generate Documentation used in hover/complete
  * From `documentation` and `references`
  */
-export function generateDocumentation(item: ITagData | IAttributeData | IValueData, doesSupportMarkdown: boolean): MarkupContent | undefined {
+export function generateDocumentation(item: ITagData | IAttributeData | IValueData, settings: { documentation?: boolean; references?: boolean; } = {}, doesSupportMarkdown: boolean): MarkupContent | undefined {
 	const result: MarkupContent = {
 		kind: doesSupportMarkdown ? 'markdown' : 'plaintext',
 		value: ''
 	};
 
-	if (item.description) {
+	if (item.description && settings.documentation !== false) {
 		const normalizedDescription = normalizeMarkupContent(item.description);
 		if (normalizedDescription) {
 			result.value += normalizedDescription.value;
 		}
 	}
 
-	if (item.references && item.references.length > 0) {
+	if (item.references && item.references.length > 0 && settings.references !== false) {
 		result.value += `\n\n`;
 		if (doesSupportMarkdown) {
 			result.value += item.references.map(r => {

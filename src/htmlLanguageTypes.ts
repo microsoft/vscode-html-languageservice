@@ -30,6 +30,11 @@ export interface HTMLFormatConfiguration {
 
 }
 
+export interface HoverSettings {
+	documentation?: boolean;
+	references?: boolean
+}
+
 export interface CompletionConfiguration {
 	[provider: string]: boolean | undefined;
 	hideAutoCompleteProposals?: boolean;
