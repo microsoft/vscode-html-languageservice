@@ -3,9 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { HTMLFormatConfiguration } from '../htmlLanguageTypes';
-import { Range, TextEdit, Position } from 'vscode-languageserver-types';
-import { TextDocument } from 'vscode-languageserver-textdocument';
+import { HTMLFormatConfiguration, Range, TextEdit, Position, TextDocument } from '../htmlLanguageTypes';
 import { IBeautifyHTMLOptions, html_beautify } from '../beautify/beautify-html';
 import { repeat } from '../utils/strings';
 

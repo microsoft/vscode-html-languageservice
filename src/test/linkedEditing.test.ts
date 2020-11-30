@@ -5,7 +5,7 @@
 
 import * as assert from 'assert';
 import * as htmlLanguageService from '../htmlLanguageService';
-import { TextDocument } from 'vscode-languageserver-textdocument';
+import { TextDocument } from '../htmlLanguageService';
 
 interface OffsetWithText {
   0: number;

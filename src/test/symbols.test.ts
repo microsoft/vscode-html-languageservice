@@ -6,8 +6,7 @@
 import * as assert from 'assert';
 import * as htmlLanguageService from '../htmlLanguageService';
 
-import { SymbolInformation, SymbolKind, Location, Range } from 'vscode-languageserver-types';
-import { TextDocument } from 'vscode-languageserver-textdocument';
+import { SymbolInformation, SymbolKind, Location, Range, TextDocument } from '../htmlLanguageService';
 
 suite('HTML Symbols', () => {
 

@@ -5,9 +5,8 @@
 
 import * as assert from 'assert';
 import * as htmlLanguageService from '../htmlLanguageService';
-import { WorkspaceEdit } from 'vscode-languageserver-types';
-import { TextDocument } from 'vscode-languageserver-textdocument';
-import { isUndefined } from 'util';
+import { WorkspaceEdit, TextDocument } from '../htmlLanguageService';
+
 
 export function testRename(value: string, newName: string, expectedDocContent: string): void {
   const offset = value.indexOf('|');
@@ -46,7 +45,7 @@ export function testNoRename(value: string, newName: string): void {
 
   const workspaceEdit: WorkspaceEdit | null = ls.doRename(document, position, newName, htmlDoc);
 
-  assert.ok(isUndefined(workspaceEdit?.changes), 'Should not rename but rename happened');
+  assert.ok(workspaceEdit?.changes === undefined, 'Should not rename but rename happened');
 }
 
 suite('HTML Rename', () => {

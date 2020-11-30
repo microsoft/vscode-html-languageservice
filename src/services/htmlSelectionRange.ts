@@ -1,12 +1,11 @@
-/**
- * Until SelectionRange lands in LSP, we'll return Range from server and convert it to
- * SelectionRange on client side
- */
-import { Range, Position, SelectionRange } from 'vscode-languageserver-types';
-import { TextDocument } from 'vscode-languageserver-textdocument';
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
 import { createScanner } from '../parser/htmlScanner';
 import { parse, Node } from '../parser/htmlParser';
-import { TokenType } from '../htmlLanguageTypes';
+import { TokenType, Range, Position, SelectionRange, TextDocument } from '../htmlLanguageTypes';
 
 export function getSelectionRanges(document: TextDocument, positions: Position[]): SelectionRange[] {
 

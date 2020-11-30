@@ -4,12 +4,10 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { createScanner } from '../parser/htmlScanner';
-import { Range, DocumentLink } from 'vscode-languageserver-types';
-import { TextDocument } from 'vscode-languageserver-textdocument';
 import * as strings from '../utils/strings';
 import { URI as Uri } from 'vscode-uri';
 
-import { TokenType, DocumentContext } from '../htmlLanguageTypes';
+import { TokenType, DocumentContext, TextDocument, Range, DocumentLink } from '../htmlLanguageTypes';
 
 function normalizeRef(url: string): string {
 	const first = url[0];

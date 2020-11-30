@@ -5,7 +5,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { TextDocument } from 'vscode-languageserver-textdocument';
+import { TextDocument } from '../htmlLanguageTypes';
 import * as htmlLanguageService from '../htmlLanguageService';
 import { getDocumentContext } from './testUtil/documentContext';
 

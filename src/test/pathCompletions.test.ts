@@ -7,7 +7,7 @@ import * as assert from 'assert';
 import * as path from 'path';
 import { URI } from 'vscode-uri';
 import { getDocumentContext } from './testUtil/documentContext';
-import { CompletionItemKind, CompletionList, TextDocument, getLanguageService } from '../htmlLanguageService';
+import { CompletionItemKind, TextDocument, getLanguageService } from '../htmlLanguageService';
 import { getFsProvider } from './testUtil/fsProvider';
 import { assertCompletion } from './completionUtil';
 export interface ItemDescription {

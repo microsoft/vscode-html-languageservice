@@ -6,9 +6,7 @@
 import * as assert from 'assert';
 import * as htmlLanguageService from '../htmlLanguageService';
 
-import { Position } from 'vscode-languageserver-types';
-import { TextDocument } from 'vscode-languageserver-textdocument';
-import { HtmlAttributeValueContext, HtmlContentContext } from '../htmlLanguageService';
+import { HtmlAttributeValueContext, HtmlContentContext, Position, TextDocument } from '../htmlLanguageService';
 
 export interface ExpectedHtmlAttributeValue {
   tag: string;

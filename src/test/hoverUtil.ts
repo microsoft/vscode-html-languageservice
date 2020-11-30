@@ -5,9 +5,7 @@
 
 import * as assert from 'assert';
 import * as htmlLanguageService from '../htmlLanguageService';
-import { MarkupContent } from 'vscode-languageserver-types';
-import { TextDocument } from 'vscode-languageserver-textdocument';
-import { HoverSettings } from '../htmlLanguageTypes';
+import { HoverSettings, TextDocument, MarkupContent } from '../htmlLanguageService';
 
 export function assertHover(value: string, expectedHoverContent: MarkupContent | undefined, expectedHoverOffset: number | undefined): void {
 	const offset = value.indexOf('|');

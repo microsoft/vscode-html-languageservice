@@ -5,9 +5,7 @@
 
 import 'mocha';
 import * as assert from 'assert';
-import { SelectionRange } from 'vscode-languageserver-types';
-import { TextDocument } from 'vscode-languageserver-textdocument';
-import { getLanguageService } from '../htmlLanguageService';
+import { SelectionRange, TextDocument, getLanguageService } from '../htmlLanguageService';
 
 function assertRanges(content: string, expected: (number | string)[][]): void {
 	let message = `${content} gives selection range:\n`;
@@ -21,7 +19,7 @@ function assertRanges(content: string, expected: (number | string)[][]): void {
 	const actualRanges = ls.getSelectionRanges(document, [document.positionAt(offset)]);
 	assert.equal(actualRanges.length, 1);
 	const offsetPairs: [number, string][] = [];
-	let curr : SelectionRange | undefined = actualRanges[0];
+	let curr: SelectionRange | undefined = actualRanges[0];
 	while (curr) {
 		offsetPairs.push([document.offsetAt(curr.range.start), document.getText(curr.range)]);
 		curr = curr.parent;
@@ -166,7 +164,7 @@ suite('HTML SelectionRange', () => {
 			[0, "<html><meta charset='UTF-8'></html>"]
 		]);
 	});
-	
+
 	test('Unmatching tags', () => {
 		assertRanges('<div></div|1>', [[0, "<div></div1>"]]);
 	});

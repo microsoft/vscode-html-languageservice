@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { assertHover, assertHover2 } from './hoverUtil';
-import { MarkupContent } from 'vscode-languageserver-types';
+import { MarkupContent } from '../htmlLanguageTypes';
 
 suite('HTML Hover', () => {
 	test('Single', function (): any {

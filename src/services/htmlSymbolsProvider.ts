@@ -3,8 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Location, Range, SymbolInformation, SymbolKind } from 'vscode-languageserver-types';
-import { TextDocument } from 'vscode-languageserver-textdocument';
+import { Location, Range, SymbolInformation, SymbolKind, TextDocument} from '../htmlLanguageTypes';
 import { HTMLDocument, Node } from '../parser/htmlParser';
 
 export function findDocumentSymbols(document: TextDocument, htmlDocument: HTMLDocument): SymbolInformation[] {
