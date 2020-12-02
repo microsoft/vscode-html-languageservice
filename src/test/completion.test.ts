@@ -437,4 +437,14 @@ suite('HTML Completion', () => {
 			items: [{ label: '/div', filterText: '  </div' }]
 		});
 	});
+
+	test('non matching close tag suggestion', () => {
+		testCompletionFor('</|', {
+			items: [{ label: '/a', resultText: '</a>' }]
+		});
+
+		testCompletionFor('<div></div></|', {
+			items: [{ label: '/a', resultText: '<div></div></a>' }]
+		});
+	});
 });
