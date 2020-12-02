@@ -157,8 +157,8 @@ export class HTMLCompletion {
 						label: '/' + tag.name,
 						kind: CompletionItemKind.Property,
 						documentation: generateDocumentation(tag, undefined, doesSupportMarkdown),
-						filterText: '/' + tag + closeTag,
-						textEdit: TextEdit.replace(range, '/' + tag + closeTag),
+						filterText: '/' + tag.name + closeTag,
+						textEdit: TextEdit.replace(range, '/' + tag.name + closeTag),
 						insertTextFormat: InsertTextFormat.PlainText
 					});
 				});
