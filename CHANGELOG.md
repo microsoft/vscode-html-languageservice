@@ -1,3 +1,8 @@
+
+4.0.0 / 2020-12-14
+==================
+  * Update to `vscode-languageserver-types@3.16`
+
 3.2.0 / 2020-11-30
 ==================
   * New parameter `HoverSettings` for `LanguageService.doHover`: Defines whether the hover contains element documentation and/or a reference to MDN.
