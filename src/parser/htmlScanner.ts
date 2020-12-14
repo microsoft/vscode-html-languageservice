@@ -154,7 +154,11 @@ const _TAB = '\t'.charCodeAt(0);
 
 
 const htmlScriptContents: { [key: string]: boolean } = {
-	'text/x-handlebars-template': true
+	'text/x-handlebars-template': true,
+	'text/html': true,
+	'text/plain': true,
+	'text/x-template': true,
+	'text/template': true
 };
 
 export function createScanner(input: string, initialOffset = 0, initialState: ScannerState = ScannerState.WithinContent, emitPseudoCloseTags = false): Scanner {
