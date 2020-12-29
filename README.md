@@ -51,7 +51,7 @@ How can I run and debug the service inside an instance of VSCode?
 - run VSCode out of sources setup as described here: https://github.com/Microsoft/vscode/wiki/How-to-Contribute
 - link the fodler of the `vscode-html-languageservice` repo to `vscode/extensions/html-language-features/server` to run VSCode with the latest changes from that folder:
   - cd `vscode-html-languageservice`, `yarn link`
-  - cd `vscode/extensions/html-language-features/server`, `yarn link vscode-html-languageservice
+  - cd `vscode/extensions/html-language-features/server`, `yarn link vscode-html-languageservice`
 - run VSCode out of source (`vscode/scripts/code.sh|bat`) and open a `.html` file
 - in VSCode window that is open on the `vscode-html-languageservice` sources, run command `Debug: Attach to Node process` and pick the `code-oss` process with the `html-language-features` path
 ![image](https://user-images.githubusercontent.com/6461412/94239296-dfa6d100-ff11-11ea-8e30-6444cf5defb8.png)
