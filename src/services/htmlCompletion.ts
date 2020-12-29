@@ -189,16 +189,30 @@ export class HTMLCompletion {
 			return result;
 		}
 
+		function getExistingAttributeNames(offset: number): { [attribute: string]: boolean } {
+			const existingAttributes = Object.create(null);
+			htmlDocument.findNodeBefore(offset).attributeNames.forEach(attribute => {
+				existingAttributes[attribute] = true;
+			});
+			return existingAttributes;
+		}
+
 		function collectAttributeNameSuggestions(nameStart: number, nameEnd: number = offset): CompletionList {
 			let replaceEnd = offset;
 			while (replaceEnd < nameEnd && text[replaceEnd] !== '<') { // < is a valid attribute name character, but we rather assume the attribute name ends. See #23236.
 				replaceEnd++;
 			}
+			const existingAttributes = getExistingAttributeNames(nameStart);
+			const currentAttribute = text.substring(nameStart, nameEnd);
 			const range = getReplaceRange(nameStart, replaceEnd);
 			const value = isFollowedBy(text, nameEnd, ScannerState.AfterAttributeName, TokenType.DelimiterAssign) ? '' : '="$1"';
 			const seenAttributes = Object.create(null);
 			dataProviders.forEach(provider => {
 				provider.provideAttributes(currentTag).forEach(attr => {
+					// include current typing attribute for completing `="$1"`
+					if (!(attr.name === currentAttribute && text[nameEnd] !== '=') && existingAttributes[attr.name]) {
+						return;
+					}
 					if (seenAttributes[attr.name]) {
 						return;
 					}
