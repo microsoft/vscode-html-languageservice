@@ -69,6 +69,7 @@ suite('HTML Completion', () => {
 
 		testCompletionFor('<input t|ype="text"', {
 			items: [
+				{ label: 'type', resultText: '<input type="text"' },
 				{ label: 'tabindex', resultText: '<input tabindex="text"' }
 			]
 		});

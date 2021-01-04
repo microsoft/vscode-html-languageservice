@@ -209,8 +209,8 @@ export class HTMLCompletion {
 			const seenAttributes = Object.create(null);
 			dataProviders.forEach(provider => {
 				provider.provideAttributes(currentTag).forEach(attr => {
-					// include current typing attribute for completing `="$1"`
-					if (!(attr.name === currentAttribute && text[nameEnd] !== '=') && existingAttributes[attr.name]) {
+					// include current typing attribute
+					if (attr.name !== currentAttribute && existingAttributes[attr.name]) {
 						return;
 					}
 					if (seenAttributes[attr.name]) {
