@@ -77,6 +77,7 @@ suite('HTML Completion', () => {
 		testCompletionFor('<input type="text" |', {
 			items: [
 				{ label: 'style', resultText: '<input type="text" style="$1"' },
+				{ label: 'type', notAvailable: true },
 				{ label: 'size', resultText: '<input type="text" size="$1"' }
 			]
 		});
