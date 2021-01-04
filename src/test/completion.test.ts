@@ -82,6 +82,22 @@ suite('HTML Completion', () => {
 			]
 		});
 
+		testCompletionFor('<input | type="text"', {
+			items: [
+				{ label: 'style', resultText: '<input style="$1" type="text"' },
+				{ label: 'type', notAvailable: true },
+				{ label: 'size', resultText: '<input size="$1" type="text"' }
+			]
+		});
+
+		testCompletionFor('<input type="text" type="number" |', {
+			items: [
+				{ label: 'style', resultText: '<input type="text" type="number" style="$1"' },
+				{ label: 'type', notAvailable: true },
+				{ label: 'size', resultText: '<input type="text" type="number" size="$1"' }
+			]
+		});
+
 		testCompletionFor('<input type="text" s|', {
 			items: [
 				{ label: 'style', resultText: '<input type="text" style="$1"' },
