@@ -189,9 +189,9 @@ export class HTMLCompletion {
 			return result;
 		}
 
-		function getExistingAttributeNames(offset: number): { [attribute: string]: boolean } {
+		function getExistingAttributes(): { [attribute: string]: boolean } {
 			const existingAttributes = Object.create(null);
-			htmlDocument.findNodeBefore(offset).attributeNames.forEach(attribute => {
+			node.attributeNames.forEach(attribute => {
 				existingAttributes[attribute] = true;
 			});
 			return existingAttributes;
@@ -202,17 +202,16 @@ export class HTMLCompletion {
 			while (replaceEnd < nameEnd && text[replaceEnd] !== '<') { // < is a valid attribute name character, but we rather assume the attribute name ends. See #23236.
 				replaceEnd++;
 			}
-			const existingAttributes = getExistingAttributeNames(nameStart);
 			const currentAttribute = text.substring(nameStart, nameEnd);
 			const range = getReplaceRange(nameStart, replaceEnd);
 			const value = isFollowedBy(text, nameEnd, ScannerState.AfterAttributeName, TokenType.DelimiterAssign) ? '' : '="$1"';
-			const seenAttributes = Object.create(null);
+
+			const seenAttributes = getExistingAttributes();
+			// include current typing attribute
+			seenAttributes[currentAttribute] = false;
+
 			dataProviders.forEach(provider => {
 				provider.provideAttributes(currentTag).forEach(attr => {
-					// include current typing attribute
-					if (attr.name !== currentAttribute && existingAttributes[attr.name]) {
-						return;
-					}
 					if (seenAttributes[attr.name]) {
 						return;
 					}
