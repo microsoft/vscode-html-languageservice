@@ -189,14 +189,27 @@ export class HTMLCompletion {
 			return result;
 		}
 
+		function getExistingAttributes(): { [attribute: string]: boolean } {
+			const existingAttributes = Object.create(null);
+			node.attributeNames.forEach(attribute => {
+				existingAttributes[attribute] = true;
+			});
+			return existingAttributes;
+		}
+
 		function collectAttributeNameSuggestions(nameStart: number, nameEnd: number = offset): CompletionList {
 			let replaceEnd = offset;
 			while (replaceEnd < nameEnd && text[replaceEnd] !== '<') { // < is a valid attribute name character, but we rather assume the attribute name ends. See #23236.
 				replaceEnd++;
 			}
+			const currentAttribute = text.substring(nameStart, nameEnd);
 			const range = getReplaceRange(nameStart, replaceEnd);
 			const value = isFollowedBy(text, nameEnd, ScannerState.AfterAttributeName, TokenType.DelimiterAssign) ? '' : '="$1"';
-			const seenAttributes = Object.create(null);
+
+			const seenAttributes = getExistingAttributes();
+			// include current typing attribute
+			seenAttributes[currentAttribute] = false;
+
 			dataProviders.forEach(provider => {
 				provider.provideAttributes(currentTag).forEach(attr => {
 					if (seenAttributes[attr.name]) {
