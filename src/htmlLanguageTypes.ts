@@ -3,11 +3,28 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Position, Range, MarkupContent, MarkupKind, DocumentUri } from 'vscode-languageserver-types';
+import {
+	Position, Range, Location,
+	MarkupContent, MarkupKind, MarkedString, DocumentUri,
+	SelectionRange, WorkspaceEdit,
+	CompletionList, CompletionItemKind, CompletionItem,
+	SymbolInformation, SymbolKind,
+	Hover, TextEdit, InsertTextFormat, DocumentHighlight, DocumentHighlightKind,
+	DocumentLink, FoldingRange, FoldingRangeKind
+} from 'vscode-languageserver-types';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 
-export { TextDocument } from 'vscode-languageserver-textdocument';
-export * from 'vscode-languageserver-types';
+
+export {
+	TextDocument,
+	Position, Range, Location,
+	MarkupContent, MarkupKind, MarkedString, DocumentUri,
+	SelectionRange, WorkspaceEdit,
+	CompletionList, CompletionItemKind, CompletionItem,
+	SymbolInformation, SymbolKind,
+	Hover, TextEdit, InsertTextFormat, DocumentHighlight, DocumentHighlightKind,
+	DocumentLink, FoldingRange, FoldingRangeKind
+};
 
 export interface HTMLFormatConfiguration {
 	tabSize?: number;
