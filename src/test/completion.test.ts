@@ -332,6 +332,14 @@ suite('HTML Completion', () => {
 		});
 	});
 
+	test('Support script type="text/html"', function() {
+		testCompletionFor('<script id="html-template" type="text/html"> <| </script>', {
+			items: [
+				{ label: 'div', resultText: '<script id="html-template" type="text/html"> <div </script>' }
+			]
+		});
+	});
+
 	test('Complete aria', function(): any {
 		const expectedAriaAttributes = [
 			{ label: 'aria-activedescendant' },

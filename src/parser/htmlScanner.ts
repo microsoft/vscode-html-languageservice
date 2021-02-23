@@ -154,7 +154,9 @@ const _TAB = '\t'.charCodeAt(0);
 
 
 const htmlScriptContents: { [key: string]: boolean } = {
-	'text/x-handlebars-template': true
+	'text/x-handlebars-template': true,
+	// Fix for https://github.com/microsoft/vscode/issues/77977
+	'text/html': true,
 };
 
 export function createScanner(input: string, initialOffset = 0, initialState: ScannerState = ScannerState.WithinContent, emitPseudoCloseTags = false): Scanner {
