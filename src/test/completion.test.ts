@@ -6,7 +6,7 @@
 import { testCompletionFor, testTagCompletion } from "./completionUtil";
 
 suite('HTML Completion', () => {
-	test('Complete', function(): any {
+	test('Complete', function (): any {
 		testCompletionFor('<|', {
 			items: [
 				{ label: '!DOCTYPE', resultText: '<!DOCTYPE html>' },
@@ -306,7 +306,7 @@ suite('HTML Completion', () => {
 		});
 	});
 
-	test('Case sensitivity', function() {
+	test('Case sensitivity', function () {
 		testCompletionFor('<LI></|', {
 			items: [{ label: '/LI', resultText: '<LI></LI>' }, { label: '/li', notAvailable: true }]
 		});
@@ -324,7 +324,7 @@ suite('HTML Completion', () => {
 		});
 	});
 
-	test('Handlebar Completion', function() {
+	test('Handlebar Completion', function () {
 		testCompletionFor('<script id="entry-template" type="text/x-handlebars-template"> <| </script>', {
 			items: [
 				{ label: 'div', resultText: '<script id="entry-template" type="text/x-handlebars-template"> <div </script>' }
@@ -332,7 +332,7 @@ suite('HTML Completion', () => {
 		});
 	});
 
-	test('Support script type="text/html"', function() {
+	test('Support script type="text/html"', function () {
 		testCompletionFor('<script id="html-template" type="text/html"> <| </script>', {
 			items: [
 				{ label: 'div', resultText: '<script id="html-template" type="text/html"> <div </script>' }
@@ -340,7 +340,7 @@ suite('HTML Completion', () => {
 		});
 	});
 
-	test('Complete aria', function(): any {
+	test('Complete aria', function (): any {
 		const expectedAriaAttributes = [
 			{ label: 'aria-activedescendant' },
 			{ label: 'aria-atomic' },
@@ -397,7 +397,7 @@ suite('HTML Completion', () => {
 		testCompletionFor('<input  |> </input >', { items: expectedAriaAttributes });
 	});
 
-	test('Settings', function(): any {
+	test('Settings', function (): any {
 		testCompletionFor(
 			'<|',
 			{
@@ -407,7 +407,7 @@ suite('HTML Completion', () => {
 		);
 	});
 
-	test('doTagComplete', function(): any {
+	test('doTagComplete', function (): any {
 		testTagCompletion('<div>|', '$0</div>');
 		testTagCompletion('<div>|</div>', null);
 		testTagCompletion('<div class="">|', '$0</div>');
@@ -415,9 +415,10 @@ suite('HTML Completion', () => {
 		testTagCompletion('<div><br></|', 'div>');
 		testTagCompletion('<div><br><span></span></|', 'div>');
 		testTagCompletion('<div><h1><br><span></span><img></| </h1></div>', 'h1>');
+		testTagCompletion('<ng-template><td><ng-template></|   </td> </ng-template>', 'ng-template>');
 	});
 
-	test('Character entities', function(): any {
+	test('Character entities', function (): any {
 		testCompletionFor('<div>&|', {
 			items: [
 				{ label: '&hookrightarrow;', resultText: '<div>&hookrightarrow;' },

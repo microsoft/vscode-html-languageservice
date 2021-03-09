@@ -500,7 +500,7 @@ export class HTMLCompletion {
 			}
 		} else if (char === '/') {
 			let node: Node | undefined = htmlDocument.findNodeBefore(offset);
-			while (node && node.closed) {
+			while (node && node.closed && !(node.endTagStart && (node.endTagStart > offset))) {
 				node = node.parent;
 			}
 			if (node && node.tag) {
