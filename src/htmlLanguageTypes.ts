@@ -10,7 +10,8 @@ import {
 	CompletionList, CompletionItemKind, CompletionItem,
 	SymbolInformation, SymbolKind,
 	Hover, TextEdit, InsertTextFormat, DocumentHighlight, DocumentHighlightKind,
-	DocumentLink, FoldingRange, FoldingRangeKind
+	DocumentLink, FoldingRange, FoldingRangeKind,
+	SignatureHelp, Definition, Diagnostic, FormattingOptions, Color, ColorInformation, ColorPresentation
 } from 'vscode-languageserver-types';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 
@@ -23,7 +24,8 @@ export {
 	CompletionList, CompletionItemKind, CompletionItem,
 	SymbolInformation, SymbolKind,
 	Hover, TextEdit, InsertTextFormat, DocumentHighlight, DocumentHighlightKind,
-	DocumentLink, FoldingRange, FoldingRangeKind
+	DocumentLink, FoldingRange, FoldingRangeKind,
+	SignatureHelp, Definition, Diagnostic, FormattingOptions, Color, ColorInformation, ColorPresentation
 };
 
 export interface HTMLFormatConfiguration {
