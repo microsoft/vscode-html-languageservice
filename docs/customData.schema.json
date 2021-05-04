@@ -176,7 +176,7 @@
       }
     },
     "valueSets": {
-      "description": "A set of attribute value. When an attribute refers to an attribute set, its value completion will use valuse from that set",
+      "description": "A set of attribute value. When an attribute refers to an attribute set, its value completion will use value from that set",
       "type": "array",
       "items": {
         "type": "object",
