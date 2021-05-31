@@ -69,7 +69,7 @@ update('js-beautify', 'LICENSE', './src/beautify/beautify-license');
 // ESM version
 update('js-beautify', 'js/lib/beautify-html.js', './src/beautify/esm/beautify-html.js', true, function (contents) {
     let topLevelFunction = '(function() {';
-    let outputVar = 'var legacy_beautify_html =';
+    let outputVar = 'var legacy_beautify_html';
     let footer = 'var style_html = legacy_beautify_html;';
     let index1 = contents.indexOf(topLevelFunction);
     let index2 = contents.indexOf(outputVar, index1);
@@ -93,7 +93,7 @@ export function html_beautify(html_source, options) {
 });
 update('js-beautify', 'js/lib/beautify-css.js', './src/beautify/esm/beautify-css.js', true, function (contents) {
     let topLevelFunction = '(function() {';
-    let outputVar = 'var legacy_beautify_css =';
+    let outputVar = 'var legacy_beautify_css';
     let footer = 'var css_beautify = legacy_beautify_css;';
     let index1 = contents.indexOf(topLevelFunction);
     let index2 = contents.indexOf(outputVar, index1);
