@@ -7,9 +7,9 @@ import {
 	Position, Range, Location,
 	MarkupContent, MarkupKind, MarkedString, DocumentUri,
 	SelectionRange, WorkspaceEdit,
-	CompletionList, CompletionItemKind, CompletionItem,
+	CompletionList, CompletionItemKind, CompletionItem, CompletionItemTag, InsertTextMode, Command,
 	SymbolInformation, SymbolKind,
-	Hover, TextEdit, InsertTextFormat, DocumentHighlight, DocumentHighlightKind,
+	Hover, TextEdit, InsertReplaceEdit, InsertTextFormat, DocumentHighlight, DocumentHighlightKind,
 	DocumentLink, FoldingRange, FoldingRangeKind,
 	SignatureHelp, Definition, Diagnostic, FormattingOptions, Color, ColorInformation, ColorPresentation
 } from 'vscode-languageserver-types';
@@ -21,9 +21,9 @@ export {
 	Position, Range, Location,
 	MarkupContent, MarkupKind, MarkedString, DocumentUri,
 	SelectionRange, WorkspaceEdit,
-	CompletionList, CompletionItemKind, CompletionItem,
+	CompletionList, CompletionItemKind, CompletionItem, CompletionItemTag, InsertTextMode, Command,
 	SymbolInformation, SymbolKind,
-	Hover, TextEdit, InsertTextFormat, DocumentHighlight, DocumentHighlightKind,
+	Hover, TextEdit, InsertReplaceEdit, InsertTextFormat, DocumentHighlight, DocumentHighlightKind,
 	DocumentLink, FoldingRange, FoldingRangeKind,
 	SignatureHelp, Definition, Diagnostic, FormattingOptions, Color, ColorInformation, ColorPresentation
 };
