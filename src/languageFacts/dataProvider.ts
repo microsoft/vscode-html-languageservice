@@ -85,11 +85,9 @@ export class HTMLDataProvider implements IHTMLDataProvider {
 		};
 
 		const tagEntry = this._tagMap[tag.toLowerCase()];
-		if (!tagEntry) {
-			return [];
+		if (tagEntry) {
+			processAttributes(tagEntry.attributes);
 		}
-
-		processAttributes(tagEntry.attributes);
 		processAttributes(this._globalAttributes);
 
 		return values;

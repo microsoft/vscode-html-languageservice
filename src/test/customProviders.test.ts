@@ -135,6 +135,32 @@ suite('HTML Custom Tag Provider', () => {
 				}
 			]
 		}, undefined, languageOptions);
+
+		// test global attributes
+		testCompletionFor('<other |', {
+			items: [
+				{
+					label: 'fooAttr',
+					documentation: { kind: 'markdown', value: '`fooAttr` Attribute' },
+					resultText: `<other fooAttr="$1"`
+				},
+				{
+					label: 'xattr',
+					documentation: { kind: 'markdown', value: '`xattr` attributes' },
+					resultText: `<other xattr="$1"`
+				}
+			]
+		}, undefined, languageOptions);
+
+		testCompletionFor('<other xattr=|', {
+			items: [
+				{
+					label: 'xval',
+					documentation: { kind: 'markdown', value: '`xval` value' },
+					resultText: `<other xattr="xval"`
+				}
+			]
+		}, undefined, languageOptions);
 	});
 
 	test('Hover', () => {
