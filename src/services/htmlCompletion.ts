@@ -204,7 +204,10 @@ export class HTMLCompletion {
 			}
 			const currentAttribute = text.substring(nameStart, nameEnd);
 			const range = getReplaceRange(nameStart, replaceEnd);
-			const value = isFollowedBy(text, nameEnd, ScannerState.AfterAttributeName, TokenType.DelimiterAssign) ? '' : '="$1"';
+			let value = '';
+			if (!isFollowedBy(text, nameEnd, ScannerState.AfterAttributeName, TokenType.DelimiterAssign)) {
+				value = (settings && settings.doNotAddAttributeQuotes) ? '=$1' : '="$1"';
+			}
 
 			const seenAttributes = getExistingAttributes();
 			// include current typing attribute

@@ -57,6 +57,7 @@ export interface HoverSettings {
 export interface CompletionConfiguration {
 	[provider: string]: boolean | undefined;
 	hideAutoCompleteProposals?: boolean;
+	doNotAddAttributeQuotes?: boolean;
 }
 
 export interface Node {

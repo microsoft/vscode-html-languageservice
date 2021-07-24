@@ -405,6 +405,20 @@ suite('HTML Completion', () => {
 			},
 			{ html5: false }
 		);
+		testCompletionFor(
+			'<div clas|',
+			{
+				items: [{ label: 'class', resultText: '<div class="$1"' }]
+			},
+			{ doNotAddAttributeQuotes: false }
+		);
+		testCompletionFor(
+			'<div clas|',
+			{
+				items: [{ label: 'class', resultText: '<div class=$1' }]
+			},
+			{ doNotAddAttributeQuotes: true }
+		);
 	});
 
 	test('doTagComplete', function (): any {
