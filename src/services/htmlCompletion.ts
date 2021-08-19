@@ -206,7 +206,13 @@ export class HTMLCompletion {
 			const range = getReplaceRange(nameStart, replaceEnd);
 			let value = '';
 			if (!isFollowedBy(text, nameEnd, ScannerState.AfterAttributeName, TokenType.DelimiterAssign)) {
-				value = (settings && settings.doNotAddAttributeQuotes) ? '=$1' : '="$1"';
+				if (settings?.useEmptyAttrValue) {
+					value = '=$1';
+				} else if (settings?.useSingleQuotesForAttrs) {
+					value = '=\'$1\'';
+				} else {
+					value = '="$1"';
+				}
 			}
 
 			const seenAttributes = getExistingAttributes();

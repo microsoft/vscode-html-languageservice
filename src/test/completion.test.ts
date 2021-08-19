@@ -410,14 +410,21 @@ suite('HTML Completion', () => {
 			{
 				items: [{ label: 'class', resultText: '<div class="$1"' }]
 			},
-			{ doNotAddAttributeQuotes: false }
+			{ useEmptyAttrValue: false }
+		);
+		testCompletionFor(
+			'<div clas|',
+			{
+				items: [{ label: 'class', resultText: '<div class=\'$1\'' }]
+			},
+			{ useSingleQuotesForAttrs: true }
 		);
 		testCompletionFor(
 			'<div clas|',
 			{
 				items: [{ label: 'class', resultText: '<div class=$1' }]
 			},
-			{ doNotAddAttributeQuotes: true }
+			{ useEmptyAttrValue: true }
 		);
 	});
 
