@@ -4900,14 +4900,14 @@ export const htmlData : HTMLDataV1 = {
 			"name": "m",
 			"values": [
 				{
-					"name": "GET",
+					"name": "get",
 					"description": {
 						"kind": "markdown",
 						"value": "Corresponds to the HTTP [GET method](https://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.3); form data are appended to the `action` attribute URI with a '?' as separator, and the resulting URI is sent to the server. Use this method when the form has no side-effects and contains only ASCII characters."
 					}
 				},
 				{
-					"name": "POST",
+					"name": "post",
 					"description": {
 						"kind": "markdown",
 						"value": "Corresponds to the HTTP [POST method](https://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.5); form data are included in the body of the form and sent to the server."
@@ -4926,10 +4926,10 @@ export const htmlData : HTMLDataV1 = {
 			"name": "fm",
 			"values": [
 				{
-					"name": "GET"
+					"name": "get"
 				},
 				{
-					"name": "POST"
+					"name": "post"
 				}
 			]
 		},
