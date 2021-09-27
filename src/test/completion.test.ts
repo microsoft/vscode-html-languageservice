@@ -405,6 +405,27 @@ suite('HTML Completion', () => {
 			},
 			{ html5: false }
 		);
+		testCompletionFor(
+			'<div clas|',
+			{
+				items: [{ label: 'class', resultText: '<div class="$1"' }]
+			},
+			{ attributeDefaultValue: 'doublequotes' }
+		);
+		testCompletionFor(
+			'<div clas|',
+			{
+				items: [{ label: 'class', resultText: '<div class=\'$1\'' }]
+			},
+			{ attributeDefaultValue: 'singlequotes' }
+		);
+		testCompletionFor(
+			'<div clas|',
+			{
+				items: [{ label: 'class', resultText: '<div class=$1' }]
+			},
+			{ attributeDefaultValue: 'empty' }
+		);
 	});
 
 	test('doTagComplete', function (): any {

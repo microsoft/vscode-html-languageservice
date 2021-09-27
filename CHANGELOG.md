@@ -1,4 +1,9 @@
 
+4.1.0 / 2021-09-27
+==================
+  * New settings `CompletionConfiguration.attributeDefaultValue`. Defines how attribute values are completed: With single or double quotes, or no quotes.
+
+
 4.0.0 / 2020-12-14
 ==================
   * Update to `vscode-languageserver-types@3.16`
