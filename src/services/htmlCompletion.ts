@@ -206,9 +206,10 @@ export class HTMLCompletion {
 			const range = getReplaceRange(nameStart, replaceEnd);
 			let value = '';
 			if (!isFollowedBy(text, nameEnd, ScannerState.AfterAttributeName, TokenType.DelimiterAssign)) {
-				if (settings?.useEmptyAttrValue) {
+				const defaultValue = settings?.attributeDefaultValue ?? 'doublequotes';
+				if (defaultValue === 'empty') {
 					value = '=$1';
-				} else if (settings?.useSingleQuotesForAttrs) {
+				} else if (defaultValue === 'singlequotes') {
 					value = '=\'$1\'';
 				} else {
 					value = '="$1"';

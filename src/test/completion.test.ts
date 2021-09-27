@@ -410,21 +410,21 @@ suite('HTML Completion', () => {
 			{
 				items: [{ label: 'class', resultText: '<div class="$1"' }]
 			},
-			{ useEmptyAttrValue: false }
+			{ attributeDefaultValue: 'doublequotes' }
 		);
 		testCompletionFor(
 			'<div clas|',
 			{
 				items: [{ label: 'class', resultText: '<div class=\'$1\'' }]
 			},
-			{ useSingleQuotesForAttrs: true }
+			{ attributeDefaultValue: 'singlequotes' }
 		);
 		testCompletionFor(
 			'<div clas|',
 			{
 				items: [{ label: 'class', resultText: '<div class=$1' }]
 			},
-			{ useEmptyAttrValue: true }
+			{ attributeDefaultValue: 'empty' }
 		);
 	});
 
