@@ -66,6 +66,7 @@ suite('HTML Link Detection', () => {
 
 		testLinkCreation('http://foo/bar.hbs', '/class/class.js', 'http://foo/class/class.js');
 		testLinkCreation('http://foo/bar.hbs', '{{asset foo}}/class/class.js', null);
+		testLinkCreation('http://foo/bar.hbs', '{{href-to', null); // issue https://github.com/microsoft/vscode/issues/134334
 	});
 
 	test('Link detection', () => {

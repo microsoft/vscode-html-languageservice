@@ -22,7 +22,7 @@ function validateRef(url: string, languageId: string): boolean {
 	if (!url.length) {
 		return false;
 	}
-	if (languageId === 'handlebars' && /{{.*}}/.test(url)) {
+	if (languageId === 'handlebars' && /{{|}}/.test(url)) {
 		return false;
 	}
 	return /\b(w[\w\d+.-]*:\/\/)?[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|\/?))/.test(url);
