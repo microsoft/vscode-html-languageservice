@@ -3979,14 +3979,6 @@ export const htmlData : HTMLDataV1 = {
 			}
 		},
 		{
-			"name": "onmouseenter",
-			"description": "A pointing device is moved onto the element that has the listener attached."
-		},
-		{
-			"name": "onmouseleave",
-			"description": "A pointing device is moved off the element that has the listener attached."
-		},
-		{
 			"name": "onmouseup",
 			"description": {
 				"kind": "markdown",
@@ -3995,6 +3987,20 @@ export const htmlData : HTMLDataV1 = {
 		},
 		{
 			"name": "onmousewheel"
+		},
+		{
+			"name": "onmouseenter",
+			"description": {
+				"kind": "markdown",
+				"value": "A pointing device is moved onto the element that has the listener attached."
+			}
+		},
+		{
+			"name": "onmouseleave",
+			"description": {
+				"kind": "markdown",
+				"value": "A pointing device is moved off the element that has the listener attached."
+			}
 		},
 		{
 			"name": "onpause",
@@ -4016,46 +4022,6 @@ export const htmlData : HTMLDataV1 = {
 				"kind": "markdown",
 				"value": "Playback is ready to start after having been paused or delayed due to lack of data."
 			}
-		},
-		{
-			"name": "onpointercancel",
-			"description": "The pointer is unlikely to produce any more events."
-		},
-		{
-			"name": "onpointerdown",
-			"description": "The pointer enters the active buttons state."
-		},
-		{
-			"name": "onpointerenter",
-			"description": "Pointing device is moved inside the hit-testing boundary."
-		},
-		{
-			"name": "onpointerleave",
-			"description": "Pointing device is moved out of the hit-testing boundary."
-		},
-		{
-			"name": "onpointerlockchange",
-			"description": "The pointer was locked or released."
-		},
-		{
-			"name": "onpointerlockerror",
-			"description": "It was impossible to lock the pointer for technical reasons or because the permission was denied."
-		},
-		{
-			"name": "onpointermove",
-			"description": "The pointer changed coordinates."
-		},
-		{
-			"name": "onpointerout",
-			"description": "The pointing device moved out of hit-testing boundary or leaves detectable hover range."
-		},
-		{
-			"name": "onpointerover",
-			"description": "The pointing device is moved into the hit-testing boundary."
-		},
-		{
-			"name": "onpointerup",
-			"description": "The pointer leaves the active buttons state."
 		},
 		{
 			"name": "onprogress",
@@ -4167,6 +4133,76 @@ export const htmlData : HTMLDataV1 = {
 			"description": {
 				"kind": "markdown",
 				"value": "Playback has stopped because of a temporary lack of data."
+			}
+		},
+		{
+			"name": "onpointercancel",
+			"description": {
+				"kind": "markdown",
+				"value": "The pointer is unlikely to produce any more events."
+			}
+		},
+		{
+			"name": "onpointerdown",
+			"description": {
+				"kind": "markdown",
+				"value": "The pointer enters the active buttons state."
+			}
+		},
+		{
+			"name": "onpointerenter",
+			"description": {
+				"kind": "markdown",
+				"value": "Pointing device is moved inside the hit-testing boundary."
+			}
+		},
+		{
+			"name": "onpointerleave",
+			"description": {
+				"kind": "markdown",
+				"value": "Pointing device is moved out of the hit-testing boundary."
+			}
+		},
+		{
+			"name": "onpointerlockchange",
+			"description": {
+				"kind": "markdown",
+				"value": "The pointer was locked or released."
+			}
+		},
+		{
+			"name": "onpointerlockerror",
+			"description": {
+				"kind": "markdown",
+				"value": "It was impossible to lock the pointer for technical reasons or because the permission was denied."
+			}
+		},
+		{
+			"name": "onpointermove",
+			"description": {
+				"kind": "markdown",
+				"value": "The pointer changed coordinates."
+			}
+		},
+		{
+			"name": "onpointerout",
+			"description": {
+				"kind": "markdown",
+				"value": "The pointing device moved out of hit-testing boundary or leaves detectable hover range."
+			}
+		},
+		{
+			"name": "onpointerover",
+			"description": {
+				"kind": "markdown",
+				"value": "The pointing device is moved into the hit-testing boundary."
+			}
+		},
+		{
+			"name": "onpointerup",
+			"description": {
+				"kind": "markdown",
+				"value": "The pointer leaves the active buttons state."
 			}
 		},
 		{

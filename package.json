@@ -23,8 +23,8 @@
     "js-beautify": "^1.14.0",
     "mocha": "^9.1.2",
     "rimraf": "^3.0.2",
-    "typescript": "^4.4.2",
-    "vscode-web-custom-data": "^0.3.5"
+    "typescript": "^4.4.3",
+    "vscode-web-custom-data": "^0.3.6"
   },
   "dependencies": {
     "vscode-languageserver-textdocument": "^1.0.1",
