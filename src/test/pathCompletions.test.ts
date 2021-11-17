@@ -272,4 +272,21 @@ suite('HTML Path Completion', () => {
 		}, testUri);
 		*/
 	});
+
+	test('Trigger completion in src and href attributes of custom elements', async () => {
+		await testCompletion2For('<my-custom-element src="../|">', {
+			items: [
+				{ label: 'about/', resultText: '<my-custom-element src="../about/">' },
+				{ label: 'index.html', resultText: '<my-custom-element src="../index.html">' },
+				{ label: 'src/', resultText: '<my-custom-element src="../src/">' }
+			]
+		}, aboutHtmlUri);
+
+		await testCompletion2For('<my-custom-element href="../src/|">', {
+			items: [
+				{ label: 'feature.js', resultText: '<my-custom-element href="../src/feature.js">' },
+				{ label: 'test.js', resultText: '<my-custom-element href="../src/test.js">' },
+			]
+		}, aboutHtmlUri);
+	});
 });
