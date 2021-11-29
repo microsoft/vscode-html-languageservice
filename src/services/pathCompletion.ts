@@ -79,6 +79,9 @@ function isCompletablePath(value: string) {
 }
 
 function isPathAttribute(tag: string, attr: string) {
+	if (attr === 'src' || attr === 'href') {
+		return true;
+	}
 	const a = PATH_TAG_AND_ATTR[tag];
 	if (a) {
 		if (typeof a === 'string') {
