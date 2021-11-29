@@ -490,6 +490,44 @@ export class HTMLCompletion {
 		return result;
 	}
 
+	doQuoteComplete(document: TextDocument, position: Position, htmlDocument: HTMLDocument, settings?: CompletionConfiguration): string | null {
+		const offset = document.offsetAt(position);
+		if (offset <= 0) {
+			return null;
+		}
+		const defaultValue = settings?.attributeDefaultValue ?? 'doublequotes';
+		if (defaultValue === 'empty') {
+			return null;
+		}
+		const char = document.getText().charAt(offset - 1);
+		if (char !== '=') {
+			return null;
+		}
+		const value = defaultValue === 'doublequotes' ? '""' : '\'\'';
+		const node = htmlDocument.findNodeBefore(offset);
+		if (node && node.attributes && node.start < offset && (!node.endTagStart || node.endTagStart > offset)) {
+			const scanner = createScanner(document.getText(), node.start);
+			let token = scanner.scan();
+			while (token !== TokenType.EOS && scanner.getTokenEnd() <= offset) {
+				if (token === TokenType.AttributeName&& scanner.getTokenEnd() === offset - 1) {
+					// Ensure the token is a valid standalone attribute name
+					token = scanner.scan(); // this should be the = just written
+					if (token !== TokenType.DelimiterAssign) {
+						return null;
+					}
+					token = scanner.scan();
+					// Any non-attribute valid tag
+					if (token === TokenType.Unknown || token === TokenType.AttributeValue) {
+						return null;
+					}
+					return value;
+				}
+				token = scanner.scan();
+			}
+		}
+		return null;
+	}
+
 	doTagComplete(document: TextDocument, position: Position, htmlDocument: HTMLDocument): string | null {
 		const offset = document.offsetAt(position);
 		if (offset <= 0) {

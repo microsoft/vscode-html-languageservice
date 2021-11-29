@@ -39,6 +39,7 @@ export interface LanguageService {
 	format(document: TextDocument, range: Range | undefined, options: HTMLFormatConfiguration): TextEdit[];
 	findDocumentLinks(document: TextDocument, documentContext: DocumentContext): DocumentLink[];
 	findDocumentSymbols(document: TextDocument, htmlDocument: HTMLDocument): SymbolInformation[];
+	doQuoteComplete(document: TextDocument, position: Position, htmlDocument: HTMLDocument, options?: CompletionConfiguration): string | null;
 	doTagComplete(document: TextDocument, position: Position, htmlDocument: HTMLDocument): string | null;
 	getFoldingRanges(document: TextDocument, context?: { rangeLimit?: number }): FoldingRange[];
 	getSelectionRanges(document: TextDocument, positions: Position[]): SelectionRange[];
@@ -71,6 +72,7 @@ export function getLanguageService(options: LanguageServiceOptions = defaultLang
 		findDocumentSymbols,
 		getFoldingRanges,
 		getSelectionRanges,
+		doQuoteComplete: htmlCompletion.doQuoteComplete.bind(htmlCompletion),
 		doTagComplete: htmlCompletion.doTagComplete.bind(htmlCompletion),
 		doRename,
 		findMatchingTagPosition,
@@ -86,4 +88,3 @@ export function newHTMLDataProvider(id: string, customData: HTMLDataV1): IHTMLDa
 export function getDefaultHTMLDataProvider(): IHTMLDataProvider {
 	return newHTMLDataProvider('default', htmlData);
 }
-

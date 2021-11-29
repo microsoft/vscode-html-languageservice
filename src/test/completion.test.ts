@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { testCompletionFor, testTagCompletion } from "./completionUtil";
+import { testCompletionFor, testQuoteCompletion, testTagCompletion } from "./completionUtil";
 
 suite('HTML Completion', () => {
 	test('Complete', function (): any {
@@ -426,6 +426,20 @@ suite('HTML Completion', () => {
 			},
 			{ attributeDefaultValue: 'empty' }
 		);
+	});
+
+	test('doQuoteComplete', function (): any {
+		testQuoteCompletion('<a foo=|', '""');
+		testQuoteCompletion('<a foo=|', '\'\'', { attributeDefaultValue: 'singlequotes'});
+		testQuoteCompletion('<a foo=|', null, { attributeDefaultValue: 'empty'});
+		testQuoteCompletion('<a foo=|=', null);
+		testQuoteCompletion('<a foo=|"bar"', null);
+		testQuoteCompletion('<a foo=|></a>', '""');
+		testQuoteCompletion('<a foo="bar=|"', null);
+		testQuoteCompletion('<a baz=| foo="bar">', '""');
+		testQuoteCompletion('<a>< foo=| /a>', null);
+		testQuoteCompletion('<a></ foo=| a>', null);
+		testQuoteCompletion('<a foo="bar" \n baz=| ></a>', '""');
 	});
 
 	test('doTagComplete', function (): any {

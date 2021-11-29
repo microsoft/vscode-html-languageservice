@@ -6,7 +6,7 @@
 import * as assert from 'assert';
 import * as htmlLanguageService from '../htmlLanguageService';
 
-import { TextDocument, CompletionList, CompletionItemKind, MarkupContent, TextEdit } from '../htmlLanguageService';
+import { TextDocument, CompletionList, CompletionItemKind, MarkupContent, TextEdit, CompletionConfiguration } from '../htmlLanguageService';
 
 interface ItemDescription {
 	label: string;
@@ -77,6 +77,19 @@ export function testCompletionFor(value: string, expected: { count?: number, ite
 			assertCompletion(list, item, document);
 		}
 	}
+}
+
+export function testQuoteCompletion(value: string, expected: string | null, options?: CompletionConfiguration): void {
+	const offset = value.indexOf('|');
+	value = value.substr(0, offset) + value.substr(offset + 1);
+
+	const ls = htmlLanguageService.getLanguageService();
+
+	const document = TextDocument.create('test://test/test.html', 'html', 0, value);
+	const position = document.positionAt(offset);
+	const htmlDoc = ls.parseHTMLDocument(document);
+	const actual = ls.doQuoteComplete(document, position, htmlDoc, options);
+	assert.strictEqual(actual, expected);
 }
 
 export function testTagCompletion(value: string, expected: string | null): void {

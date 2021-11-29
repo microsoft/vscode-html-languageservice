@@ -1,4 +1,8 @@
 
+4.2.0 / 2021-11-08
+==================
+  * Added new API `htmlLanguageService.doQuoteComplete`. Called after an `attribute=`, it will compute either `""` or `''` depending on `CompletionConfiguration.attributeDefaultValue` or null, if no quote completion should be performed.
+
 4.1.0 / 2021-09-27
 ==================
   * New settings `CompletionConfiguration.attributeDefaultValue`. Defines how attribute values are completed: With single or double quotes, or no quotes.
@@ -11,12 +15,12 @@
 3.2.0 / 2020-11-30
 ==================
   * New parameter `HoverSettings` for `LanguageService.doHover`: Defines whether the hover contains element documentation and/or a reference to MDN.
-  * Deprecated `LanguageService.findOnTypeRenameRanges`, replaced by New API `LanguageService.findLinkedEditingRanges`. 
+  * Deprecated `LanguageService.findOnTypeRenameRanges`, replaced by New API `LanguageService.findLinkedEditingRanges`.
 
 3.1.0 / 2020-07-29
 ==================
   * Use `TextDocument` from `vscode-languageserver-textdocument`
-  * Fix formatting for `<p>` tags with optional closing 
+  * Fix formatting for `<p>` tags with optional closing
   * New API `LanguageService.findOnTypeRenameRanges`. For a given position, find the matching close tag so they can be renamed synchronously.
   * New API `LanguageServiceOptions.customDataProviders` to add the knowledge of custom tags, attributes and attribute-values and `LanguageService.setDataProviders` to update the data providers.
   * New API `getDefaultHTMLDataProvider` to get the default HTML data provider and `newHTMLDataProvider` to create a new provider from data.
