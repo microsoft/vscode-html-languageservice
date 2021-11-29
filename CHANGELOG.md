@@ -1,5 +1,5 @@
 
-4.2.0 / 2021-11-08
+4.2.0 / 2021-11-29
 ==================
   * Added new API `htmlLanguageService.doQuoteComplete`. Called after an `attribute=`, it will compute either `""` or `''` depending on `CompletionConfiguration.attributeDefaultValue` or null, if no quote completion should be performed.
 
