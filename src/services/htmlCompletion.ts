@@ -503,7 +503,7 @@ export class HTMLCompletion {
 		if (char !== '=') {
 			return null;
 		}
-		const value = defaultValue === 'doublequotes' ? '""' : '\'\'';
+		const value = defaultValue === 'doublequotes' ? '"$1"' : '\'$1\'';
 		const node = htmlDocument.findNodeBefore(offset);
 		if (node && node.attributes && node.start < offset && (!node.endTagStart || node.endTagStart > offset)) {
 			const scanner = createScanner(document.getText(), node.start);

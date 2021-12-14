@@ -429,17 +429,17 @@ suite('HTML Completion', () => {
 	});
 
 	test('doQuoteComplete', function (): any {
-		testQuoteCompletion('<a foo=|', '""');
-		testQuoteCompletion('<a foo=|', '\'\'', { attributeDefaultValue: 'singlequotes'});
+		testQuoteCompletion('<a foo=|', '"$1"');
+		testQuoteCompletion('<a foo=|', '\'$1\'', { attributeDefaultValue: 'singlequotes'});
 		testQuoteCompletion('<a foo=|', null, { attributeDefaultValue: 'empty'});
 		testQuoteCompletion('<a foo=|=', null);
 		testQuoteCompletion('<a foo=|"bar"', null);
-		testQuoteCompletion('<a foo=|></a>', '""');
+		testQuoteCompletion('<a foo=|></a>', '"$1"');
 		testQuoteCompletion('<a foo="bar=|"', null);
-		testQuoteCompletion('<a baz=| foo="bar">', '""');
+		testQuoteCompletion('<a baz=| foo="bar">', '"$1"');
 		testQuoteCompletion('<a>< foo=| /a>', null);
 		testQuoteCompletion('<a></ foo=| a>', null);
-		testQuoteCompletion('<a foo="bar" \n baz=| ></a>', '""');
+		testQuoteCompletion('<a foo="bar" \n baz=| ></a>', '"$1"');
 	});
 
 	test('doTagComplete', function (): any {
