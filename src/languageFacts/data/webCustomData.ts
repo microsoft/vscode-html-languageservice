@@ -4341,15 +4341,6 @@ export const htmlData : HTMLDataV1 = {
 			}
 		},
 		{
-			"name": "aria-describedat",
-			"references": [
-				{
-					"name": "WAI-ARIA Reference",
-					"url": "https://www.w3.org/TR/wai-aria-1.1/#aria-describedat"
-				}
-			]
-		},
-		{
 			"name": "aria-describedby",
 			"references": [
 				{
@@ -4485,15 +4476,6 @@ export const htmlData : HTMLDataV1 = {
 				"kind": "markdown",
 				"value": "Indicates the entered value does not conform to the format expected by the application. See related [`aria-errormessage`](https://www.w3.org/TR/wai-aria-1.1/#aria-errormessage)."
 			}
-		},
-		{
-			"name": "aria-kbdshortcuts",
-			"references": [
-				{
-					"name": "WAI-ARIA Reference",
-					"url": "https://www.w3.org/TR/wai-aria-1.1/#aria-kbdshortcuts"
-				}
-			]
 		},
 		{
 			"name": "aria-label",
