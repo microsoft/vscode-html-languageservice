@@ -19,12 +19,12 @@
     "@types/node": "^10.12.21",
     "@typescript-eslint/eslint-plugin": "^4.31.0",
     "@typescript-eslint/parser": "^4.31.0",
+    "@vscode/web-custom-data": "^0.3.7",
     "eslint": "^7.32.0",
     "js-beautify": "^1.14.0",
     "mocha": "^9.1.2",
     "rimraf": "^3.0.2",
-    "typescript": "^4.4.3",
-    "vscode-web-custom-data": "^0.3.6"
+    "typescript": "^4.4.3"
   },
   "dependencies": {
     "vscode-languageserver-textdocument": "^1.0.1",
@@ -46,7 +46,7 @@
     "copy-jsbeautify": "node ./build/copy-jsbeautify.js",
     "update-jsbeautify": "yarn add js-beautify && node ./build/update-jsbeautify.js",
     "update-jsbeautify-next": "yarn add js-beautify@next && node ./build/update-jsbeautify.js",
-    "update-data": "node ./build/generateData.js",
+    "update-data": "yarn add @vscode/web-custom-data -D && node ./build/generateData.js",
     "preversion": "npm test",
     "postversion": "git push && git push --tags"
   }
