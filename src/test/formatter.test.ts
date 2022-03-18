@@ -5,7 +5,7 @@
 import { getLanguageService, TextDocument, Range } from '../htmlLanguageService';
 import * as assert from 'assert';
 
-suite('JSON Formatter', () => {
+suite('HTML Formatter', () => {
 
 	function format(unformatted: string, expected: string, insertSpaces = true) {
 		let range: Range | undefined = void 0;

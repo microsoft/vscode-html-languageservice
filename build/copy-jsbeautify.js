@@ -16,13 +16,8 @@ function copy(from, to) {
 	}
 }
 
-let srcLocation = path.join(__dirname, '..', 'src');
-
 const umdDir = path.join(__dirname, '..', 'lib', 'umd', 'beautify');
-if (fs.existsSync(umdDir)) {
-	copy(path.join(__dirname, '..', 'src', 'beautify'), umdDir);
-}
+copy(path.join(__dirname, '..', 'src', 'beautify'), umdDir);
+
 const esmDir = path.join(__dirname, '..', 'lib', 'esm', 'beautify');
-if (fs.existsSync(esmDir)) {
-	copy(path.join(__dirname, '..', 'src', 'beautify', 'esm'), esmDir);
-}
+copy(path.join(__dirname, '..', 'src', 'beautify', 'esm'), esmDir);

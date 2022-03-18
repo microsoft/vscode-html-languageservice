@@ -148,19 +148,6 @@ function computeIndentLevel(content: string, offset: number, options: HTMLFormat
 	return Math.floor(nChars / tabSize);
 }
 
-function getEOL(document: TextDocument): string {
-	const text = document.getText();
-	if (document.lineCount > 1) {
-		const to = document.offsetAt(Position.create(1, 0));
-		let from = to;
-		while (from > 0 && isEOL(text, from - 1)) {
-			from--;
-		}
-		return text.substr(from, to - from);
-	}
-	return '\n';
-}
-
 function isEOL(text: string, offset: number) {
 	return '\r\n'.indexOf(text.charAt(offset)) !== -1;
 }

@@ -9,6 +9,7 @@ export interface IBeautifyCSSOptions {
     selector_separator_newline?: boolean; // (true) - separate selectors with newline or not (e.g. "a,\nbr" or "a, br")
     end_with_newline?: boolean; // (false) - end with a newline
     newline_between_rules?: boolean; // (true) - add a new line after every css rule
+    space_around_selector_separator?: boolean // (false) - ensure space around selector separators:  '>', '+', '~' (e.g. "a>b" -> "a > b")
 }
 
 export interface IBeautifyCSS {
