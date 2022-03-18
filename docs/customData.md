@@ -28,7 +28,7 @@ You can find other properties' shapes at [htmlLanguageTypes.ts](../src/htmlLangu
 
 When working with VSCode, you should suffix your custom data file with `.html-data.json`, so VS Code will load the most recent schema for the JSON file.
 
-[html5.ts](../src/languageFacts/data/html5.ts) contains that built-in dataset that conforms to the spec.
+[html5.ts](../src/languageFacts/data/webCustomData.ts) contains that built-in dataset that conforms to the spec.
 
 ## Language Features
 
