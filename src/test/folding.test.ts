@@ -21,7 +21,7 @@ function assertRanges(lines: string[], expected: ExpectedIndentRange[], message?
 		settings: {},
 		folders: [{ name: 'foo', uri: 'test://foo' }]
 	};
-	const actual = getFoldingRanges(document, { rangeLimit: nRanges });
+	const actual = getFoldingRanges(document, { rangeLimit: nRanges }, ['br', 'img']);
 
 	let actualRanges = [];
 	for (let i = 0; i < actual.length; i++) {

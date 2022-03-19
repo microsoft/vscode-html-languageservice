@@ -7,10 +7,10 @@ import { createScanner } from '../parser/htmlScanner';
 import { parse, Node } from '../parser/htmlParser';
 import { TokenType, Range, Position, SelectionRange, TextDocument } from '../htmlLanguageTypes';
 
-export function getSelectionRanges(document: TextDocument, positions: Position[]): SelectionRange[] {
+export function getSelectionRanges(document: TextDocument, positions: Position[], voidElements: string[]): SelectionRange[] {
 
 	function getSelectionRange(position: Position): SelectionRange {
-		const applicableRanges = getApplicableRanges(document, position);
+		const applicableRanges = getApplicableRanges(document, position, voidElements);
 		let prev : [number, number] | undefined = undefined;
 		let current: SelectionRange | undefined = undefined;
 		for (let index = applicableRanges.length - 1; index >= 0; index--) {
@@ -32,8 +32,8 @@ export function getSelectionRanges(document: TextDocument, positions: Position[]
 	return positions.map(getSelectionRange);
 }
 
-function getApplicableRanges(document: TextDocument, position: Position): [number, number][] {
-	const htmlDoc = parse(document.getText());
+function getApplicableRanges(document: TextDocument, position: Position, voidElements: string[]): [number, number][] {
+	const htmlDoc = parse(document.getText(), voidElements);
 	const currOffset = document.offsetAt(position);
 	const currNode = htmlDoc.findNodeAt(currOffset);
 

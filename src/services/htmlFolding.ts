@@ -80,7 +80,7 @@ function limitRanges(ranges: FoldingRange[], rangeLimit: number) {
 	return result;
 }
 
-export function getFoldingRanges(document: TextDocument, context: { rangeLimit?: number }): FoldingRange[] {
+export function getFoldingRanges(document: TextDocument, context: { rangeLimit?: number } | undefined, voidElements: string[]): FoldingRange[] {
 	const scanner = createScanner(document.getText());
 	let token = scanner.scan();
 	const ranges: FoldingRange[] = [];
@@ -107,7 +107,7 @@ export function getFoldingRanges(document: TextDocument, context: { rangeLimit?:
 				break;
 			}
 			case TokenType.StartTagClose:
-				if (!lastTagName || !isVoidElement(lastTagName)) {
+				if (!lastTagName || !isVoidElement(lastTagName, voidElements)) {
 					break;
 				}
 			// fallthrough

@@ -24,6 +24,7 @@ import { getSelectionRanges } from './services/htmlSelectionRange';
 import { HTMLDataProvider } from './languageFacts/dataProvider';
 import { HTMLDataManager } from './languageFacts/dataManager';
 import { htmlData } from './languageFacts/data/webCustomData';
+import { getVoidElements } from './languageFacts/fact';
 
 export * from './htmlLanguageTypes';
 
@@ -61,7 +62,7 @@ export function getLanguageService(options: LanguageServiceOptions = defaultLang
 	return {
 		setDataProviders: dataManager.setDataProviders.bind(dataManager),
 		createScanner,
-		parseHTMLDocument: document => parse(document.getText()),
+		parseHTMLDocument: document => parse(document.getText(), getVoidElements(dataManager, document.languageId)),
 		doComplete: htmlCompletion.doComplete.bind(htmlCompletion),
 		doComplete2: htmlCompletion.doComplete2.bind(htmlCompletion),
 		setCompletionParticipants: htmlCompletion.setCompletionParticipants.bind(htmlCompletion),
@@ -70,8 +71,8 @@ export function getLanguageService(options: LanguageServiceOptions = defaultLang
 		findDocumentHighlights,
 		findDocumentLinks,
 		findDocumentSymbols,
-		getFoldingRanges,
-		getSelectionRanges,
+		getFoldingRanges: (document, context) => getFoldingRanges(document, context, getVoidElements(dataManager, document.languageId)),
+		getSelectionRanges: (document, positions) => getSelectionRanges(document, positions, getVoidElements(dataManager, document.languageId)),
 		doQuoteComplete: htmlCompletion.doQuoteComplete.bind(htmlCompletion),
 		doTagComplete: htmlCompletion.doTagComplete.bind(htmlCompletion),
 		doRename,

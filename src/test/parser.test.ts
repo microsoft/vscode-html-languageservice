@@ -7,7 +7,7 @@ import * as assert from 'assert';
 import { Node, parse } from '../parser/htmlParser';
 
 suite('HTML Parser', () => {
-
+	const voidElements: string[] = ['br', 'input', 'meta'].sort();
 	function toJSON(node: Node): any {
 		return { tag: node.tag, start: node.start, end: node.end, endTagStart: node.endTagStart, closed: node.closed, children: node.children.map(toJSON) };
 	}
@@ -17,18 +17,18 @@ suite('HTML Parser', () => {
 	}
 
 	function assertDocument(input: string, expected: any) {
-		const document = parse(input);
+		const document = parse(input, voidElements);
 		assert.deepEqual(document.roots.map(toJSON), expected);
 	}
 
 	function assertNodeBefore(input: string, offset: number, expectedTag: string | undefined) {
-		const document = parse(input);
+		const document = parse(input, voidElements);
 		const node = document.findNodeBefore(offset);
 		assert.equal(node ? node.tag : '', expectedTag, "offset " + offset);
 	}
 
 	function assertAttributes(input: string, expected: any) {
-		const document = parse(input);
+		const document = parse(input, voidElements);
 		assert.deepEqual(document.roots.map(toJSONWithAttributes), expected);
 	}
 

@@ -63,7 +63,7 @@ export interface HTMLDocument {
 	findNodeAt(offset: number): Node;
 }
 
-export function parse(text: string): HTMLDocument {
+export function parse(text: string, voidElements: string[]): HTMLDocument {
 	const scanner = createScanner(text, undefined, undefined, true);
 
 	const htmlDocument = new Node(0, text.length, [], void 0);
@@ -87,7 +87,7 @@ export function parse(text: string): HTMLDocument {
 					curr.end = scanner.getTokenEnd(); // might be later set to end tag position
 					if (scanner.getTokenLength()) {
 						curr.startTagEnd = scanner.getTokenEnd();
-						if (curr.tag && isVoidElement(curr.tag)) {
+						if (curr.tag && isVoidElement(curr.tag, voidElements)) {
 							curr.closed = true;
 							curr = curr.parent;
 						}

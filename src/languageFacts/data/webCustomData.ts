@@ -78,6 +78,7 @@ export const htmlData : HTMLDataV1 = {
 				"kind": "markdown",
 				"value": "The base element allows authors to specify the document base URL for the purposes of resolving relative URLs, and the name of the default browsing context for the purposes of following hyperlinks. The element does not represent any content beyond this information."
 			},
+			"void": true,
 			"attributes": [
 				{
 					"name": "href",
@@ -107,6 +108,7 @@ export const htmlData : HTMLDataV1 = {
 				"kind": "markdown",
 				"value": "The link element allows authors to link their document to other resources."
 			},
+			"void": true,
 			"attributes": [
 				{
 					"name": "href",
@@ -196,6 +198,7 @@ export const htmlData : HTMLDataV1 = {
 				"kind": "markdown",
 				"value": "The meta element represents various kinds of metadata that cannot be expressed using the title, base, link, style, and script elements."
 			},
+			"void": true,
 			"attributes": [
 				{
 					"name": "name",
@@ -649,6 +652,7 @@ export const htmlData : HTMLDataV1 = {
 				"kind": "markdown",
 				"value": "The hr element represents a paragraph-level thematic break, e.g. a scene change in a story, or a transition to another topic within a section of a reference book."
 			},
+			"void": true,
 			"attributes": [
 				{
 					"name": "align",
@@ -1376,6 +1380,7 @@ export const htmlData : HTMLDataV1 = {
 				"kind": "markdown",
 				"value": "The br element represents a line break."
 			},
+			"void": true,
 			"attributes": [
 				{
 					"name": "clear",
@@ -1395,6 +1400,7 @@ export const htmlData : HTMLDataV1 = {
 				"kind": "markdown",
 				"value": "The wbr element represents a line break opportunity."
 			},
+			"void": true,
 			"attributes": [],
 			"references": [
 				{
@@ -1475,6 +1481,7 @@ export const htmlData : HTMLDataV1 = {
 				"kind": "markdown",
 				"value": "An img element represents an image."
 			},
+			"void": true,
 			"attributes": [
 				{
 					"name": "alt",
@@ -1670,6 +1677,7 @@ export const htmlData : HTMLDataV1 = {
 				"kind": "markdown",
 				"value": "The embed element provides an integration point for an external (typically non-HTML) application or interactive content."
 			},
+			"void": true,
 			"attributes": [
 				{
 					"name": "src",
@@ -1817,6 +1825,7 @@ export const htmlData : HTMLDataV1 = {
 				"kind": "markdown",
 				"value": "The param element defines parameters for plugins invoked by object elements. It does not represent anything on its own."
 			},
+			"void": true,
 			"attributes": [
 				{
 					"name": "name",
@@ -1985,6 +1994,7 @@ export const htmlData : HTMLDataV1 = {
 				"kind": "markdown",
 				"value": "The source element allows authors to specify multiple alternative media resources for media elements. It does not represent anything on its own."
 			},
+			"void": true,
 			"attributes": [
 				{
 					"name": "src",
@@ -2026,6 +2036,7 @@ export const htmlData : HTMLDataV1 = {
 				"kind": "markdown",
 				"value": "The track element allows authors to specify explicit external timed text tracks for media elements. It does not represent anything on its own."
 			},
+			"void": true,
 			"attributes": [
 				{
 					"name": "default",
@@ -2100,6 +2111,7 @@ export const htmlData : HTMLDataV1 = {
 				"kind": "markdown",
 				"value": "The area element represents either a hyperlink with some text and a corresponding area on an image map, or a dead area on an image map."
 			},
+			"void": true,
 			"attributes": [
 				{
 					"name": "alt"
@@ -2213,6 +2225,7 @@ export const htmlData : HTMLDataV1 = {
 				"kind": "markdown",
 				"value": "If a col element has a parent and that is a colgroup element that itself has a parent that is a table element, then the col element represents one or more columns in the column group represented by that colgroup."
 			},
+			"void": true,
 			"attributes": [
 				{
 					"name": "span"
@@ -2513,6 +2526,7 @@ export const htmlData : HTMLDataV1 = {
 				"kind": "markdown",
 				"value": "The input element represents a typed data field, usually with a form control to allow the user to edit the data."
 			},
+			"void": true,
 			"attributes": [
 				{
 					"name": "accept"
