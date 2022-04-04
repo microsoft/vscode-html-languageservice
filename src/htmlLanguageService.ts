@@ -17,7 +17,7 @@ import { findLinkedEditingRanges } from './services/htmlLinkedEditing';
 import {
 	Scanner, HTMLDocument, CompletionConfiguration, ICompletionParticipant, HTMLFormatConfiguration, DocumentContext,
 	IHTMLDataProvider, HTMLDataV1, LanguageServiceOptions, TextDocument, SelectionRange, WorkspaceEdit,
-	Position, CompletionList, Hover, Range, SymbolInformation, TextEdit, DocumentHighlight, DocumentLink, FoldingRange, HoverSettings
+	Position, CompletionList, Hover, Range, SymbolInformation, TextEdit, DocumentHighlight, DocumentLink, FoldingRange, HoverSettings, FoldingRangeSettings
 } from './htmlLanguageTypes';
 import { getFoldingRanges } from './services/htmlFolding';
 import { getSelectionRanges } from './services/htmlSelectionRange';
@@ -41,7 +41,7 @@ export interface LanguageService {
 	findDocumentSymbols(document: TextDocument, htmlDocument: HTMLDocument): SymbolInformation[];
 	doQuoteComplete(document: TextDocument, position: Position, htmlDocument: HTMLDocument, options?: CompletionConfiguration): string | null;
 	doTagComplete(document: TextDocument, position: Position, htmlDocument: HTMLDocument): string | null;
-	getFoldingRanges(document: TextDocument, context?: { rangeLimit?: number }): FoldingRange[];
+	getFoldingRanges(document: TextDocument, context?: { rangeLimit?: number }, options?: FoldingRangeSettings): FoldingRange[];
 	getSelectionRanges(document: TextDocument, positions: Position[]): SelectionRange[];
 	doRename(document: TextDocument, position: Position, newName: string, htmlDocument: HTMLDocument): WorkspaceEdit | null;
 	findMatchingTagPosition(document: TextDocument, position: Position, htmlDocument: HTMLDocument): Position | null;

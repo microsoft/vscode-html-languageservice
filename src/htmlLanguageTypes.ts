@@ -252,7 +252,7 @@ export namespace ClientCapabilities {
 
 export interface LanguageServiceOptions {
 	/**
-	 * Unless set to false, the default HTML data provider will be used 
+	 * Unless set to false, the default HTML data provider will be used
 	 * along with the providers from customDataProviders.
 	 * Defaults to true.
 	 */
@@ -318,4 +318,8 @@ export interface FileStat {
 export interface FileSystemProvider {
 	stat(uri: DocumentUri): Promise<FileStat>;
 	readDirectory?(uri: DocumentUri): Promise<[string, FileType][]>;
+}
+
+export interface FoldingRangeSettings {
+	includeClosingTag?: boolean;
 }

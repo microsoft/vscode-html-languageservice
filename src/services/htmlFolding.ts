@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { TokenType, FoldingRange, FoldingRangeKind, TextDocument } from '../htmlLanguageTypes';
+import { TokenType, FoldingRange, FoldingRangeKind, TextDocument, FoldingRangeSettings } from '../htmlLanguageTypes';
 import { createScanner } from '../parser/htmlScanner';
 import { isVoidElement } from '../languageFacts/fact';
 
@@ -80,7 +80,7 @@ function limitRanges(ranges: FoldingRange[], rangeLimit: number) {
 	return result;
 }
 
-export function getFoldingRanges(document: TextDocument, context: { rangeLimit?: number }): FoldingRange[] {
+export function getFoldingRanges(document: TextDocument, context: { rangeLimit?: number }, options?: FoldingRangeSettings): FoldingRange[] {
 	const scanner = createScanner(document.getText());
 	let token = scanner.scan();
 	const ranges: FoldingRange[] = [];
@@ -122,7 +122,7 @@ export function getFoldingRanges(document: TextDocument, context: { rangeLimit?:
 					stack.length = i;
 					const line = document.positionAt(scanner.getTokenOffset()).line;
 					const startLine = stackElement.startLine;
-					const endLine = line - 1;
+					const endLine = options?.includeClosingTag ? line : line - 1;
 					if (endLine > startLine && prevStart !== startLine) {
 						addRange({ startLine, endLine });
 					}
