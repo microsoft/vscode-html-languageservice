@@ -14,7 +14,6 @@ import { entities } from '../parser/htmlEntities';
 import * as nls from 'vscode-nls';
 import { isLetterOrDigit, endsWith, startsWith } from '../utils/strings';
 import { HTMLDataManager } from '../languageFacts/dataManager';
-import { getVoidElements, isVoidElement } from '../languageFacts/fact';
 import { isDefined } from '../utils/object';
 import { generateDocumentation } from '../languageFacts/dataProvider';
 import { PathCompletionParticipant } from './pathCompletion';
@@ -66,7 +65,7 @@ export class HTMLCompletion {
 		};
 		const completionParticipants = this.completionParticipants;
 		const dataProviders = this.dataManager.getDataProviders().filter(p => p.isApplicable(document.languageId) && (!settings || settings[p.getId()] !== false));
-		const voidElements = getVoidElements(dataProviders);
+		const voidElements = this.dataManager.getVoidElements(dataProviders);
 		const doesSupportMarkdown = this.doesSupportMarkdown();
 
 		const text = document.getText();
@@ -167,11 +166,11 @@ export class HTMLCompletion {
 			return result;
 		}
 
-		function collectAutoCloseTagSuggestion(tagCloseEnd: number, tag: string): CompletionList {
+		const collectAutoCloseTagSuggestion = (tagCloseEnd: number, tag: string): CompletionList => {
 			if (settings && settings.hideAutoCompleteProposals) {
 				return result;
 			}
-			if (!isVoidElement(tag, voidElements)) {
+			if (!this.dataManager.isVoidElement(tag, voidElements)) {
 				const pos = document.positionAt(tagCloseEnd);
 				result.items.push({
 					label: '</' + tag + '>',
@@ -182,7 +181,7 @@ export class HTMLCompletion {
 				});
 			}
 			return result;
-		}
+		};
 
 		function collectTagSuggestions(tagStart: number, tagEnd: number): CompletionList {
 			collectOpenTagSuggestions(tagStart, tagEnd);
@@ -536,9 +535,9 @@ export class HTMLCompletion {
 		}
 		const char = document.getText().charAt(offset - 1);
 		if (char === '>') {
-			const voidElements = getVoidElements(this.dataManager, document.languageId);
+			const voidElements = this.dataManager.getVoidElements(document.languageId);
 			const node = htmlDocument.findNodeBefore(offset);
-			if (node && node.tag && !isVoidElement(node.tag, voidElements) && node.start < offset && (!node.endTagStart || node.endTagStart > offset)) {
+			if (node && node.tag && !this.dataManager.isVoidElement(node.tag, voidElements) && node.start < offset && (!node.endTagStart || node.endTagStart > offset)) {
 				const scanner = createScanner(document.getText(), node.start);
 				let token = scanner.scan();
 				while (token !== TokenType.EOS && scanner.getTokenEnd() <= offset) {

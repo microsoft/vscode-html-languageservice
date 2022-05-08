@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { createScanner } from './parser/htmlScanner';
-import { parse } from './parser/htmlParser';
+import { HTMLParser } from './parser/htmlParser';
 import { HTMLCompletion } from './services/htmlCompletion';
 import { HTMLHover } from './services/htmlHover';
 import { format } from './services/htmlFormatter';
@@ -19,12 +19,11 @@ import {
 	IHTMLDataProvider, HTMLDataV1, LanguageServiceOptions, TextDocument, SelectionRange, WorkspaceEdit,
 	Position, CompletionList, Hover, Range, SymbolInformation, TextEdit, DocumentHighlight, DocumentLink, FoldingRange, HoverSettings
 } from './htmlLanguageTypes';
-import { getFoldingRanges } from './services/htmlFolding';
-import { getSelectionRanges } from './services/htmlSelectionRange';
+import { HTMLFolding } from './services/htmlFolding';
+import { HTMLSelectionRange } from './services/htmlSelectionRange';
 import { HTMLDataProvider } from './languageFacts/dataProvider';
 import { HTMLDataManager } from './languageFacts/dataManager';
 import { htmlData } from './languageFacts/data/webCustomData';
-import { getVoidElements } from './languageFacts/fact';
 
 export * from './htmlLanguageTypes';
 
@@ -58,11 +57,14 @@ export function getLanguageService(options: LanguageServiceOptions = defaultLang
 
 	const htmlHover = new HTMLHover(options, dataManager);
 	const htmlCompletion = new HTMLCompletion(options, dataManager);
+	const htmlParser = new HTMLParser(dataManager);
+	const htmlSelectionRange = new HTMLSelectionRange(htmlParser);
+	const htmlFolding = new HTMLFolding(dataManager);
 
 	return {
 		setDataProviders: dataManager.setDataProviders.bind(dataManager),
 		createScanner,
-		parseHTMLDocument: document => parse(document.getText(), getVoidElements(dataManager, document.languageId)),
+		parseHTMLDocument: htmlParser.parseDocument.bind(htmlParser),
 		doComplete: htmlCompletion.doComplete.bind(htmlCompletion),
 		doComplete2: htmlCompletion.doComplete2.bind(htmlCompletion),
 		setCompletionParticipants: htmlCompletion.setCompletionParticipants.bind(htmlCompletion),
@@ -71,8 +73,8 @@ export function getLanguageService(options: LanguageServiceOptions = defaultLang
 		findDocumentHighlights,
 		findDocumentLinks,
 		findDocumentSymbols,
-		getFoldingRanges: (document, context) => getFoldingRanges(document, context, getVoidElements(dataManager, document.languageId)),
-		getSelectionRanges: (document, positions) => getSelectionRanges(document, positions, getVoidElements(dataManager, document.languageId)),
+		getFoldingRanges: htmlFolding.getFoldingRanges.bind(htmlFolding),
+		getSelectionRanges: htmlSelectionRange.getSelectionRanges.bind(htmlSelectionRange),
 		doQuoteComplete: htmlCompletion.doQuoteComplete.bind(htmlCompletion),
 		doTagComplete: htmlCompletion.doTagComplete.bind(htmlCompletion),
 		doRename,

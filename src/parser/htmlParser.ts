@@ -5,8 +5,8 @@
 
 import { createScanner } from './htmlScanner';
 import { findFirst } from '../utils/arrays';
-import { TokenType } from '../htmlLanguageTypes';
-import { isVoidElement } from '../languageFacts/fact';
+import { TokenType, TextDocument } from '../htmlLanguageTypes';
+import { HTMLDataManager } from '../languageFacts/dataManager';
 
 export class Node {
 	public tag: string | undefined;
@@ -63,102 +63,112 @@ export interface HTMLDocument {
 	findNodeAt(offset: number): Node;
 }
 
-export function parse(text: string, voidElements: string[]): HTMLDocument {
-	const scanner = createScanner(text, undefined, undefined, true);
+export class HTMLParser {
+  constructor(private dataManager: HTMLDataManager) {
 
-	const htmlDocument = new Node(0, text.length, [], void 0);
-	let curr = htmlDocument;
-	let endTagStart: number = -1;
-	let endTagName: string | undefined = undefined;
-	let pendingAttribute: string | null = null;
-	let token = scanner.scan();
-	while (token !== TokenType.EOS) {
-		switch (token) {
-			case TokenType.StartTagOpen:
-				const child = new Node(scanner.getTokenOffset(), text.length, [], curr);
-				curr.children.push(child);
-				curr = child;
-				break;
-			case TokenType.StartTag:
-				curr.tag = scanner.getTokenText();
-				break;
-			case TokenType.StartTagClose:
-				if (curr.parent) {
-					curr.end = scanner.getTokenEnd(); // might be later set to end tag position
-					if (scanner.getTokenLength()) {
-						curr.startTagEnd = scanner.getTokenEnd();
-						if (curr.tag && isVoidElement(curr.tag, voidElements)) {
-							curr.closed = true;
-							curr = curr.parent;
-						}
-					} else {
-						// pseudo close token from an incomplete start tag
-						curr = curr.parent;
-					}
-				}
-				break;
-			case TokenType.StartTagSelfClose:
-				if (curr.parent) {
-					curr.closed = true;
-					curr.end = scanner.getTokenEnd();
-					curr.startTagEnd = scanner.getTokenEnd();
-					curr = curr.parent;
-				}
-				break;
-			case TokenType.EndTagOpen:
-				endTagStart = scanner.getTokenOffset();
-				endTagName = undefined;
-				break;
-			case TokenType.EndTag:
-				endTagName = scanner.getTokenText().toLowerCase();
-				break;
-			case TokenType.EndTagClose:
-				let node = curr;
-				// see if we can find a matching tag
-				while (!node.isSameTag(endTagName) && node.parent) {
-					node = node.parent;
-				}
-				if (node.parent) {
-					while (curr !== node) {
-						curr.end = endTagStart;
-						curr.closed = false;
-						curr = curr.parent!;
-					}
-					curr.closed = true;
-					curr.endTagStart = endTagStart;
-					curr.end = scanner.getTokenEnd();
-					curr = curr.parent!;
-				}
-				break;
-			case TokenType.AttributeName: {
-				pendingAttribute = scanner.getTokenText();
-				let attributes = curr.attributes;
-				if (!attributes) {
-					curr.attributes = attributes = {};
-				}
-				attributes[pendingAttribute] = null; // Support valueless attributes such as 'checked'
-				break;
-			}
-			case TokenType.AttributeValue: {
-				const value = scanner.getTokenText();
-				const attributes = curr.attributes;
-				if (attributes && pendingAttribute) {
-					attributes[pendingAttribute] = value;
-					pendingAttribute = null;
-				}
-				break;
-			}
-		}
-		token = scanner.scan();
-	}
-	while (curr.parent) {
-		curr.end = text.length;
-		curr.closed = false;
-		curr = curr.parent;
-	}
-	return {
-		roots: htmlDocument.children,
-		findNodeBefore: htmlDocument.findNodeBefore.bind(htmlDocument),
-		findNodeAt: htmlDocument.findNodeAt.bind(htmlDocument)
-	};
+  }
+
+  public parseDocument(document: TextDocument): HTMLDocument {
+    return this.parse(document.getText(), this.dataManager.getVoidElements(document.languageId));
+  }
+
+  public parse(text: string, voidElements: string[]): HTMLDocument {
+    const scanner = createScanner(text, undefined, undefined, true);
+
+    const htmlDocument = new Node(0, text.length, [], void 0);
+    let curr = htmlDocument;
+    let endTagStart: number = -1;
+    let endTagName: string | undefined = undefined;
+    let pendingAttribute: string | null = null;
+    let token = scanner.scan();
+    while (token !== TokenType.EOS) {
+      switch (token) {
+        case TokenType.StartTagOpen:
+          const child = new Node(scanner.getTokenOffset(), text.length, [], curr);
+          curr.children.push(child);
+          curr = child;
+          break;
+        case TokenType.StartTag:
+          curr.tag = scanner.getTokenText();
+          break;
+        case TokenType.StartTagClose:
+          if (curr.parent) {
+            curr.end = scanner.getTokenEnd(); // might be later set to end tag position
+            if (scanner.getTokenLength()) {
+              curr.startTagEnd = scanner.getTokenEnd();
+              if (curr.tag && this.dataManager.isVoidElement(curr.tag, voidElements)) {
+                curr.closed = true;
+                curr = curr.parent;
+              }
+            } else {
+              // pseudo close token from an incomplete start tag
+              curr = curr.parent;
+            }
+          }
+          break;
+        case TokenType.StartTagSelfClose:
+          if (curr.parent) {
+            curr.closed = true;
+            curr.end = scanner.getTokenEnd();
+            curr.startTagEnd = scanner.getTokenEnd();
+            curr = curr.parent;
+          }
+          break;
+        case TokenType.EndTagOpen:
+          endTagStart = scanner.getTokenOffset();
+          endTagName = undefined;
+          break;
+        case TokenType.EndTag:
+          endTagName = scanner.getTokenText().toLowerCase();
+          break;
+        case TokenType.EndTagClose:
+          let node = curr;
+          // see if we can find a matching tag
+          while (!node.isSameTag(endTagName) && node.parent) {
+            node = node.parent;
+          }
+          if (node.parent) {
+            while (curr !== node) {
+              curr.end = endTagStart;
+              curr.closed = false;
+              curr = curr.parent!;
+            }
+            curr.closed = true;
+            curr.endTagStart = endTagStart;
+            curr.end = scanner.getTokenEnd();
+            curr = curr.parent!;
+          }
+          break;
+        case TokenType.AttributeName: {
+          pendingAttribute = scanner.getTokenText();
+          let attributes = curr.attributes;
+          if (!attributes) {
+            curr.attributes = attributes = {};
+          }
+          attributes[pendingAttribute] = null; // Support valueless attributes such as 'checked'
+          break;
+        }
+        case TokenType.AttributeValue: {
+          const value = scanner.getTokenText();
+          const attributes = curr.attributes;
+          if (attributes && pendingAttribute) {
+            attributes[pendingAttribute] = value;
+            pendingAttribute = null;
+          }
+          break;
+        }
+      }
+      token = scanner.scan();
+    }
+    while (curr.parent) {
+      curr.end = text.length;
+      curr.closed = false;
+      curr = curr.parent;
+    }
+    return {
+      roots: htmlDocument.children,
+      findNodeBefore: htmlDocument.findNodeBefore.bind(htmlDocument),
+      findNodeAt: htmlDocument.findNodeAt.bind(htmlDocument)
+    };
+  }
 }

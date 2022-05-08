@@ -4,10 +4,14 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { Node, parse } from '../parser/htmlParser';
+import { HTMLParser, Node } from '../parser/htmlParser';
+import { HTMLDataManager } from '../languageFacts/dataManager';
 
 suite('HTML Parser', () => {
-	const voidElements: string[] = ['br', 'input', 'meta'].sort();
+	function parse(text: string) {
+		const htmlDataManager = new HTMLDataManager({});
+		return new HTMLParser(htmlDataManager).parse(text, htmlDataManager.getVoidElements('html'));
+	}
 	function toJSON(node: Node): any {
 		return { tag: node.tag, start: node.start, end: node.end, endTagStart: node.endTagStart, closed: node.closed, children: node.children.map(toJSON) };
 	}
@@ -17,18 +21,18 @@ suite('HTML Parser', () => {
 	}
 
 	function assertDocument(input: string, expected: any) {
-		const document = parse(input, voidElements);
+		const document = parse(input);
 		assert.deepEqual(document.roots.map(toJSON), expected);
 	}
 
 	function assertNodeBefore(input: string, offset: number, expectedTag: string | undefined) {
-		const document = parse(input, voidElements);
+		const document = parse(input);
 		const node = document.findNodeBefore(offset);
 		assert.equal(node ? node.tag : '', expectedTag, "offset " + offset);
 	}
 
 	function assertAttributes(input: string, expected: any) {
-		const document = parse(input, voidElements);
+		const document = parse(input);
 		assert.deepEqual(document.roots.map(toJSONWithAttributes), expected);
 	}
 

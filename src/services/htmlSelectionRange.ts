@@ -4,14 +4,21 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { createScanner } from '../parser/htmlScanner';
-import { parse, Node } from '../parser/htmlParser';
+import { Node, HTMLParser, HTMLDocument } from '../parser/htmlParser';
 import { TokenType, Range, Position, SelectionRange, TextDocument } from '../htmlLanguageTypes';
 
-export function getSelectionRanges(document: TextDocument, positions: Position[], voidElements: string[]): SelectionRange[] {
+export class HTMLSelectionRange {
 
-	function getSelectionRange(position: Position): SelectionRange {
-		const applicableRanges = getApplicableRanges(document, position, voidElements);
-		let prev : [number, number] | undefined = undefined;
+	constructor(private htmlParser: HTMLParser) {
+	}
+
+	public getSelectionRanges(document: TextDocument, positions: Position[]): SelectionRange[] {
+		const htmlDocument = this.htmlParser.parseDocument(document);
+		return positions.map(p => this.getSelectionRange(p, document, htmlDocument));
+	}
+	private getSelectionRange(position: Position, document: TextDocument, htmlDocument: HTMLDocument): SelectionRange {
+		const applicableRanges = this.getApplicableRanges(document, position, htmlDocument);
+		let prev: [number, number] | undefined = undefined;
 		let current: SelectionRange | undefined = undefined;
 		for (let index = applicableRanges.length - 1; index >= 0; index--) {
 			const range = applicableRanges[index];
@@ -28,85 +35,91 @@ export function getSelectionRanges(document: TextDocument, positions: Position[]
 		}
 		return current;
 	}
+	private getApplicableRanges(document: TextDocument, position: Position, htmlDoc: HTMLDocument): [number, number][] {
+		const currOffset = document.offsetAt(position);
+		const currNode = htmlDoc.findNodeAt(currOffset);
 
-	return positions.map(getSelectionRange);
-}
+		let result = this.getAllParentTagRanges(currNode);
 
-function getApplicableRanges(document: TextDocument, position: Position, voidElements: string[]): [number, number][] {
-	const htmlDoc = parse(document.getText(), voidElements);
-	const currOffset = document.offsetAt(position);
-	const currNode = htmlDoc.findNodeAt(currOffset);
+		// Self-closing or void elements
+		if (currNode.startTagEnd && !currNode.endTagStart) {
 
-	let result = getAllParentTagRanges(currNode);
+			// THe rare case of unmatching tag pairs like <div></div1>
+			if (currNode.startTagEnd !== currNode.end) {
+				return [[currNode.start, currNode.end]];
+			}
 
-	// Self-closing or void elements
-	if (currNode.startTagEnd && !currNode.endTagStart) {
+			const closeRange = Range.create(document.positionAt(currNode.startTagEnd - 2), document.positionAt(currNode.startTagEnd));
+			const closeText = document.getText(closeRange);
 
-		// THe rare case of unmatching tag pairs like <div></div1>
-		if (currNode.startTagEnd !== currNode.end) {
-			return [[currNode.start, currNode.end]];
+			// Self-closing element
+			if (closeText === '/>') {
+				result.unshift([currNode.start + 1, currNode.startTagEnd - 2]);
+			}
+			// Void element
+			else {
+				result.unshift([currNode.start + 1, currNode.startTagEnd - 1]);
+			}
+
+			const attributeLevelRanges = this.getAttributeLevelRanges(document, currNode, currOffset);
+			result = attributeLevelRanges.concat(result);
+			return result;
 		}
 
-		const closeRange = Range.create(document.positionAt(currNode.startTagEnd - 2), document.positionAt(currNode.startTagEnd));
-		const closeText = document.getText(closeRange);
-
-		// Self-closing element
-		if (closeText === '/>') {
-			result.unshift([currNode.start + 1, currNode.startTagEnd - 2]);
+		if (!currNode.startTagEnd || !currNode.endTagStart) {
+			return result;
 		}
-		// Void element
-		else {
+
+		/**
+		 * For html like
+		 * `<div class="foo">bar</div>`
+		 */
+		result.unshift([currNode.start, currNode.end]);
+
+		/**
+		 * Cursor inside `<div class="foo">`
+		 */
+		if (currNode.start < currOffset && currOffset < currNode.startTagEnd) {
 			result.unshift([currNode.start + 1, currNode.startTagEnd - 1]);
+			const attributeLevelRanges = this.getAttributeLevelRanges(document, currNode, currOffset);
+			result = attributeLevelRanges.concat(result);
+			return result;
+		}
+		/**
+		 * Cursor inside `bar`
+		 */
+		else if (currNode.startTagEnd <= currOffset && currOffset <= currNode.endTagStart) {
+			result.unshift([currNode.startTagEnd, currNode.endTagStart]);
+
+			return result;
+		}
+		/**
+		 * Cursor inside `</div>`
+		 */
+		else {
+			// `div` inside `</div>`
+			if (currOffset >= currNode.endTagStart + 2) {
+				result.unshift([currNode.endTagStart + 2, currNode.end - 1]);
+			}
+			return result;
+		}
+	}
+
+	private getAllParentTagRanges(initialNode: Node): [number, number][] {
+		let currNode = initialNode;
+
+
+
+		const result: [number, number][] = [];
+
+		while (currNode.parent) {
+			currNode = currNode.parent;
+			this.getNodeRanges(currNode).forEach(r => result.push(r));
 		}
 
-		const attributeLevelRanges = getAttributeLevelRanges(document, currNode, currOffset);
-		result = attributeLevelRanges.concat(result);
 		return result;
 	}
-
-	if (!currNode.startTagEnd || !currNode.endTagStart) {
-		return result;
-	}
-
-	/**
-	 * For html like
-	 * `<div class="foo">bar</div>`
-	 */
-	result.unshift([currNode.start, currNode.end]);
-
-	/**
-	 * Cursor inside `<div class="foo">`
-	 */
-	if (currNode.start < currOffset && currOffset < currNode.startTagEnd) {
-		result.unshift([currNode.start + 1, currNode.startTagEnd - 1]);
-		const attributeLevelRanges = getAttributeLevelRanges(document, currNode, currOffset);
-		result = attributeLevelRanges.concat(result);
-		return result;
-	}
-	/**
-	 * Cursor inside `bar`
-	 */
-	else if (currNode.startTagEnd <= currOffset && currOffset <= currNode.endTagStart) {
-		result.unshift([currNode.startTagEnd, currNode.endTagStart]);
-
-		return result;
-	}
-	/**
-	 * Cursor inside `</div>`
-	 */
-	else {
-		// `div` inside `</div>`
-		if (currOffset >= currNode.endTagStart + 2) {
-			result.unshift([currNode.endTagStart + 2, currNode.end - 1]);
-		}
-		return result;
-	}
-}
-
-function getAllParentTagRanges(initialNode: Node): [number, number][] {
-	let currNode = initialNode;
-
-	const getNodeRanges = (n: Node) : [number, number][] => {
+	private getNodeRanges(n: Node): [number, number][] {
 		if (n.startTagEnd && n.endTagStart && n.startTagEnd < n.endTagStart) {
 			return [
 				[n.startTagEnd, n.endTagStart],
@@ -119,89 +132,80 @@ function getAllParentTagRanges(initialNode: Node): [number, number][] {
 		];
 	};
 
-	const result: [number, number][] = [];
+	private getAttributeLevelRanges(document: TextDocument, currNode: Node, currOffset: number): [number, number][] {
+		const currNodeRange = Range.create(document.positionAt(currNode.start), document.positionAt(currNode.end));
+		const currNodeText = document.getText(currNodeRange);
+		const relativeOffset = currOffset - currNode.start;
 
-	while (currNode.parent) {
-		currNode = currNode.parent;
-		getNodeRanges(currNode).forEach(r => result.push(r));
-	}
+		/**
+		 * Tag level semantic selection
+		 */
 
-	return result;
-}
+		const scanner = createScanner(currNodeText);
+		let token = scanner.scan();
 
-function getAttributeLevelRanges(document: TextDocument, currNode: Node, currOffset: number) : [number, number][] {
-	const currNodeRange = Range.create(document.positionAt(currNode.start), document.positionAt(currNode.end));
-	const currNodeText = document.getText(currNodeRange);
-	const relativeOffset = currOffset - currNode.start;
+		/**
+		 * For text like
+		 * <div class="foo">bar</div>
+		 */
+		const positionOffset = currNode.start;
 
-	/**
-	 * Tag level semantic selection
-	 */
+		const result = [];
 
-	const scanner = createScanner(currNodeText);
-	let token = scanner.scan();
-
-	/**
-	 * For text like
-	 * <div class="foo">bar</div>
-	 */
-	const positionOffset = currNode.start;
-
-	const result = [];
-
-	let isInsideAttribute = false;
-	let attrStart = -1;
-	while (token !== TokenType.EOS) {
-		switch (token) {
-			case TokenType.AttributeName: {
-				if (relativeOffset < scanner.getTokenOffset()) {
-					isInsideAttribute = false;
-					break;
-				}
-
-				if (relativeOffset <= scanner.getTokenEnd()) {
-					// `class`
-					result.unshift([scanner.getTokenOffset(), scanner.getTokenEnd()]);
-				}
-
-				isInsideAttribute = true;
-				attrStart = scanner.getTokenOffset();
-				break;
-			}
-			case TokenType.AttributeValue: {
-				if (!isInsideAttribute) {
-					break;
-				}
-
-				const valueText = scanner.getTokenText();
-				if (relativeOffset < scanner.getTokenOffset()) {
-					// `class="foo"`
-					result.push([attrStart, scanner.getTokenEnd()]);
-					break;
-				}
-
-				if (relativeOffset >= scanner.getTokenOffset() && relativeOffset <= scanner.getTokenEnd()) {
-					// `"foo"`
-					result.unshift([scanner.getTokenOffset(), scanner.getTokenEnd()]);
-
-					// `foo`
-					if ((valueText[0] === `"` && valueText[valueText.length - 1] === `"`) || (valueText[0] === `'` && valueText[valueText.length - 1] === `'`)) {
-						if (relativeOffset >= scanner.getTokenOffset() + 1 && relativeOffset <= scanner.getTokenEnd() - 1) {
-							result.unshift([scanner.getTokenOffset() + 1, scanner.getTokenEnd() - 1]);
-						}
+		let isInsideAttribute = false;
+		let attrStart = -1;
+		while (token !== TokenType.EOS) {
+			switch (token) {
+				case TokenType.AttributeName: {
+					if (relativeOffset < scanner.getTokenOffset()) {
+						isInsideAttribute = false;
+						break;
 					}
 
-					// `class="foo"`
-					result.push([attrStart, scanner.getTokenEnd()]);
+					if (relativeOffset <= scanner.getTokenEnd()) {
+						// `class`
+						result.unshift([scanner.getTokenOffset(), scanner.getTokenEnd()]);
+					}
+
+					isInsideAttribute = true;
+					attrStart = scanner.getTokenOffset();
+					break;
 				}
+				case TokenType.AttributeValue: {
+					if (!isInsideAttribute) {
+						break;
+					}
 
-				break;
+					const valueText = scanner.getTokenText();
+					if (relativeOffset < scanner.getTokenOffset()) {
+						// `class="foo"`
+						result.push([attrStart, scanner.getTokenEnd()]);
+						break;
+					}
+
+					if (relativeOffset >= scanner.getTokenOffset() && relativeOffset <= scanner.getTokenEnd()) {
+						// `"foo"`
+						result.unshift([scanner.getTokenOffset(), scanner.getTokenEnd()]);
+
+						// `foo`
+						if ((valueText[0] === `"` && valueText[valueText.length - 1] === `"`) || (valueText[0] === `'` && valueText[valueText.length - 1] === `'`)) {
+							if (relativeOffset >= scanner.getTokenOffset() + 1 && relativeOffset <= scanner.getTokenEnd() - 1) {
+								result.unshift([scanner.getTokenOffset() + 1, scanner.getTokenEnd() - 1]);
+							}
+						}
+
+						// `class="foo"`
+						result.push([attrStart, scanner.getTokenEnd()]);
+					}
+
+					break;
+				}
 			}
+			token = scanner.scan();
 		}
-		token = scanner.scan();
-	}
 
-	return result.map(pair => {
-		return [pair[0] + positionOffset, pair[1] + positionOffset];
-	});
+		return result.map(pair => {
+			return [pair[0] + positionOffset, pair[1] + positionOffset];
+		});
+	}
 }
