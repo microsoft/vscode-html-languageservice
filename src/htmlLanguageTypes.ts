@@ -160,6 +160,7 @@ export interface ITagData {
 	description?: string | MarkupContent;
 	attributes: IAttributeData[];
 	references?: IReference[];
+	void?: boolean
 }
 
 export interface IAttributeData {

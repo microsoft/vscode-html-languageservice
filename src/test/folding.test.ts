@@ -7,7 +7,8 @@
 import 'mocha';
 import * as assert from 'assert';
 import { TextDocument } from '../htmlLanguageTypes';
-import { getFoldingRanges } from '../services/htmlFolding';
+import { HTMLFolding } from '../services/htmlFolding';
+import { HTMLDataManager } from '../languageFacts/dataManager';
 
 interface ExpectedIndentRange {
 	startLine: number;
@@ -21,7 +22,7 @@ function assertRanges(lines: string[], expected: ExpectedIndentRange[], message?
 		settings: {},
 		folders: [{ name: 'foo', uri: 'test://foo' }]
 	};
-	const actual = getFoldingRanges(document, { rangeLimit: nRanges });
+	const actual = new HTMLFolding(new HTMLDataManager({})).getFoldingRanges(document, { rangeLimit: nRanges });
 
 	let actualRanges = [];
 	for (let i = 0; i < actual.length; i++) {

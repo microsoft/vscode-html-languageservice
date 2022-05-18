@@ -6,6 +6,7 @@
 import { IHTMLDataProvider } from '../htmlLanguageTypes';
 import { HTMLDataProvider } from './dataProvider';
 import { htmlData } from './data/webCustomData';
+import * as arrays from '../utils/arrays';
 
 export class HTMLDataManager {
 	private dataProviders: IHTMLDataProvider[] = [];
@@ -23,5 +24,20 @@ export class HTMLDataManager {
 
 	getDataProviders() {
 		return this.dataProviders;
+	}
+
+	isVoidElement(e: string, voidElements: string[]) {
+		return !!e && arrays.binarySearch(voidElements, e.toLowerCase(), (s1: string, s2: string) => s1.localeCompare(s2)) >= 0;
+	}
+
+	getVoidElements(languageId: string):string[];
+	getVoidElements(dataProviders: IHTMLDataProvider[]): string[];
+	getVoidElements(languageOrProviders: string| IHTMLDataProvider[]): string[] {
+		const dataProviders = Array.isArray(languageOrProviders) ? languageOrProviders : this.getDataProviders().filter(p => p.isApplicable(languageOrProviders!));
+		const voidTags: string[] = [];
+		dataProviders.forEach((provider) => {
+			provider.provideTags().filter(tag => tag.void).forEach(tag => voidTags.push(tag.name));
+		});
+		return voidTags.sort();
 	}
 }

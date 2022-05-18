@@ -4,10 +4,14 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { Node, parse } from '../parser/htmlParser';
+import { HTMLParser, Node } from '../parser/htmlParser';
+import { HTMLDataManager } from '../languageFacts/dataManager';
 
 suite('HTML Parser', () => {
-
+	function parse(text: string) {
+		const htmlDataManager = new HTMLDataManager({});
+		return new HTMLParser(htmlDataManager).parse(text, htmlDataManager.getVoidElements('html'));
+	}
 	function toJSON(node: Node): any {
 		return { tag: node.tag, start: node.start, end: node.end, endTagStart: node.endTagStart, closed: node.closed, children: node.children.map(toJSON) };
 	}
