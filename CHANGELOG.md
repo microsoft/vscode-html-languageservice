@@ -1,4 +1,8 @@
 
+5.0.0 / 2022-05-18
+================
+ * Update to `vscode-languageserver-types@3.17`
+
 4.2.0 / 2021-11-29
 ==================
   * Added new API `htmlLanguageService.doQuoteComplete`. Called after an `attribute=`, it will compute either `""` or `''` depending on `CompletionConfiguration.attributeDefaultValue` or null, if no quote completion should be performed.
