@@ -34,9 +34,14 @@ function getWorkspaceUrl(documentUri: string, tokenContent: string, documentCont
 	}
 	tokenContent = tokenContent.replace(/^\s*/g, '');
 
-	if (/^https?:\/\//i.test(tokenContent) || /^file:\/\//i.test(tokenContent)) {
+	const match = tokenContent.match(/^(\w[\w\d+.-]*):/);
+	if (match) {
 		// Absolute link that needs no treatment
-		return tokenContent;
+		const schema = match[1].toLowerCase();
+		if (schema === 'http' || schema === 'https' || schema === 'file') {
+			return tokenContent;
+		}
+		return undefined;
 	}
 	if (/^\#/i.test(tokenContent)) {
 		return documentUri + tokenContent;
