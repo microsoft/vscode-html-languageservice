@@ -84,6 +84,8 @@ suite('HTML Link Detection', () => {
 		testLinkDetection('<html><base href="/docs/"><img src="foo.png"></html>', [{ offset: 36, length: 7, target: 'file:///docs/foo.png' }]);
 
 		testLinkDetection('<a href="mailto:<%- mail %>@<%- domain %>" > <% - mail %>@<% - domain %> </a>', []);
+
+		testLinkDetection('<link rel="icon" type="image/x-icon" href="data:@file/x-icon;base64,AAABAAIAQEAAAAEAIAAoQgAAJgA">', []);
 	});
 
 	test('Local targets', () => {
