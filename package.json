@@ -46,8 +46,6 @@
     "copy-jsbeautify": "node ./build/copy-jsbeautify.js",
     "update-jsbeautify": "yarn add js-beautify && node ./build/update-jsbeautify.js",
     "update-jsbeautify-next": "yarn add js-beautify@next && node ./build/update-jsbeautify.js",
-    "update-data": "yarn add @vscode/web-custom-data -D && node ./build/generateData.js",
-    "preversion": "npm test",
-    "postversion": "git push && git push --tags"
+    "update-data": "yarn add @vscode/web-custom-data -D && node ./build/generateData.js"
   }
 }

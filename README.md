@@ -3,9 +3,8 @@ HTML language service extracted from VSCode to be reused, e.g in the Monaco edit
 
 [![npm Package](https://img.shields.io/npm/v/vscode-html-languageservice.svg?style=flat-square)](https://www.npmjs.org/package/vscode-html-languageservice)
 [![NPM Downloads](https://img.shields.io/npm/dm/vscode-html-languageservice.svg)](https://npmjs.org/package/vscode-html-languageservice)
-[![Azure DevOps Build Status](https://img.shields.io/azure-devops/build/vscode/4c3636fe-3a50-40b9-b8b4-f820ca92886f/22.svg?label=Azure%20DevOps)](https://dev.azure.com/vscode/vscode-html-languageservice/_build?definitionId=22)
-[![Travis Build Status](https://travis-ci.org/Microsoft/vscode-html-languageservice.svg?branch=master)](https://travis-ci.org/Microsoft/vscode-html-languageservice)
-
+[![Build Status](https://github.com/microsoft/vscode-html-languageservice/actions/workflows/node.js.yml/badge.svg)](https://github.com/microsoft/vscode-html-languageservice/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Why?
 ----
