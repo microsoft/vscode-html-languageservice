@@ -11,13 +11,12 @@ import {
 } from '../htmlLanguageTypes';
 import { entities } from '../parser/htmlEntities';
 
-import * as nls from 'vscode-nls';
+import * as l10n from '@vscode/l10n';
 import { isLetterOrDigit, endsWith, startsWith } from '../utils/strings';
 import { HTMLDataManager } from '../languageFacts/dataManager';
 import { isDefined } from '../utils/object';
 import { generateDocumentation } from '../languageFacts/dataProvider';
 import { PathCompletionParticipant } from './pathCompletion';
-const localize = nls.loadMessageBundle();
 
 export class HTMLCompletion {
 	completionParticipants: ICompletionParticipant[];
@@ -369,7 +368,7 @@ export class HTMLCompletion {
 						result.items.push({
 							label,
 							kind: CompletionItemKind.Keyword,
-							documentation: localize('entity.propose', `Character entity representing '${entities[entity]}'`),
+							documentation: l10n.t(`Character entity representing '${entities[entity]}'`),
 							textEdit: TextEdit.replace(range, label),
 							insertTextFormat: InsertTextFormat.PlainText
 						});
