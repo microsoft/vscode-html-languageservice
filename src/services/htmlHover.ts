@@ -124,7 +124,7 @@ export class HTMLHover {
 					}
 
 					hex += code;
-					const contentsDoc = l10n.t(`Character entity representing '${entities[entity]}', unicode equivalent '${hex}'`);
+					const contentsDoc = l10n.t('Character entity representing \'{0}\', unicode equivalent \'{1}\'', entities[entity], hex);
 					if (contentsDoc) {
 						hover = { contents: contentsDoc, range };
 					} else {
