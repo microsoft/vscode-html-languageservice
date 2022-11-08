@@ -3,9 +3,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as nls from 'vscode-nls';
+import * as l10n from '@vscode/l10n';
 import { TokenType, ScannerState, Scanner } from '../htmlLanguageTypes';
-const localize = nls.loadMessageBundle();
 
 class MultiLineStream {
 
@@ -249,12 +248,12 @@ export function createScanner(input: string, initialOffset = 0, initialState: Sc
 					return finishToken(offset, TokenType.EndTag);
 				}
 				if (stream.skipWhitespace()) { // white space is not valid here
-					return finishToken(offset, TokenType.Whitespace, localize('error.unexpectedWhitespace', 'Tag name must directly follow the open bracket.'));
+					return finishToken(offset, TokenType.Whitespace, l10n.t('Tag name must directly follow the open bracket.'));
 				}
 				state = ScannerState.WithinEndTag;
 				stream.advanceUntilChar(_RAN);
 				if (offset < stream.pos()) {
-					return finishToken(offset, TokenType.Unknown, localize('error.endTagNameExpected', 'End tag name expected.'));
+					return finishToken(offset, TokenType.Unknown, l10n.t('End tag name expected.'));
 				}
 				return internalScan();
 			case ScannerState.WithinEndTag:
@@ -267,9 +266,9 @@ export function createScanner(input: string, initialOffset = 0, initialState: Sc
 				}
 				if (emitPseudoCloseTags && stream.peekChar() === _LAN) { // <
 					state = ScannerState.WithinContent;
-					return finishToken(offset, TokenType.EndTagClose, localize('error.closingBracketMissing', 'Closing bracket missing.'));
+					return finishToken(offset, TokenType.EndTagClose, l10n.t('Closing bracket missing.'));
 				}
-				errorMessage = localize('error.closingBracketExpected', 'Closing bracket expected.');
+				errorMessage = l10n.t('Closing bracket expected.');
 				break;
 			case ScannerState.AfterOpeningStartTag:
 				lastTag = nextElementName();
@@ -281,12 +280,12 @@ export function createScanner(input: string, initialOffset = 0, initialState: Sc
 					return finishToken(offset, TokenType.StartTag);
 				}
 				if (stream.skipWhitespace()) { // white space is not valid here
-					return finishToken(offset, TokenType.Whitespace, localize('error.unexpectedWhitespace', 'Tag name must directly follow the open bracket.'));
+					return finishToken(offset, TokenType.Whitespace, l10n.t('Tag name must directly follow the open bracket.'));
 				}
 				state = ScannerState.WithinTag;
 				stream.advanceUntilChar(_RAN);
 				if (offset < stream.pos()) {
-					return finishToken(offset, TokenType.Unknown, localize('error.startTagNameExpected', 'Start tag name expected.'));
+					return finishToken(offset, TokenType.Unknown, l10n.t('Start tag name expected.'));
 				}
 				return internalScan();
 			case ScannerState.WithinTag:
@@ -323,10 +322,10 @@ export function createScanner(input: string, initialOffset = 0, initialState: Sc
 				}
 				if (emitPseudoCloseTags && stream.peekChar() === _LAN) { // <
 					state = ScannerState.WithinContent;
-					return finishToken(offset, TokenType.StartTagClose, localize('error.closingBracketMissing', 'Closing bracket missing.'));
+					return finishToken(offset, TokenType.StartTagClose, l10n.t('Closing bracket missing.'));
 				}
 				stream.advance(1);
-				return finishToken(offset, TokenType.Unknown, localize('error.unexpectedCharacterInTag', 'Unexpected character in tag.'));
+				return finishToken(offset, TokenType.Unknown, l10n.t('Unexpected character in tag.'));
 			case ScannerState.AfterAttributeName:
 				if (stream.skipWhitespace()) {
 					hasSpaceAfterTag = true;

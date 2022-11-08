@@ -11,9 +11,7 @@ import { isDefined } from '../utils/object';
 import { generateDocumentation } from '../languageFacts/dataProvider';
 import { entities } from '../parser/htmlEntities';
 import { isLetterOrDigit } from '../utils/strings';
-import * as nls from 'vscode-nls';
-const localize = nls.loadMessageBundle();
-
+import * as l10n from '@vscode/l10n';
 
 export class HTMLHover {
 	private supportsMarkdown: boolean | undefined;
@@ -126,7 +124,7 @@ export class HTMLHover {
 					}
 
 					hex += code;
-					const contentsDoc = localize('entity.propose', `Character entity representing '${entities[entity]}', unicode equivalent '${hex}'`);
+					const contentsDoc = l10n.t('Character entity representing \'{0}\', unicode equivalent \'{1}\'', entities[entity], hex);
 					if (contentsDoc) {
 						hover = { contents: contentsDoc, range };
 					} else {
