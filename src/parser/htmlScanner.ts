@@ -191,7 +191,7 @@ export function createScanner(input: string, initialOffset = 0, initialState: Sc
 		const oldState = state;
 		const token = internalScan();
 		if (token !== TokenType.EOS && offset === stream.pos() && !(emitPseudoCloseTags && (token ===  TokenType.StartTagClose || token === TokenType.EndTagClose))) {
-			console.log('Scanner.scan has not advanced at offset ' + offset + ', state before: ' + oldState + ' after: ' + state);
+			console.warn('Scanner.scan has not advanced at offset ' + offset + ', state before: ' + oldState + ' after: ' + state);
 			stream.advance(1);
 			return finishToken(offset, TokenType.Unknown);
 		}
