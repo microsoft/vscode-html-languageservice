@@ -816,6 +816,18 @@ suite('HTML Scanner', () => {
 				{ offset: 8, type: TokenType.Script }
 			]
 		}]);
+		assertTokens([{
+			input: '<input label= />',
+			tokens: [
+				{ offset: 0, type: TokenType.StartTagOpen },
+				{ offset: 1, type: TokenType.StartTag, content: 'input' },
+				{ offset: 6, type: TokenType.Whitespace },
+				{ offset: 7, type: TokenType.AttributeName },
+				{ offset: 12, type: TokenType.DelimiterAssign },
+				{ offset: 13, type: TokenType.Whitespace },
+				{ offset: 14, type: TokenType.StartTagSelfClose }
+			]
+		}]);
 	});
 
 });

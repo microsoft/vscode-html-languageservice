@@ -190,8 +190,8 @@ export function createScanner(input: string, initialOffset = 0, initialState: Sc
 		const offset = stream.pos();
 		const oldState = state;
 		const token = internalScan();
-		if (token !== TokenType.EOS && offset === stream.pos() && !(emitPseudoCloseTags && (token ===  TokenType.StartTagClose || token === TokenType.EndTagClose))) {
-			console.log('Scanner.scan has not advanced at offset ' + offset + ', state before: ' + oldState + ' after: ' + state);
+		if (token !== TokenType.EOS && offset === stream.pos() && !(emitPseudoCloseTags && (token === TokenType.StartTagClose || token === TokenType.EndTagClose))) {
+			console.warn('Scanner.scan has not advanced at offset ' + offset + ', state before: ' + oldState + ' after: ' + state);
 			stream.advance(1);
 			return finishToken(offset, TokenType.Unknown);
 		}
@@ -346,14 +346,16 @@ export function createScanner(input: string, initialOffset = 0, initialState: Sc
 				if (attributeValue.length > 0) {
 					if (stream.peekChar() === _RAN && stream.peekChar(-1) === _FSL) { // <foo bar=http://foo/>
 						stream.goBack(1);
-						attributeValue = attributeValue.substr(0, attributeValue.length - 1);
+						attributeValue = attributeValue.substring(0, attributeValue.length - 1);
 					}
 					if (lastAttributeName === 'type') {
 						lastTypeValue = attributeValue;
 					}
-					state = ScannerState.WithinTag;
-					hasSpaceAfterTag = false;
-					return finishToken(offset, TokenType.AttributeValue);
+					if (attributeValue.length > 0) {
+						state = ScannerState.WithinTag;
+						hasSpaceAfterTag = false;
+						return finishToken(offset, TokenType.AttributeValue);
+					}
 				}
 				const ch = stream.peekChar();
 				if (ch === _SQO || ch === _DQO) {
