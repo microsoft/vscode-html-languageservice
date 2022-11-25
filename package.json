@@ -39,7 +39,7 @@
     "watch": "tsc -w -p ./src && npm run copy-jsbeautify",
     "clean": "rimraf lib",
     "remove-sourcemap-refs": "node ./build/remove-sourcemap-refs.js",
-    "test": "npm run compile && mocha ./lib/umd/test/*.js && npm run lint",
+    "test": "npm run compile && mocha --timeout 5000 ./lib/umd/test/*.js && npm run lint",
     "lint": "eslint src/**/*.ts",
     "install-types-next": "yarn add vscode-languageserver-types@next -f -S && yarn add vscode-languageserver-textdocument@next -f -S",
     "copy-jsbeautify": "node ./build/copy-jsbeautify.js",

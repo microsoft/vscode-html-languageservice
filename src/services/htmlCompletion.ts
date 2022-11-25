@@ -368,7 +368,7 @@ export class HTMLCompletion {
 						result.items.push({
 							label,
 							kind: CompletionItemKind.Keyword,
-							documentation: l10n.t(`Character entity representing '${entities[entity]}'`),
+							documentation: l10n.t('Character entity representing \'{0}\'', entities[entity]),
 							textEdit: TextEdit.replace(range, label),
 							insertTextFormat: InsertTextFormat.PlainText
 						});
