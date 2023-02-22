@@ -8,7 +8,7 @@ import {
 	MarkupContent, MarkupKind, MarkedString, DocumentUri,
 	SelectionRange, WorkspaceEdit,
 	CompletionList, CompletionItemKind, CompletionItem, CompletionItemTag, InsertTextMode, Command,
-	SymbolInformation, SymbolKind,
+	SymbolInformation, DocumentSymbol, SymbolKind,
 	Hover, TextEdit, InsertReplaceEdit, InsertTextFormat, DocumentHighlight, DocumentHighlightKind,
 	DocumentLink, FoldingRange, FoldingRangeKind,
 	SignatureHelp, Definition, Diagnostic, FormattingOptions, Color, ColorInformation, ColorPresentation
@@ -22,7 +22,7 @@ export {
 	MarkupContent, MarkupKind, MarkedString, DocumentUri,
 	SelectionRange, WorkspaceEdit,
 	CompletionList, CompletionItemKind, CompletionItem, CompletionItemTag, InsertTextMode, Command,
-	SymbolInformation, SymbolKind,
+	SymbolInformation, DocumentSymbol, SymbolKind,
 	Hover, TextEdit, InsertReplaceEdit, InsertTextFormat, DocumentHighlight, DocumentHighlightKind,
 	DocumentLink, FoldingRange, FoldingRangeKind,
 	SignatureHelp, Definition, Diagnostic, FormattingOptions, Color, ColorInformation, ColorPresentation

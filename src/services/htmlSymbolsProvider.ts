@@ -3,37 +3,61 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Location, Range, SymbolInformation, SymbolKind, TextDocument} from '../htmlLanguageTypes';
+import { DocumentSymbol, Range, SymbolInformation, SymbolKind, TextDocument } from '../htmlLanguageTypes';
 import { HTMLDocument, Node } from '../parser/htmlParser';
 
 export function findDocumentSymbols(document: TextDocument, htmlDocument: HTMLDocument): SymbolInformation[] {
-	const symbols = <SymbolInformation[]>[];
+	const symbols: SymbolInformation[] = [];
+	const symbols2 = findDocumentSymbols2(document, htmlDocument);
+
+	for (const symbol of symbols2) {
+		walk(symbol, undefined);
+	}
+
+	return symbols;
+
+	function walk(node: DocumentSymbol, parent: DocumentSymbol | undefined) {
+		const symbol = SymbolInformation.create(node.name, node.kind, node.range, document.uri, parent?.name);
+		symbol.containerName ??= '';
+		symbols.push(symbol);
+
+		if (node.children) {
+			for (const child of node.children) {
+				walk(child, node);
+			}
+		}
+	}
+}
+
+export function findDocumentSymbols2(document: TextDocument, htmlDocument: HTMLDocument): DocumentSymbol[] {
+	const symbols: DocumentSymbol[] = [];
 
 	htmlDocument.roots.forEach(node => {
-		provideFileSymbolsInternal(document, node, '', symbols);
+		provideFileSymbolsInternal(document, node, symbols);
 	});
 
 	return symbols;
 }
 
-function provideFileSymbolsInternal(document: TextDocument, node: Node, container: string, symbols: SymbolInformation[]): void {
+function provideFileSymbolsInternal(document: TextDocument, node: Node, symbols: DocumentSymbol[]): void {
 
 	const name = nodeToName(node);
-	const location = Location.create(document.uri, Range.create(document.positionAt(node.start), document.positionAt(node.end)));
-	const symbol = <SymbolInformation>{
-		name: name,
-		location: location,
-		containerName: container,
-		kind: <SymbolKind>SymbolKind.Field
-	};
+	const range = Range.create(document.positionAt(node.start), document.positionAt(node.end));
+	const symbol = DocumentSymbol.create(
+		name,
+		undefined,
+		SymbolKind.Field,
+		range,
+		range,
+	);
 
 	symbols.push(symbol);
 
 	node.children.forEach(child => {
-		provideFileSymbolsInternal(document, child, name, symbols);
+		symbol.children ??= [];
+		provideFileSymbolsInternal(document, child, symbol.children);
 	});
 }
-
 
 function nodeToName(node: Node): string {
 	let name = node.tag;
