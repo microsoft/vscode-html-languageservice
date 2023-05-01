@@ -154,6 +154,7 @@ const PATH_TAG_AND_ATTR: { [tag: string]: string | string[] } = {
 	a: 'href',
 	area: 'href',
 	body: 'background',
+	blockquote: 'cite',
 	del: 'cite',
 	form: 'action',
 	frame: ['src', 'longdesc'],
