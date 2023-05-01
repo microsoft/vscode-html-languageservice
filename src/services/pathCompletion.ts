@@ -4,16 +4,17 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { ICompletionParticipant, TextDocument, CompletionItemKind, CompletionItem, TextEdit, Range, Position, DocumentUri, FileType, HtmlAttributeValueContext, DocumentContext, CompletionList } from '../htmlLanguageTypes';
+import { HTMLDataManager } from '../languageFacts/dataManager';
 import { startsWith } from '../utils/strings';
 
 export class PathCompletionParticipant implements ICompletionParticipant {
 	private atributeCompletions: HtmlAttributeValueContext[] = [];
 
-	constructor(private readonly readDirectory: (uri: DocumentUri) => Promise<[string, FileType][]>) {
+	constructor(private dataManager: HTMLDataManager, private readonly readDirectory: (uri: DocumentUri) => Promise<[string, FileType][]>) {
 	}
 
 	public onHtmlAttributeValue(context: HtmlAttributeValueContext) {
-		if (isPathAttribute(context.tag, context.attribute)) {
+		if (this.dataManager.isPathAttribute(context.tag, context.attribute)) {
 			this.atributeCompletions.push(context);
 		}
 	}
@@ -78,21 +79,6 @@ function isCompletablePath(value: string) {
 	return true;
 }
 
-function isPathAttribute(tag: string, attr: string) {
-	if (attr === 'src' || attr === 'href') {
-		return true;
-	}
-	const a = PATH_TAG_AND_ATTR[tag];
-	if (a) {
-		if (typeof a === 'string') {
-			return a === attr;
-		} else {
-			return a.indexOf(attr) !== -1;
-		}
-	}
-	return false;
-}
-
 function pathToReplaceRange(valueBeforeCursor: string, fullValue: string, range: Range) {
 	let replaceRange: Range;
 	const lastIndexOfSlash = valueBeforeCursor.lastIndexOf('/');
@@ -148,30 +134,3 @@ function shiftRange(range: Range, startOffset: number, endOffset: number): Range
 	return Range.create(start, end);
 }
 
-// Selected from https://stackoverflow.com/a/2725168/1780148
-const PATH_TAG_AND_ATTR: { [tag: string]: string | string[] } = {
-	// HTML 4
-	a: 'href',
-	area: 'href',
-	body: 'background',
-	blockquote: 'cite',
-	del: 'cite',
-	form: 'action',
-	frame: ['src', 'longdesc'],
-	img: ['src', 'longdesc'],
-	ins: 'cite',
-	link: 'href',
-	object: 'data',
-	q: 'cite',
-	script: 'src',
-	// HTML 5
-	audio: 'src',
-	button: 'formaction',
-	command: 'icon',
-	embed: 'src',
-	html: 'manifest',
-	input: ['src', 'formaction'],
-	source: 'src',
-	track: 'src',
-	video: ['src', 'poster']
-};

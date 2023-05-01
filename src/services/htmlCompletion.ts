@@ -36,7 +36,7 @@ export class HTMLCompletion {
 			return this.doComplete(document, position, htmlDocument, settings);
 		}
 
-		const participant: PathCompletionParticipant = new PathCompletionParticipant(this.lsOptions.fileSystemProvider.readDirectory);
+		const participant: PathCompletionParticipant = new PathCompletionParticipant(this.dataManager, this.lsOptions.fileSystemProvider.readDirectory);
 		const contributedParticipants = this.completionParticipants;
 		this.completionParticipants = [participant as ICompletionParticipant].concat(contributedParticipants);
 
@@ -508,7 +508,7 @@ export class HTMLCompletion {
 			const scanner = createScanner(document.getText(), node.start);
 			let token = scanner.scan();
 			while (token !== TokenType.EOS && scanner.getTokenEnd() <= offset) {
-				if (token === TokenType.AttributeName&& scanner.getTokenEnd() === offset - 1) {
+				if (token === TokenType.AttributeName && scanner.getTokenEnd() === offset - 1) {
 					// Ensure the token is a valid standalone attribute name
 					token = scanner.scan(); // this should be the = just written
 					if (token !== TokenType.DelimiterAssign) {
