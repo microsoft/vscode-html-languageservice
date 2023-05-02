@@ -8,7 +8,7 @@ import { HTMLParser } from './parser/htmlParser';
 import { HTMLCompletion } from './services/htmlCompletion';
 import { HTMLHover } from './services/htmlHover';
 import { format } from './services/htmlFormatter';
-import { findDocumentLinks } from './services/htmlLinks';
+import { HTMLDocumentLinks } from './services/htmlLinks';
 import { findDocumentHighlights } from './services/htmlHighlighting';
 import { findDocumentSymbols } from './services/htmlSymbolsProvider';
 import { doRename } from './services/htmlRename';
@@ -60,6 +60,7 @@ export function getLanguageService(options: LanguageServiceOptions = defaultLang
 	const htmlParser = new HTMLParser(dataManager);
 	const htmlSelectionRange = new HTMLSelectionRange(htmlParser);
 	const htmlFolding = new HTMLFolding(dataManager);
+	const htmlDocumentLinks = new HTMLDocumentLinks(dataManager);
 
 	return {
 		setDataProviders: dataManager.setDataProviders.bind(dataManager),
@@ -71,7 +72,7 @@ export function getLanguageService(options: LanguageServiceOptions = defaultLang
 		doHover: htmlHover.doHover.bind(htmlHover),
 		format,
 		findDocumentHighlights,
-		findDocumentLinks,
+		findDocumentLinks: htmlDocumentLinks.findDocumentLinks.bind(htmlDocumentLinks),
 		findDocumentSymbols,
 		getFoldingRanges: htmlFolding.getFoldingRanges.bind(htmlFolding),
 		getSelectionRanges: htmlSelectionRange.getSelectionRanges.bind(htmlSelectionRange),
