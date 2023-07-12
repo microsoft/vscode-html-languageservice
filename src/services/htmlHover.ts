@@ -300,7 +300,7 @@ export class HTMLHover {
 
 function trimQuotes(s: string) {
 	if (s.length <= 1) {
-		return s.replace(/['"]/, ''); // CodeQL [SM02383] False positive: The string length is one, so we don't need the global flag.
+		return s.replace(/['"]/, ''); // CodeQL [SM02383] False positive: The string length is at most one, so we don't need the global flag.
 	}
 
 	if (s[0] === `'` || s[0] === `"`) {
