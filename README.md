@@ -65,5 +65,5 @@ License
 
 Copyright 2016-2020, Microsoft
 
-With the exceptions of `data/*.json`, which is built upon content from [Mozilla Developer Network](https://developer.mozilla.org/en-US/docs/Web)
+`src/languageFacts/data/webCustomData.ts` is built upon content from [Mozilla Developer Network](https://developer.mozilla.org/en-US/docs/Web)
 and distributed under CC BY-SA 2.5.

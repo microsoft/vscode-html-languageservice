@@ -259,7 +259,7 @@ export const htmlData : HTMLDataV1 = {
 					"name": "nonce",
 					"description": {
 						"kind": "markdown",
-						"value": "A cryptographic nonce (number used once) used to allow inline styles in a [style-src Content-Security-Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/style-src). The server must generate a unique nonce value each time it transmits a policy. It is critical to provide a nonce that cannot be guessed as bypassing a resource’s policy is otherwise trivial."
+						"value": "A cryptographic nonce (number used once) used to whitelist inline styles in a [style-src Content-Security-Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/style-src). The server must generate a unique nonce value each time it transmits a policy. It is critical to provide a nonce that cannot be guessed as bypassing a resource’s policy is otherwise trivial."
 					}
 				},
 				{
@@ -1553,7 +1553,11 @@ export const htmlData : HTMLDataV1 = {
 				},
 				{
 					"name": "loading",
-					"valueSet": "loading"
+					"valueSet": "loading",
+					"description": {
+						"kind": "markdown",
+						"value": "Indicates how the browser should load the image."
+					}
 				},
 				{
 					"name": "referrerpolicy",
@@ -3338,7 +3342,7 @@ export const htmlData : HTMLDataV1 = {
 					"name": "nonce",
 					"description": {
 						"kind": "markdown",
-						"value": "A cryptographic nonce (number used once) to allow inline scripts in a [script-src Content-Security-Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/script-src). The server must generate a unique nonce value each time it transmits a policy. It is critical to provide a nonce that cannot be guessed as bypassing a resource's policy is otherwise trivial."
+						"value": "A cryptographic nonce (number used once) to whitelist inline scripts in a [script-src Content-Security-Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/script-src). The server must generate a unique nonce value each time it transmits a policy. It is critical to provide a nonce that cannot be guessed as bypassing a resource's policy is otherwise trivial."
 					}
 				},
 				{
@@ -3423,6 +3427,78 @@ export const htmlData : HTMLDataV1 = {
 				{
 					"name": "MDN Reference",
 					"url": "https://developer.mozilla.org/docs/Web/HTML/Element/canvas"
+				}
+			]
+		},
+		{
+			"name": "slot",
+			"description": {
+				"kind": "markdown",
+				"value": "The slot element is a placeholder inside a web component that you can fill with your own markup, which lets you create separate DOM trees and present them together."
+			},
+			"attributes": [
+				{
+					"name": "name",
+					"description": {
+						"kind": "markdown",
+						"value": "The slot's name.\nA **named slot** is a `<slot>` element with a `name` attribute."
+					}
+				}
+			],
+			"references": [
+				{
+					"name": "MDN Reference",
+					"url": "https://developer.mozilla.org/docs/Web/HTML/Element/slot"
+				}
+			]
+		},
+		{
+			"name": "data",
+			"description": {
+				"kind": "markdown",
+				"value": "The data element links a given piece of content with a machine-readable translation."
+			},
+			"attributes": [
+				{
+					"name": "value",
+					"description": {
+						"kind": "markdown",
+						"value": "This attribute specifies the machine-readable translation of the content of the element."
+					}
+				}
+			],
+			"references": [
+				{
+					"name": "MDN Reference",
+					"url": "https://developer.mozilla.org/docs/Web/HTML/Element/data"
+				}
+			]
+		},
+		{
+			"name": "hgroup",
+			"description": {
+				"kind": "markdown",
+				"value": "The hgroup element represents a heading and related content. It groups a single h1–h6 element with one or more p."
+			},
+			"attributes": [],
+			"references": [
+				{
+					"name": "MDN Reference",
+					"url": "https://developer.mozilla.org/docs/Web/HTML/Element/hgroup"
+				}
+			]
+		},
+		{
+			"name": "menu",
+			"description": {
+				"kind": "markdown",
+				"value": "The menu element represents an unordered list of interactive items."
+			},
+			"attributes": [],
+			"references": [
+				{
+					"name": "MDN Reference",
+					"url": "https://developer.mozilla.org/docs/Web/HTML/Element/menu"
 				}
 			]
 		}
@@ -6097,10 +6173,18 @@ export const htmlData : HTMLDataV1 = {
 			"name": "loading",
 			"values": [
 				{
-					"name": "eager"
+					"name": "eager",
+					"description": {
+						"kind": "markdown",
+						"value": "Loads the image immediately, regardless of whether or not the image is currently within the visible viewport (this is the default value)."
+					}
 				},
 				{
-					"name": "lazy"
+					"name": "lazy",
+					"description": {
+						"kind": "markdown",
+						"value": "Defers loading the image until it reaches a calculated distance from the viewport, as defined by the browser. The intent is to avoid the network and storage bandwidth needed to handle the image until it's reasonably certain that it will be needed. This generally improves the performance of the content in most typical use cases."
+					}
 				}
 			]
 		},
