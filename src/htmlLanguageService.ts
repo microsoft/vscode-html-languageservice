@@ -10,14 +10,14 @@ import { HTMLHover } from './services/htmlHover';
 import { format } from './services/htmlFormatter';
 import { HTMLDocumentLinks } from './services/htmlLinks';
 import { findDocumentHighlights } from './services/htmlHighlighting';
-import { findDocumentSymbols } from './services/htmlSymbolsProvider';
+import { findDocumentSymbols, findDocumentSymbols2 } from './services/htmlSymbolsProvider';
 import { doRename } from './services/htmlRename';
 import { findMatchingTagPosition } from './services/htmlMatchingTagPosition';
 import { findLinkedEditingRanges } from './services/htmlLinkedEditing';
 import {
-	Scanner, HTMLDocument, CompletionConfiguration, ICompletionParticipant, HTMLFormatConfiguration, DocumentContext,
+	Scanner, HTMLDocument, CompletionConfiguration, ICompletionParticipant, HTMLFormatConfiguration, DocumentContext, DocumentSymbol,
 	IHTMLDataProvider, HTMLDataV1, LanguageServiceOptions, TextDocument, SelectionRange, WorkspaceEdit,
-	Position, CompletionList, Hover, Range, SymbolInformation, TextEdit, DocumentHighlight, DocumentLink, FoldingRange, HoverSettings
+	Position, CompletionList, Hover, Range, SymbolInformation, TextEdit, DocumentHighlight, DocumentLink, FoldingRange, HoverSettings,
 } from './htmlLanguageTypes';
 import { HTMLFolding } from './services/htmlFolding';
 import { HTMLSelectionRange } from './services/htmlSelectionRange';
@@ -39,6 +39,7 @@ export interface LanguageService {
 	format(document: TextDocument, range: Range | undefined, options: HTMLFormatConfiguration): TextEdit[];
 	findDocumentLinks(document: TextDocument, documentContext: DocumentContext): DocumentLink[];
 	findDocumentSymbols(document: TextDocument, htmlDocument: HTMLDocument): SymbolInformation[];
+	findDocumentSymbols2(document: TextDocument, htmlDocument: HTMLDocument): DocumentSymbol[];
 	doQuoteComplete(document: TextDocument, position: Position, htmlDocument: HTMLDocument, options?: CompletionConfiguration): string | null;
 	doTagComplete(document: TextDocument, position: Position, htmlDocument: HTMLDocument): string | null;
 	getFoldingRanges(document: TextDocument, context?: { rangeLimit?: number }): FoldingRange[];
@@ -74,6 +75,7 @@ export function getLanguageService(options: LanguageServiceOptions = defaultLang
 		findDocumentHighlights,
 		findDocumentLinks: htmlDocumentLinks.findDocumentLinks.bind(htmlDocumentLinks),
 		findDocumentSymbols,
+		findDocumentSymbols2,
 		getFoldingRanges: htmlFolding.getFoldingRanges.bind(htmlFolding),
 		getSelectionRanges: htmlSelectionRange.getSelectionRanges.bind(htmlSelectionRange),
 		doQuoteComplete: htmlCompletion.doQuoteComplete.bind(htmlCompletion),
