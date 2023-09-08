@@ -13,3 +13,6 @@ tslint.json
 .travis.yml
 gulpfile.js
 .mocharc.json
+.editorconfig
+.eslintrc.json
+.prettierrc.json
