@@ -1,4 +1,8 @@
 
+5.1.0 / 2022-09-11
+================
+ * Added `LanguageService.findDocumentSymbols2`. Returns the symbols found in a document as `DocumentSymbol[]`.
+
 5.0.0 / 2022-05-18
 ================
  * Update to `vscode-languageserver-types@3.17`
