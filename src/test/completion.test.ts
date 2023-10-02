@@ -449,6 +449,7 @@ suite('HTML Completion', () => {
 		testTagCompletion('<div><br><span></span></|', 'div>');
 		testTagCompletion('<div><h1><br><span></span><img></| </h1></div>', 'h1>');
 		testTagCompletion('<ng-template><td><ng-template></|   </td> </ng-template>', 'ng-template>');
+		testTagCompletion('<div><br></|>', 'div');
 	});
 
 	test('Character entities', function (): any {
