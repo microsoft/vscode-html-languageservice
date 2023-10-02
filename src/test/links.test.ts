@@ -87,6 +87,7 @@ suite('HTML Link Detection', () => {
 
 		testLinkDetection('<link rel="icon" type="image/x-icon" href="data:@file/x-icon;base64,AAABAAIAQEAAAAEAIAAoQgAAJgA">', []);
 		testLinkDetection('<blockquote cite="foo.png">', [{ offset: 18, length: 7, target: 'file:///test/data/abc/foo.png' }]);
+		testLinkDetection('<style src="styles.css?t=345">', [{ offset: 12, length: 16, target: 'file:///test/data/abc/styles.css' }]);
 	});
 
 	test('Local targets', () => {
