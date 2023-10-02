@@ -68,21 +68,27 @@ function createLink(document: TextDocument, documentContext: DocumentContext, at
 		endOffset--;
 	}
 	const workspaceUrl = getWorkspaceUrl(document.uri, tokenContent, documentContext, base);
-	if (!workspaceUrl || !isValidURI(workspaceUrl)) {
+	if (!workspaceUrl) {
 		return undefined;
 	}
+	const target = validateAndCleanURI(workspaceUrl);
+	
+	
 	return {
 		range: Range.create(document.positionAt(startOffset), document.positionAt(endOffset)),
-		target: workspaceUrl
+		target
 	};
 }
 
-function isValidURI(uri: string) {
+function validateAndCleanURI(uriStr: string) : string | undefined {
 	try {
-		Uri.parse(uri);
-		return true;
+		const uri = Uri.parse(uriStr);
+		if (uri.query) {
+			return uri.with({ query: null }).toString(/* skipEncodig*/ true);
+		}
+		return uriStr;
 	} catch (e) {
-		return false;
+		return undefined;
 	}
 }
 
@@ -153,4 +159,3 @@ export class HTMLDocumentLinks {
 		return newLinks;
 	}
 }
-
