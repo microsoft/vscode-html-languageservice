@@ -556,7 +556,11 @@ export class HTMLCompletion {
 				let token = scanner.scan();
 				while (token !== TokenType.EOS && scanner.getTokenEnd() <= offset) {
 					if (token === TokenType.EndTagOpen && scanner.getTokenEnd() === offset) {
-						return `${node.tag}>`;
+						if (document.getText().charAt(offset) !== '>') {
+							return `${node.tag}>`;
+						} else {
+							return node.tag;
+						}
 					}
 					token = scanner.scan();
 				}
