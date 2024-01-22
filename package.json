@@ -1,6 +1,6 @@
 {
   "name": "vscode-html-languageservice",
-  "version": "5.1.1",
+  "version": "5.1.2",
   "description": "Language service for HTML",
   "main": "./lib/umd/htmlLanguageService.js",
   "typings": "./lib/umd/htmlLanguageService",
@@ -15,19 +15,19 @@
     "url": "https://github.com/Microsoft/vscode-html-languageservice"
   },
   "devDependencies": {
-    "@types/mocha": "^10.0.3",
+    "@types/mocha": "^10.0.6",
     "@types/node": "16.x",
-    "@typescript-eslint/eslint-plugin": "^6.9.0",
-    "@typescript-eslint/parser": "^6.9.0",
-    "@vscode/web-custom-data": "^0.4.8",
-    "eslint": "^8.52.0",
-    "js-beautify": "^1.14.9",
+    "@typescript-eslint/eslint-plugin": "^6.19.1",
+    "@typescript-eslint/parser": "^6.19.1",
+    "@vscode/web-custom-data": "^0.4.9",
+    "eslint": "^8.56.0",
+    "js-beautify": "^1.14.11",
     "mocha": "^10.2.0",
     "rimraf": "^5.0.5",
-    "typescript": "^5.2.2"
+    "typescript": "^5.3.3"
   },
   "dependencies": {
-    "@vscode/l10n": "^0.0.16",
+    "@vscode/l10n": "^0.0.18",
     "vscode-languageserver-textdocument": "^1.0.11",
     "vscode-languageserver-types": "^3.17.5",
     "vscode-uri": "^3.0.8"
@@ -41,10 +41,10 @@
     "remove-sourcemap-refs": "node ./build/remove-sourcemap-refs.js",
     "test": "npm run compile && mocha --timeout 5000 ./lib/umd/test/*.js && npm run lint",
     "lint": "eslint src/**/*.ts",
-    "install-types-next": "yarn add vscode-languageserver-types@next -f -S && yarn add vscode-languageserver-textdocument@next -f -S",
+    "install-types-next": "npm i vscode-languageserver-types@next -f -S && npm i vscode-languageserver-textdocument@next -f -S",
     "copy-jsbeautify": "node ./build/copy-jsbeautify.js",
-    "update-jsbeautify": "yarn add js-beautify && node ./build/update-jsbeautify.js",
-    "update-jsbeautify-next": "yarn add js-beautify@next && node ./build/update-jsbeautify.js",
-    "update-data": "yarn add @vscode/web-custom-data -D && node ./build/generateData.js"
+    "update-jsbeautify": "npm i js-beautify && node ./build/update-jsbeautify.js",
+    "update-jsbeautify-next": "npm i js-beautify@next && node ./build/update-jsbeautify.js",
+    "update-data": "npm i @vscode/web-custom-data -D && node ./build/generateData.js"
   }
 }
