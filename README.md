@@ -15,7 +15,7 @@ and the Monaco editor.
  - *doComplete* / *doComplete2* (async) provide completion proposals for a given location.
  - *setCompletionParticipants* allows participant to provide suggestions for specific tokens.
  - *doHover* provides hover information at a given location.
- 
+
  - *format* formats the code at the given range.
  - *findDocumentLinks* finds all links in the document.
  - *findDocumentSymbols* finds all the symbols in the document.
@@ -23,7 +23,7 @@ and the Monaco editor.
  - *getSelectionRanges* return the selection ranges for the given document.
  ...
 
- For the complete API see [htmlLanguageService.ts](./src/htmlLanguageService.ts) and [htmlLanguageTypes.ts](./src/htmlLanguageTypes.ts) 
+ For the complete API see [htmlLanguageService.ts](./src/htmlLanguageService.ts) and [htmlLanguageTypes.ts](./src/htmlLanguageTypes.ts)
 
 Installation
 ------------
@@ -33,8 +33,8 @@ Installation
 Development
 -----------
 
-- clone this repo, run yarn
-- `yarn test` to compile and run tests
+- clone this repo, run `npm i``
+- `npm test` to compile and run tests
 
 
 How can I run and debug the service?
@@ -49,8 +49,8 @@ How can I run and debug the service inside an instance of VSCode?
 
 - run VSCode out of sources setup as described here: https://github.com/Microsoft/vscode/wiki/How-to-Contribute
 - link the folder of the `vscode-html-languageservice` repo to `vscode/extensions/html-language-features/server` to run VSCode with the latest changes from that folder:
-  - cd `vscode-html-languageservice`, `yarn link`
-  - cd `vscode/extensions/html-language-features/server`, `yarn link vscode-html-languageservice`
+  - cd `vscode-html-languageservice`, `npm link`
+  - cd `vscode/extensions/html-language-features/server`, `npm link vscode-html-languageservice`
 - run VSCode out of source (`vscode/scripts/code.sh|bat`) and open a `.html` file
 - in VSCode window that is open on the `vscode-html-languageservice` sources, run command `Debug: Attach to Node process` and pick the `code-oss` process with the `html-language-features` path
 ![image](https://user-images.githubusercontent.com/6461412/94239296-dfa6d100-ff11-11ea-8e30-6444cf5defb8.png)
