@@ -83,7 +83,8 @@ function createLink(document: TextDocument, documentContext: DocumentContext, at
 function validateAndCleanURI(uriStr: string) : string | undefined {
 	try {
 		const uri = Uri.parse(uriStr);
-		if (uri.query) {
+		if (uri.scheme === 'file' && uri.query) {
+			// see https://github.com/microsoft/vscode/issues/194577 & https://github.com/microsoft/vscode/issues/206238
 			return uri.with({ query: null }).toString(/* skipEncodig*/ true);
 		}
 		return uriStr;
