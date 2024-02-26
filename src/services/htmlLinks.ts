@@ -71,21 +71,26 @@ function createLink(document: TextDocument, documentContext: DocumentContext, at
 	if (!workspaceUrl) {
 		return undefined;
 	}
-	const target = validateAndCleanURI(workspaceUrl);
-	
-	
+	const target = validateAndCleanURI(workspaceUrl, document);
+
 	return {
 		range: Range.create(document.positionAt(startOffset), document.positionAt(endOffset)),
 		target
 	};
 }
 
-function validateAndCleanURI(uriStr: string) : string | undefined {
+const _hash = '#'.charCodeAt(0);
+
+function validateAndCleanURI(uriStr: string, document: TextDocument): string | undefined {
 	try {
-		const uri = Uri.parse(uriStr);
+		let uri = Uri.parse(uriStr);
 		if (uri.scheme === 'file' && uri.query) {
 			// see https://github.com/microsoft/vscode/issues/194577 & https://github.com/microsoft/vscode/issues/206238
-			return uri.with({ query: null }).toString(/* skipEncodig*/ true);
+			uri = uri.with({ query: null });
+			uriStr = uri.toString(/* skipEncodig*/ true);
+		}
+		if (uri.scheme === 'file' && uri.fragment && !(uriStr.startsWith(document.uri) && uriStr.charCodeAt(document.uri.length) === _hash)) {
+			return uri.with({ fragment: null }).toString(/* skipEncodig*/ true);
 		}
 		return uriStr;
 	} catch (e) {
@@ -154,6 +159,8 @@ export class HTMLDocumentLinks {
 				if (offset !== undefined) {
 					const pos = document.positionAt(offset);
 					link.target = `${localWithHash}${pos.line + 1},${pos.character + 1}`;
+				} else {
+					link.target = document.uri;
 				}
 			}
 		}
