@@ -34,7 +34,7 @@ suite('HTML Link Detection', () => {
 	test('Link creation', () => {
 		testLinkCreation('http://model/1.html', 'javascript:void;', null);
 		testLinkCreation('http://model/1.html', ' \tjavascript:alert(7);', null);
-		testLinkCreation('http://model/1.html', ' #relative', 'http://model/1.html#relative');
+		testLinkCreation('http://model/1.html', ' #relative', 'http://model/1.html');
 		testLinkCreation('http://model/1.html', 'file:///C:\\Alex\\src\\path\\to\\file.txt', 'file:///C:\\Alex\\src\\path\\to\\file.txt');
 		testLinkCreation('http://model/1.html', 'http://www.microsoft.com/', 'http://www.microsoft.com/');
 		testLinkCreation('http://model/1.html', 'https://www.microsoft.com/', 'https://www.microsoft.com/');
@@ -46,7 +46,7 @@ suite('HTML Link Detection', () => {
 
 		testLinkCreation('file:///C:/Alex/src/path/to/file.html', 'javascript:void;', null);
 		testLinkCreation('file:///C:/Alex/src/path/to/file.html', ' \tjavascript:alert(7);', null);
-		testLinkCreation('file:///C:/Alex/src/path/to/file.html', ' #relative', 'file:///C:/Alex/src/path/to/file.html#relative');
+		testLinkCreation('file:///C:/Alex/src/path/to/file.html', ' #relative', 'file:///C:/Alex/src/path/to/file.html');
 		testLinkCreation('file:///C:/Alex/src/path/to/file.html', 'file:///C:\\Alex\\src\\path\\to\\file.txt', 'file:///C:\\Alex\\src\\path\\to\\file.txt');
 		testLinkCreation('file:///C:/Alex/src/path/to/file.html', 'http://www.microsoft.com/', 'http://www.microsoft.com/');
 		testLinkCreation('file:///C:/Alex/src/path/to/file.html', 'https://www.microsoft.com/', 'https://www.microsoft.com/');
@@ -89,11 +89,13 @@ suite('HTML Link Detection', () => {
 		testLinkDetection('<blockquote cite="foo.png">', [{ offset: 18, length: 7, target: 'file:///test/data/abc/foo.png' }]);
 		testLinkDetection('<style src="styles.css?t=345">', [{ offset: 12, length: 16, target: 'file:///test/data/abc/styles.css' }]);
 		testLinkDetection('<a href="https://werkenvoor.be/nl/jobs?f%5B0%5D=activitydomains%3A115&f%5B1%5D=lang%3Anl">link</a>', [{ offset: 9, length: 79, target: 'https://werkenvoor.be/nl/jobs?f%5B0%5D=activitydomains%3A115&f%5B1%5D=lang%3Anl' }]);
+		testLinkDetection('<a href="jobs.html?f=bar">link</a>', [{ offset: 9, length: 15, target: 'file:///test/data/abc/jobs.html' }]);
 	});
 
 	test('Local targets', () => {
 		testLinkDetection('<body><h1 id="title"></h1><a href="#title"</a></body>', [{ offset: 35, length: 6, target: 'file:///test/data/abc/test.html#1,14' }]);
 		testLinkDetection('<body><h1 id="title"></h1><a href="file:///test/data/abc/test.html#title"</a></body>', [{ offset: 35, length: 37, target: 'file:///test/data/abc/test.html#1,14' }]);
+		testLinkDetection('<body><h1 id="title"></h1><a href="#body"</a></body>', [{ offset: 35, length: 5, target: 'file:///test/data/abc/test.html' }]);
 	});
 
 });
