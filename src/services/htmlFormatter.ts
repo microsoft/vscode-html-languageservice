@@ -122,7 +122,7 @@ function getTagsFormatOption(options: HTMLFormatConfiguration, key: keyof HTMLFo
 	return dflt;
 }
 
-function getTemplatingFormatOption(options: HTMLFormatConfiguration, dflt: string): ('auto' | 'none' | 'django' | 'erb' | 'handlebars' | 'php')[] | undefined {
+function getTemplatingFormatOption(options: HTMLFormatConfiguration, dflt: string): ('auto' | 'none' | 'angular' | 'django' | 'erb' | 'handlebars' | 'php' | 'smarty')[] | undefined {
 	const value = getFormatOption(options, 'templating', dflt);
 	if (value === true) {
 		return ['auto'];
