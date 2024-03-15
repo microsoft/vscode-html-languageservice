@@ -21,7 +21,7 @@
     "@typescript-eslint/parser": "^6.19.1",
     "@vscode/web-custom-data": "^0.4.9",
     "eslint": "^8.56.0",
-    "js-beautify": "^1.14.11",
+    "js-beautify": "^1.15.1",
     "mocha": "^10.2.0",
     "rimraf": "^5.0.5",
     "typescript": "^5.3.3"
