@@ -113,7 +113,7 @@ export interface IBeautifyHTMLOptions {
     eol?: string;
 
     /**
-     * List of templating languages (auto,none,django,erb,handlebars,php)
+     * List of templating languages (auto,none,angular,django,erb,handlebars,php,smarty)
      * default ["auto"] = all in html
      */
     templating?: ('auto' | 'none' | 'angular' | 'django' | 'erb' | 'handlebars' | 'php' | 'smarty')[];
