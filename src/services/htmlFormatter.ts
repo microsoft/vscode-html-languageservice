@@ -127,7 +127,10 @@ function getTemplatingFormatOption(options: HTMLFormatConfiguration, dflt: strin
 	if (value === true) {
 		return ['auto'];
 	}
-	return ['none'];
+	if (value === false || value === dflt || Array.isArray(value) === false) {
+		return ['none'];
+	}
+	return value;
 }
 
 function computeIndentLevel(content: string, offset: number, options: HTMLFormatConfiguration): number {
