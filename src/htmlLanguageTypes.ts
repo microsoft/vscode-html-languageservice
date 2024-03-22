@@ -44,7 +44,7 @@ export interface HTMLFormatConfiguration {
 	endWithNewline?: boolean;
 	extraLiners?: string;
 	indentScripts?: 'keep' | 'separate' | 'normal';
-	templating?: boolean;
+	templating?: ('auto' | 'none' | 'angular' | 'django' | 'erb' | 'handlebars' | 'php' | 'smarty')[] | boolean;
 	unformattedContentDelimiter?: string;
 
 }

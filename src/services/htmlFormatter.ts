@@ -122,12 +122,15 @@ function getTagsFormatOption(options: HTMLFormatConfiguration, key: keyof HTMLFo
 	return dflt;
 }
 
-function getTemplatingFormatOption(options: HTMLFormatConfiguration, dflt: string): ('auto' | 'none' | 'django' | 'erb' | 'handlebars' | 'php')[] | undefined {
+function getTemplatingFormatOption(options: HTMLFormatConfiguration, dflt: string): ('auto' | 'none' | 'angular' | 'django' | 'erb' | 'handlebars' | 'php' | 'smarty')[] | undefined {
 	const value = getFormatOption(options, 'templating', dflt);
 	if (value === true) {
 		return ['auto'];
 	}
-	return ['none'];
+	if (value === false || value === dflt || Array.isArray(value) === false) {
+		return ['none'];
+	}
+	return value;
 }
 
 function computeIndentLevel(content: string, offset: number, options: HTMLFormatConfiguration): number {
