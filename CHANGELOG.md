@@ -1,4 +1,9 @@
 
+
+5.2.0 / 2024-03-22
+================
+ * Added `HTMLFormatConfiguration.templating` now also take a list of template languages.
+
 5.1.0 / 2022-09-11
 ================
  * Added `LanguageService.findDocumentSymbols2`. Returns the symbols found in a document as `DocumentSymbol[]`.
