@@ -14,6 +14,15 @@ export class Node {
 	public startTagEnd: number | undefined;
 	public endTagStart: number | undefined;
 	public attributes: { [name: string]: string | null } | undefined;
+  public attributeLocations: {
+    [name: string]: {
+      nameStart: number,
+      nameEnd: number,
+      // Note that these will include any quotes, single or double, around attribute values
+      valueStart?: number,
+      valueEnd?: number
+    }
+  } | undefined;
 	public get attributeNames(): string[] { return this.attributes ? Object.keys(this.attributes) : []; }
 	constructor(public start: number, public end: number, public children: Node[], public parent?: Node) {
 	}
@@ -142,16 +151,31 @@ export class HTMLParser {
         case TokenType.AttributeName: {
           pendingAttribute = scanner.getTokenText();
           let attributes = curr.attributes;
-          if (!attributes) {
+          let attributeLocations = curr.attributeLocations;
+          if (!attributes || !attributeLocations) {
             curr.attributes = attributes = {};
+            curr.attributeLocations = attributeLocations = {};
           }
           attributes[pendingAttribute] = null; // Support valueless attributes such as 'checked'
+          attributeLocations[pendingAttribute] = {
+            nameStart: scanner.getTokenOffset(),
+            nameEnd: scanner.getTokenEnd()
+          }
+
           break;
         }
         case TokenType.AttributeValue: {
           const value = scanner.getTokenText();
           const attributes = curr.attributes;
+          const attributeLocations = curr.attributeLocations;
+
           if (attributes && pendingAttribute) {
+            if (attributeLocations && attributeLocations[pendingAttribute]) {
+              // Note that these will include any quotes, single or double, around attribute values
+              attributeLocations[pendingAttribute].valueStart = scanner.getTokenOffset();
+              attributeLocations[pendingAttribute].valueEnd = scanner.getTokenEnd();
+            }
+
             attributes[pendingAttribute] = value;
             pendingAttribute = null;
           }
