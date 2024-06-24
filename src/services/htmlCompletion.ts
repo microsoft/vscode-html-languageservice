@@ -64,7 +64,6 @@ export class HTMLCompletion {
 		};
 		const completionParticipants = this.completionParticipants;
 		const dataProviders = this.dataManager.getDataProviders().filter(p => p.isApplicable(document.languageId) && (!settings || settings[p.getId()] !== false));
-		const voidElements = this.dataManager.getVoidElements(dataProviders);
 		const doesSupportMarkdown = this.doesSupportMarkdown();
 
 		const text = document.getText();
@@ -78,6 +77,7 @@ export class HTMLCompletion {
 		const scanner = createScanner(text, node.start);
 		let currentTag: string = '';
 		let currentAttributeName: string;
+		let voidElements: string[] | undefined;
 
 		function getReplaceRange(replaceStart: number, replaceEnd: number = offset): Range {
 			if (replaceStart > offset) {
@@ -169,6 +169,7 @@ export class HTMLCompletion {
 			if (settings && settings.hideAutoCompleteProposals) {
 				return result;
 			}
+			voidElements ??= this.dataManager.getVoidElements(dataProviders);
 			if (!this.dataManager.isVoidElement(tag, voidElements)) {
 				const pos = document.positionAt(tagCloseEnd);
 				result.items.push({
@@ -534,16 +535,18 @@ export class HTMLCompletion {
 		}
 		const char = document.getText().charAt(offset - 1);
 		if (char === '>') {
-			const voidElements = this.dataManager.getVoidElements(document.languageId);
 			const node = htmlDocument.findNodeBefore(offset);
-			if (node && node.tag && !this.dataManager.isVoidElement(node.tag, voidElements) && node.start < offset && (!node.endTagStart || node.endTagStart > offset)) {
-				const scanner = createScanner(document.getText(), node.start);
-				let token = scanner.scan();
-				while (token !== TokenType.EOS && scanner.getTokenEnd() <= offset) {
-					if (token === TokenType.StartTagClose && scanner.getTokenEnd() === offset) {
-						return `$0</${node.tag}>`;
+			if (node && node.tag && node.start < offset && (!node.endTagStart || node.endTagStart > offset)) {
+				const voidElements = this.dataManager.getVoidElements(document.languageId);
+				if (!this.dataManager.isVoidElement(node.tag, voidElements)) {
+					const scanner = createScanner(document.getText(), node.start);
+					let token = scanner.scan();
+					while (token !== TokenType.EOS && scanner.getTokenEnd() <= offset) {
+						if (token === TokenType.StartTagClose && scanner.getTokenEnd() === offset) {
+							return `$0</${node.tag}>`;
+						}
+						token = scanner.scan();
 					}
-					token = scanner.scan();
 				}
 			}
 		} else if (char === '/') {

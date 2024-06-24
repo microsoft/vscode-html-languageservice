@@ -84,13 +84,13 @@ export class HTMLFolding {
 	}
 
 	public getFoldingRanges(document: TextDocument, context: { rangeLimit?: number } | undefined): FoldingRange[] {
-		const voidElements = this.dataManager.getVoidElements(document.languageId);
 		const scanner = createScanner(document.getText());
 		let token = scanner.scan();
 		const ranges: FoldingRange[] = [];
 		const stack: { startLine: number, tagName: string }[] = [];
 		let lastTagName = null;
 		let prevStart = -1;
+		let voidElements: string[] | undefined;
 
 		function addRange(range: FoldingRange) {
 			ranges.push(range);
@@ -111,7 +111,11 @@ export class HTMLFolding {
 					break;
 				}
 				case TokenType.StartTagClose:
-					if (!lastTagName || !this.dataManager.isVoidElement(lastTagName, voidElements)) {
+					if (!lastTagName) {
+						break;
+					}
+					voidElements ??= this.dataManager.getVoidElements(document.languageId);
+					if (!this.dataManager.isVoidElement(lastTagName, voidElements)) {
 						break;
 					}
 				// fallthrough
