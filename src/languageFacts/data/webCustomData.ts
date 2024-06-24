@@ -259,7 +259,7 @@ export const htmlData : HTMLDataV1 = {
 					"name": "nonce",
 					"description": {
 						"kind": "markdown",
-						"value": "A cryptographic nonce (number used once) used to whitelist inline styles in a [style-src Content-Security-Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/style-src). The server must generate a unique nonce value each time it transmits a policy. It is critical to provide a nonce that cannot be guessed as bypassing a resource’s policy is otherwise trivial."
+						"value": "A cryptographic nonce (number used once) used to allow inline styles in a [style-src Content-Security-Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/style-src). The server must generate a unique nonce value each time it transmits a policy. It is critical to provide a nonce that cannot be guessed as bypassing a resource’s policy is otherwise trivial."
 					}
 				},
 				{
@@ -3561,13 +3561,7 @@ export const htmlData : HTMLDataV1 = {
 			"description": {
 				"kind": "markdown",
 				"value": "The `[**id**](#attr-id)` of a [`<menu>`](https://developer.mozilla.org/docs/Web/HTML/Element/menu \"The HTML <menu> element represents a group of commands that a user can perform or activate. This includes both list menus, which might appear across the top of a screen, as well as context menus, such as those that might appear underneath a button after it has been clicked.\") to use as the contextual menu for this element."
-			},
-			"references": [
-				{
-					"name": "MDN Reference",
-					"url": "https://developer.mozilla.org/docs/Web/HTML/Global_attributes/contextmenu"
-				}
-			]
+			}
 		},
 		{
 			"name": "dir",
@@ -3675,39 +3669,21 @@ export const htmlData : HTMLDataV1 = {
 			"description": {
 				"kind": "markdown",
 				"value": "The unique, global identifier of an item."
-			},
-			"references": [
-				{
-					"name": "MDN Reference",
-					"url": "https://developer.mozilla.org/docs/Web/HTML/Global_attributes/itemid"
-				}
-			]
+			}
 		},
 		{
 			"name": "itemprop",
 			"description": {
 				"kind": "markdown",
 				"value": "Used to add properties to an item. Every HTML element may have an `itemprop` attribute specified, where an `itemprop` consists of a name and value pair."
-			},
-			"references": [
-				{
-					"name": "MDN Reference",
-					"url": "https://developer.mozilla.org/docs/Web/HTML/Global_attributes/itemprop"
-				}
-			]
+			}
 		},
 		{
 			"name": "itemref",
 			"description": {
 				"kind": "markdown",
 				"value": "Properties that are not descendants of an element with the `itemscope` attribute can be associated with the item using an `itemref`. It provides a list of element ids (not `itemid`s) with additional properties elsewhere in the document."
-			},
-			"references": [
-				{
-					"name": "MDN Reference",
-					"url": "https://developer.mozilla.org/docs/Web/HTML/Global_attributes/itemref"
-				}
-			]
+			}
 		},
 		{
 			"name": "itemscope",
@@ -3715,26 +3691,14 @@ export const htmlData : HTMLDataV1 = {
 				"kind": "markdown",
 				"value": "`itemscope` (usually) works along with `[itemtype](https://developer.mozilla.org/docs/Web/HTML/Global_attributes#attr-itemtype)` to specify that the HTML contained in a block is about a particular item. `itemscope` creates the Item and defines the scope of the `itemtype` associated with it. `itemtype` is a valid URL of a vocabulary (such as [schema.org](https://schema.org/)) that describes the item and its properties context."
 			},
-			"valueSet": "v",
-			"references": [
-				{
-					"name": "MDN Reference",
-					"url": "https://developer.mozilla.org/docs/Web/HTML/Global_attributes/itemscope"
-				}
-			]
+			"valueSet": "v"
 		},
 		{
 			"name": "itemtype",
 			"description": {
 				"kind": "markdown",
 				"value": "Specifies the URL of the vocabulary that will be used to define `itemprop`s (item properties) in the data structure. `[itemscope](https://developer.mozilla.org/docs/Web/HTML/Global_attributes#attr-itemscope)` is used to set the scope of where in the data structure the vocabulary set by `itemtype` will be active."
-			},
-			"references": [
-				{
-					"name": "MDN Reference",
-					"url": "https://developer.mozilla.org/docs/Web/HTML/Global_attributes/itemtype"
-				}
-			]
+			}
 		},
 		{
 			"name": "lang",
