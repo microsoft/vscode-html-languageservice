@@ -7,7 +7,7 @@ import * as assert from 'assert';
 import * as htmlLanguageService from '../htmlLanguageService';
 import { HoverSettings, TextDocument, MarkupContent } from '../htmlLanguageService';
 
-export function assertHover(value: string, expectedHoverContent: MarkupContent | undefined, expectedHoverOffset: number | undefined): void {
+export async function assertHover(value: string, expectedHoverContent: MarkupContent | undefined, expectedHoverOffset: number | undefined): Promise<void> {
 	const offset = value.indexOf('|');
 	value = value.substr(0, offset) + value.substr(offset + 1);
 
@@ -15,14 +15,14 @@ export function assertHover(value: string, expectedHoverContent: MarkupContent |
 
 	const position = document.positionAt(offset);
 	const ls = htmlLanguageService.getLanguageService();
-	const htmlDoc = ls.parseHTMLDocument(document);
+	const htmlDoc = await ls.parseHTMLDocument(document);
 
-	const hover = ls.doHover(document, position, htmlDoc);
+	const hover = await ls.doHover(document, position, htmlDoc);
 	assert.deepEqual(hover && hover.contents, expectedHoverContent);
 	assert.equal(hover && document.offsetAt(hover.range!.start), expectedHoverOffset);
 }
 
-export function assertHover2(value: string, contents: string | MarkupContent, rangeText: string, lsOptions?: htmlLanguageService.LanguageServiceOptions, hoverSettings?: HoverSettings): void {
+export async function assertHover2(value: string, contents: string | MarkupContent, rangeText: string, lsOptions?: htmlLanguageService.LanguageServiceOptions, hoverSettings?: HoverSettings): Promise<void> {
 	const offset = value.indexOf('|');
 	value = value.substr(0, offset) + value.substr(offset + 1);
 
@@ -30,9 +30,9 @@ export function assertHover2(value: string, contents: string | MarkupContent, ra
 
 	const position = document.positionAt(offset);
 	const ls = htmlLanguageService.getLanguageService(lsOptions);
-	const htmlDoc = ls.parseHTMLDocument(document);
+	const htmlDoc = await ls.parseHTMLDocument(document);
 
-	const hover = ls.doHover(document, position, htmlDoc, hoverSettings);
+	const hover = await ls.doHover(document, position, htmlDoc, hoverSettings);
 	if (hover) {
 		if (typeof contents === 'string') {
 			assert.equal(hover.contents, contents);

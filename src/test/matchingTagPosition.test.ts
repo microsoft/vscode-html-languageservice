@@ -7,7 +7,7 @@ import * as assert from 'assert';
 import * as htmlLanguageService from '../htmlLanguageService';
 import { TextDocument } from '../htmlLanguageService';
 
-export function testMatchingTagPosition(value: string): void {
+export async function testMatchingTagPosition(value: string): Promise<void> {
   let offset = value.indexOf('|');
   value = value.substr(0, offset) + value.substr(offset + 1);
   const mirrorOffset = value.indexOf('$');
@@ -20,7 +20,7 @@ export function testMatchingTagPosition(value: string): void {
 
   const document = TextDocument.create('test://test/test.html', 'html', 0, value);
   const position = document.positionAt(offset);
-  const htmlDoc = ls.parseHTMLDocument(document);
+  const htmlDoc = await ls.parseHTMLDocument(document);
 
   const mirrorPosition = ls.findMatchingTagPosition(document, position, htmlDoc);
   if (!mirrorPosition) {
@@ -34,21 +34,21 @@ export function testMatchingTagPosition(value: string): void {
 }
 
 suite('HTML find matching tag position', () => {
-  test('Matching position', () => {
-    testMatchingTagPosition('<|div></$div>');
-    testMatchingTagPosition('<d|iv></d$iv>');
-    testMatchingTagPosition('<di|v></di$v>');
-    testMatchingTagPosition('<div|></div$>');
+  test('Matching position', async () => {
+    await testMatchingTagPosition('<|div></$div>');
+    await testMatchingTagPosition('<d|iv></d$iv>');
+    await testMatchingTagPosition('<di|v></di$v>');
+    await testMatchingTagPosition('<div|></div$>');
 
-    testMatchingTagPosition('<$div></|div>');
-    testMatchingTagPosition('<d$iv></d|iv>');
-    testMatchingTagPosition('<di$v></di|v>');
-    testMatchingTagPosition('<div$></div|>');
+    await testMatchingTagPosition('<$div></|div>');
+    await testMatchingTagPosition('<d$iv></d|iv>');
+    await testMatchingTagPosition('<di$v></di|v>');
+    await testMatchingTagPosition('<div$></div|>');
 
-    testMatchingTagPosition('<div| ></div$>');
-    testMatchingTagPosition('<div| id="foo"></div$>');
+    await testMatchingTagPosition('<div| ></div$>');
+    await testMatchingTagPosition('<div| id="foo"></div$>');
 
-    testMatchingTagPosition('<div$ ></div|>');
-    testMatchingTagPosition('<div$ id="foo"></div|>');
+    await testMatchingTagPosition('<div$ ></div|>');
+    await testMatchingTagPosition('<div$ id="foo"></div|>');
   });
 });
