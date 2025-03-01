@@ -18,7 +18,7 @@ export class HTMLHover {
 
 	constructor(private lsOptions: LanguageServiceOptions, private dataManager: HTMLDataManager) { }
 
-	doHover(document: TextDocument, position: Position, htmlDocument: HTMLDocument, options?: HoverSettings): Hover | null {
+	async doHover(document: TextDocument, position: Position, htmlDocument: HTMLDocument, options?: HoverSettings): Promise<Hover | null> {
 		const convertContents = this.convertContents.bind(this);
 		const doesSupportMarkdown = this.doesSupportMarkdown();
 
@@ -30,11 +30,12 @@ export class HTMLHover {
 		}
 		const dataProviders = this.dataManager.getDataProviders().filter(p => p.isApplicable(document.languageId));
 
-		function getTagHover(currTag: string, range: Range, open: boolean): Hover | null {
+		async function getTagHover(currTag: string, range: Range, open: boolean): Promise<Hover | null> {
 			for (const provider of dataProviders) {
 				let hover: Hover | null = null;
 
-				provider.provideTags().forEach(tag => {
+				const tags = await provider.provideTags();
+				for (const tag of tags) {
 					if (tag.name.toLowerCase() === currTag.toLowerCase()) {
 						let markupContent = generateDocumentation(tag, options, doesSupportMarkdown);
 						if (!markupContent) {
@@ -45,7 +46,7 @@ export class HTMLHover {
 						}
 						hover = { contents: markupContent, range };
 					}
-				});
+				}
 
 				if (hover) {
 					(hover as Hover).contents = convertContents((hover as Hover).contents);
@@ -55,11 +56,12 @@ export class HTMLHover {
 			return null;
 		}
 
-		function getAttrHover(currTag: string, currAttr: string, range: Range): Hover | null {
+		async function getAttrHover(currTag: string, currAttr: string, range: Range): Promise<Hover | null> {
 			for (const provider of dataProviders) {
 				let hover: Hover | null = null;
 
-				provider.provideAttributes(currTag).forEach(attr => {
+				const attributes = await provider.provideAttributes(currTag);
+				for (const attr of attributes) {
 					if (currAttr === attr.name && attr.description) {
 						const contentsDoc = generateDocumentation(attr, options, doesSupportMarkdown);
 						if (contentsDoc) {
@@ -68,7 +70,7 @@ export class HTMLHover {
 							hover = null;
 						}
 					}
-				});
+				}
 
 				if (hover) {
 					(hover as Hover).contents = convertContents((hover as Hover).contents);
@@ -78,11 +80,12 @@ export class HTMLHover {
 			return null;
 		}
 
-		function getAttrValueHover(currTag: string, currAttr: string, currAttrValue: string, range: Range): Hover | null {
+		async function getAttrValueHover(currTag: string, currAttr: string, currAttrValue: string, range: Range): Promise<Hover | null> {
 			for (const provider of dataProviders) {
 				let hover: Hover | null = null;
 
-				provider.provideValues(currTag, currAttr).forEach(attrValue => {
+				const values = await provider.provideValues(currTag, currAttr);
+				for (const attrValue of values) {
 					if (currAttrValue === attrValue.name && attrValue.description) {
 						const contentsDoc = generateDocumentation(attrValue, options, doesSupportMarkdown);
 						if (contentsDoc) {
@@ -91,7 +94,7 @@ export class HTMLHover {
 							hover = null;
 						}
 					}
-				});
+				}
 
 				if (hover) {
 					(hover as Hover).contents = convertContents((hover as Hover).contents);

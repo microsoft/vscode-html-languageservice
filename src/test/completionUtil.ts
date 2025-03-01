@@ -51,7 +51,7 @@ export function assertCompletion(completions: CompletionList, expected: ItemDesc
 	}
 }
 
-export function testCompletionFor(value: string, expected: { count?: number, items?: ItemDescription[] }, settings?: htmlLanguageService.CompletionConfiguration, lsOptions?: htmlLanguageService.LanguageServiceOptions): void {
+export async function testCompletionFor(value: string, expected: { count?: number, items?: ItemDescription[] }, settings?: htmlLanguageService.CompletionConfiguration, lsOptions?: htmlLanguageService.LanguageServiceOptions): Promise<void> {
 	const offset = value.indexOf('|');
 	value = value.substr(0, offset) + value.substr(offset + 1);
 
@@ -59,8 +59,8 @@ export function testCompletionFor(value: string, expected: { count?: number, ite
 
 	const document = TextDocument.create('test://test/test.html', 'html', 0, value);
 	const position = document.positionAt(offset);
-	const htmlDoc = ls.parseHTMLDocument(document);
-	const list = ls.doComplete(document, position, htmlDoc, settings);
+	const htmlDoc = await ls.parseHTMLDocument(document);
+	const list = await ls.doComplete(document, position, htmlDoc, settings);
 
 	// no duplicate labels
 	const labels = list.items.map(i => i.label).sort();
@@ -79,7 +79,7 @@ export function testCompletionFor(value: string, expected: { count?: number, ite
 	}
 }
 
-export function testQuoteCompletion(value: string, expected: string | null, options?: CompletionConfiguration): void {
+export async function testQuoteCompletion(value: string, expected: string | null, options?: CompletionConfiguration): Promise<void> {
 	const offset = value.indexOf('|');
 	value = value.substr(0, offset) + value.substr(offset + 1);
 
@@ -87,12 +87,12 @@ export function testQuoteCompletion(value: string, expected: string | null, opti
 
 	const document = TextDocument.create('test://test/test.html', 'html', 0, value);
 	const position = document.positionAt(offset);
-	const htmlDoc = ls.parseHTMLDocument(document);
+	const htmlDoc = await ls.parseHTMLDocument(document);
 	const actual = ls.doQuoteComplete(document, position, htmlDoc, options);
 	assert.strictEqual(actual, expected);
 }
 
-export function testTagCompletion(value: string, expected: string | null): void {
+export async function testTagCompletion(value: string, expected: string | null): Promise<void> {
 	const offset = value.indexOf('|');
 	value = value.substr(0, offset) + value.substr(offset + 1);
 
@@ -100,7 +100,7 @@ export function testTagCompletion(value: string, expected: string | null): void 
 
 	const document = TextDocument.create('test://test/test.html', 'html', 0, value);
 	const position = document.positionAt(offset);
-	const htmlDoc = ls.parseHTMLDocument(document);
-	const actual = ls.doTagComplete(document, position, htmlDoc);
+	const htmlDoc = await ls.parseHTMLDocument(document);
+	const actual = await ls.doTagComplete(document, position, htmlDoc);
 	assert.equal(actual, expected);
 }

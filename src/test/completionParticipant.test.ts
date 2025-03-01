@@ -28,7 +28,7 @@ suite('HTML Completion Participant', () => {
     return { document, position };
   };
 
-  const testHtmlAttributeValues = (value: string, expected: ExpectedHtmlAttributeValue[]): void => {
+  const testHtmlAttributeValues = async (value: string, expected: ExpectedHtmlAttributeValue[]): Promise<void> => {
     const ls = htmlLanguageService.getLanguageService();
     const { document, position } = prepareDocument(value);
 
@@ -47,7 +47,7 @@ suite('HTML Completion Participant', () => {
       }
     };
     ls.setCompletionParticipants([participant]);
-    const htmlDoc = ls.parseHTMLDocument(document);
+    const htmlDoc = await ls.parseHTMLDocument(document);
     const list = ls.doComplete(document, position, htmlDoc);
 
     const c = (a1: ExpectedHtmlAttributeValue, a2: ExpectedHtmlAttributeValue) => {
@@ -56,7 +56,7 @@ suite('HTML Completion Participant', () => {
     assert.deepEqual(actuals.sort(c), expected.sort(c));
   };
 
-  const testHtmlContent = (value: string, expected: ExpectedHtmlContent[]): void => {
+  const testHtmlContent = async (value: string, expected: ExpectedHtmlContent[]): Promise<void> => {
     const ls = htmlLanguageService.getLanguageService();
     const { document, position } = prepareDocument(value);
 
@@ -67,61 +67,61 @@ suite('HTML Completion Participant', () => {
       }
     };
     ls.setCompletionParticipants([participant]);
-    const htmlDoc = ls.parseHTMLDocument(document);
+    const htmlDoc = await ls.parseHTMLDocument(document);
     const list = ls.doComplete(document, position, htmlDoc);
     assert.deepEqual(actuals.length, expected.length);
   };
 
-  test('onHtmlAttributeValue', () => {
-    testHtmlAttributeValues('<|', []);
-    testHtmlAttributeValues('<div |>', []);
-    testHtmlAttributeValues('<div class|>', []);
-    testHtmlAttributeValues('<div>|', []);
-    testHtmlAttributeValues('<div>|</div>', []);
+  test('onHtmlAttributeValue', async () => {
+    await testHtmlAttributeValues('<|', []);
+    await testHtmlAttributeValues('<div |>', []);
+    await testHtmlAttributeValues('<div class|>', []);
+    await testHtmlAttributeValues('<div>|', []);
+    await testHtmlAttributeValues('<div>|</div>', []);
 
-    testHtmlAttributeValues('<div class="|"></div>', [{
+    await testHtmlAttributeValues('<div class="|"></div>', [{
       tag: 'div',
       attribute: 'class',
       value: '',
       replaceContent: '""'
     }]);
-    testHtmlAttributeValues('<div class="|f"></div>', [{
+    await testHtmlAttributeValues('<div class="|f"></div>', [{
       tag: 'div',
       attribute: 'class',
       value: '',
       replaceContent: '"f"'
     }]);
-    testHtmlAttributeValues('<div class="foo|"></div>', [{
+    await testHtmlAttributeValues('<div class="foo|"></div>', [{
       tag: 'div',
       attribute: 'class',
       value: 'foo',
       replaceContent: '"foo"'
     }]);
-    testHtmlAttributeValues(`<div class='foo'|></div>`, [{
+    await testHtmlAttributeValues(`<div class='foo'|></div>`, [{
       tag: 'div',
       attribute: 'class',
       value: '',
       replaceContent: `'foo'`
     }]);
-    testHtmlAttributeValues(`<div class=|'foo'></div>`, [{
+    await testHtmlAttributeValues(`<div class=|'foo'></div>`, [{
       tag: 'div',
       attribute: 'class',
       value: '',
       replaceContent: `'foo'`
     }]);
-    testHtmlAttributeValues(`<div class=|foo></div>`, [{
+    await testHtmlAttributeValues(`<div class=|foo></div>`, [{
       tag: 'div',
       attribute: 'class',
       value: '',
       replaceContent: 'foo'
     }]);
-    testHtmlAttributeValues(`<div class=foo|></div>`, [{
+    await testHtmlAttributeValues(`<div class=foo|></div>`, [{
       tag: 'div',
       attribute: 'class',
       value: 'foo',
       replaceContent: 'foo'
     }]);
-    testHtmlAttributeValues(`<div class=fo|o></div>`, [{
+    await testHtmlAttributeValues(`<div class=fo|o></div>`, [{
       tag: 'div',
       attribute: 'class',
       value: 'fo',
@@ -129,14 +129,14 @@ suite('HTML Completion Participant', () => {
     }]);
   });
 
-  test('onHtmlContent', () => {
-    testHtmlContent('<|', []);
-    testHtmlContent('<div |>', []);
-    testHtmlContent('<div class|>', []);
-    testHtmlContent('<div class="|">', []);
-    testHtmlContent('<div class="foo |">', []);
-    testHtmlContent('<div class="foo">d|', [{}]);
-    testHtmlContent('<div class="foo">d|</div>', [{}]);
+  test('onHtmlContent', async () => {
+    await testHtmlContent('<|', []);
+    await testHtmlContent('<div |>', []);
+    await testHtmlContent('<div class|>', []);
+    await testHtmlContent('<div class="|">', []);
+    await testHtmlContent('<div class="foo |">', []);
+    await testHtmlContent('<div class="foo">d|', [{}]);
+    await testHtmlContent('<div class="foo">d|</div>', [{}]);
   });
 
 });

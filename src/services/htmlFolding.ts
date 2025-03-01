@@ -83,7 +83,7 @@ export class HTMLFolding {
 		return result;
 	}
 
-	public getFoldingRanges(document: TextDocument, context: { rangeLimit?: number } | undefined): FoldingRange[] {
+	public async getFoldingRanges(document: TextDocument, context: { rangeLimit?: number } | undefined): Promise<FoldingRange[]> {
 		const scanner = createScanner(document.getText());
 		let token = scanner.scan();
 		const ranges: FoldingRange[] = [];
@@ -114,7 +114,7 @@ export class HTMLFolding {
 					if (!lastTagName) {
 						break;
 					}
-					voidElements ??= this.dataManager.getVoidElements(document.languageId);
+					voidElements ??= await this.dataManager.getVoidElements(document.languageId);
 					if (!this.dataManager.isVoidElement(lastTagName, voidElements)) {
 						break;
 					}

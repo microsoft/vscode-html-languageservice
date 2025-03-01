@@ -30,20 +30,20 @@ export * from './htmlLanguageTypes';
 export interface LanguageService {
 	setDataProviders(useDefaultDataProvider: boolean, customDataProviders: IHTMLDataProvider[]): void;
 	createScanner(input: string, initialOffset?: number): Scanner;
-	parseHTMLDocument(document: TextDocument): HTMLDocument;
+	parseHTMLDocument(document: TextDocument): Promise<HTMLDocument>;
 	findDocumentHighlights(document: TextDocument, position: Position, htmlDocument: HTMLDocument): DocumentHighlight[];
-	doComplete(document: TextDocument, position: Position, htmlDocument: HTMLDocument, options?: CompletionConfiguration): CompletionList;
+	doComplete(document: TextDocument, position: Position, htmlDocument: HTMLDocument, options?: CompletionConfiguration): Promise<CompletionList>;
 	doComplete2(document: TextDocument, position: Position, htmlDocument: HTMLDocument, documentContext: DocumentContext, options?: CompletionConfiguration): Promise<CompletionList>;
 	setCompletionParticipants(registeredCompletionParticipants: ICompletionParticipant[]): void;
-	doHover(document: TextDocument, position: Position, htmlDocument: HTMLDocument, options?: HoverSettings): Hover | null;
+	doHover(document: TextDocument, position: Position, htmlDocument: HTMLDocument, options?: HoverSettings): Promise<Hover | null>;
 	format(document: TextDocument, range: Range | undefined, options: HTMLFormatConfiguration): TextEdit[];
 	findDocumentLinks(document: TextDocument, documentContext: DocumentContext): DocumentLink[];
 	findDocumentSymbols(document: TextDocument, htmlDocument: HTMLDocument): SymbolInformation[];
 	findDocumentSymbols2(document: TextDocument, htmlDocument: HTMLDocument): DocumentSymbol[];
 	doQuoteComplete(document: TextDocument, position: Position, htmlDocument: HTMLDocument, options?: CompletionConfiguration): string | null;
-	doTagComplete(document: TextDocument, position: Position, htmlDocument: HTMLDocument): string | null;
-	getFoldingRanges(document: TextDocument, context?: { rangeLimit?: number }): FoldingRange[];
-	getSelectionRanges(document: TextDocument, positions: Position[]): SelectionRange[];
+	doTagComplete(document: TextDocument, position: Position, htmlDocument: HTMLDocument): Promise<string | null>;
+	getFoldingRanges(document: TextDocument, context?: { rangeLimit?: number }): Promise<FoldingRange[]>;
+	getSelectionRanges(document: TextDocument, positions: Position[]): Promise<SelectionRange[]>;
 	doRename(document: TextDocument, position: Position, newName: string, htmlDocument: HTMLDocument): WorkspaceEdit | null;
 	findMatchingTagPosition(document: TextDocument, position: Position, htmlDocument: HTMLDocument): Position | null;
 	/** Deprecated, Use findLinkedEditingRanges instead */
