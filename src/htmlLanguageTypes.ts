@@ -160,7 +160,9 @@ export interface ITagData {
 	description?: string | MarkupContent;
 	attributes: IAttributeData[];
 	references?: IReference[];
-	void?: boolean
+	void?: boolean;
+	browsers?: string[];
+	status?: BaselineStatus;
 }
 
 export interface IAttributeData {
@@ -169,12 +171,16 @@ export interface IAttributeData {
 	valueSet?: string;
 	values?: IValueData[];
 	references?: IReference[];
+	browsers?: string[];
+	status?: BaselineStatus;
 }
 
 export interface IValueData {
 	name: string;
 	description?: string | MarkupContent;
 	references?: IReference[];
+	browsers?: string[];
+	status?: BaselineStatus;
 }
 
 export interface IValueSet {
@@ -188,6 +194,14 @@ export interface HTMLDataV1 {
 	globalAttributes?: IAttributeData[];
 	valueSets?: IValueSet[];
 }
+
+export interface BaselineStatus {
+	baseline: Baseline;
+	baseline_low_date?: string;
+	baseline_high_date?: string;
+}
+
+export type Baseline = false | 'low' | 'high';
 
 export interface IHTMLDataProvider {
 	getId(): string;

@@ -5,11 +5,14 @@
 
 import { assertHover, assertHover2 } from './hoverUtil';
 import { MarkupContent } from '../htmlLanguageTypes';
+import { BaselineImages } from '../languageFacts/dataProvider';
 
 suite('HTML Hover', () => {
 	test('Single', function (): any {
 		const descriptionAndReference =
 			'The html element represents the root of an HTML document.' +
+			'\n\n' +
+			`![Baseline icon](${BaselineImages.BASELINE_HIGH}) _Widely available across major browsers (Baseline since 2015)_` +
 			'\n\n' +
 			'[MDN Reference](https://developer.mozilla.org/docs/Web/HTML/Element/html)';
 
@@ -55,7 +58,8 @@ suite('HTML Hover', () => {
 
 		const noReferences: MarkupContent = {
 			kind: 'markdown',
-			value: 'The html element represents the root of an HTML document.'
+			value: 'The html element represents the root of an HTML document.' +
+					`\n\n![Baseline icon](${BaselineImages.BASELINE_HIGH}) _Widely available across major browsers (Baseline since 2015)_`
 		};
 		assertHover2('<html|></html>', noReferences, 'html', undefined, { references: false });
 	});
