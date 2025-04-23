@@ -3,6 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
+import { BaselineImages } from "../languageFacts/dataProvider";
 import { testCompletionFor, testQuoteCompletion, testTagCompletion } from "./completionUtil";
 
 suite('HTML Completion', () => {
@@ -298,6 +299,8 @@ suite('HTML Completion', () => {
 	test('References', () => {
 		const doc =
 			'The div element has no special meaning at all. It represents its children. It can be used with the class, lang, and title attributes to mark up semantics common to a group of consecutive elements.' +
+			'\n\n' +
+			`![Baseline icon](${BaselineImages.BASELINE_HIGH}) _Widely available across major browsers (Baseline since 2015)_` +
 			'\n\n' +
 			'[MDN Reference](https://developer.mozilla.org/docs/Web/HTML/Element/div)';
 
