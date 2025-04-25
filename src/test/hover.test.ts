@@ -14,7 +14,7 @@ suite('HTML Hover', () => {
 			'\n\n' +
 			`![Baseline icon](${BaselineImages.BASELINE_HIGH}) _Widely available across major browsers (Baseline since 2015)_` +
 			'\n\n' +
-			'[MDN Reference](https://developer.mozilla.org/docs/Web/HTML/Element/html)';
+			'[MDN Reference](https://developer.mozilla.org/docs/Web/HTML/Reference/Elements/html)';
 
 		const htmlContent: MarkupContent = {
 			kind: 'markdown',
@@ -52,7 +52,7 @@ suite('HTML Hover', () => {
 
 		const noDescription: MarkupContent = {
 			kind: 'markdown',
-			value: '[MDN Reference](https://developer.mozilla.org/docs/Web/HTML/Element/html)'
+			value: '[MDN Reference](https://developer.mozilla.org/docs/Web/HTML/Reference/Elements/html)'
 		};
 		assertHover2('<html|></html>', noDescription, 'html', undefined, { documentation: false });
 

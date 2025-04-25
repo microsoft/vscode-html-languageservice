@@ -302,7 +302,7 @@ suite('HTML Completion', () => {
 			'\n\n' +
 			`![Baseline icon](${BaselineImages.BASELINE_HIGH}) _Widely available across major browsers (Baseline since 2015)_` +
 			'\n\n' +
-			'[MDN Reference](https://developer.mozilla.org/docs/Web/HTML/Element/div)';
+			'[MDN Reference](https://developer.mozilla.org/docs/Web/HTML/Reference/Elements/div)';
 
 		testCompletionFor('<d|', {
 			items: [{ label: 'div', resultText: '<div', documentation: { kind: 'markdown', value: doc } }]
