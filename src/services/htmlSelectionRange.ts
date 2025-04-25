@@ -12,8 +12,8 @@ export class HTMLSelectionRange {
 	constructor(private htmlParser: HTMLParser) {
 	}
 
-	public getSelectionRanges(document: TextDocument, positions: Position[]): SelectionRange[] {
-		const htmlDocument = this.htmlParser.parseDocument(document);
+	public async getSelectionRanges(document: TextDocument, positions: Position[]): Promise<SelectionRange[]> {
+		const htmlDocument = await this.htmlParser.parseDocument(document);
 		return positions.map(p => this.getSelectionRange(p, document, htmlDocument));
 	}
 	private getSelectionRange(position: Position, document: TextDocument, htmlDocument: HTMLDocument): SelectionRange {
