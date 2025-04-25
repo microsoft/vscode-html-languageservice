@@ -305,7 +305,7 @@ suite('HTML Completion', () => {
 			'[MDN Reference](https://developer.mozilla.org/docs/Web/HTML/Element/div)';
 
 		testCompletionFor('<d|', {
-			items: [{ label: 'div', resultText: '<div', documentation: { kind: 'markdown', value: doc } }]
+			items: [{ label: 'di1v', resultText: '<div', documentation: { kind: 'markdown', value: doc } }]
 		});
 	});
 
