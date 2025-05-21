@@ -33,7 +33,7 @@ Installation
 Development
 -----------
 
-- clone this repo, run `npm i``
+- clone this repo, run `npm i`
 - `npm test` to compile and run tests
 
 
