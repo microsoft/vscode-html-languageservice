@@ -5,11 +5,16 @@
   "title": "VS Code HTML Custom Data format",
   "description": "Format for loading Custom Data in VS Code's HTML support",
   "type": "object",
-  "required": ["version"],
+  "required": [
+    "version"
+  ],
   "definitions": {
     "references": {
       "type": "object",
-      "required": ["name", "url"],
+      "required": [
+        "name",
+        "url"
+      ],
       "properties": {
         "name": {
           "type": "string",
@@ -25,7 +30,10 @@
     },
     "markupDescription": {
       "type": "object",
-      "required": ["kind", "value"],
+      "required": [
+        "kind",
+        "value"
+      ],
       "properties": {
         "kind": {
           "type": "string",
@@ -53,7 +61,9 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["name"],
+        "required": [
+          "name"
+        ],
         "defaultSnippets": [
           {
             "body": {
@@ -74,7 +84,9 @@
               {
                 "type": "string"
               },
-              { "$ref": "#/definitions/markupDescription" }
+              {
+                "$ref": "#/definitions/markupDescription"
+              }
             ]
           },
           "attributes": {
@@ -82,7 +94,9 @@
             "description": "A list of possible attributes for the tag",
             "items": {
               "type": "object",
-              "required": ["name"],
+              "required": [
+                "name"
+              ],
               "defaultSnippets": [
                 {
                   "body": {
@@ -103,7 +117,9 @@
                     {
                       "type": "string"
                     },
-                    { "$ref": "#/definitions/markupDescription" }
+                    {
+                      "$ref": "#/definitions/markupDescription"
+                    }
                   ]
                 },
                 "valueSet": {
@@ -115,7 +131,9 @@
                   "description": "A list of possible values for the attribute",
                   "items": {
                     "type": "object",
-                    "required": ["name"],
+                    "required": [
+                      "name"
+                    ],
                     "defaultSnippets": [
                       {
                         "body": {
@@ -135,7 +153,9 @@
                           {
                             "type": "string"
                           },
-                          { "$ref": "#/definitions/markupDescription" }
+                          {
+                            "$ref": "#/definitions/markupDescription"
+                          }
                         ]
                       },
                       "references": {
@@ -181,7 +201,11 @@
               "status": {
                 "type": "string",
                 "description": "Baseline status",
-                "enum": ["high", "low", "false"]
+                "enum": [
+                  "high",
+                  "low",
+                  "false"
+                ]
               },
               "baseline_low_date": {
                 "type": "string",
@@ -196,38 +220,41 @@
                 "patternErrorMessage": "Date must be in the format of `YYYY-MM-DD`"
               }
             }
-        }
-      }
-    },
-    "globalAttributes": {
-      "description": "Custom HTML global attributes",
-      "type": "array",
-      "items": {
-        "$ref": "#/properties/tags/items/properties/attributes/items"
-      }
-    },
-    "valueSets": {
-      "description": "A set of attribute value. When an attribute refers to an attribute set, its value completion will use value from that set",
-      "type": "array",
-      "items": {
-        "type": "object",
-        "required": ["name"],
-        "defaultSnippets": [
-          {
-            "body": {
-              "name": "$1",
-              "description": "",
-              "values": []
-            }
           }
-        ],
-        "properties": {
-          "name": {
-            "type": "string",
-            "description": "Name of attribute value in value set"
-          },
-          "values": {
-            "$ref": "#/properties/tags/items/properties/attributes/items/properties/values"
+        }
+      },
+      "globalAttributes": {
+        "description": "Custom HTML global attributes",
+        "type": "array",
+        "items": {
+          "$ref": "#/properties/tags/items/properties/attributes/items"
+        }
+      },
+      "valueSets": {
+        "description": "A set of attribute value. When an attribute refers to an attribute set, its value completion will use value from that set",
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "name"
+          ],
+          "defaultSnippets": [
+            {
+              "body": {
+                "name": "$1",
+                "description": "",
+                "values": []
+              }
+            }
+          ],
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "Name of attribute value in value set"
+            },
+            "values": {
+              "$ref": "#/properties/tags/items/properties/attributes/items/properties/values"
+            }
           }
         }
       }
