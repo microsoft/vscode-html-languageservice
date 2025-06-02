@@ -7603,21 +7603,7 @@ export const htmlData : HTMLDataV1 = {
 				},
 				{
 					"name": "spellcheck",
-					"description": "Specifies whether the `<textarea>` is subject to spell checking by the underlying browser/OS. the value can be:\n\n*   `true`: Indicates that the element needs to have its spelling and grammar checked.\n*   `default` : Indicates that the element is to act according to a default behavior, possibly based on the parent element's own `spellcheck` value.\n*   `false` : Indicates that the element should not be spell checked.",
-					"browsers": [
-						"C9",
-						"CA18",
-						"E12",
-						"FF2",
-						"FFA4",
-						"S5.1",
-						"SM5"
-					],
-					"status": {
-						"baseline": "high",
-						"baseline_low_date": "2015-07-29",
-						"baseline_high_date": "2018-01-29"
-					}
+					"description": "Specifies whether the `<textarea>` is subject to spell checking by the underlying browser/OS. the value can be:\n\n*   `true`: Indicates that the element needs to have its spelling and grammar checked.\n*   `default` : Indicates that the element is to act according to a default behavior, possibly based on the parent element's own `spellcheck` value.\n*   `false` : Indicates that the element should not be spell checked."
 				}
 			],
 			"references": [
@@ -8746,9 +8732,9 @@ export const htmlData : HTMLDataV1 = {
 				{
 					"name": "allow",
 					"browsers": [
-						"C115",
-						"CA115",
-						"E115"
+						"C126",
+						"CA126",
+						"E126"
 					],
 					"status": {
 						"baseline": false
@@ -8757,9 +8743,9 @@ export const htmlData : HTMLDataV1 = {
 				{
 					"name": "height",
 					"browsers": [
-						"C115",
-						"CA115",
-						"E115"
+						"C126",
+						"CA126",
+						"E126"
 					],
 					"status": {
 						"baseline": false
@@ -8768,9 +8754,9 @@ export const htmlData : HTMLDataV1 = {
 				{
 					"name": "width",
 					"browsers": [
-						"C115",
-						"CA115",
-						"E115"
+						"C126",
+						"CA126",
+						"E126"
 					],
 					"status": {
 						"baseline": false
@@ -8784,9 +8770,9 @@ export const htmlData : HTMLDataV1 = {
 				}
 			],
 			"browsers": [
-				"C115",
-				"CA115",
-				"E115"
+				"C126",
+				"CA126",
+				"E126"
 			],
 			"status": {
 				"baseline": false
@@ -9349,7 +9335,7 @@ export const htmlData : HTMLDataV1 = {
 				"FF2",
 				"FFA57",
 				"S5.1",
-				"SM9.3"
+				"SM5"
 			],
 			"status": {
 				"baseline": "high",
@@ -10840,9 +10826,6 @@ export const htmlData : HTMLDataV1 = {
 				},
 				{
 					"name": "reset"
-				},
-				{
-					"name": "menu"
 				}
 			]
 		},
