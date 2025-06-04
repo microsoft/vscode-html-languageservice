@@ -35,7 +35,7 @@ async function testCompletion2For(value: string, expected: { count?: number, ite
 
 	const context = getDocumentContext(workspaceFolderUri);
 
-	const htmlDocument = ls.parseHTMLDocument(document);
+	const htmlDocument = await ls.parseHTMLDocument(document);
 
 	const list = await ls.doComplete2(document, position, htmlDocument, context);
 

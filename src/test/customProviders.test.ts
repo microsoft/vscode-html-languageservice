@@ -80,15 +80,15 @@ suite('HTML Custom Tag Provider', () => {
 
 	getLanguageService({ customDataProviders: [provider] });
 
-	test('Completion', () => {
-		testCompletionFor('<|', {
+	test('Completion', async () => {
+		await testCompletionFor('<|', {
 			items: [
 				{ label: 'foo', documentation: { kind: 'markdown', value: 'The `<foo>` element' }, resultText: '<foo' },
 				{ label: 'Bar', documentation: { kind: 'markdown', value: 'The `<Bar>` element' }, resultText: '<Bar' }
 			]
 		}, undefined, languageOptions);
 
-		testCompletionFor('<foo |', {
+		await testCompletionFor('<foo |', {
 			items: [
 				{
 					label: 'bar',
@@ -108,7 +108,7 @@ suite('HTML Custom Tag Provider', () => {
 			]
 		}, undefined, languageOptions);
 
-		testCompletionFor('<foo bar=|', {
+		await testCompletionFor('<foo bar=|', {
 			items: [
 				{
 					label: 'baz',
@@ -118,7 +118,7 @@ suite('HTML Custom Tag Provider', () => {
 			]
 		}, undefined, languageOptions);
 
-		testCompletionFor('<foo xattr=|', {
+		await testCompletionFor('<foo xattr=|', {
 			items: [
 				{
 					label: 'xval',
@@ -128,7 +128,7 @@ suite('HTML Custom Tag Provider', () => {
 			]
 		}, undefined, languageOptions);
 
-		testCompletionFor('<Bar |', {
+		await testCompletionFor('<Bar |', {
 			items: [
 				{
 					label: 'Xoo'
@@ -137,7 +137,7 @@ suite('HTML Custom Tag Provider', () => {
 		}, undefined, languageOptions);
 
 		// test global attributes
-		testCompletionFor('<other |', {
+		await testCompletionFor('<other |', {
 			items: [
 				{
 					label: 'fooAttr',
@@ -152,7 +152,7 @@ suite('HTML Custom Tag Provider', () => {
 			]
 		}, undefined, languageOptions);
 
-		testCompletionFor('<other xattr=|', {
+		await testCompletionFor('<other xattr=|', {
 			items: [
 				{
 					label: 'xval',
@@ -163,15 +163,15 @@ suite('HTML Custom Tag Provider', () => {
 		}, undefined, languageOptions);
 	});
 
-	test('Hover', () => {
-		assertHover2('<f|oo></foo>', { kind: 'markdown', value: 'The `<foo>` element' }, 'foo', languageOptions);
+	test('Hover', async () => {
+		await assertHover2('<f|oo></foo>', { kind: 'markdown', value: 'The `<foo>` element' }, 'foo', languageOptions);
 
-		assertHover2('<foo |bar></foo>', { kind: 'markdown', value: 'The `<foo bar>` attribute' }, 'bar', languageOptions);
-		assertHover2('<foo |xattr></foo>', { kind: 'markdown', value: '`xattr` attributes' }, 'xattr', languageOptions);
+		await assertHover2('<foo |bar></foo>', { kind: 'markdown', value: 'The `<foo bar>` attribute' }, 'bar', languageOptions);
+		await assertHover2('<foo |xattr></foo>', { kind: 'markdown', value: '`xattr` attributes' }, 'xattr', languageOptions);
 
-		assertHover2('<foo bar="|baz"></foo>', { kind: 'markdown', value: 'The `<foo bar="baz">` attribute' }, '"baz"', languageOptions);
-		assertHover2('<foo xattr="|xval"></foo>', { kind: 'markdown', value: '`xval` value' }, '"xval"', languageOptions);
+		await assertHover2('<foo bar="|baz"></foo>', { kind: 'markdown', value: 'The `<foo bar="baz">` attribute' }, '"baz"', languageOptions);
+		await assertHover2('<foo xattr="|xval"></foo>', { kind: 'markdown', value: '`xval` value' }, '"xval"', languageOptions);
 
-		assertHover2('<foo foo="xval" xattr="|xval"></foo>', { kind: 'markdown', value: '`xval` value' }, '"xval"', languageOptions);
+		await assertHover2('<foo foo="xval" xattr="|xval"></foo>', { kind: 'markdown', value: '`xval` value' }, '"xval"', languageOptions);
 	});
 });

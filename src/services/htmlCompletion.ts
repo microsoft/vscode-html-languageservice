@@ -40,7 +40,7 @@ export class HTMLCompletion {
 		const contributedParticipants = this.completionParticipants;
 		this.completionParticipants = [participant as ICompletionParticipant].concat(contributedParticipants);
 
-		const result = this.doComplete(document, position, htmlDocument, settings);
+		const result = await this.doComplete(document, position, htmlDocument, settings);
 		try {
 			const pathCompletionResult = await participant.computeCompletions(document, documentContext);
 			return {
@@ -52,12 +52,12 @@ export class HTMLCompletion {
 		}
 	}
 
-	doComplete(document: TextDocument, position: Position, htmlDocument: HTMLDocument, settings?: CompletionConfiguration): CompletionList {
-		const result = this._doComplete(document, position, htmlDocument, settings);
+	async doComplete(document: TextDocument, position: Position, htmlDocument: HTMLDocument, settings?: CompletionConfiguration): Promise<CompletionList> {
+		const result = await this._doComplete(document, position, htmlDocument, settings);
 		return this.convertCompletionList(result);
 	}
 
-	private _doComplete(document: TextDocument, position: Position, htmlDocument: HTMLDocument, settings?: CompletionConfiguration): CompletionList {
+	private async _doComplete(document: TextDocument, position: Position, htmlDocument: HTMLDocument, settings?: CompletionConfiguration): Promise<CompletionList> {
 		const result: CompletionList = {
 			isIncomplete: false,
 			items: []
@@ -86,10 +86,11 @@ export class HTMLCompletion {
 			return { start: document.positionAt(replaceStart), end: document.positionAt(replaceEnd) };
 		}
 
-		function collectOpenTagSuggestions(afterOpenBracket: number, tagNameEnd?: number): CompletionList {
+		async function collectOpenTagSuggestions(afterOpenBracket: number, tagNameEnd?: number): Promise<CompletionList> {
 			const range = getReplaceRange(afterOpenBracket, tagNameEnd);
-			dataProviders.forEach((provider) => {
-				provider.provideTags().forEach(tag => {
+			for (const provider of dataProviders) {
+				const tags = await provider.provideTags();
+				for (const tag of tags) {
 					result.items.push({
 						label: tag.name,
 						kind: CompletionItemKind.Property,
@@ -97,8 +98,8 @@ export class HTMLCompletion {
 						textEdit: TextEdit.replace(range, tag.name),
 						insertTextFormat: InsertTextFormat.PlainText
 					});
-				});
-			});
+				}
+			}
 			return result;
 		}
 
@@ -117,7 +118,7 @@ export class HTMLCompletion {
 			return text.substring(0, offset);
 		}
 
-		function collectCloseTagSuggestions(afterOpenBracket: number, inOpenTag: boolean, tagNameEnd: number = offset): CompletionList {
+		async function collectCloseTagSuggestions(afterOpenBracket: number, inOpenTag: boolean, tagNameEnd: number = offset): Promise<CompletionList> {
 			const range = getReplaceRange(afterOpenBracket, tagNameEnd);
 			const closeTag = isFollowedBy(text, tagNameEnd, ScannerState.WithinEndTag, TokenType.EndTagClose) ? '' : '>';
 			let curr: Node | undefined = node;
@@ -150,26 +151,27 @@ export class HTMLCompletion {
 				return result;
 			}
 
-			dataProviders.forEach(provider => {
-				provider.provideTags().forEach(tag => {
+			for (const provider of dataProviders) {
+				const tags = await provider.provideTags();
+				for (const tag of tags) {
 					result.items.push({
 						label: '/' + tag.name,
 						kind: CompletionItemKind.Property,
 						documentation: generateDocumentation(tag, undefined, doesSupportMarkdown),
-						filterText: '/' + tag.name + closeTag,
+						filterText: '/' + tag.name,
 						textEdit: TextEdit.replace(range, '/' + tag.name + closeTag),
 						insertTextFormat: InsertTextFormat.PlainText
 					});
-				});
-			});
+				}
+			}
 			return result;
 		}
 
-		const collectAutoCloseTagSuggestion = (tagCloseEnd: number, tag: string): CompletionList => {
+		const collectAutoCloseTagSuggestion = async (tagCloseEnd: number, tag: string): Promise<CompletionList> => {
 			if (settings && settings.hideAutoCompleteProposals) {
 				return result;
 			}
-			voidElements ??= this.dataManager.getVoidElements(dataProviders);
+			voidElements ??= await this.dataManager.getVoidElements(dataProviders);
 			if (!this.dataManager.isVoidElement(tag, voidElements)) {
 				const pos = document.positionAt(tagCloseEnd);
 				result.items.push({
@@ -197,7 +199,7 @@ export class HTMLCompletion {
 			return existingAttributes;
 		}
 
-		function collectAttributeNameSuggestions(nameStart: number, nameEnd: number = offset): CompletionList {
+		async function collectAttributeNameSuggestions(nameStart: number, nameEnd: number = offset): Promise<CompletionList> {
 			let replaceEnd = offset;
 			while (replaceEnd < nameEnd && text[replaceEnd] !== '<') { // < is a valid attribute name character, but we rather assume the attribute name ends. See #23236.
 				replaceEnd++;
@@ -220,10 +222,11 @@ export class HTMLCompletion {
 			// include current typing attribute
 			seenAttributes[currentAttribute] = false;
 
-			dataProviders.forEach(provider => {
-				provider.provideAttributes(currentTag).forEach(attr => {
+			for (const provider of dataProviders) {
+				const attributes = await provider.provideAttributes(currentTag);
+				for (const attr of attributes) {
 					if (seenAttributes[attr.name]) {
-						return;
+						continue;
 					}
 					seenAttributes[attr.name] = true;
 
@@ -247,8 +250,8 @@ export class HTMLCompletion {
 						insertTextFormat: InsertTextFormat.Snippet,
 						command
 					});
-				});
-			});
+				}
+			}
 			collectDataAttributesSuggestions(range, seenAttributes);
 			return result;
 		}
@@ -280,7 +283,7 @@ export class HTMLCompletion {
 			}));
 		}
 
-		function collectAttributeValueSuggestions(valueStart: number, valueEnd: number = offset): CompletionList {
+		async function collectAttributeValueSuggestions(valueStart: number, valueEnd: number = offset): Promise<CompletionList> {
 			let range: Range;
 			let addQuotes: boolean;
 			let valuePrefix: string;
@@ -315,20 +318,21 @@ export class HTMLCompletion {
 				}
 			}
 
-			dataProviders.forEach(provider => {
-				provider.provideValues(currentTag, currentAttributeName).forEach(value => {
+			for (const provider of dataProviders) {
+				const values = await provider.provideValues(currentTag, currentAttributeName);
+				for (const value of values) {
 					const insertText = addQuotes ? '"' + value.name + '"' : value.name;
 
 					result.items.push({
 						label: value.name,
-						filterText: insertText,
 						kind: CompletionItemKind.Unit,
 						documentation: generateDocumentation(value, undefined, doesSupportMarkdown),
 						textEdit: TextEdit.replace(range, insertText),
 						insertTextFormat: InsertTextFormat.PlainText
 					});
-				});
-			});
+				}
+
+			}
 			collectCharacterEntityProposals();
 			return result;
 		}
@@ -528,7 +532,7 @@ export class HTMLCompletion {
 		return null;
 	}
 
-	doTagComplete(document: TextDocument, position: Position, htmlDocument: HTMLDocument): string | null {
+	async doTagComplete(document: TextDocument, position: Position, htmlDocument: HTMLDocument): Promise<string | null> {
 		const offset = document.offsetAt(position);
 		if (offset <= 0) {
 			return null;
@@ -537,7 +541,7 @@ export class HTMLCompletion {
 		if (char === '>') {
 			const node = htmlDocument.findNodeBefore(offset);
 			if (node && node.tag && node.start < offset && (!node.endTagStart || node.endTagStart > offset)) {
-				const voidElements = this.dataManager.getVoidElements(document.languageId);
+				const voidElements = await this.dataManager.getVoidElements(document.languageId);
 				if (!this.dataManager.isVoidElement(node.tag, voidElements)) {
 					const scanner = createScanner(document.getText(), node.start);
 					let token = scanner.scan();
