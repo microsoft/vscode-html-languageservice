@@ -12,7 +12,7 @@ interface OffsetWithText {
   1: string;
 }
 
-export function testMatchingTagPosition(value: string, expected: OffsetWithText[]): void {
+export async function testMatchingTagPosition(value: string, expected: OffsetWithText[]): Promise<void> {
   const originalValue = value;
 
   let offset = value.indexOf('|');
@@ -22,7 +22,7 @@ export function testMatchingTagPosition(value: string, expected: OffsetWithText[
 
   const document = TextDocument.create('test://test/test.html', 'html', 0, value);
   const position = document.positionAt(offset);
-  const htmlDoc = ls.parseHTMLDocument(document);
+  const htmlDoc = await ls.parseHTMLDocument(document);
 
   const syncedRegions = ls.findLinkedEditingRanges(document, position, htmlDoc);
   if (!syncedRegions) {
@@ -41,29 +41,29 @@ export function testMatchingTagPosition(value: string, expected: OffsetWithText[
 }
 
 suite('HTML Linked Editing', () => {
-  test('Linked Editing', () => {
-    testMatchingTagPosition('|<div></div>', []);
-    testMatchingTagPosition('<|div></div>', [[1, 'div'], [7, 'div']]);
-    testMatchingTagPosition('<d|iv></div>', [[1, 'div'], [7, 'div']]);
-    testMatchingTagPosition('<di|v></div>', [[1, 'div'], [7, 'div']]);
-    testMatchingTagPosition('<div|></div>', [[1, 'div'], [7, 'div']]);
+  test('Linked Editing', async () => {
+    await testMatchingTagPosition('|<div></div>', []);
+    await testMatchingTagPosition('<|div></div>', [[1, 'div'], [7, 'div']]);
+    await testMatchingTagPosition('<d|iv></div>', [[1, 'div'], [7, 'div']]);
+    await testMatchingTagPosition('<di|v></div>', [[1, 'div'], [7, 'div']]);
+    await testMatchingTagPosition('<div|></div>', [[1, 'div'], [7, 'div']]);
 
-    testMatchingTagPosition('<div>|</div>', []);
-    testMatchingTagPosition('<div><|/div>', []);
+    await testMatchingTagPosition('<div>|</div>', []);
+    await testMatchingTagPosition('<div><|/div>', []);
 
-    testMatchingTagPosition('<div></|div>', [[1, 'div'], [7, 'div']]);
-    testMatchingTagPosition('<div></d|iv>', [[1, 'div'], [7, 'div']]);
-    testMatchingTagPosition('<div></di|v>', [[1, 'div'], [7, 'div']]);
-    testMatchingTagPosition('<div></div|>', [[1, 'div'], [7, 'div']]);
+    await testMatchingTagPosition('<div></|div>', [[1, 'div'], [7, 'div']]);
+    await testMatchingTagPosition('<div></d|iv>', [[1, 'div'], [7, 'div']]);
+    await testMatchingTagPosition('<div></di|v>', [[1, 'div'], [7, 'div']]);
+    await testMatchingTagPosition('<div></div|>', [[1, 'div'], [7, 'div']]);
 
-    testMatchingTagPosition('<div></div>|', []);
-    testMatchingTagPosition('<div><div|</div>', []);
-    testMatchingTagPosition('<div><div><div|</div></div>', []);
+    await testMatchingTagPosition('<div></div>|', []);
+    await testMatchingTagPosition('<div><div|</div>', []);
+    await testMatchingTagPosition('<div><div><div|</div></div>', []);
 
-    testMatchingTagPosition('<div| ></div>', [[1, 'div'], [8, 'div']]);
-    testMatchingTagPosition('<div| id="foo"></div>', [[1, 'div'], [16, 'div']]);
+    await testMatchingTagPosition('<div| ></div>', [[1, 'div'], [8, 'div']]);
+    await testMatchingTagPosition('<div| id="foo"></div>', [[1, 'div'], [16, 'div']]);
 
-    testMatchingTagPosition('<|></>', [[1, ''], [4, '']]);
-    testMatchingTagPosition('<><div></div></|>', [[1, ''], [15, '']]);
+    await testMatchingTagPosition('<|></>', [[1, ''], [4, '']]);
+    await testMatchingTagPosition('<><div></div></|>', [[1, ''], [15, '']]);
   });
 });

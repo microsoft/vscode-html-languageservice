@@ -30,14 +30,15 @@ export class HTMLDataManager {
 		return !!e && arrays.binarySearch(voidElements, e.toLowerCase(), (s1: string, s2: string) => s1.localeCompare(s2)) >= 0;
 	}
 
-	getVoidElements(languageId: string): string[];
-	getVoidElements(dataProviders: IHTMLDataProvider[]): string[];
-	getVoidElements(languageOrProviders: string | IHTMLDataProvider[]): string[] {
+	getVoidElements(languageId: string): Promise<string[]>;
+	getVoidElements(dataProviders: IHTMLDataProvider[]): Promise<string[]>;
+	async getVoidElements(languageOrProviders: string | IHTMLDataProvider[]): Promise<string[]> {
 		const dataProviders = Array.isArray(languageOrProviders) ? languageOrProviders : this.getDataProviders().filter(p => p.isApplicable(languageOrProviders!));
 		const voidTags: string[] = [];
-		dataProviders.forEach((provider) => {
-			provider.provideTags().filter(tag => tag.void).forEach(tag => voidTags.push(tag.name));
-		});
+		for (const provider of dataProviders) {
+			const tags = await provider.provideTags();
+			tags.filter(tag => tag.void).forEach(tag => voidTags.push(tag.name));
+		}
 		return voidTags.sort();
 	}
 

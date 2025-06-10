@@ -12,7 +12,7 @@ import { TextDocument } from '../htmlLanguageService';
 suite('HTML Highlighting', () => {
 
 
-	function assertHighlights(value: string, expectedMatches: number[], elementName: string | null): void {
+	async function assertHighlights(value: string, expectedMatches: number[], elementName: string | null): Promise<void> {
 		const offset = value.indexOf('|');
 		value = value.substr(0, offset) + value.substr(offset + 1);
 
@@ -20,7 +20,7 @@ suite('HTML Highlighting', () => {
 
 		const position = document.positionAt(offset);
 		const ls = htmlLanguageService.getLanguageService();
-		const htmlDoc = ls.parseHTMLDocument(document);
+		const htmlDoc = await ls.parseHTMLDocument(document);
 
 		const highlights = ls.findDocumentHighlights(document, position, htmlDoc);
 		assert.equal(highlights.length, expectedMatches.length);
@@ -34,47 +34,47 @@ suite('HTML Highlighting', () => {
 		}
 	}
 
-	test('Single', function (): any {
-		assertHighlights('|<html></html>', [], null);
-		assertHighlights('<|html></html>', [1, 8], 'html');
-		assertHighlights('<h|tml></html>', [1, 8], 'html');
-		assertHighlights('<htm|l></html>', [1, 8], 'html');
-		assertHighlights('<html|></html>', [1, 8], 'html');
-		assertHighlights('<html>|</html>', [], null);
-		assertHighlights('<html><|/html>', [], null);
-		assertHighlights('<html></|html>', [1, 8], 'html');
-		assertHighlights('<html></h|tml>', [1, 8], 'html');
-		assertHighlights('<html></ht|ml>', [1, 8], 'html');
-		assertHighlights('<html></htm|l>', [1, 8], 'html');
-		assertHighlights('<html></html|>', [1, 8], 'html');
-		assertHighlights('<html></html>|', [], null);
+	test('Single', async () => {
+		await assertHighlights('|<html></html>', [], null);
+		await assertHighlights('<|html></html>', [1, 8], 'html');
+		await assertHighlights('<h|tml></html>', [1, 8], 'html');
+		await assertHighlights('<htm|l></html>', [1, 8], 'html');
+		await assertHighlights('<html|></html>', [1, 8], 'html');
+		await assertHighlights('<html>|</html>', [], null);
+		await assertHighlights('<html><|/html>', [], null);
+		await assertHighlights('<html></|html>', [1, 8], 'html');
+		await assertHighlights('<html></h|tml>', [1, 8], 'html');
+		await assertHighlights('<html></ht|ml>', [1, 8], 'html');
+		await assertHighlights('<html></htm|l>', [1, 8], 'html');
+		await assertHighlights('<html></html|>', [1, 8], 'html');
+		await assertHighlights('<html></html>|', [], null);
 	});
 
-	test('Nested', function (): any {
-		assertHighlights('<html>|<div></div></html>', [], null);
-		assertHighlights('<html><|div></div></html>', [7, 13], 'div');
-		assertHighlights('<html><div>|</div></html>', [], null);
-		assertHighlights('<html><div></di|v></html>', [7, 13], 'div');
-		assertHighlights('<html><div><div></div></di|v></html>', [7, 24], 'div');
-		assertHighlights('<html><div><div></div|></div></html>', [12, 18], 'div');
-		assertHighlights('<html><div><div|></div></div></html>', [12, 18], 'div');
-		assertHighlights('<html><div><div></div></div></h|tml>', [1, 30], 'html');
-		assertHighlights('<html><di|v></div><div></div></html>', [7, 13], 'div');
-		assertHighlights('<html><div></div><div></d|iv></html>', [18, 24], 'div');
+	test('Nested', async () => {
+		await assertHighlights('<html>|<div></div></html>', [], null);
+		await assertHighlights('<html><|div></div></html>', [7, 13], 'div');
+		await assertHighlights('<html><div>|</div></html>', [], null);
+		await assertHighlights('<html><div></di|v></html>', [7, 13], 'div');
+		await assertHighlights('<html><div><div></div></di|v></html>', [7, 24], 'div');
+		await assertHighlights('<html><div><div></div|></div></html>', [12, 18], 'div');
+		await assertHighlights('<html><div><div|></div></div></html>', [12, 18], 'div');
+		await assertHighlights('<html><div><div></div></div></h|tml>', [1, 30], 'html');
+		await assertHighlights('<html><di|v></div><div></div></html>', [7, 13], 'div');
+		await assertHighlights('<html><div></div><div></d|iv></html>', [18, 24], 'div');
 	});
 
-	test('Selfclosed', function (): any {
-		assertHighlights('<html><|div/></html>', [7], 'div');
-		assertHighlights('<html><|br></html>', [7], 'br');
-		assertHighlights('<html><div><d|iv/></div></html>', [12], 'div');
+	test('Selfclosed', async () => {
+		await assertHighlights('<html><|div/></html>', [7], 'div');
+		await assertHighlights('<html><|br></html>', [7], 'br');
+		await assertHighlights('<html><div><d|iv/></div></html>', [12], 'div');
 	});
 
-	test('Case insensivity', function (): any {
-		assertHighlights('<HTML><diV><Div></dIV></dI|v></html>', [7, 24], 'div');
-		assertHighlights('<HTML><diV|><Div></dIV></dIv></html>', [7, 24], 'div');
+	test('Case insensivity', async () => {
+		await assertHighlights('<HTML><diV><Div></dIV></dI|v></html>', [7, 24], 'div');
+		await assertHighlights('<HTML><diV|><Div></dIV></dIv></html>', [7, 24], 'div');
 	});
 
-	test('Incomplete', function (): any {
-		assertHighlights('<div><ol><li></li></ol></p></|div>', [1, 29], 'div');
+	test('Incomplete', async () => {
+		await assertHighlights('<div><ol><li></li></ol></p></|div>', [1, 29], 'div');
 	});
 });
