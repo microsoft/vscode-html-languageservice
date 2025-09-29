@@ -7,7 +7,7 @@ import 'mocha';
 import * as assert from 'assert';
 import { SelectionRange, TextDocument, getLanguageService } from '../htmlLanguageService';
 
-function assertRanges(content: string, expected: (number | string)[][]): void {
+async function assertRanges(content: string, expected: (number | string)[][]): Promise<void> {
 	let message = `${content} gives selection range:\n`;
 
 	const offset = content.indexOf('|');
@@ -16,7 +16,7 @@ function assertRanges(content: string, expected: (number | string)[][]): void {
 	const ls = getLanguageService();
 
 	const document = TextDocument.create('test://foo.html', 'html', 1, content);
-	const actualRanges = ls.getSelectionRanges(document, [document.positionAt(offset)]);
+	const actualRanges = await ls.getSelectionRanges(document, [document.positionAt(offset)]);
 	assert.equal(actualRanges.length, 1);
 	const offsetPairs: [number, string][] = [];
 	let curr: SelectionRange | undefined = actualRanges[0];
@@ -30,36 +30,36 @@ function assertRanges(content: string, expected: (number | string)[][]): void {
 }
 
 suite('HTML SelectionRange', () => {
-	test('Basic', () => {
-		assertRanges('<div|>foo</div>', [[1, 'div'], [0, '<div>foo</div>']]);
-		assertRanges('<|div>foo</div>', [[1, 'div'], [0, '<div>foo</div>']]);
-		assertRanges('<d|iv>foo</div>', [[1, 'div'], [0, '<div>foo</div>']]);
+	test('Basic', async () => {
+		await assertRanges('<div|>foo</div>', [[1, 'div'], [0, '<div>foo</div>']]);
+		await assertRanges('<|div>foo</div>', [[1, 'div'], [0, '<div>foo</div>']]);
+		await assertRanges('<d|iv>foo</div>', [[1, 'div'], [0, '<div>foo</div>']]);
 
-		assertRanges('<div>|foo</div>', [[5, 'foo'], [0, '<div>foo</div>']]);
-		assertRanges('<div>f|oo</div>', [[5, 'foo'], [0, '<div>foo</div>']]);
-		assertRanges('<div>foo|</div>', [[5, 'foo'], [0, '<div>foo</div>']]);
+		await assertRanges('<div>|foo</div>', [[5, 'foo'], [0, '<div>foo</div>']]);
+		await assertRanges('<div>f|oo</div>', [[5, 'foo'], [0, '<div>foo</div>']]);
+		await assertRanges('<div>foo|</div>', [[5, 'foo'], [0, '<div>foo</div>']]);
 
-		assertRanges('<div>foo<|/div>', [[0, '<div>foo</div>']]);
+		await assertRanges('<div>foo<|/div>', [[0, '<div>foo</div>']]);
 
-		assertRanges('<div>foo</|div>', [[10, 'div'], [0, '<div>foo</div>']]);
-		assertRanges('<div>foo</di|v>', [[10, 'div'], [0, '<div>foo</div>']]);
-		assertRanges('<div>foo</div|>', [[10, 'div'], [0, '<div>foo</div>']]);
+		await assertRanges('<div>foo</|div>', [[10, 'div'], [0, '<div>foo</div>']]);
+		await assertRanges('<div>foo</di|v>', [[10, 'div'], [0, '<div>foo</div>']]);
+		await assertRanges('<div>foo</div|>', [[10, 'div'], [0, '<div>foo</div>']]);
 	});
 
-	test('Attribute Name', () => {
-		assertRanges('<div |class="foo">foo</div>', [
+	test('Attribute Name', async () => {
+		await assertRanges('<div |class="foo">foo</div>', [
 			[5, 'class'],
 			[5, `class="foo"`],
 			[1, `div class="foo"`],
 			[0, `<div class="foo">foo</div>`]
 		]);
-		assertRanges('<div cl|ass="foo">foo</div>', [
+		await assertRanges('<div cl|ass="foo">foo</div>', [
 			[5, 'class'],
 			[5, `class="foo"`],
 			[1, `div class="foo"`],
 			[0, `<div class="foo">foo</div>`]
 		]);
-		assertRanges('<div class|="foo">foo</div>', [
+		await assertRanges('<div class|="foo">foo</div>', [
 			[5, 'class'],
 			[5, `class="foo"`],
 			[1, `div class="foo"`],
@@ -67,28 +67,28 @@ suite('HTML SelectionRange', () => {
 		]);
 	});
 
-	test('Attribute Value', () => {
-		assertRanges('<div class=|"foo">foo</div>', [
+	test('Attribute Value', async () => {
+		await assertRanges('<div class=|"foo">foo</div>', [
 			[11, `"foo"`],
 			[5, `class="foo"`],
 			[1, `div class="foo"`],
 			[0, `<div class="foo">foo</div>`]
 		]);
-		assertRanges('<div class="foo"|>foo</div>', [
+		await assertRanges('<div class="foo"|>foo</div>', [
 			[11, `"foo"`],
 			[5, `class="foo"`],
 			[1, `div class="foo"`],
 			[0, `<div class="foo">foo</div>`]
 		]);
 
-		assertRanges('<div class="|foo">foo</div>', [
+		await assertRanges('<div class="|foo">foo</div>', [
 			[12, 'foo'],
 			[11, `"foo"`],
 			[5, `class="foo"`],
 			[1, `div class="foo"`],
 			[0, `<div class="foo">foo</div>`]
 		]);
-		assertRanges('<div class="f|oo">foo</div>', [
+		await assertRanges('<div class="f|oo">foo</div>', [
 			[12, 'foo'],
 			[11, `"foo"`],
 			[5, `class="foo"`],
@@ -97,8 +97,8 @@ suite('HTML SelectionRange', () => {
 		]);
 	});
 
-	test('Unquoted Attribute Value', () => {
-		assertRanges('<div class=|foo>foo</div>', [
+	test('Unquoted Attribute Value', async () => {
+		await assertRanges('<div class=|foo>foo</div>', [
 			[11, 'foo'],
 			[5, 'class=foo'],
 			[1, 'div class=foo'],
@@ -106,8 +106,8 @@ suite('HTML SelectionRange', () => {
 		]);
 	});
 
-	test('Multiple Attribute Value', () => {
-		assertRanges('<div class="foo" id="|bar">foo</div>', [
+	test('Multiple Attribute Value', async () => {
+		await assertRanges('<div class="foo" id="|bar">foo</div>', [
 			[21, 'bar'],
 			[20, `"bar"`],
 			[17, `id="bar"`],
@@ -116,8 +116,8 @@ suite('HTML SelectionRange', () => {
 		]);
 	});
 
-	test('Self closing tags', () => {
-		assertRanges('<br class="|foo"/>', [
+	test('Self closing tags', async () => {
+		await assertRanges('<br class="|foo"/>', [
 			[11, 'foo'],
 			[10, '"foo"'],
 			[4, 'class="foo"'],
@@ -126,13 +126,13 @@ suite('HTML SelectionRange', () => {
 		]);
 
 		//Todo@Pine: We need the range `br` too. Sync with Joh to see what selection ranges should provider return.
-		assertRanges('<b|r class="foo"/>', [[1, 'br class="foo"'], [0, '<br class="foo"/>']]);
+		await assertRanges('<b|r class="foo"/>', [[1, 'br class="foo"'], [0, '<br class="foo"/>']]);
 	});
 
-	test('Nested', () => {
-		assertRanges('<div><div>|foo</div></div>', [[10, 'foo'], [5, '<div>foo</div>'], [0, '<div><div>foo</div></div>']]);
+	test('Nested', async () => {
+		await assertRanges('<div><div>|foo</div></div>', [[10, 'foo'], [5, '<div>foo</div>'], [0, '<div><div>foo</div></div>']]);
 
-		assertRanges('<div>\n<p>|foo</p>\n</div>', [
+		await assertRanges('<div>\n<p>|foo</p>\n</div>', [
 			[9, 'foo'],
 			[6, '<p>foo</p>'],
 			[5, '\n<p>foo</p>\n'],
@@ -140,8 +140,8 @@ suite('HTML SelectionRange', () => {
 		]);
 	});
 
-	test('Void elements', () => {
-		assertRanges(`<meta charset='|UTF-8'>`, [
+	test('Void elements', async () => {
+		await assertRanges(`<meta charset='|UTF-8'>`, [
 			[15, 'UTF-8'],
 			[14, "'UTF-8'"],
 			[6, "charset='UTF-8'"],
@@ -149,14 +149,14 @@ suite('HTML SelectionRange', () => {
 			[0, "<meta charset='UTF-8'>"]
 		]);
 
-		assertRanges(`<meta c|harset='UTF-8'>`, [
+		await assertRanges(`<meta c|harset='UTF-8'>`, [
 			[6, 'charset'],
 			[6, "charset='UTF-8'"],
 			[1, "meta charset='UTF-8'"],
 			[0, "<meta charset='UTF-8'>"]
 		]);
 
-		assertRanges(`<html><meta c|harset='UTF-8'></html>`, [
+		await assertRanges(`<html><meta c|harset='UTF-8'></html>`, [
 			[12, 'charset'],
 			[12, "charset='UTF-8'"],
 			[7, "meta charset='UTF-8'"],
@@ -165,17 +165,17 @@ suite('HTML SelectionRange', () => {
 		]);
 	});
 
-	test('Unmatching tags', () => {
-		assertRanges('<div></div|1>', [[0, "<div></div1>"]]);
+	test('Unmatching tags', async () => {
+		await assertRanges('<div></div|1>', [[0, "<div></div1>"]]);
 	});
 
-	test('Unhandled', () => {
+	test('Unhandled', async () => {
 		// We do not handle comments. This semantic selection is handled by VS Code's default provider, which returns
 		// - foo
 		// - <!-- foo -->
-		assertRanges('<!-- f|oo -->', [[6, '']]);
+		await assertRanges('<!-- f|oo -->', [[6, '']]);
 
 		// Same for DOCTYPE
-		assertRanges('<!DOCTYPE h|tml>', [[11, '']]);
+		await assertRanges('<!DOCTYPE h|tml>', [[11, '']]);
 	});
 });

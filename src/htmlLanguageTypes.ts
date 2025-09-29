@@ -207,9 +207,9 @@ export interface IHTMLDataProvider {
 	getId(): string;
 	isApplicable(languageId: string): boolean;
 
-	provideTags(): ITagData[];
-	provideAttributes(tag: string): IAttributeData[];
-	provideValues(tag: string, attribute: string): IValueData[];
+	provideTags(): Promise<ITagData[]> | ITagData[];
+	provideAttributes(tag: string): Promise<IAttributeData[]> | IAttributeData[];
+	provideValues(tag: string, attribute: string): Promise<IValueData[]> | IValueData[];
 }
 
 /**

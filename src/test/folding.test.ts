@@ -16,13 +16,13 @@ interface ExpectedIndentRange {
 	kind?: string;
 }
 
-function assertRanges(lines: string[], expected: ExpectedIndentRange[], message?: string, nRanges?: number): void {
+async function assertRanges(lines: string[], expected: ExpectedIndentRange[], message?: string, nRanges?: number): Promise<void> {
 	const document = TextDocument.create('test://foo/bar.json', 'json', 1, lines.join('\n'));
 	const workspace = {
 		settings: {},
 		folders: [{ name: 'foo', uri: 'test://foo' }]
 	};
-	const actual = new HTMLFolding(new HTMLDataManager({})).getFoldingRanges(document, { rangeLimit: nRanges });
+	const actual = await new HTMLFolding(new HTMLDataManager({})).getFoldingRanges(document, { rangeLimit: nRanges });
 
 	let actualRanges = [];
 	for (let i = 0; i < actual.length; i++) {
@@ -37,16 +37,16 @@ function r(startLine: number, endLine: number, kind?: string): ExpectedIndentRan
 }
 
 suite('HTML Folding', () => {
-	test('Fold one level', () => {
+	test('Fold one level', async () => {
 		const input = [
 			/*0*/'<html>',
 			/*1*/'Hello',
 			/*2*/'</html>'
 		];
-		assertRanges(input, [r(0, 1)]);
+		await assertRanges(input, [r(0, 1)]);
 	});
 
-	test('Fold two level', () => {
+	test('Fold two level', async () => {
 		const input = [
 			/*0*/'<html>',
 			/*1*/'<head>',
@@ -54,10 +54,10 @@ suite('HTML Folding', () => {
 			/*3*/'</head>',
 			/*4*/'</html>'
 		];
-		assertRanges(input, [r(0, 3), r(1, 2)]);
+		await assertRanges(input, [r(0, 3), r(1, 2)]);
 	});
 
-	test('Fold siblings', () => {
+	test('Fold siblings', async () => {
 		const input = [
 			/*0*/'<html>',
 			/*1*/'<head>',
@@ -68,10 +68,10 @@ suite('HTML Folding', () => {
 			/*6*/'</body>',
 			/*7*/'</html>'
 		];
-		assertRanges(input, [r(0, 6), r(1, 2), r(4, 5)]);
+		await assertRanges(input, [r(0, 6), r(1, 2), r(4, 5)]);
 	});
 
-	test('Fold self-closing tags', () => {
+	test('Fold self-closing tags', async () => {
 		const input = [
 			/*0*/'<div>',
 			/*1*/'<a href="top"/>',
@@ -83,10 +83,10 @@ suite('HTML Folding', () => {
 			/*7*/'>',
 			/*8*/'</div>'
 		];
-		assertRanges(input, [r(0, 7), r(5, 6)]);
+		await assertRanges(input, [r(0, 7), r(5, 6)]);
 	});
 
-	test('Fold comment', () => {
+	test('Fold comment', async () => {
 		const input = [
 			/*0*/'<!--',
 			/*1*/' multi line',
@@ -94,22 +94,22 @@ suite('HTML Folding', () => {
 			/*3*/'<!-- some stuff',
 			/*4*/' some more stuff -->',
 		];
-		assertRanges(input, [r(0, 2, 'comment'), r(3, 4, 'comment')]);
+		await assertRanges(input, [r(0, 2, 'comment'), r(3, 4, 'comment')]);
 	});
 
-	test('Fold regions', () => {
+	test('Fold regions', async () => {
 		const input = [
 			/*0*/'<!-- #region -->',
 			/*1*/'<!-- #region -->',
 			/*2*/'<!-- #endregion -->',
 			/*3*/'<!-- #endregion -->',
 		];
-		assertRanges(input, [r(0, 3, 'region'), r(1, 2, 'region')]);
+		await assertRanges(input, [r(0, 3, 'region'), r(1, 2, 'region')]);
 	});
 
 
 
-	test('Fold incomplete', () => {
+	test('Fold incomplete', async () => {
 		const input = [
 			/*0*/'<body>',
 			/*1*/'<div></div>',
@@ -117,19 +117,19 @@ suite('HTML Folding', () => {
 			/*3*/'</div>',
 			/*4*/'</body>',
 		];
-		assertRanges(input, [r(0, 3)]);
+		await assertRanges(input, [r(0, 3)]);
 	});
 
-	test('Fold incomplete 2', () => {
+	test('Fold incomplete 2', async () => {
 		const input = [
 			/*0*/'<be><div>',
 			/*1*/'<!-- #endregion -->',
 			/*2*/'</div>',
 		];
-		assertRanges(input, [r(0, 1)]);
+		await assertRanges(input, [r(0, 1)]);
 	});
 
-	test('Fold intersecting region', () => {
+	test('Fold intersecting region', async () => {
 		const input = [
 			/*0*/'<body>',
 			/*1*/'<!-- #region -->',
@@ -138,10 +138,10 @@ suite('HTML Folding', () => {
 			/*4*/'</body>',
 			/*5*/'<!-- #endregion -->',
 		];
-		assertRanges(input, [r(0, 3)]);
+		await assertRanges(input, [r(0, 3)]);
 	});
 
-	test('Fold intersecting region 2', () => {
+	test('Fold intersecting region 2', async () => {
 		const input = [
 			/*0*/'<!-- #region -->',
 			/*1*/'<body>',
@@ -150,10 +150,10 @@ suite('HTML Folding', () => {
 			/*4*/'<div></div>',
 			/*5*/'</body>',
 		];
-		assertRanges(input, [r(0, 3, 'region')]);
+		await assertRanges(input, [r(0, 3, 'region')]);
 	});
 
-	test('Test limit', () => {
+	test('Test limit', async () => {
 		const input = [
 			/* 0*/'<div>',
 			/* 1*/' <span>',
@@ -177,15 +177,15 @@ suite('HTML Folding', () => {
 			/*19*/' </span>',
 			/*20*/'</div>',
 		];
-		assertRanges(input, [r(0, 19), r(1, 18), r(2, 3), r(5, 11), r(6, 7), r(9, 10), r(13, 14), r(16, 17)], 'no limit', void 0);
-		assertRanges(input, [r(0, 19), r(1, 18), r(2, 3), r(5, 11), r(6, 7), r(9, 10), r(13, 14), r(16, 17)], 'limit 8', 8);
-		assertRanges(input, [r(0, 19), r(1, 18), r(2, 3), r(5, 11), r(6, 7), r(13, 14), r(16, 17)], 'limit 7', 7);
-		assertRanges(input, [r(0, 19), r(1, 18), r(2, 3), r(5, 11), r(13, 14), r(16, 17)], 'limit 6', 6);
-		assertRanges(input, [r(0, 19), r(1, 18), r(2, 3), r(5, 11), r(13, 14)], 'limit 5', 5);
-		assertRanges(input, [r(0, 19), r(1, 18), r(2, 3), r(5, 11)], 'limit 4', 4);
-		assertRanges(input, [r(0, 19), r(1, 18), r(2, 3)], 'limit 3', 3);
-		assertRanges(input, [r(0, 19), r(1, 18)], 'limit 2', 2);
-		assertRanges(input, [r(0, 19)], 'limit 1', 1);
+		await assertRanges(input, [r(0, 19), r(1, 18), r(2, 3), r(5, 11), r(6, 7), r(9, 10), r(13, 14), r(16, 17)], 'no limit', void 0);
+		await assertRanges(input, [r(0, 19), r(1, 18), r(2, 3), r(5, 11), r(6, 7), r(9, 10), r(13, 14), r(16, 17)], 'limit 8', 8);
+		await assertRanges(input, [r(0, 19), r(1, 18), r(2, 3), r(5, 11), r(6, 7), r(13, 14), r(16, 17)], 'limit 7', 7);
+		await assertRanges(input, [r(0, 19), r(1, 18), r(2, 3), r(5, 11), r(13, 14), r(16, 17)], 'limit 6', 6);
+		await assertRanges(input, [r(0, 19), r(1, 18), r(2, 3), r(5, 11), r(13, 14)], 'limit 5', 5);
+		await assertRanges(input, [r(0, 19), r(1, 18), r(2, 3), r(5, 11)], 'limit 4', 4);
+		await assertRanges(input, [r(0, 19), r(1, 18), r(2, 3)], 'limit 3', 3);
+		await assertRanges(input, [r(0, 19), r(1, 18)], 'limit 2', 2);
+		await assertRanges(input, [r(0, 19)], 'limit 1', 1);
 	});
 
 });

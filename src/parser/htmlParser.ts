@@ -68,8 +68,8 @@ export class HTMLParser {
 
   }
 
-  public parseDocument(document: TextDocument): HTMLDocument {
-    return this.parse(document.getText(), this.dataManager.getVoidElements(document.languageId));
+  public async parseDocument(document: TextDocument): Promise<HTMLDocument> {
+    return this.parse(document.getText(), await this.dataManager.getVoidElements(document.languageId));
   }
 
   public parse(text: string, voidElements: string[]): HTMLDocument {
