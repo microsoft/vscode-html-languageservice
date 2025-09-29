@@ -355,18 +355,18 @@ export const htmlData : HTMLDataV1 = {
 						"value": "This attribute defines the sizes of the icons for visual media contained in the resource. It must be present only if the [`rel`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/link#attr-rel) contains a value of `icon` or a non-standard type such as Apple's `apple-touch-icon`. It may have the following values:\n\n*   `any`, meaning that the icon can be scaled to any size as it is in a vector format, like `image/svg+xml`.\n*   a white-space separated list of sizes, each in the format `_<width in pixels>_x_<height in pixels>_` or `_<width in pixels>_X_<height in pixels>_`. Each of these sizes must be contained in the resource.\n\n**Note:** Most icon formats are only able to store one single icon; therefore most of the time the [`sizes`](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes#attr-sizes) contains only one entry. MS's ICO format does, as well as Apple's ICNS. ICO is more ubiquitous; you should definitely use it."
 					},
 					"browsers": [
-						"C80",
-						"CA80",
-						"E80",
-						"FF72",
-						"FFA79",
+						"C15",
+						"CA18",
+						"E79",
+						"FF31",
+						"FFA31",
 						"S6",
 						"SM6"
 					],
 					"status": {
 						"baseline": "high",
-						"baseline_low_date": "≤2020-07-28",
-						"baseline_high_date": "≤2023-01-28"
+						"baseline_low_date": "2020-01-15",
+						"baseline_high_date": "2022-07-15"
 					}
 				},
 				{
@@ -1601,8 +1601,8 @@ export const htmlData : HTMLDataV1 = {
 					],
 					"status": {
 						"baseline": "high",
-						"baseline_low_date": "≤2020-01-15",
-						"baseline_high_date": "≤2022-07-15"
+						"baseline_low_date": "2020-01-15",
+						"baseline_high_date": "2022-07-15"
 					}
 				},
 				{
@@ -3387,8 +3387,8 @@ export const htmlData : HTMLDataV1 = {
 					],
 					"status": {
 						"baseline": "high",
-						"baseline_low_date": "≤2020-01-15",
-						"baseline_high_date": "≤2022-07-15"
+						"baseline_low_date": "2020-01-15",
+						"baseline_high_date": "2022-07-15"
 					}
 				},
 				{
@@ -4091,15 +4091,7 @@ export const htmlData : HTMLDataV1 = {
 				{
 					"name": "codebase",
 					"description": "The base path used to resolve relative URIs specified by **classid**, **data**, or **archive**. If not specified, the default is the base URI of the current document.",
-					"browsers": [
-						"C1",
-						"CA18",
-						"E12",
-						"FF1",
-						"FFA4",
-						"S3",
-						"SM2"
-					],
+					"browsers": [],
 					"status": {
 						"baseline": false
 					}
@@ -7138,13 +7130,10 @@ export const htmlData : HTMLDataV1 = {
 						"E12",
 						"FF1",
 						"FFA4",
-						"S4",
-						"SM3.2"
+						"S7"
 					],
 					"status": {
-						"baseline": "high",
-						"baseline_low_date": "2015-07-29",
-						"baseline_high_date": "2018-01-29"
+						"baseline": false
 					}
 				},
 				{
@@ -8792,9 +8781,9 @@ export const htmlData : HTMLDataV1 = {
 				}
 			],
 			"browsers": [
-				"C134",
-				"CA134",
-				"E134"
+				"C135",
+				"CA135",
+				"E135"
 			],
 			"status": {
 				"baseline": false
@@ -9311,8 +9300,8 @@ export const htmlData : HTMLDataV1 = {
 			],
 			"status": {
 				"baseline": "high",
-				"baseline_low_date": "≤2020-01-15",
-				"baseline_high_date": "≤2022-07-15"
+				"baseline_low_date": "2020-01-15",
+				"baseline_high_date": "2022-07-15"
 			}
 		},
 		{
@@ -9447,8 +9436,9 @@ export const htmlData : HTMLDataV1 = {
 				"SM6"
 			],
 			"status": {
-				"baseline": "low",
-				"baseline_low_date": "2023-03-14"
+				"baseline": "high",
+				"baseline_low_date": "2023-03-14",
+				"baseline_high_date": "2025-09-14"
 			}
 		},
 		{
