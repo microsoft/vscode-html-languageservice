@@ -57,6 +57,7 @@ export interface HoverSettings {
 export interface CompletionConfiguration {
 	[provider: string]: boolean | undefined | string;
 	hideAutoCompleteProposals?: boolean;
+	hideEndTagSuggestions?: boolean;
 	attributeDefaultValue?: 'empty' | 'singlequotes' | 'doublequotes';
 }
 
