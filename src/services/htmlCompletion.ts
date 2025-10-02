@@ -304,18 +304,17 @@ export class HTMLCompletion {
 				addQuotes = true;
 			}
 
-			if (completionParticipants.length > 0) {
-				const tag = currentTag.toLowerCase();
-				const attribute = currentAttributeName.toLowerCase();
-				const fullRange = getReplaceRange(valueStart, valueEnd);
-				for (const participant of completionParticipants) {
-					if (participant.onHtmlAttributeValue) {
-						participant.onHtmlAttributeValue({ document, position, tag, attribute, value: valuePrefix, range: fullRange });
-					}
+		if (completionParticipants.length > 0) {
+			const tag = currentTag.toLowerCase();
+			const attribute = currentAttributeName.toLowerCase();
+			const fullRange = getReplaceRange(valueStart, valueEnd);
+			for (const participant of completionParticipants) {
+				if (participant.onHtmlAttributeValue) {
+					participant.onHtmlAttributeValue({ document, position, tag, attribute, value: valuePrefix, range: fullRange, attributes: node.attributes });
 				}
 			}
-
-			dataProviders.forEach(provider => {
+		}
+		dataProviders.forEach(provider => {
 				provider.provideValues(currentTag, currentAttributeName).forEach(value => {
 					const insertText = addQuotes ? '"' + value.name + '"' : value.name;
 
