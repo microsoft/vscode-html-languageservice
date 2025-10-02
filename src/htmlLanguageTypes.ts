@@ -138,6 +138,7 @@ export interface HtmlAttributeValueContext {
 	attribute: string;
 	value: string;
 	range: Range;
+	attributes?: { [name: string]: string | null };
 }
 
 export interface HtmlContentContext {

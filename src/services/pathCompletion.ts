@@ -28,7 +28,7 @@ export class PathCompletionParticipant implements ICompletionParticipant {
 					result.isIncomplete = true;
 				} else {
 					const replaceRange = pathToReplaceRange(attributeCompletion.value, fullValue, attributeCompletion.range);
-					const suggestions = await this.providePathSuggestions(attributeCompletion.value, replaceRange, document, documentContext);
+					const suggestions = await this.providePathSuggestions(attributeCompletion.value, replaceRange, document, documentContext, attributeCompletion);
 					for (const item of suggestions) {
 						result.items.push(item);
 					}
@@ -38,7 +38,7 @@ export class PathCompletionParticipant implements ICompletionParticipant {
 		return result;
 	}
 
-	private async providePathSuggestions(valueBeforeCursor: string, replaceRange: Range, document: TextDocument, documentContext: DocumentContext) {
+	private async providePathSuggestions(valueBeforeCursor: string, replaceRange: Range, document: TextDocument, documentContext: DocumentContext, context?: HtmlAttributeValueContext) {
 		const valueBeforeLastSlash = valueBeforeCursor.substring(0, valueBeforeCursor.lastIndexOf('/') + 1); // keep the last slash
 
 		let parentDir = documentContext.resolveReference(valueBeforeLastSlash || '.', document.uri);
@@ -46,10 +46,37 @@ export class PathCompletionParticipant implements ICompletionParticipant {
 			try {
 				const result: CompletionItem[] = [];
 				const infos = await this.readDirectory(parentDir);
+				
+				// Determine file extensions to prioritize/filter based on tag and attributes
+				const extensionFilter = this.getExtensionFilter(context);
+				
 				for (const [name, type] of infos) {
 					// Exclude paths that start with `.`
 					if (name.charCodeAt(0) !== CharCode_dot) {
-						result.push(createCompletionItem(name, type === FileType.Directory, replaceRange));
+						const item = createCompletionItem(name, type === FileType.Directory, replaceRange);
+						
+						// Apply filtering/sorting based on file extension
+						if (extensionFilter) {
+							if (type === FileType.Directory) {
+								// Always include directories
+								result.push(item);
+							} else {
+								// For files, check if they match the filter
+								const matchesFilter = extensionFilter.extensions.some(ext => name.toLowerCase().endsWith(ext));
+								if (matchesFilter) {
+									// Add matching files with higher sort priority
+									item.sortText = '0_' + name;
+									result.push(item);
+								} else if (!extensionFilter.exclusive) {
+									// Add non-matching files with lower sort priority if not exclusive
+									item.sortText = '1_' + name;
+									result.push(item);
+								}
+								// If exclusive and doesn't match, don't add the file
+							}
+						} else {
+							result.push(item);
+						}
 					}
 				}
 				return result;
@@ -58,6 +85,51 @@ export class PathCompletionParticipant implements ICompletionParticipant {
 			}
 		}
 		return [];
+	}
+
+	/**
+	 * Determines which file extensions to filter/prioritize based on the HTML tag and attributes
+	 */
+	private getExtensionFilter(context?: HtmlAttributeValueContext): { extensions: string[], exclusive: boolean } | undefined {
+		if (!context) {
+			return undefined;
+		}
+
+		// Handle <link> tag with rel="stylesheet"
+		if (context.tag === 'link' && context.attribute === 'href' && context.attributes) {
+			const rel = context.attributes['rel'];
+			if (rel === 'stylesheet' || rel === '"stylesheet"' || rel === "'stylesheet'") {
+				// Filter to CSS files for stylesheets
+				return { extensions: ['.css', '.scss', '.sass', '.less'], exclusive: false };
+			}
+			if (rel === 'icon' || rel === '"icon"' || rel === "'icon'" || 
+			    rel === 'apple-touch-icon' || rel === '"apple-touch-icon"' || rel === "'apple-touch-icon'") {
+				// Filter to image files for icons
+				return { extensions: ['.ico', '.png', '.svg', '.jpg', '.jpeg', '.gif', '.webp'], exclusive: false };
+			}
+		}
+
+		// Handle <script> tag with src attribute - prioritize JS files
+		if (context.tag === 'script' && context.attribute === 'src') {
+			return { extensions: ['.js', '.mjs', '.cjs', '.ts', '.tsx', '.jsx'], exclusive: false };
+		}
+
+		// Handle <img> tag with src attribute - prioritize image files
+		if (context.tag === 'img' && context.attribute === 'src') {
+			return { extensions: ['.png', '.jpg', '.jpeg', '.gif', '.svg', '.webp', '.bmp', '.ico'], exclusive: false };
+		}
+
+		// Handle <video> tag with src attribute - prioritize video files
+		if (context.tag === 'video' && context.attribute === 'src') {
+			return { extensions: ['.mp4', '.webm', '.ogg', '.mov', '.avi'], exclusive: false };
+		}
+
+		// Handle <audio> tag with src attribute - prioritize audio files
+		if (context.tag === 'audio' && context.attribute === 'src') {
+			return { extensions: ['.mp3', '.wav', '.ogg', '.m4a', '.aac', '.flac'], exclusive: false };
+		}
+
+		return undefined;
 	}
 
 }
