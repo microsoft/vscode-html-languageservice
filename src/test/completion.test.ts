@@ -509,4 +509,39 @@ suite('HTML Completion', () => {
 			items: [{ label: '/a', resultText: '<div></div></a>' }]
 		});
 	});
+
+	test('Hide end tag suggestions setting', () => {
+		// Default behavior - end tag suggestions should be shown
+		testCompletionFor('<body>\n<|', {
+			items: [
+				{ label: '/body' },
+				{ label: 'div' }
+			]
+		});
+
+		// With hideEndTagSuggestions enabled - end tag suggestions should be hidden
+		testCompletionFor('<body>\n<|', {
+			items: [
+				{ label: '/body', notAvailable: true },
+				{ label: 'div' }
+			]
+		}, { hideEndTagSuggestions: true });
+
+		// With hideEndTagSuggestions and html5 disabled - no suggestions
+		testCompletionFor('<body>\n<|', {
+			items: [
+				{ label: '/body', notAvailable: true },
+				{ label: 'div', notAvailable: true }
+			]
+		}, { hideEndTagSuggestions: true, html5: false });
+
+		// Close tag suggestions in different contexts
+		testCompletionFor('<div>\n  <|\n</div>', {
+			items: [{ label: '/div', notAvailable: true }]
+		}, { hideEndTagSuggestions: true });
+
+		testCompletionFor('</|', {
+			items: [{ label: '/a', notAvailable: true }]
+		}, { hideEndTagSuggestions: true });
+	});
 });
