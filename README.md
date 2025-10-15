@@ -25,6 +25,13 @@ and the Monaco editor.
 
  For the complete API see [htmlLanguageService.ts](./src/htmlLanguageService.ts) and [htmlLanguageTypes.ts](./src/htmlLanguageTypes.ts)
 
+
+ The _vscode-html-languageservice_ does not cover syntax highlighting. VS Code uses TextMate grammars for that, with a grammar that is maintained in https://github.com/textmate/html.tmbundle. 
+
+
+All HTML entities (elements, properties, etc) are sourced from https://github.com/microsoft/vscode-custom-data/tree/master/web-data and transpiled here. For adding or fixing existing properties' completion/hover description, please open PR there.
+
+
 Installation
 ------------
 
