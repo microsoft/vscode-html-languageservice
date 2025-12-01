@@ -1,6 +1,6 @@
 {
   "name": "vscode-html-languageservice",
-  "version": "5.6.0",
+  "version": "5.6.1",
   "description": "Language service for HTML",
   "main": "./lib/umd/htmlLanguageService.js",
   "typings": "./lib/umd/htmlLanguageService",
@@ -16,15 +16,15 @@
   },
   "devDependencies": {
     "@types/mocha": "^10.0.10",
-    "@types/node": "20.x",
-    "@typescript-eslint/eslint-plugin": "^8.44.1",
-    "@typescript-eslint/parser": "^8.44.1",
-    "@vscode/web-custom-data": "^0.6.1",
-    "eslint": "^9.36.0",
+    "@types/node": "22.x",
+    "@typescript-eslint/eslint-plugin": "^8.48.0",
+    "@typescript-eslint/parser": "^8.48.0",
+    "@vscode/web-custom-data": "^0.6.2",
+    "eslint": "^9.39.1",
     "js-beautify": "^1.15.4",
-    "mocha": "^11.7.2",
-    "rimraf": "^6.0.1",
-    "typescript": "5.8.3"
+    "mocha": "^11.7.5",
+    "rimraf": "^6.1.2",
+    "typescript": "5.9.3"
   },
   "dependencies": {
     "@vscode/l10n": "^0.0.18",
