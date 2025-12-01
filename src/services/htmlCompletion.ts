@@ -118,6 +118,9 @@ export class HTMLCompletion {
 		}
 
 		function collectCloseTagSuggestions(afterOpenBracket: number, inOpenTag: boolean, tagNameEnd: number = offset): CompletionList {
+			if (settings && settings.hideEndTagSuggestions) {
+				return result;
+			}
 			const range = getReplaceRange(afterOpenBracket, tagNameEnd);
 			const closeTag = isFollowedBy(text, tagNameEnd, ScannerState.WithinEndTag, TokenType.EndTagClose) ? '' : '>';
 			let curr: Node | undefined = node;

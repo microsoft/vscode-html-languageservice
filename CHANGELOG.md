@@ -1,4 +1,7 @@
 
+5.6.0 / 2025-10-16
+================
+ * New settings `CompletionConfiguration.hideEndTagSuggestions`. If set, `doComplete` will not propose closing tags.
 
 5.2.0 / 2024-03-22
 ================
