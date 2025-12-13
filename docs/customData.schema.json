@@ -23,7 +23,7 @@
         "url": {
           "type": "string",
           "description": "The URL of the reference.",
-          "pattern": "https?://",
+          "pattern": "https?:\/\/",
           "patternErrorMessage": "URL should start with http:// or https://"
         }
       }
