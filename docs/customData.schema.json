@@ -23,7 +23,7 @@
         "url": {
           "type": "string",
           "description": "The URL of the reference.",
-          "pattern": "https?:\/\/",
+          "pattern": "https?://",
           "patternErrorMessage": "URL should start with http:// or https://"
         }
       }
@@ -222,39 +222,39 @@
             }
           }
         }
-      },
-      "globalAttributes": {
-        "description": "Custom HTML global attributes",
-        "type": "array",
-        "items": {
-          "$ref": "#/properties/tags/items/properties/attributes/items"
-        }
-      },
-      "valueSets": {
-        "description": "A set of attribute value. When an attribute refers to an attribute set, its value completion will use value from that set",
-        "type": "array",
-        "items": {
-          "type": "object",
-          "required": [
-            "name"
-          ],
-          "defaultSnippets": [
-            {
-              "body": {
-                "name": "$1",
-                "description": "",
-                "values": []
-              }
+      }
+    },
+    "globalAttributes": {
+      "description": "Custom HTML global attributes",
+      "type": "array",
+      "items": {
+        "$ref": "#/properties/tags/items/properties/attributes/items"
+      }
+    },
+    "valueSets": {
+      "description": "A set of attribute value. When an attribute refers to an attribute set, its value completion will use value from that set",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "defaultSnippets": [
+          {
+            "body": {
+              "name": "$1",
+              "description": "",
+              "values": []
             }
-          ],
-          "properties": {
-            "name": {
-              "type": "string",
-              "description": "Name of attribute value in value set"
-            },
-            "values": {
-              "$ref": "#/properties/tags/items/properties/attributes/items/properties/values"
-            }
+          }
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of attribute value in value set"
+          },
+          "values": {
+            "$ref": "#/properties/tags/items/properties/attributes/items/properties/values"
           }
         }
       }
