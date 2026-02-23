@@ -4498,10 +4498,6 @@ export const htmlData : HTMLDataV1 = {
 					"description": {
 						"kind": "markdown",
 						"value": "A Boolean attribute: if specified, the audio will automatically begin playback as soon as it can do so, without waiting for the entire audio file to finish downloading.\n\n**Note**: Sites that automatically play audio (or videos with an audio track) can be an unpleasant experience for users, so should be avoided when possible. If you must offer autoplay functionality, you should make it opt-in (requiring a user to specifically enable it). However, this can be useful when creating media elements whose source will be set at a later time, under user control."
-					},
-					"browsers": [],
-					"status": {
-						"baseline": false
 					}
 				},
 				{
@@ -6167,8 +6163,9 @@ export const htmlData : HTMLDataV1 = {
 						"SM6"
 					],
 					"status": {
-						"baseline": "low",
-						"baseline_low_date": "2023-08-01"
+						"baseline": "high",
+						"baseline_low_date": "2023-08-01",
+						"baseline_high_date": "2026-02-01"
 					}
 				},
 				{
@@ -6302,21 +6299,7 @@ export const htmlData : HTMLDataV1 = {
 					"valueSet": "im"
 				},
 				{
-					"name": "list",
-					"browsers": [
-						"C20",
-						"CA25",
-						"E12",
-						"FF4",
-						"FFA4",
-						"S12.1",
-						"SM12.2"
-					],
-					"status": {
-						"baseline": "high",
-						"baseline_low_date": "2019-03-25",
-						"baseline_high_date": "2021-09-25"
-					}
+					"name": "list"
 				},
 				{
 					"name": "max",
@@ -7103,6 +7086,7 @@ export const htmlData : HTMLDataV1 = {
 				"C20",
 				"CA33",
 				"E12",
+				"FF4",
 				"S12.1",
 				"SM12.2"
 			],
@@ -7364,8 +7348,9 @@ export const htmlData : HTMLDataV1 = {
 						"SM6"
 					],
 					"status": {
-						"baseline": "low",
-						"baseline_low_date": "2023-08-01"
+						"baseline": "high",
+						"baseline_low_date": "2023-08-01",
+						"baseline_high_date": "2026-02-01"
 					}
 				},
 				{
@@ -8086,6 +8071,26 @@ export const htmlData : HTMLDataV1 = {
 						"baseline": "high",
 						"baseline_low_date": "2020-01-15",
 						"baseline_high_date": "2022-07-15"
+					}
+				},
+				{
+					"name": "name",
+					"description": {
+						"kind": "markdown",
+						"value": "This attribute enables multiple `<details>` elements to be connected, with only one open at a time. This allows developers to easily create UI features such as accordions without scripting.\n\nThe `name` attribute specifies a group name — give multiple `<details>` elements the same `name` value to group them. Only one of the grouped `<details>` elements can be open at a time — opening one will cause another to close. If multiple grouped `<details>` elements are given the `open` attribute, only the first one in the source order will be rendered open.\n\n**Note**: `<details>` elements don't have to be adjacent to one another in the source to be part of the same group."
+					},
+					"browsers": [
+						"C120",
+						"CA120",
+						"E120",
+						"FF130",
+						"FFA130",
+						"S17.2",
+						"SM17.2"
+					],
+					"status": {
+						"baseline": "low",
+						"baseline_low_date": "2024-09-03"
 					}
 				}
 			],
@@ -8857,7 +8862,9 @@ export const htmlData : HTMLDataV1 = {
 			],
 			"browsers": [
 				"FF136",
-				"FFA136"
+				"FFA136",
+				"S14.1",
+				"SM14.5"
 			],
 			"status": {
 				"baseline": false
@@ -8885,8 +8892,9 @@ export const htmlData : HTMLDataV1 = {
 				"SM16.4"
 			],
 			"status": {
-				"baseline": "low",
-				"baseline_low_date": "2023-03-27"
+				"baseline": "high",
+				"baseline_low_date": "2023-03-27",
+				"baseline_high_date": "2025-09-27"
 			}
 		},
 		{
@@ -9075,8 +9083,9 @@ export const htmlData : HTMLDataV1 = {
 				"SM15.5"
 			],
 			"status": {
-				"baseline": "low",
-				"baseline_low_date": "2023-04-11"
+				"baseline": "high",
+				"baseline_low_date": "2023-04-11",
+				"baseline_high_date": "2025-10-11"
 			}
 		},
 		{
@@ -9208,15 +9217,15 @@ export const htmlData : HTMLDataV1 = {
 				"C61",
 				"CA61",
 				"E79",
-				"FF31",
-				"FFA31",
-				"S15.4",
-				"SM15.4"
+				"FF75",
+				"FFA79",
+				"S15.5",
+				"SM15.5"
 			],
 			"status": {
 				"baseline": "high",
-				"baseline_low_date": "2022-03-14",
-				"baseline_high_date": "2024-09-14"
+				"baseline_low_date": "2022-05-16",
+				"baseline_high_date": "2024-11-16"
 			}
 		},
 		{
