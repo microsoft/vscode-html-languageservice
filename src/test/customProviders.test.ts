@@ -4,11 +4,11 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { suite, test } from 'node:test';
-import { getLanguageService, ITagData, IAttributeData, newHTMLDataProvider } from '../htmlLanguageService';
+import { getLanguageService, ITagData, IAttributeData, newHTMLDataProvider } from '../htmlLanguageService.js';
 
-import { testCompletionFor } from './completionUtil';
-import { assertHover2 } from './hoverUtil';
-import { IValueSet, LanguageServiceOptions } from '../htmlLanguageTypes';
+import { testCompletionFor } from './completionUtil.js';
+import { assertHover2 } from './hoverUtil.js';
+import { IValueSet, LanguageServiceOptions } from '../htmlLanguageTypes.js';
 
 suite('HTML Custom Tag Provider', () => {
 	const tags: ITagData[] = [

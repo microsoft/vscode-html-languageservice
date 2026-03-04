@@ -3,20 +3,20 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { HTMLDocument, Node } from '../parser/htmlParser';
-import { createScanner } from '../parser/htmlScanner';
+import { HTMLDocument, Node } from '../parser/htmlParser.js';
+import { createScanner } from '../parser/htmlScanner.js';
 import {
 	CompletionConfiguration, ICompletionParticipant, ScannerState, TokenType, LanguageServiceOptions, DocumentContext,
 	Position, CompletionList, CompletionItemKind, Range, TextEdit, InsertTextFormat, CompletionItem, MarkupKind, TextDocument
-} from '../htmlLanguageTypes';
-import { entities } from '../parser/htmlEntities';
+} from '../htmlLanguageTypes.js';
+import { entities } from '../parser/htmlEntities.js';
 
 import * as l10n from '@vscode/l10n';
-import { isLetterOrDigit, endsWith, startsWith } from '../utils/strings';
-import { HTMLDataManager } from '../languageFacts/dataManager';
-import { isDefined } from '../utils/object';
-import { generateDocumentation } from '../languageFacts/dataProvider';
-import { PathCompletionParticipant } from './pathCompletion';
+import { isLetterOrDigit, endsWith, startsWith } from '../utils/strings.js';
+import { HTMLDataManager } from '../languageFacts/dataManager.js';
+import { isDefined } from '../utils/object.js';
+import { generateDocumentation } from '../languageFacts/dataProvider.js';
+import { PathCompletionParticipant } from './pathCompletion.js';
 
 export class HTMLCompletion {
 	completionParticipants: ICompletionParticipant[];

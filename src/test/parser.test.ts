@@ -5,8 +5,8 @@
 
 import { suite, test } from 'node:test';
 import * as assert from 'node:assert';
-import { HTMLParser, Node } from '../parser/htmlParser';
-import { HTMLDataManager } from '../languageFacts/dataManager';
+import { HTMLParser, Node } from '../parser/htmlParser.js';
+import { HTMLDataManager } from '../languageFacts/dataManager.js';
 
 suite('HTML Parser', () => {
 	function parse(text: string) {

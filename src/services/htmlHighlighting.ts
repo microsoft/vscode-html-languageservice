@@ -3,9 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { HTMLDocument } from '../parser/htmlParser';
-import { createScanner } from '../parser/htmlScanner';
-import { TokenType, TextDocument, Range, Position, DocumentHighlightKind, DocumentHighlight } from '../htmlLanguageTypes';
+import { HTMLDocument } from '../parser/htmlParser.js';
+import { createScanner } from '../parser/htmlScanner.js';
+import { TokenType, TextDocument, Range, Position, DocumentHighlightKind, DocumentHighlight } from '../htmlLanguageTypes.js';
 
 export function findDocumentHighlights(document: TextDocument, position: Position, htmlDocument: HTMLDocument): DocumentHighlight[] {
 	const offset = document.offsetAt(position);

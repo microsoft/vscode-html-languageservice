@@ -3,8 +3,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { DocumentSymbol, Range, SymbolInformation, SymbolKind, TextDocument } from '../htmlLanguageTypes';
-import { HTMLDocument, Node } from '../parser/htmlParser';
+import { DocumentSymbol, Range, SymbolInformation, SymbolKind, TextDocument } from '../htmlLanguageTypes.js';
+import { HTMLDocument, Node } from '../parser/htmlParser.js';
 
 export function findDocumentSymbols(document: TextDocument, htmlDocument: HTMLDocument): SymbolInformation[] {
 	const symbols: SymbolInformation[] = [];

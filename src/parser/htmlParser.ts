@@ -3,10 +3,10 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { createScanner } from './htmlScanner';
-import { findFirst } from '../utils/arrays';
-import { TokenType, TextDocument } from '../htmlLanguageTypes';
-import { HTMLDataManager } from '../languageFacts/dataManager';
+import { createScanner } from './htmlScanner.js';
+import { findFirst } from '../utils/arrays.js';
+import { TokenType, TextDocument } from '../htmlLanguageTypes.js';
+import { HTMLDataManager } from '../languageFacts/dataManager.js';
 
 export class Node {
 	public tag: string | undefined;

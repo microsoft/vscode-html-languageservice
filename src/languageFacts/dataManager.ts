@@ -3,10 +3,10 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IHTMLDataProvider } from '../htmlLanguageTypes';
-import { HTMLDataProvider } from './dataProvider';
-import { htmlData } from './data/webCustomData';
-import * as arrays from '../utils/arrays';
+import { IHTMLDataProvider } from '../htmlLanguageTypes.js';
+import { HTMLDataProvider } from './dataProvider.js';
+import { htmlData } from './data/webCustomData.js';
+import * as arrays from '../utils/arrays.js';
 
 export class HTMLDataManager {
 	private dataProviders: IHTMLDataProvider[] = [];

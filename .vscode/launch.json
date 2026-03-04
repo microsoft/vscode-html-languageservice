@@ -7,7 +7,7 @@
 			"request": "attach",
 			"port": 6004,
 			"sourceMaps": true,
-			"outFiles": ["${workspaceRoot}/lib/umd/**"]
+			"outFiles": ["${workspaceRoot}/lib/esm/**"]
 		},
 		{
 			"name": "Unit Tests",
@@ -18,11 +18,11 @@
 				"--test"
 			],
 			"args": [
-				"./lib/umd/test/*.js"
+				"./lib/esm/test/*.js"
 			],
 			"cwd": "${workspaceRoot}",
 			"sourceMaps": true,
-			"outFiles": ["${workspaceRoot}/lib/umd/**"],
+			"outFiles": ["${workspaceRoot}/lib/esm/**"],
 			"preLaunchTask": "npm: compile"
 		}
 	]

@@ -5,9 +5,9 @@
 
 import { suite, test } from 'node:test';
 import * as assert from 'node:assert';
-import * as htmlLanguageService from '../htmlLanguageService';
+import * as htmlLanguageService from '../htmlLanguageService.js';
 
-import { HtmlAttributeValueContext, HtmlContentContext, Position, TextDocument } from '../htmlLanguageService';
+import { HtmlAttributeValueContext, HtmlContentContext, Position, TextDocument } from '../htmlLanguageService.js';
 
 export interface ExpectedHtmlAttributeValue {
   tag: string;

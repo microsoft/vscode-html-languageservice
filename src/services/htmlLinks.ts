@@ -3,12 +3,12 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { createScanner } from '../parser/htmlScanner';
-import * as strings from '../utils/strings';
+import { createScanner } from '../parser/htmlScanner.js';
+import * as strings from '../utils/strings.js';
 import { URI as Uri } from 'vscode-uri';
 
-import { TokenType, DocumentContext, TextDocument, Range, DocumentLink } from '../htmlLanguageTypes';
-import { HTMLDataManager } from '../languageFacts/dataManager';
+import { TokenType, DocumentContext, TextDocument, Range, DocumentLink } from '../htmlLanguageTypes.js';
+import { HTMLDataManager } from '../languageFacts/dataManager.js';
 
 function normalizeRef(url: string): string {
 	const first = url[0];

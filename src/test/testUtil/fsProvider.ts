@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { FileSystemProvider, FileType } from "../../htmlLanguageTypes";
+import { FileSystemProvider, FileType } from "../../htmlLanguageTypes.js";
 import { URI } from 'vscode-uri';
 import { stat as fsStat, readdir } from 'fs';
 

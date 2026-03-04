@@ -5,11 +5,12 @@
 import { suite, test } from 'node:test';
 import * as assert from 'node:assert';
 import * as path from 'path';
+import { fileURLToPath } from 'node:url';
 import { URI } from 'vscode-uri';
-import { getDocumentContext } from './testUtil/documentContext';
-import { CompletionItemKind, TextDocument, getLanguageService } from '../htmlLanguageService';
-import { getFsProvider } from './testUtil/fsProvider';
-import { assertCompletion } from './completionUtil';
+import { getDocumentContext } from './testUtil/documentContext.js';
+import { CompletionItemKind, TextDocument, getLanguageService } from '../htmlLanguageService.js';
+import { getFsProvider } from './testUtil/fsProvider.js';
+import { assertCompletion } from './completionUtil.js';
 export interface ItemDescription {
 	label: string;
 	documentation?: string;
@@ -56,7 +57,7 @@ suite('HTML Path Completion', () => {
 		command: 'editor.action.triggerSuggest'
 	};
 
-	const fixtureRoot = path.resolve(__dirname, '../../../src/test/pathCompletionFixtures');
+	const fixtureRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../src/test/pathCompletionFixtures');
 	const workspaceFolderUri = URI.file(fixtureRoot).toString();
 	const indexHtmlUri = URI.file(path.resolve(fixtureRoot, 'index.html')).toString();
 	const aboutHtmlUri = URI.file(path.resolve(fixtureRoot, 'about/about.html')).toString();

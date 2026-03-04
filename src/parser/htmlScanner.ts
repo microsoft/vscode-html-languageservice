@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as l10n from '@vscode/l10n';
-import { TokenType, ScannerState, Scanner } from '../htmlLanguageTypes';
+import { TokenType, ScannerState, Scanner } from '../htmlLanguageTypes.js';
 
 class MultiLineStream {
 
