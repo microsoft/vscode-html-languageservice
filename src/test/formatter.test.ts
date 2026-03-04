@@ -2,8 +2,9 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+import { suite, test } from 'node:test';
 import { getLanguageService, TextDocument, Range } from '../htmlLanguageService';
-import * as assert from 'assert';
+import * as assert from 'node:assert';
 
 suite('HTML Formatter', () => {
 

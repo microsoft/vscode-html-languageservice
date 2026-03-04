@@ -3,8 +3,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import 'mocha';
-import * as assert from 'assert';
+import { suite, test } from 'node:test';
+import * as assert from 'node:assert';
 import { SelectionRange, TextDocument, getLanguageService } from '../htmlLanguageService';
 
 function assertRanges(content: string, expected: (number | string)[][]): void {

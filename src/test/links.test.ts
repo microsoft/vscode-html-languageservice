@@ -4,7 +4,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
+import { suite, test } from 'node:test';
+import * as assert from 'node:assert';
 import { TextDocument } from '../htmlLanguageTypes';
 import * as htmlLanguageService from '../htmlLanguageService';
 import { getDocumentContext } from './testUtil/documentContext';

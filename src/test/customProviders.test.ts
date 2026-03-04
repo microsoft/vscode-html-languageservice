@@ -3,6 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
+import { suite, test } from 'node:test';
 import { getLanguageService, ITagData, IAttributeData, newHTMLDataProvider } from '../htmlLanguageService';
 
 import { testCompletionFor } from './completionUtil';

@@ -3,6 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
+import { suite, test } from 'node:test';
 import { BaselineImages } from "../languageFacts/dataProvider";
 import { testCompletionFor, testQuoteCompletion, testTagCompletion } from "./completionUtil";
 
