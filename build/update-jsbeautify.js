@@ -3,25 +3,26 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-'use strict';
+import path from 'node:path';
+import fs from 'node:fs';
+import { fileURLToPath } from 'node:url';
 
-var path = require('path');
-var fs = require('fs');
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 function getVersion(moduleName) {
-    var packageJSONPath = path.join(__dirname, '..', 'node_modules', moduleName, 'package.json');
+    const packageJSONPath = path.join(__dirname, '..', 'node_modules', moduleName, 'package.json');
     return readFile(packageJSONPath).then(function (content) {
         try {
             return JSON.parse(content).version;
         } catch (e) {
-            return Promise.resolve(null);
+            return null;
         }
     });
 }
 
-function readFile(path) {
+function readFile(filePath) {
     return new Promise((s, e) => {
-        fs.readFile(path, (err, res) => {
+        fs.readFile(filePath, (err, res) => {
             if (err) {
                 e(err);
             } else {
@@ -33,7 +34,7 @@ function readFile(path) {
 }
 
 function update(moduleName, repoPath, dest, addHeader, patch) {
-    var contentPath = path.join(__dirname, '..', 'node_modules', moduleName, repoPath);
+    const contentPath = path.join(__dirname, '..', 'node_modules', moduleName, repoPath);
     console.log('Reading from ' + contentPath);
     return readFile(contentPath).then(function (content) {
         return getVersion(moduleName).then(function (version) {

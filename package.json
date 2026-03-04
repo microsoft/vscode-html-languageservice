@@ -36,12 +36,12 @@
     "compile": "tsc -p ./src",
     "watch": "tsc -w -p ./src",
     "clean": "rimraf lib",
-    "remove-sourcemap-refs": "node ./build/remove-sourcemap-refs.cjs",
+    "remove-sourcemap-refs": "node ./build/remove-sourcemap-refs.js",
     "test": "npm run compile && node --enable-source-maps --test ./lib/esm/test/*.js && npm run lint",
     "lint": "eslint src/**/*.ts",
     "install-types-next": "npm i vscode-languageserver-types@next -f -S && npm i vscode-languageserver-textdocument@next -f -S",
-    "update-jsbeautify": "npm i js-beautify && node ./build/update-jsbeautify.cjs",
-    "update-jsbeautify-next": "npm i js-beautify@next && node ./build/update-jsbeautify.cjs",
-    "update-data": "npm i @vscode/web-custom-data -D && node ./build/generateData.cjs"
+    "update-jsbeautify": "npm i js-beautify && node ./build/update-jsbeautify.js",
+    "update-jsbeautify-next": "npm i js-beautify@next && node ./build/update-jsbeautify.js",
+    "update-data": "npm i @vscode/web-custom-data -D && node ./build/generateData.js"
   }
 }
