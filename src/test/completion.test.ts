@@ -4,8 +4,8 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { suite, test } from 'node:test';
-import { BaselineImages } from "../languageFacts/dataProvider";
-import { testCompletionFor, testQuoteCompletion, testTagCompletion } from "./completionUtil";
+import { BaselineImages } from "../languageFacts/dataProvider.js";
+import { testCompletionFor, testQuoteCompletion, testTagCompletion } from "./completionUtil.js";
 
 suite('HTML Completion', () => {
 	test('Complete', function (): any {

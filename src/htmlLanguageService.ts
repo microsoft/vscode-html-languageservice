@@ -3,29 +3,29 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { createScanner } from './parser/htmlScanner';
-import { HTMLParser } from './parser/htmlParser';
-import { HTMLCompletion } from './services/htmlCompletion';
-import { HTMLHover } from './services/htmlHover';
-import { format } from './services/htmlFormatter';
-import { HTMLDocumentLinks } from './services/htmlLinks';
-import { findDocumentHighlights } from './services/htmlHighlighting';
-import { findDocumentSymbols, findDocumentSymbols2 } from './services/htmlSymbolsProvider';
-import { doRename } from './services/htmlRename';
-import { findMatchingTagPosition } from './services/htmlMatchingTagPosition';
-import { findLinkedEditingRanges } from './services/htmlLinkedEditing';
+import { createScanner } from './parser/htmlScanner.js';
+import { HTMLParser } from './parser/htmlParser.js';
+import { HTMLCompletion } from './services/htmlCompletion.js';
+import { HTMLHover } from './services/htmlHover.js';
+import { format } from './services/htmlFormatter.js';
+import { HTMLDocumentLinks } from './services/htmlLinks.js';
+import { findDocumentHighlights } from './services/htmlHighlighting.js';
+import { findDocumentSymbols, findDocumentSymbols2 } from './services/htmlSymbolsProvider.js';
+import { doRename } from './services/htmlRename.js';
+import { findMatchingTagPosition } from './services/htmlMatchingTagPosition.js';
+import { findLinkedEditingRanges } from './services/htmlLinkedEditing.js';
 import {
 	Scanner, HTMLDocument, CompletionConfiguration, ICompletionParticipant, HTMLFormatConfiguration, DocumentContext, DocumentSymbol,
 	IHTMLDataProvider, HTMLDataV1, LanguageServiceOptions, TextDocument, SelectionRange, WorkspaceEdit,
 	Position, CompletionList, Hover, Range, SymbolInformation, TextEdit, DocumentHighlight, DocumentLink, FoldingRange, HoverSettings,
-} from './htmlLanguageTypes';
-import { HTMLFolding } from './services/htmlFolding';
-import { HTMLSelectionRange } from './services/htmlSelectionRange';
-import { HTMLDataProvider } from './languageFacts/dataProvider';
-import { HTMLDataManager } from './languageFacts/dataManager';
-import { htmlData } from './languageFacts/data/webCustomData';
+} from './htmlLanguageTypes.js';
+import { HTMLFolding } from './services/htmlFolding.js';
+import { HTMLSelectionRange } from './services/htmlSelectionRange.js';
+import { HTMLDataProvider } from './languageFacts/dataProvider.js';
+import { HTMLDataManager } from './languageFacts/dataManager.js';
+import { htmlData } from './languageFacts/data/webCustomData.js';
 
-export * from './htmlLanguageTypes';
+export * from './htmlLanguageTypes.js';
 
 export interface LanguageService {
 	setDataProviders(useDefaultDataProvider: boolean, customDataProviders: IHTMLDataProvider[]): void;

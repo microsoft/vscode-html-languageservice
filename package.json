@@ -1,9 +1,10 @@
 {
   "name": "vscode-html-languageservice",
-  "version": "5.6.2",
+  "version": "6.0.0-next.1",
   "description": "Language service for HTML",
-  "main": "./lib/umd/htmlLanguageService.js",
-  "typings": "./lib/umd/htmlLanguageService",
+  "type": "module",
+  "main": "./lib/esm/htmlLanguageService.js",
+  "typings": "./lib/esm/htmlLanguageService",
   "module": "./lib/esm/htmlLanguageService.js",
   "author": "Microsoft Corporation",
   "repository": {
@@ -31,16 +32,14 @@
     "vscode-uri": "^3.1.0"
   },
   "scripts": {
-    "prepack": "npm run clean && npm run compile-esm && npm run test && npm run remove-sourcemap-refs",
-    "compile": "tsc -p ./src && npm run copy-jsbeautify",
-    "compile-esm": "tsc -p ./src/tsconfig.esm.json",
-    "watch": "tsc -w -p ./src && npm run copy-jsbeautify",
+    "prepack": "npm run clean && npm run compile && npm run test && npm run remove-sourcemap-refs",
+    "compile": "tsc -p ./src",
+    "watch": "tsc -w -p ./src",
     "clean": "rimraf lib",
     "remove-sourcemap-refs": "node ./build/remove-sourcemap-refs.js",
-    "test": "npm run compile && node --enable-source-maps --test ./lib/umd/test/*.js && npm run lint",
+    "test": "npm run compile && node --enable-source-maps --test ./lib/esm/test/*.js && npm run lint",
     "lint": "eslint src/**/*.ts",
     "install-types-next": "npm i vscode-languageserver-types@next -f -S && npm i vscode-languageserver-textdocument@next -f -S",
-    "copy-jsbeautify": "node ./build/copy-jsbeautify.js",
     "update-jsbeautify": "npm i js-beautify && node ./build/update-jsbeautify.js",
     "update-jsbeautify-next": "npm i js-beautify@next && node ./build/update-jsbeautify.js",
     "update-data": "npm i @vscode/web-custom-data -D && node ./build/generateData.js"

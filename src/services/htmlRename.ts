@@ -3,8 +3,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { TextDocument, Position, WorkspaceEdit, Range, TextEdit } from '../htmlLanguageTypes';
-import { HTMLDocument, Node } from '../parser/htmlParser';
+import { TextDocument, Position, WorkspaceEdit, Range, TextEdit } from '../htmlLanguageTypes.js';
+import { HTMLDocument, Node } from '../parser/htmlParser.js';
 
 export function doRename(
   document: TextDocument,

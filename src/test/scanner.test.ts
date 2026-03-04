@@ -5,8 +5,8 @@
 
 import { suite, test } from 'node:test';
 import * as assert from 'node:assert';
-import { createScanner } from '../parser/htmlScanner';
-import { TokenType, ScannerState } from '../htmlLanguageTypes';
+import { createScanner } from '../parser/htmlScanner.js';
+import { TokenType, ScannerState } from '../htmlLanguageTypes.js';
 
 suite('HTML Scanner', () => {
 

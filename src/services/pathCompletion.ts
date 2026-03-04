@@ -3,9 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { ICompletionParticipant, TextDocument, CompletionItemKind, CompletionItem, TextEdit, Range, Position, DocumentUri, FileType, HtmlAttributeValueContext, DocumentContext, CompletionList } from '../htmlLanguageTypes';
-import { HTMLDataManager } from '../languageFacts/dataManager';
-import { startsWith } from '../utils/strings';
+import { ICompletionParticipant, TextDocument, CompletionItemKind, CompletionItem, TextEdit, Range, Position, DocumentUri, FileType, HtmlAttributeValueContext, DocumentContext, CompletionList } from '../htmlLanguageTypes.js';
+import { HTMLDataManager } from '../languageFacts/dataManager.js';
+import { startsWith } from '../utils/strings.js';
 
 export class PathCompletionParticipant implements ICompletionParticipant {
 	private atributeCompletions: HtmlAttributeValueContext[] = [];

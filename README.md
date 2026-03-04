@@ -72,5 +72,5 @@ License
 
 Copyright 2016-2023, Microsoft
 
-`src/languageFacts/data/webCustomData.ts` (shipped as `lib/esm/languageFacts/data/webCustomData.ts` and `lib/umd/languageFacts/data/webCustomData.ts`)
+`src/languageFacts/data/webCustomData.ts` (shipped as `lib/esm/languageFacts/data/webCustomData.ts`)
 are built upon content from [Mozilla Developer Network](https://developer.mozilla.org/en-US/docs/Web) and distributed under CC BY-SA 2.5.

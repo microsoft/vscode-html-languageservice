@@ -3,9 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { createScanner } from '../parser/htmlScanner';
-import { Node, HTMLParser, HTMLDocument } from '../parser/htmlParser';
-import { TokenType, Range, Position, SelectionRange, TextDocument } from '../htmlLanguageTypes';
+import { createScanner } from '../parser/htmlScanner.js';
+import { Node, HTMLParser, HTMLDocument } from '../parser/htmlParser.js';
+import { TokenType, Range, Position, SelectionRange, TextDocument } from '../htmlLanguageTypes.js';
 
 export class HTMLSelectionRange {
 

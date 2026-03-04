@@ -3,9 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { TokenType, FoldingRange, FoldingRangeKind, TextDocument } from '../htmlLanguageTypes';
-import { createScanner } from '../parser/htmlScanner';
-import { HTMLDataManager } from '../languageFacts/dataManager';
+import { TokenType, FoldingRange, FoldingRangeKind, TextDocument } from '../htmlLanguageTypes.js';
+import { createScanner } from '../parser/htmlScanner.js';
+import { HTMLDataManager } from '../languageFacts/dataManager.js';
 
 export class HTMLFolding {
 	constructor(private dataManager: HTMLDataManager) {

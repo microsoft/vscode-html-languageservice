@@ -3,8 +3,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { TextDocument, Position, Range } from '../htmlLanguageTypes';
-import { HTMLDocument } from '../parser/htmlParser';
+import { TextDocument, Position, Range } from '../htmlLanguageTypes.js';
+import { HTMLDocument } from '../parser/htmlParser.js';
 
 export function findLinkedEditingRanges(
   document: TextDocument,

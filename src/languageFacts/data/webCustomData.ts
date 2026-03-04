@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 // file generated from @vscode/web-custom-data NPM package
 
-import { HTMLDataV1 } from '../../htmlLanguageTypes';
+import { HTMLDataV1 } from '../../htmlLanguageTypes.js';
 
 export const htmlData : HTMLDataV1 = {
 	"version": 1.1,

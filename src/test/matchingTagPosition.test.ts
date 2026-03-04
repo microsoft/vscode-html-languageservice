@@ -5,8 +5,8 @@
 
 import { suite, test } from 'node:test';
 import * as assert from 'node:assert';
-import * as htmlLanguageService from '../htmlLanguageService';
-import { TextDocument } from '../htmlLanguageService';
+import * as htmlLanguageService from '../htmlLanguageService.js';
+import { TextDocument } from '../htmlLanguageService.js';
 
 export function testMatchingTagPosition(value: string): void {
   let offset = value.indexOf('|');

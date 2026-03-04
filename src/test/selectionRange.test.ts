@@ -5,7 +5,7 @@
 
 import { suite, test } from 'node:test';
 import * as assert from 'node:assert';
-import { SelectionRange, TextDocument, getLanguageService } from '../htmlLanguageService';
+import { SelectionRange, TextDocument, getLanguageService } from '../htmlLanguageService.js';
 
 function assertRanges(content: string, expected: (number | string)[][]): void {
 	let message = `${content} gives selection range:\n`;

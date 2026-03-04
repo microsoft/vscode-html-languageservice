@@ -5,9 +5,9 @@
 
 import { suite, test } from 'node:test';
 import * as assert from 'node:assert';
-import * as htmlLanguageService from '../htmlLanguageService';
+import * as htmlLanguageService from '../htmlLanguageService.js';
 
-import { SymbolInformation, SymbolKind, Location, Range, TextDocument, DocumentSymbol } from '../htmlLanguageService';
+import { SymbolInformation, SymbolKind, Location, Range, TextDocument, DocumentSymbol } from '../htmlLanguageService.js';
 
 suite('HTML Symbols', () => {
 

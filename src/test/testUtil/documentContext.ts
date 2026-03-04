@@ -5,9 +5,9 @@
 
 import * as url from 'url';
 
-import { DocumentContext } from "../../htmlLanguageTypes";
-import { startsWith } from "../../utils/strings";
-import { joinPath } from "../../utils/resources";
+import { DocumentContext } from "../../htmlLanguageTypes.js";
+import { startsWith } from "../../utils/strings.js";
+import { joinPath } from "../../utils/resources.js";
 
 export function getDocumentContext(workspaceFolder?: string): DocumentContext {
 	return {
