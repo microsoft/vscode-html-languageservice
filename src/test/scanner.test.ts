@@ -3,7 +3,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
+import { suite, test } from 'node:test';
+import * as assert from 'node:assert';
 import { createScanner } from '../parser/htmlScanner';
 import { TokenType, ScannerState } from '../htmlLanguageTypes';
 
