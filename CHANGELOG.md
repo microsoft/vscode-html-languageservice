@@ -1,4 +1,10 @@
 
+6.0.0-next.1 / 2026-03-04
+=================
+ * Breaking: Package is now ESM-only.
+ * Breaking: Removed UMD/CJS build outputs and legacy build scripts.
+ * Build/tooling: Migrated TypeScript project settings and source imports for NodeNext compatibility.
+
 5.6.0 / 2025-10-16
 ================
  * New settings `CompletionConfiguration.hideEndTagSuggestions`. If set, `doComplete` will not propose closing tags.
