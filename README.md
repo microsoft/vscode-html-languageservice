@@ -70,7 +70,7 @@ License
 
 (MIT License)
 
-Copyright 2016-2023, Microsoft
+Copyright 2016-2026, Microsoft
 
-`src/languageFacts/data/webCustomData.ts` (shipped as `lib/esm/languageFacts/data/webCustomData.ts`)
+`src/languageFacts/data/webCustomData.ts` (shipped as `lib/esm/languageFacts/data/webCustomData.js`)
 are built upon content from [Mozilla Developer Network](https://developer.mozilla.org/en-US/docs/Web) and distributed under CC BY-SA 2.5.
