@@ -81,6 +81,7 @@ export function format(document: TextDocument, range: Range | undefined, options
 		indent_scripts: getFormatOption(options, 'indentScripts', 'normal'),
 		templating: getTemplatingFormatOption(options, 'all'),
 		unformatted_content_delimiter: getFormatOption(options, 'unformattedContentDelimiter', ''),
+		css: getCSSFormatOption(options),
 	};
 
 	let result = html_beautify(trimLeft(value), htmlOptions);
@@ -131,6 +132,21 @@ function getTemplatingFormatOption(options: HTMLFormatConfiguration, dflt: strin
 		return ['none'];
 	}
 	return value;
+}
+
+function getCSSFormatOption(options: HTMLFormatConfiguration): IBeautifyHTMLOptions['css'] {
+	const css = options.css;
+	if (!css) {
+		return undefined;
+	}
+	return {
+		selector_separator_newline: css.newlineBetweenSelectors,
+		newline_between_rules: css.newlineBetweenRules,
+		space_around_selector_separator: css.spaceAroundSelectorSeparator,
+		brace_style: css.braceStyle,
+		preserve_newlines: css.preserveNewLines,
+		max_preserve_newlines: css.maxPreserveNewLines,
+	};
 }
 
 function computeIndentLevel(content: string, offset: number, options: HTMLFormatConfiguration): number {
