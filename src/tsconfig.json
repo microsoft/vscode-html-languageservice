@@ -3,6 +3,7 @@
  		"target": "es2020", 
 		"module": "NodeNext",
 		"moduleResolution": "NodeNext",
+		"types": ["node"],
  		"sourceMap": true, 
 		"allowJs": true,
  		"declaration": true, 
