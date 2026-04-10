@@ -294,6 +294,10 @@ export class HTMLCompletion {
 				// valueEnd points to the char after quote, which encloses the replace range
 				if (valueEnd > valueStart && text[valueEnd - 1] === text[valueStart]) {
 					valueContentEnd--;
+				} else {
+					// unclosed quote: clamp the end to the cursor position so that
+					// the replace range does not extend into subsequent HTML content
+					valueContentEnd = offset;
 				}
 
 				const wsBefore = getWordStart(text, offset, valueContentStart);

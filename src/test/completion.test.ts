@@ -164,6 +164,15 @@ suite('HTML Completion', () => {
 		testCompletionFor('<input src="c" type=color| ', {
 			items: [{ label: 'color', resultText: '<input src="c" type="color" ' }]
 		});
+
+		// unclosed string literals should not extend the replace range past the cursor
+		testCompletionFor('<th><input type="che|</th>', {
+			items: [{ label: 'checkbox', resultText: '<th><input type="checkbox</th>' }]
+		});
+		testCompletionFor('<th><input type="che|</th><td></td>', {
+			items: [{ label: 'checkbox', resultText: '<th><input type="checkbox</th><td></td>' }]
+		});
+
 		testCompletionFor('<div dir=|></div>', {
 			items: [
 				{ label: 'ltr', resultText: '<div dir="ltr"></div>' },
