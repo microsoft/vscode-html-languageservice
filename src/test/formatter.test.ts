@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 import { suite, test } from 'node:test';
-import { getLanguageService, TextDocument, Range } from '../htmlLanguageService.js';
+import { getLanguageService, TextDocument, Range, HTMLFormatConfiguration } from '../htmlLanguageService.js';
 import * as assert from 'node:assert';
 
 suite('HTML Formatter', () => {
@@ -344,6 +344,233 @@ suite('HTML Formatter', () => {
 		].join('\n');
 
 		format(content, expected);
+	});
+
+});
+
+suite('HTML Formatter - Embedded CSS', () => {
+
+	function formatWithOptions(unformatted: string, expected: string, options: HTMLFormatConfiguration) {
+		const uri = 'test://test.html';
+		const document = TextDocument.create(uri, 'html', 0, unformatted);
+		const edits = getLanguageService().format(document, undefined, options);
+		const formatted = TextDocument.applyEdits(document, edits);
+		assert.equal(formatted, expected);
+	}
+
+	test('css.newlineBetweenSelectors: false', () => {
+		var content = [
+			'<html>',
+			'',
+			'<head>',
+			'  <style>',
+			'    h1, h2 { color: red; }',
+			'  </style>',
+			'</head>',
+			'',
+			'</html>',
+		].join('\n');
+
+		var expected = [
+			'<html>',
+			'',
+			'<head>',
+			'  <style>',
+			'    h1, h2 {',
+			'      color: red;',
+			'    }',
+			'  </style>',
+			'</head>',
+			'',
+			'</html>',
+		].join('\n');
+
+		formatWithOptions(content, expected, {
+			tabSize: 2,
+			insertSpaces: true,
+			css: { newlineBetweenSelectors: false }
+		});
+	});
+
+	test('css.newlineBetweenSelectors: true (default)', () => {
+		var content = [
+			'<html>',
+			'',
+			'<head>',
+			'  <style>',
+			'    h1, h2 { color: red; }',
+			'  </style>',
+			'</head>',
+			'',
+			'</html>',
+		].join('\n');
+
+		var expected = [
+			'<html>',
+			'',
+			'<head>',
+			'  <style>',
+			'    h1,',
+			'    h2 {',
+			'      color: red;',
+			'    }',
+			'  </style>',
+			'</head>',
+			'',
+			'</html>',
+		].join('\n');
+
+		formatWithOptions(content, expected, {
+			tabSize: 2,
+			insertSpaces: true,
+			css: { newlineBetweenSelectors: true }
+		});
+	});
+
+	test('css.newlineBetweenRules: false', () => {
+		var content = [
+			'<html>',
+			'',
+			'<head>',
+			'  <style>',
+			'    h1 { color: red; }',
+			'    h2 { color: blue; }',
+			'  </style>',
+			'</head>',
+			'',
+			'</html>',
+		].join('\n');
+
+		var expected = [
+			'<html>',
+			'',
+			'<head>',
+			'  <style>',
+			'    h1 {',
+			'      color: red;',
+			'    }',
+			'    h2 {',
+			'      color: blue;',
+			'    }',
+			'  </style>',
+			'</head>',
+			'',
+			'</html>',
+		].join('\n');
+
+		formatWithOptions(content, expected, {
+			tabSize: 2,
+			insertSpaces: true,
+			css: { newlineBetweenRules: false }
+		});
+	});
+
+	test('css.newlineBetweenRules: true (default)', () => {
+		var content = [
+			'<html>',
+			'',
+			'<head>',
+			'  <style>',
+			'    h1 { color: red; }',
+			'    h2 { color: blue; }',
+			'  </style>',
+			'</head>',
+			'',
+			'</html>',
+		].join('\n');
+
+		var expected = [
+			'<html>',
+			'',
+			'<head>',
+			'  <style>',
+			'    h1 {',
+			'      color: red;',
+			'    }',
+			'',
+			'    h2 {',
+			'      color: blue;',
+			'    }',
+			'  </style>',
+			'</head>',
+			'',
+			'</html>',
+		].join('\n');
+
+		formatWithOptions(content, expected, {
+			tabSize: 2,
+			insertSpaces: true,
+			css: { newlineBetweenRules: true }
+		});
+	});
+
+	test('css.spaceAroundSelectorSeparator: true', () => {
+		var content = [
+			'<html>',
+			'',
+			'<head>',
+			'  <style>',
+			'    div>span { color: red; }',
+			'  </style>',
+			'</head>',
+			'',
+			'</html>',
+		].join('\n');
+
+		var expected = [
+			'<html>',
+			'',
+			'<head>',
+			'  <style>',
+			'    div > span {',
+			'      color: red;',
+			'    }',
+			'  </style>',
+			'</head>',
+			'',
+			'</html>',
+		].join('\n');
+
+		formatWithOptions(content, expected, {
+			tabSize: 2,
+			insertSpaces: true,
+			css: { spaceAroundSelectorSeparator: true }
+		});
+	});
+
+	test('no css options passed - uses defaults', () => {
+		var content = [
+			'<html>',
+			'',
+			'<head>',
+			'  <style>',
+			'    h1, h2 { color: red; }',
+			'  </style>',
+			'</head>',
+			'',
+			'</html>',
+		].join('\n');
+
+		// Default: newlineBetweenSelectors is true
+		var expected = [
+			'<html>',
+			'',
+			'<head>',
+			'  <style>',
+			'    h1,',
+			'    h2 {',
+			'      color: red;',
+			'    }',
+			'  </style>',
+			'</head>',
+			'',
+			'</html>',
+		].join('\n');
+
+		formatWithOptions(content, expected, {
+			tabSize: 2,
+			insertSpaces: true,
+		});
 	});
 
 });
