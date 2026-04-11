@@ -14,6 +14,16 @@ export function format(document: TextDocument, range: Range | undefined, options
 	const tabSize = options.tabSize || 4;
 	if (range) {
 		let startOffset = document.offsetAt(range.start);
+		let endOffset = document.offsetAt(range.end);
+
+		// If the range falls within a <!-- beautify ignore:start/end --> block,
+		// expand the range to include the ignore boundaries so js-beautify can
+		// recognise them and skip formatting the ignored content.
+		const ignoreExpanded = expandRangeToIgnoreBlock(value, startOffset, endOffset);
+		if (ignoreExpanded) {
+			startOffset = ignoreExpanded.start;
+			endOffset = ignoreExpanded.end;
+		}
 
 		// include all leading whitespace iff at the beginning of the line
 		let extendedStart = startOffset;
@@ -30,7 +40,6 @@ export function format(document: TextDocument, range: Range | undefined, options
 		}
 
 		// include all following whitespace until the end of the line
-		let endOffset = document.offsetAt(range.end);
 		let extendedEnd = endOffset;
 		while (extendedEnd < value.length && isWhitespace(value, extendedEnd)) {
 			extendedEnd++;
@@ -173,4 +182,40 @@ function isEOL(text: string, offset: number) {
 
 function isWhitespace(text: string, offset: number) {
 	return ' \t'.indexOf(text.charAt(offset)) !== -1;
+}
+
+const ignoreStartPattern = /<!--\s*beautify\s+ignore:start\s*-->/g;
+const ignoreEndPattern = /<!--\s*beautify\s+ignore:end\s*-->/g;
+
+function expandRangeToIgnoreBlock(text: string, startOffset: number, endOffset: number): { start: number; end: number } | null {
+	// Find all ignore:start markers before (or at) the range start
+	ignoreStartPattern.lastIndex = 0;
+	let lastIgnoreStart: RegExpExecArray | null = null;
+	let match: RegExpExecArray | null;
+	while ((match = ignoreStartPattern.exec(text)) !== null) {
+		if (match.index > startOffset) {
+			break;
+		}
+		lastIgnoreStart = match;
+	}
+
+	if (!lastIgnoreStart) {
+		return null;
+	}
+
+	// Find the matching ignore:end after the ignore:start
+	ignoreEndPattern.lastIndex = lastIgnoreStart.index + lastIgnoreStart[0].length;
+	const ignoreEnd = ignoreEndPattern.exec(text);
+	if (!ignoreEnd) {
+		return null;
+	}
+
+	const blockEnd = ignoreEnd.index + ignoreEnd[0].length;
+
+	// Check that the range falls within this ignore block
+	if (startOffset >= lastIgnoreStart.index && endOffset <= blockEnd) {
+		return { start: lastIgnoreStart.index, end: blockEnd };
+	}
+
+	return null;
 }
