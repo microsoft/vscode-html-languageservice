@@ -130,4 +130,36 @@ suite('HTML Parser', () => {
 			children: []
 		}]);
 	});
+
+	test('Script isModule', () => {
+		// Module scripts have isolated scopes (issue #133)
+		const doc1 = parse('<script type="module">let a = 0;</script>');
+		assert.strictEqual(doc1.roots[0].isModule, true);
+
+		// Classic scripts share the global scope
+		const doc2 = parse('<script>let a = 0;</script>');
+		assert.strictEqual(doc2.roots[0].isModule, false);
+
+		// Single-quoted attribute value
+		const doc3 = parse("<script type='module'>let a = 0;</script>");
+		assert.strictEqual(doc3.roots[0].isModule, true);
+
+		// Other type values are not modules
+		const doc4 = parse('<script type="text/javascript">let a = 0;</script>');
+		assert.strictEqual(doc4.roots[0].isModule, false);
+
+		// Non-script tags are not modules
+		const doc5 = parse('<div type="module"></div>');
+		assert.strictEqual(doc5.roots[0].isModule, false);
+
+		// Multiple scripts: module scripts have isolated scopes
+		const doc6 = parse('<script type="module">let a = 0;</script><script type="module">let a = 0;</script>');
+		assert.strictEqual(doc6.roots[0].isModule, true);
+		assert.strictEqual(doc6.roots[1].isModule, true);
+
+		// Mixed: module and classic scripts
+		const doc7 = parse('<script type="module">let a = 0;</script><script>let a = 0;</script>');
+		assert.strictEqual(doc7.roots[0].isModule, true);
+		assert.strictEqual(doc7.roots[1].isModule, false);
+	});
 });

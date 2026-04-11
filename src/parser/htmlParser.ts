@@ -15,6 +15,18 @@ export class Node {
 	public endTagStart: number | undefined;
 	public attributes: { [name: string]: string | null } | undefined;
 	public get attributeNames(): string[] { return this.attributes ? Object.keys(this.attributes) : []; }
+	public get isModule(): boolean {
+		if (this.tag !== 'script') {
+			return false;
+		}
+		const type = this.attributes?.type;
+		if (!type) {
+			return false;
+		}
+		// Attribute values are stored with surrounding quotes (e.g., '"module"' or "'module'")
+		const unquoted = type.replace(/^['"]|['"]$/g, '');
+		return unquoted === 'module';
+	}
 	constructor(public start: number, public end: number, public children: Node[], public parent?: Node) {
 	}
 	public isSameTag(tagInLowerCase: string | undefined) {

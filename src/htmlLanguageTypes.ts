@@ -84,6 +84,12 @@ export interface Node {
 	children: Node[];
 	parent?: Node;
 	attributes?: { [name: string]: string | null } | undefined;
+	/**
+	 * Returns true if this is a `<script type="module">` node.
+	 * Module scripts have isolated scopes per the HTML specification,
+	 * unlike classic scripts which share a global scope.
+	 */
+	readonly isModule: boolean;
 }
 
 export enum TokenType {
