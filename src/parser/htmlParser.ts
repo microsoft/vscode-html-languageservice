@@ -137,6 +137,13 @@ export class HTMLParser {
             curr.endTagStart = endTagStart;
             curr.end = scanner.getTokenEnd();
             curr = curr.parent!;
+          } else {
+            // closing tag without a matching opening tag
+            const orphan = new Node(endTagStart, scanner.getTokenEnd(), [], curr);
+            orphan.tag = endTagName;
+            orphan.closed = true;
+            orphan.endTagStart = endTagStart;
+            curr.children.push(orphan);
           }
           break;
         case TokenType.AttributeName: {
