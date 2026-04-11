@@ -172,7 +172,7 @@ export function createScanner(input: string, initialOffset = 0, initialState: Sc
 	let lastTypeValue: string | undefined;
 
 	function nextElementName(): string {
-		return stream.advanceIfRegExp(/^[_:\w][_:\w-.\d]*/).toLowerCase();
+		return stream.advanceIfRegExp(/^[_:\w][_:\w.\d-]*/).toLowerCase();
 	}
 
 	function nextAttributeName(): string {
