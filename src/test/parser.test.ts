@@ -59,11 +59,23 @@ suite('HTML Parser', () => {
 	});
 
 	test('MissingTags', () => {
-		assertDocument('</meta>', []);
-		assertDocument('<div></div></div>', [{ tag: 'div', start: 0, end: 11, endTagStart: 5, closed: true, children: [] }]);
+		assertDocument('</meta>', [{ tag: 'meta', start: 0, end: 7, endTagStart: 0, closed: true, children: [] }]);
+		assertDocument('<div></div></div>', [{ tag: 'div', start: 0, end: 11, endTagStart: 5, closed: true, children: [] }, { tag: 'div', start: 11, end: 17, endTagStart: 11, closed: true, children: [] }]);
 		assertDocument('<div><div></div>', [{ tag: 'div', start: 0, end: 16, endTagStart: void 0, closed: false, children: [{ tag: 'div', start: 5, end: 16, endTagStart: 10, closed: true, children: [] }] }]);
 		assertDocument('<title><div></title>', [{ tag: 'title', start: 0, end: 20, endTagStart: 12, closed: true, children: [{ tag: 'div', start: 7, end: 12, endTagStart: void 0, closed: false, children: [] }] }]);
 		assertDocument('<h1><div><span></h1>', [{ tag: 'h1', start: 0, end: 20, endTagStart: 15, closed: true, children: [{ tag: 'div', start: 4, end: 15, endTagStart: void 0, closed: false, children: [{ tag: 'span', start: 9, end: 15, endTagStart: void 0, closed: false, children: [] }] }] }]);
+	});
+
+	test('Closing tag without opening tag (issue #149)', () => {
+		// standalone closing tag
+		assertDocument('</div>', [{ tag: 'div', start: 0, end: 6, endTagStart: 0, closed: true, children: [] }]);
+		// closing tag for a different element than the one opened
+		assertDocument('<div></span></div>', [{ tag: 'div', start: 0, end: 18, endTagStart: 12, closed: true, children: [{ tag: 'span', start: 5, end: 12, endTagStart: 5, closed: true, children: [] }] }]);
+		// multiple orphan closing tags
+		assertDocument('</a></b>', [
+			{ tag: 'a', start: 0, end: 4, endTagStart: 0, closed: true, children: [] },
+			{ tag: 'b', start: 4, end: 8, endTagStart: 4, closed: true, children: [] }
+		]);
 	});
 
 	test('MissingBrackets', () => {
