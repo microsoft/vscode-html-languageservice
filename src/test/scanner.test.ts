@@ -5,7 +5,7 @@
 
 import { suite, test } from 'node:test';
 import * as assert from 'node:assert';
-import { createScanner } from '../parser/htmlScanner.js';
+import { createScanner, convertScriptContentToJavaScript } from '../parser/htmlScanner.js';
 import { TokenType, ScannerState } from '../htmlLanguageTypes.js';
 
 suite('HTML Scanner', () => {
@@ -831,4 +831,65 @@ suite('HTML Scanner', () => {
 		}]);
 	});
 
+});
+
+suite('convertScriptContentToJavaScript', () => {
+
+	test('replaces matched <!-- and --> pairs', () => {
+		assert.strictEqual(
+			convertScriptContentToJavaScript('<!-- var x = 1; -->'),
+			'/*  var x = 1;  */'
+		);
+	});
+
+	test('does not replace unpaired -->', () => {
+		// Issue #151: --> inside a JS block comment should not be replaced
+		assert.strictEqual(
+			convertScriptContentToJavaScript('/* --> a b\n  */'),
+			'/* --> a b\n  */'
+		);
+	});
+
+	test('replaces only paired markers when mixed', () => {
+		assert.strictEqual(
+			convertScriptContentToJavaScript('<!-- code --> /* --> */'),
+			'/*  code  */ /* --> */'
+		);
+	});
+
+	test('handles multiple pairs', () => {
+		assert.strictEqual(
+			convertScriptContentToJavaScript('<!-- a --> <!-- b -->'),
+			'/*  a  */ /*  b  */'
+		);
+	});
+
+	test('handles nested <!-- inside already open comment', () => {
+		// Second <!-- is also replaced since depth tracking allows it
+		assert.strictEqual(
+			convertScriptContentToJavaScript('<!-- <!-- --> -->'),
+			'/*  /*   */  */'
+		);
+	});
+
+	test('handles empty script content', () => {
+		assert.strictEqual(
+			convertScriptContentToJavaScript(''),
+			''
+		);
+	});
+
+	test('handles content with no markers', () => {
+		assert.strictEqual(
+			convertScriptContentToJavaScript('var x = 1;'),
+			'var x = 1;'
+		);
+	});
+
+	test('leaves unpaired <!-- without replacement of -->', () => {
+		assert.strictEqual(
+			convertScriptContentToJavaScript('<!-- var x = 1;'),
+			'/*  var x = 1;'
+		);
+	});
 });
