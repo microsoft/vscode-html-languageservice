@@ -293,7 +293,19 @@ export class HTMLCompletion {
 				let valueContentEnd = valueEnd;
 				// valueEnd points to the char after quote, which encloses the replace range
 				if (valueEnd > valueStart && text[valueEnd - 1] === text[valueStart]) {
-					valueContentEnd--;
+					// Even when a matching quote is found, the scanner may have latched
+					// onto an unrelated later quote across HTML tag boundaries. If any
+					// `<` appears between the cursor and the alleged closing quote,
+					// treat the value as unclosed and clamp so the completion cannot
+					// delete subsequent markup. See microsoft/vscode#273226.
+					let crossesTagBoundary = false;
+					for (let i = offset; i < valueEnd - 1; i++) {
+						if (text.charCodeAt(i) === 0x3C /* < */) {
+							crossesTagBoundary = true;
+							break;
+						}
+					}
+					valueContentEnd = crossesTagBoundary ? offset : valueContentEnd - 1;
 				} else {
 					// unclosed quote: clamp the end to the cursor position so that
 					// the replace range does not extend into subsequent HTML content
