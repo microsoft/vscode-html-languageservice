@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { HTMLDocument, Node } from '../parser/htmlParser.js';
-import { createScanner } from '../parser/htmlScanner.js';
+import { createScanner, _LAN } from '../parser/htmlScanner.js';
 import {
 	CompletionConfiguration, ICompletionParticipant, ScannerState, TokenType, LanguageServiceOptions, DocumentContext,
 	Position, CompletionList, CompletionItemKind, Range, TextEdit, InsertTextFormat, CompletionItem, MarkupKind, TextDocument
@@ -300,7 +300,7 @@ export class HTMLCompletion {
 					// delete subsequent markup. See microsoft/vscode#273226.
 					let crossesTagBoundary = false;
 					for (let i = offset; i < valueEnd - 1; i++) {
-						if (text.charCodeAt(i) === 0x3C /* < */) {
+						if (text.charCodeAt(i) === _LAN) {
 							crossesTagBoundary = true;
 							break;
 						}
