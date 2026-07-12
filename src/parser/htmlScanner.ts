@@ -139,7 +139,7 @@ class MultiLineStream {
 }
 const _BNG = '!'.charCodeAt(0);
 const _MIN = '-'.charCodeAt(0);
-const _LAN = '<'.charCodeAt(0);
+export const _LAN = '<'.charCodeAt(0);
 const _RAN = '>'.charCodeAt(0);
 const _FSL = '/'.charCodeAt(0);
 const _EQS = '='.charCodeAt(0);
