@@ -92,6 +92,14 @@ export function format(document: TextDocument, range: Range | undefined, options
 			result = indent + result; // keep the indent
 		}
 	}
+	if (result === value) {
+		return [];
+	}
+	// Clamp the range end to the document end to avoid returning a range that exceeds the document length
+	const documentEnd = document.positionAt(document.getText().length);
+	if (range.end.line > documentEnd.line || (range.end.line === documentEnd.line && range.end.character > documentEnd.character)) {
+		range = Range.create(range.start, documentEnd);
+	}
 	return [{
 		range: range,
 		newText: result
