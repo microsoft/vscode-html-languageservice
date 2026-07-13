@@ -68,11 +68,11 @@ export class HTMLParser {
 
   }
 
-  public parseDocument(document: TextDocument): HTMLDocument {
-    return this.parse(document.getText(), this.dataManager.getVoidElements(document.languageId));
+  public parseDocument(document: TextDocument, options?: { createNodesForOrphanEndTags?: boolean }): HTMLDocument {
+    return this.parse(document.getText(), this.dataManager.getVoidElements(document.languageId), options);
   }
 
-  public parse(text: string, voidElements: string[]): HTMLDocument {
+  public parse(text: string, voidElements: string[], options?: { createNodesForOrphanEndTags?: boolean }): HTMLDocument {
     const scanner = createScanner(text, undefined, undefined, true);
 
     const htmlDocument = new Node(0, text.length, [], void 0);
@@ -137,8 +137,8 @@ export class HTMLParser {
             curr.endTagStart = endTagStart;
             curr.end = scanner.getTokenEnd();
             curr = curr.parent!;
-          } else {
-            // closing tag without a matching opening tag
+          } else if (options?.createNodesForOrphanEndTags === true) {
+            // closing tag without a matching opening tag (opt-in behavior)
             const orphan = new Node(endTagStart, scanner.getTokenEnd(), [], curr);
             orphan.tag = endTagName;
             orphan.closed = true;

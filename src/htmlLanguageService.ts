@@ -30,7 +30,7 @@ export * from './htmlLanguageTypes.js';
 export interface LanguageService {
 	setDataProviders(useDefaultDataProvider: boolean, customDataProviders: IHTMLDataProvider[]): void;
 	createScanner(input: string, initialOffset?: number): Scanner;
-	parseHTMLDocument(document: TextDocument): HTMLDocument;
+	parseHTMLDocument(document: TextDocument, options?: { createNodesForOrphanEndTags?: boolean }): HTMLDocument;
 	findDocumentHighlights(document: TextDocument, position: Position, htmlDocument: HTMLDocument): DocumentHighlight[];
 	doComplete(document: TextDocument, position: Position, htmlDocument: HTMLDocument, options?: CompletionConfiguration): CompletionList;
 	doComplete2(document: TextDocument, position: Position, htmlDocument: HTMLDocument, documentContext: DocumentContext, options?: CompletionConfiguration): Promise<CompletionList>;
