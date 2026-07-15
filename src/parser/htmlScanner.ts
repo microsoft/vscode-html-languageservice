@@ -139,7 +139,7 @@ class MultiLineStream {
 }
 const _BNG = '!'.charCodeAt(0);
 const _MIN = '-'.charCodeAt(0);
-const _LAN = '<'.charCodeAt(0);
+export const _LAN = '<'.charCodeAt(0);
 const _RAN = '>'.charCodeAt(0);
 const _FSL = '/'.charCodeAt(0);
 const _EQS = '='.charCodeAt(0);
@@ -172,7 +172,7 @@ export function createScanner(input: string, initialOffset = 0, initialState: Sc
 	let lastTypeValue: string | undefined;
 
 	function nextElementName(): string {
-		return stream.advanceIfRegExp(/^[_:\w][_:\w-.\d]*/).toLowerCase();
+		return stream.advanceIfRegExp(/^[_:\w][_:\w.\d-]*/).toLowerCase();
 	}
 
 	function nextAttributeName(): string {

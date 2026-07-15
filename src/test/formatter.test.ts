@@ -574,3 +574,53 @@ suite('HTML Formatter - Embedded CSS', () => {
 	});
 
 });
+
+suite('HTML Formatter - Range validation', () => {
+
+	function assertRangeWithinDocument(content: string, options?: HTMLFormatConfiguration) {
+		const uri = 'test://test.html';
+		const document = TextDocument.create(uri, 'html', 0, content);
+		const formatOptions = options ?? { tabSize: 2, insertSpaces: true };
+		const edits = getLanguageService().format(document, undefined, formatOptions);
+		const documentEnd = document.positionAt(content.length);
+		for (const edit of edits) {
+			assert.ok(
+				edit.range.end.line < documentEnd.line ||
+				(edit.range.end.line === documentEnd.line && edit.range.end.character <= documentEnd.character),
+				`Edit range end (${edit.range.end.line}, ${edit.range.end.character}) exceeds document end (${documentEnd.line}, ${documentEnd.character}) for content ${JSON.stringify(content)}`
+			);
+		}
+		return edits;
+	}
+
+	test('empty document returns no edits', () => {
+		const edits = assertRangeWithinDocument('');
+		assert.strictEqual(edits.length, 0, 'Expected no edits for an empty document');
+	});
+
+	test('whitespace-only document returns valid range', () => {
+		assertRangeWithinDocument('   ');
+	});
+
+	test('newline-only document returns valid range', () => {
+		assertRangeWithinDocument('\n');
+	});
+
+	test('CRLF-only document returns valid range', () => {
+		assertRangeWithinDocument('\r\n');
+	});
+
+	test('empty document with endWithNewline returns valid range', () => {
+		const edits = assertRangeWithinDocument('', { tabSize: 2, insertSpaces: true, endWithNewline: true });
+		// endWithNewline on empty document should produce a valid edit
+		if (edits.length > 0) {
+			assert.strictEqual(edits[0].newText, '\n');
+		}
+	});
+
+	test('already formatted document returns no edits', () => {
+		const edits = assertRangeWithinDocument('<div>\n  <br>\n</div>');
+		assert.strictEqual(edits.length, 0, 'Expected no edits for already formatted content');
+	});
+
+});
