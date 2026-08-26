@@ -228,7 +228,6 @@ export class HTMLCompletion {
 					if (seenAttributes[attr.name]) {
 						return;
 					}
-					seenAttributes[attr.name] = true;
 
 					let codeSnippet = attr.name;
 					let command;
