@@ -429,3 +429,26 @@ export function createScanner(input: string, initialOffset = 0, initialState: Sc
 		getTokenError: () => tokenError
 	};
 }
+
+/**
+ * Converts HTML comment markers (`<!--` and `-->`) in inline script content
+ * to JavaScript block comment markers (`/* ` and ` *​/`), only replacing
+ * matched pairs. Unpaired `-->` (e.g., inside a JS block comment like
+ * `/* --> *​/`) will not be replaced.
+ */
+export function convertScriptContentToJavaScript(content: string): string {
+	const re = /<!--|-->/g;
+	let depth = 0;
+	return content.replace(re, (match) => {
+		if (match === '<!--') {
+			depth++;
+			return '/* ';
+		}
+		// match === '-->'
+		if (depth > 0) {
+			depth--;
+			return ' */';
+		}
+		return match;
+	});
+}
