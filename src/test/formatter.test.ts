@@ -346,6 +346,98 @@ suite('HTML Formatter', () => {
 		format(content, expected);
 	});
 
+	test('beautify ignore:start/end - full document', () => {
+		var content = [
+			'<html>',
+			'<body>',
+			'<!-- beautify ignore:start -->',
+			'<div   class = "x">',
+			'  <p>text</p>',
+			'</div>',
+			'<!-- beautify ignore:end -->',
+			'<div   class = "y">',
+			'</div>',
+			'</body>',
+			'</html>'
+		].join('\n');
+
+		var expected = [
+			'<html>',
+			'',
+			'<body>',
+			'  <!-- beautify ignore:start -->',
+			'<div   class = "x">',
+			'  <p>text</p>',
+			'</div>',
+			'<!-- beautify ignore:end -->',
+			'  <div class="y">',
+			'  </div>',
+			'</body>',
+			'',
+			'</html>',
+		].join('\n');
+
+		format(content, expected);
+	});
+
+	test('beautify ignore:start/end - range format inside ignore block', () => {
+		var content = [
+			'<!-- beautify ignore:start -->',
+			'|<div   class = "x">',
+			'  <p>text</p>',
+			'</div>|',
+			'<!-- beautify ignore:end -->'
+		].join('\n');
+
+		var expected = [
+			'<!-- beautify ignore:start -->',
+			'<div   class = "x">',
+			'  <p>text</p>',
+			'</div>',
+			'<!-- beautify ignore:end -->'
+		].join('\n');
+
+		format(content, expected);
+	});
+
+	test('beautify ignore - extra whitespace in comment', () => {
+		var content = [
+			'<!--  beautify  ignore:start  -->',
+			'<div   class = "x">',
+			'</div>',
+			'<!--  beautify  ignore:end  -->'
+		].join('\n');
+
+		var expected = [
+			'<!--  beautify  ignore:start  -->',
+			'<div   class = "x">',
+			'</div>',
+			'<!--  beautify  ignore:end  -->'
+		].join('\n');
+
+		format(content, expected);
+	});
+
+	test('beautify ignore - go template syntax preserved', () => {
+		var content = [
+			'<!-- beautify ignore:start -->',
+			'<div {{if .Active}}class="active"{{end}}>',
+			'  {{template "scripts/file-size".}}',
+			'</div>',
+			'<!-- beautify ignore:end -->'
+		].join('\n');
+
+		var expected = [
+			'<!-- beautify ignore:start -->',
+			'<div {{if .Active}}class="active"{{end}}>',
+			'  {{template "scripts/file-size".}}',
+			'</div>',
+			'<!-- beautify ignore:end -->'
+		].join('\n');
+
+		format(content, expected);
+	});
+
 });
 
 suite('HTML Formatter - Embedded CSS', () => {
