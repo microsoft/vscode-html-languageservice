@@ -4,11 +4,11 @@
  *--------------------------------------------------------------------------------------------*/
 
 
-import 'mocha';
-import * as assert from 'assert';
-import { TextDocument } from '../htmlLanguageTypes';
-import { HTMLFolding } from '../services/htmlFolding';
-import { HTMLDataManager } from '../languageFacts/dataManager';
+import { suite, test } from 'node:test';
+import * as assert from 'node:assert';
+import { TextDocument } from '../htmlLanguageTypes.js';
+import { HTMLFolding } from '../services/htmlFolding.js';
+import { HTMLDataManager } from '../languageFacts/dataManager.js';
 
 interface ExpectedIndentRange {
 	startLine: number;

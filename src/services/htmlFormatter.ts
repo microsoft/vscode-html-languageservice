@@ -3,9 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { HTMLFormatConfiguration, Range, TextEdit, Position, TextDocument } from '../htmlLanguageTypes';
-import { IBeautifyHTMLOptions, html_beautify } from '../beautify/beautify-html';
-import { repeat } from '../utils/strings';
+import { HTMLFormatConfiguration, Range, TextEdit, Position, TextDocument } from '../htmlLanguageTypes.js';
+import { IBeautifyHTMLOptions, html_beautify } from '../beautify/beautify-html.js';
+import { repeat } from '../utils/strings.js';
 
 export function format(document: TextDocument, range: Range | undefined, options: HTMLFormatConfiguration): TextEdit[] {
 	let value = document.getText();
@@ -81,6 +81,7 @@ export function format(document: TextDocument, range: Range | undefined, options
 		indent_scripts: getFormatOption(options, 'indentScripts', 'normal'),
 		templating: getTemplatingFormatOption(options, 'all'),
 		unformatted_content_delimiter: getFormatOption(options, 'unformattedContentDelimiter', ''),
+		css: getCSSFormatOption(options),
 	};
 
 	let result = html_beautify(trimLeft(value), htmlOptions);
@@ -90,6 +91,14 @@ export function format(document: TextDocument, range: Range | undefined, options
 		if (range.start.character === 0) {
 			result = indent + result; // keep the indent
 		}
+	}
+	if (result === value) {
+		return [];
+	}
+	// Clamp the range end to the document end to avoid returning a range that exceeds the document length
+	const documentEnd = document.positionAt(document.getText().length);
+	if (range.end.line > documentEnd.line || (range.end.line === documentEnd.line && range.end.character > documentEnd.character)) {
+		range = Range.create(range.start, documentEnd);
 	}
 	return [{
 		range: range,
@@ -131,6 +140,21 @@ function getTemplatingFormatOption(options: HTMLFormatConfiguration, dflt: strin
 		return ['none'];
 	}
 	return value;
+}
+
+function getCSSFormatOption(options: HTMLFormatConfiguration): IBeautifyHTMLOptions['css'] {
+	const css = options.css;
+	if (!css) {
+		return undefined;
+	}
+	return {
+		selector_separator_newline: css.newlineBetweenSelectors,
+		newline_between_rules: css.newlineBetweenRules,
+		space_around_selector_separator: css.spaceAroundSelectorSeparator,
+		brace_style: css.braceStyle,
+		preserve_newlines: css.preserveNewLines,
+		max_preserve_newlines: css.maxPreserveNewLines,
+	};
 }
 
 function computeIndentLevel(content: string, offset: number, options: HTMLFormatConfiguration): number {

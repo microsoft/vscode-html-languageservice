@@ -3,9 +3,10 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import * as htmlLanguageService from '../htmlLanguageService';
-import { WorkspaceEdit, TextDocument } from '../htmlLanguageService';
+import { suite, test } from 'node:test';
+import * as assert from 'node:assert';
+import * as htmlLanguageService from '../htmlLanguageService.js';
+import { WorkspaceEdit, TextDocument } from '../htmlLanguageService.js';
 
 
 export function testRename(value: string, newName: string, expectedDocContent: string): void {

@@ -3,14 +3,14 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { HTMLDocument } from '../parser/htmlParser';
-import { createScanner } from '../parser/htmlScanner';
-import { TokenType, LanguageServiceOptions, HoverSettings, TextDocument, Range, Position, Hover, MarkedString, MarkupContent, MarkupKind } from '../htmlLanguageTypes';
-import { HTMLDataManager } from '../languageFacts/dataManager';
-import { isDefined } from '../utils/object';
-import { generateDocumentation } from '../languageFacts/dataProvider';
-import { entities } from '../parser/htmlEntities';
-import { isLetterOrDigit } from '../utils/strings';
+import { HTMLDocument } from '../parser/htmlParser.js';
+import { createScanner } from '../parser/htmlScanner.js';
+import { TokenType, LanguageServiceOptions, HoverSettings, TextDocument, Range, Position, Hover, MarkedString, MarkupContent, MarkupKind } from '../htmlLanguageTypes.js';
+import { HTMLDataManager } from '../languageFacts/dataManager.js';
+import { isDefined } from '../utils/object.js';
+import { generateDocumentation } from '../languageFacts/dataProvider.js';
+import { entities } from '../parser/htmlEntities.js';
+import { isLetterOrDigit } from '../utils/strings.js';
 import * as l10n from '@vscode/l10n';
 
 export class HTMLHover {

@@ -2,14 +2,15 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-import 'mocha';
-import * as assert from 'assert';
+import { suite, test } from 'node:test';
+import * as assert from 'node:assert';
 import * as path from 'path';
+import { fileURLToPath } from 'node:url';
 import { URI } from 'vscode-uri';
-import { getDocumentContext } from './testUtil/documentContext';
-import { CompletionItemKind, TextDocument, getLanguageService } from '../htmlLanguageService';
-import { getFsProvider } from './testUtil/fsProvider';
-import { assertCompletion } from './completionUtil';
+import { getDocumentContext } from './testUtil/documentContext.js';
+import { CompletionItemKind, TextDocument, getLanguageService } from '../htmlLanguageService.js';
+import { getFsProvider } from './testUtil/fsProvider.js';
+import { assertCompletion } from './completionUtil.js';
 export interface ItemDescription {
 	label: string;
 	documentation?: string;
@@ -56,7 +57,7 @@ suite('HTML Path Completion', () => {
 		command: 'editor.action.triggerSuggest'
 	};
 
-	const fixtureRoot = path.resolve(__dirname, '../../../src/test/pathCompletionFixtures');
+	const fixtureRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../src/test/pathCompletionFixtures');
 	const workspaceFolderUri = URI.file(fixtureRoot).toString();
 	const indexHtmlUri = URI.file(path.resolve(fixtureRoot, 'index.html')).toString();
 	const aboutHtmlUri = URI.file(path.resolve(fixtureRoot, 'about/about.html')).toString();
@@ -259,7 +260,7 @@ suite('HTML Path Completion', () => {
 
 	test('Completion should ignore files/folders starting with dot', async () => {
 		await testCompletion2For('<script src="./|"', {
-			count: 3
+			count: 4 // about/, index.html, src/, styles.css (excludes .foo.js)
 		}, indexHtmlUri, workspaceFolderUri);
 	});
 
@@ -286,6 +287,78 @@ suite('HTML Path Completion', () => {
 			items: [
 				{ label: 'feature.js', resultText: '<my-custom-element href="../src/feature.js">' },
 				{ label: 'test.js', resultText: '<my-custom-element href="../src/test.js">' },
+			]
+		}, aboutHtmlUri);
+	});
+
+	test('Filter CSS files for <link rel="stylesheet"> tag', async () => {
+		// Test filtering for stylesheet in about/ directory - CSS files should be prioritized
+		await testCompletion2For('<link rel="stylesheet" href="|">', {
+			items: [
+				{ label: 'about.css', kind: CompletionItemKind.File, resultText: '<link rel="stylesheet" href="about.css">' },
+				{ label: 'about.html', kind: CompletionItemKind.File, resultText: '<link rel="stylesheet" href="about.html">' },
+				{ label: 'media/', kind: CompletionItemKind.Folder, resultText: '<link rel="stylesheet" href="media/">', command: triggerSuggestCommand }
+			]
+		}, aboutHtmlUri);
+
+		// Test with double quotes in root directory
+		await testCompletion2For('<link rel="stylesheet" href="./|">', {
+			items: [
+				{ label: 'about/', kind: CompletionItemKind.Folder, resultText: '<link rel="stylesheet" href="./about/">', command: triggerSuggestCommand },
+				{ label: 'styles.css', kind: CompletionItemKind.File, resultText: '<link rel="stylesheet" href="./styles.css">' },
+				{ label: 'index.html', kind: CompletionItemKind.File, resultText: '<link rel="stylesheet" href="./index.html">' },
+				{ label: 'src/', kind: CompletionItemKind.Folder, resultText: '<link rel="stylesheet" href="./src/">', command: triggerSuggestCommand }
+			]
+		}, indexHtmlUri);
+
+		// Test with single quotes in rel attribute
+		await testCompletion2For(`<link rel='stylesheet' href="./|">`, {
+			items: [
+				{ label: 'about/', kind: CompletionItemKind.Folder, resultText: `<link rel='stylesheet' href="./about/">`, command: triggerSuggestCommand },
+				{ label: 'styles.css', kind: CompletionItemKind.File, resultText: `<link rel='stylesheet' href="./styles.css">` },
+				{ label: 'index.html', kind: CompletionItemKind.File, resultText: `<link rel='stylesheet' href="./index.html">` },
+				{ label: 'src/', kind: CompletionItemKind.Folder, resultText: `<link rel='stylesheet' href="./src/">`, command: triggerSuggestCommand }
+			]
+		}, indexHtmlUri);
+	});
+
+	test('Prioritize script files for <script> tag', async () => {
+		// JavaScript files should be prioritized for script tags
+		await testCompletion2For('<script src="./|">', {
+			items: [
+				{ label: 'about/', kind: CompletionItemKind.Folder, resultText: '<script src="./about/">', command: triggerSuggestCommand },
+				{ label: 'index.html', kind: CompletionItemKind.File, resultText: '<script src="./index.html">' },
+				{ label: 'src/', kind: CompletionItemKind.Folder, resultText: '<script src="./src/">', command: triggerSuggestCommand }
+			]
+		}, indexHtmlUri);
+
+		await testCompletion2For('<script src="./src/|">', {
+			items: [
+				{ label: 'feature.js', kind: CompletionItemKind.File, resultText: '<script src="./src/feature.js">' },
+				{ label: 'test.js', kind: CompletionItemKind.File, resultText: '<script src="./src/test.js">' }
+			]
+		}, indexHtmlUri);
+	});
+
+	test('No filtering for <link> tag without rel attribute', async () => {
+		// Without rel attribute, no filtering should occur
+		await testCompletion2For('<link href="./|">', {
+			items: [
+				{ label: 'about/', kind: CompletionItemKind.Folder, resultText: '<link href="./about/">', command: triggerSuggestCommand },
+				{ label: 'index.html', kind: CompletionItemKind.File, resultText: '<link href="./index.html">' },
+				{ label: 'src/', kind: CompletionItemKind.Folder, resultText: '<link href="./src/">', command: triggerSuggestCommand },
+				{ label: 'styles.css', kind: CompletionItemKind.File, resultText: '<link href="./styles.css">' }
+			]
+		}, indexHtmlUri);
+	});
+
+	test('Prioritize image files for <link rel="icon">', async () => {
+		// For rel="icon", we expect image file filtering (but media/ contains icon.pic which matches)
+		await testCompletion2For('<link rel="icon" href="|">', {
+			items: [
+				{ label: 'about.css', kind: CompletionItemKind.File, resultText: '<link rel="icon" href="about.css">' },
+				{ label: 'about.html', kind: CompletionItemKind.File, resultText: '<link rel="icon" href="about.html">' },
+				{ label: 'media/', kind: CompletionItemKind.Folder, resultText: '<link rel="icon" href="media/">', command: triggerSuggestCommand }
 			]
 		}, aboutHtmlUri);
 	});

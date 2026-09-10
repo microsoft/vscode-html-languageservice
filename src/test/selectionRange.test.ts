@@ -3,9 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import 'mocha';
-import * as assert from 'assert';
-import { SelectionRange, TextDocument, getLanguageService } from '../htmlLanguageService';
+import { suite, test } from 'node:test';
+import * as assert from 'node:assert';
+import { SelectionRange, TextDocument, getLanguageService } from '../htmlLanguageService.js';
 
 function assertRanges(content: string, expected: (number | string)[][]): void {
 	let message = `${content} gives selection range:\n`;

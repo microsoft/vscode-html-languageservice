@@ -123,6 +123,19 @@ export interface IBeautifyHTMLOptions {
      * default ""
      */
     unformatted_content_delimiter?: string;
+
+    /**
+     * Options for the CSS sub-formatter used when formatting embedded CSS in style tags.
+     * Properties in this object are promoted to top-level CSS options via js-beautify's _mergeOpts.
+     */
+    css?: {
+        selector_separator_newline?: boolean;
+        newline_between_rules?: boolean;
+        space_around_selector_separator?: boolean;
+        brace_style?: 'collapse' | 'expand';
+        preserve_newlines?: boolean;
+        max_preserve_newlines?: number;
+    };
 }
 
 export interface IBeautifyHTML {

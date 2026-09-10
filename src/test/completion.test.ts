@@ -3,8 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { BaselineImages } from "../languageFacts/dataProvider";
-import { testCompletionFor, testQuoteCompletion, testTagCompletion } from "./completionUtil";
+import { suite, test } from 'node:test';
+import { BaselineImages } from "../languageFacts/dataProvider.js";
+import { testCompletionFor, testQuoteCompletion, testTagCompletion } from "./completionUtil.js";
 
 suite('HTML Completion', () => {
 	test('Complete', function (): any {
@@ -163,6 +164,27 @@ suite('HTML Completion', () => {
 		testCompletionFor('<input src="c" type=color| ', {
 			items: [{ label: 'color', resultText: '<input src="c" type="color" ' }]
 		});
+
+		// unclosed string literals should not extend the replace range past the cursor
+		testCompletionFor('<th><input type="che|</th>', {
+			items: [{ label: 'checkbox', resultText: '<th><input type="checkbox</th>' }]
+		});
+		testCompletionFor('<th><input type="che|</th><td></td>', {
+			items: [{ label: 'checkbox', resultText: '<th><input type="checkbox</th><td></td>' }]
+		});
+		// unclosed quote with a stray quote later in the document (scanner would
+		// otherwise latch onto the stray quote and blow away the markup between
+		// the cursor and that quote). See microsoft/vscode#273226.
+		testCompletionFor('<th><input type="che|</th><p title="later"></p>', {
+			items: [{ label: 'checkbox', resultText: '<th><input type="checkbox</th><p title="later"></p>' }]
+		});
+		testCompletionFor('<th><input type="che|</th>\n<p title="later"></p>', {
+			items: [{ label: 'checkbox', resultText: '<th><input type="checkbox</th>\n<p title="later"></p>' }]
+		});
+		testCompletionFor('<th><input type="che|\n</th>', {
+			items: [{ label: 'checkbox', resultText: '<th><input type="checkbox\n</th>' }]
+		});
+
 		testCompletionFor('<div dir=|></div>', {
 			items: [
 				{ label: 'ltr', resultText: '<div dir="ltr"></div>' },
@@ -508,5 +530,40 @@ suite('HTML Completion', () => {
 		testCompletionFor('<div></div></|', {
 			items: [{ label: '/a', resultText: '<div></div></a>' }]
 		});
+	});
+
+	test('Hide end tag suggestions setting', () => {
+		// Default behavior - end tag suggestions should be shown
+		testCompletionFor('<body>\n<|', {
+			items: [
+				{ label: '/body' },
+				{ label: 'div' }
+			]
+		});
+
+		// With hideEndTagSuggestions enabled - end tag suggestions should be hidden
+		testCompletionFor('<body>\n<|', {
+			items: [
+				{ label: '/body', notAvailable: true },
+				{ label: 'div' }
+			]
+		}, { hideEndTagSuggestions: true });
+
+		// With hideEndTagSuggestions and html5 disabled - no suggestions
+		testCompletionFor('<body>\n<|', {
+			items: [
+				{ label: '/body', notAvailable: true },
+				{ label: 'div', notAvailable: true }
+			]
+		}, { hideEndTagSuggestions: true, html5: false });
+
+		// Close tag suggestions in different contexts
+		testCompletionFor('<div>\n  <|\n</div>', {
+			items: [{ label: '/div', notAvailable: true }]
+		}, { hideEndTagSuggestions: true });
+
+		testCompletionFor('</|', {
+			items: [{ label: '/a', notAvailable: true }]
+		}, { hideEndTagSuggestions: true });
 	});
 });

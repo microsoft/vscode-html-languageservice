@@ -3,11 +3,12 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { getLanguageService, ITagData, IAttributeData, newHTMLDataProvider } from '../htmlLanguageService';
+import { suite, test } from 'node:test';
+import { getLanguageService, ITagData, IAttributeData, newHTMLDataProvider } from '../htmlLanguageService.js';
 
-import { testCompletionFor } from './completionUtil';
-import { assertHover2 } from './hoverUtil';
-import { IValueSet, LanguageServiceOptions } from '../htmlLanguageTypes';
+import { testCompletionFor } from './completionUtil.js';
+import { assertHover2 } from './hoverUtil.js';
+import { IValueSet, LanguageServiceOptions } from '../htmlLanguageTypes.js';
 
 suite('HTML Custom Tag Provider', () => {
 	const tags: ITagData[] = [

@@ -47,6 +47,20 @@ export interface HTMLFormatConfiguration {
 	templating?: ('auto' | 'none' | 'angular' | 'django' | 'erb' | 'handlebars' | 'php' | 'smarty')[] | boolean;
 	unformattedContentDelimiter?: string;
 
+	/**
+	 * Options for formatting embedded CSS in style tags.
+	 * These are forwarded to the CSS sub-formatter used by js-beautify.
+	 */
+	css?: EmbeddedCSSFormatConfiguration;
+}
+
+export interface EmbeddedCSSFormatConfiguration {
+	newlineBetweenSelectors?: boolean;
+	newlineBetweenRules?: boolean;
+	spaceAroundSelectorSeparator?: boolean;
+	braceStyle?: 'collapse' | 'expand';
+	preserveNewLines?: boolean;
+	maxPreserveNewLines?: number;
 }
 
 export interface HoverSettings {
@@ -57,6 +71,7 @@ export interface HoverSettings {
 export interface CompletionConfiguration {
 	[provider: string]: boolean | undefined | string;
 	hideAutoCompleteProposals?: boolean;
+	hideEndTagSuggestions?: boolean;
 	attributeDefaultValue?: 'empty' | 'singlequotes' | 'doublequotes';
 }
 
@@ -138,6 +153,7 @@ export interface HtmlAttributeValueContext {
 	attribute: string;
 	value: string;
 	range: Range;
+	attributes?: { [name: string]: string | null };
 }
 
 export interface HtmlContentContext {

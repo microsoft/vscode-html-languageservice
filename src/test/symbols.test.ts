@@ -3,10 +3,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import * as htmlLanguageService from '../htmlLanguageService';
+import { suite, test } from 'node:test';
+import * as assert from 'node:assert';
+import * as htmlLanguageService from '../htmlLanguageService.js';
 
-import { SymbolInformation, SymbolKind, Location, Range, TextDocument, DocumentSymbol } from '../htmlLanguageService';
+import { SymbolInformation, SymbolKind, Location, Range, TextDocument, DocumentSymbol } from '../htmlLanguageService.js';
 
 suite('HTML Symbols', () => {
 

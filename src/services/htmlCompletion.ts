@@ -3,20 +3,20 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { HTMLDocument, Node } from '../parser/htmlParser';
-import { createScanner } from '../parser/htmlScanner';
+import { HTMLDocument, Node } from '../parser/htmlParser.js';
+import { createScanner, _LAN } from '../parser/htmlScanner.js';
 import {
 	CompletionConfiguration, ICompletionParticipant, ScannerState, TokenType, LanguageServiceOptions, DocumentContext,
 	Position, CompletionList, CompletionItemKind, Range, TextEdit, InsertTextFormat, CompletionItem, MarkupKind, TextDocument
-} from '../htmlLanguageTypes';
-import { entities } from '../parser/htmlEntities';
+} from '../htmlLanguageTypes.js';
+import { entities } from '../parser/htmlEntities.js';
 
 import * as l10n from '@vscode/l10n';
-import { isLetterOrDigit, endsWith, startsWith } from '../utils/strings';
-import { HTMLDataManager } from '../languageFacts/dataManager';
-import { isDefined } from '../utils/object';
-import { generateDocumentation } from '../languageFacts/dataProvider';
-import { PathCompletionParticipant } from './pathCompletion';
+import { isLetterOrDigit, endsWith, startsWith } from '../utils/strings.js';
+import { HTMLDataManager } from '../languageFacts/dataManager.js';
+import { isDefined } from '../utils/object.js';
+import { generateDocumentation } from '../languageFacts/dataProvider.js';
+import { PathCompletionParticipant } from './pathCompletion.js';
 
 export class HTMLCompletion {
 	completionParticipants: ICompletionParticipant[];
@@ -118,6 +118,9 @@ export class HTMLCompletion {
 		}
 
 		function collectCloseTagSuggestions(afterOpenBracket: number, inOpenTag: boolean, tagNameEnd: number = offset): CompletionList {
+			if (settings && settings.hideEndTagSuggestions) {
+				return result;
+			}
 			const range = getReplaceRange(afterOpenBracket, tagNameEnd);
 			const closeTag = isFollowedBy(text, tagNameEnd, ScannerState.WithinEndTag, TokenType.EndTagClose) ? '' : '>';
 			let curr: Node | undefined = node;
@@ -289,7 +292,23 @@ export class HTMLCompletion {
 				let valueContentEnd = valueEnd;
 				// valueEnd points to the char after quote, which encloses the replace range
 				if (valueEnd > valueStart && text[valueEnd - 1] === text[valueStart]) {
-					valueContentEnd--;
+					// Even when a matching quote is found, the scanner may have latched
+					// onto an unrelated later quote across HTML tag boundaries. If any
+					// `<` appears between the cursor and the alleged closing quote,
+					// treat the value as unclosed and clamp so the completion cannot
+					// delete subsequent markup. See microsoft/vscode#273226.
+					let crossesTagBoundary = false;
+					for (let i = offset; i < valueEnd - 1; i++) {
+						if (text.charCodeAt(i) === _LAN) {
+							crossesTagBoundary = true;
+							break;
+						}
+					}
+					valueContentEnd = crossesTagBoundary ? offset : valueContentEnd - 1;
+				} else {
+					// unclosed quote: clamp the end to the cursor position so that
+					// the replace range does not extend into subsequent HTML content
+					valueContentEnd = offset;
 				}
 
 				const wsBefore = getWordStart(text, offset, valueContentStart);
@@ -303,18 +322,17 @@ export class HTMLCompletion {
 				addQuotes = true;
 			}
 
-			if (completionParticipants.length > 0) {
-				const tag = currentTag.toLowerCase();
-				const attribute = currentAttributeName.toLowerCase();
-				const fullRange = getReplaceRange(valueStart, valueEnd);
-				for (const participant of completionParticipants) {
-					if (participant.onHtmlAttributeValue) {
-						participant.onHtmlAttributeValue({ document, position, tag, attribute, value: valuePrefix, range: fullRange });
-					}
+		if (completionParticipants.length > 0) {
+			const tag = currentTag.toLowerCase();
+			const attribute = currentAttributeName.toLowerCase();
+			const fullRange = getReplaceRange(valueStart, valueEnd);
+			for (const participant of completionParticipants) {
+				if (participant.onHtmlAttributeValue) {
+					participant.onHtmlAttributeValue({ document, position, tag, attribute, value: valuePrefix, range: fullRange, attributes: node.attributes });
 				}
 			}
-
-			dataProviders.forEach(provider => {
+		}
+		dataProviders.forEach(provider => {
 				provider.provideValues(currentTag, currentAttributeName).forEach(value => {
 					const insertText = addQuotes ? '"' + value.name + '"' : value.name;
 

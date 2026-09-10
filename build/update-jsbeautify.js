@@ -3,25 +3,26 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-'use strict';
+import path from 'node:path';
+import fs from 'node:fs';
+import { fileURLToPath } from 'node:url';
 
-var path = require('path');
-var fs = require('fs');
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 function getVersion(moduleName) {
-    var packageJSONPath = path.join(__dirname, '..', 'node_modules', moduleName, 'package.json');
+    const packageJSONPath = path.join(__dirname, '..', 'node_modules', moduleName, 'package.json');
     return readFile(packageJSONPath).then(function (content) {
         try {
             return JSON.parse(content).version;
         } catch (e) {
-            return Promise.resolve(null);
+            return null;
         }
     });
 }
 
-function readFile(path) {
+function readFile(filePath) {
     return new Promise((s, e) => {
-        fs.readFile(path, (err, res) => {
+        fs.readFile(filePath, (err, res) => {
             if (err) {
                 e(err);
             } else {
@@ -33,7 +34,7 @@ function readFile(path) {
 }
 
 function update(moduleName, repoPath, dest, addHeader, patch) {
-    var contentPath = path.join(__dirname, '..', 'node_modules', moduleName, repoPath);
+    const contentPath = path.join(__dirname, '..', 'node_modules', moduleName, repoPath);
     console.log('Reading from ' + contentPath);
     return readFile(contentPath).then(function (content) {
         return getVersion(moduleName).then(function (version) {
@@ -62,12 +63,10 @@ function update(moduleName, repoPath, dest, addHeader, patch) {
     }, console.error);
 }
 
-update('js-beautify', 'js/lib/beautify-html.js', './src/beautify/beautify-html.js', true);
-update('js-beautify', 'js/lib/beautify-css.js', './src/beautify/beautify-css.js', true);
 update('js-beautify', 'LICENSE', './src/beautify/beautify-license');
 
 // ESM version
-update('js-beautify', 'js/lib/beautify-html.js', './src/beautify/esm/beautify-html.js', true, function (contents) {
+update('js-beautify', 'js/lib/beautify-html.js', './src/beautify/beautify-html.js', true, function (contents) {
     let topLevelFunction = '(function() {';
     let outputVar = 'var legacy_beautify_html';
     let footer = 'var style_html = legacy_beautify_html;';
@@ -84,14 +83,14 @@ update('js-beautify', 'js/lib/beautify-html.js', './src/beautify/esm/beautify-ht
         throw new Error(`Problem patching beautify.html for ESM: '${footer}' not found after '${outputVar}'.`);
     }
     return contents.substring(0, index1) +
-`import { js_beautify } from "./beautify";\nimport { css_beautify } from "./beautify-css";\n\n`
+`import { js_beautify } from "./beautify.js";\nimport { css_beautify } from "./beautify-css.js";\n\n`
         + contents.substring(index2, index3) +
 `
 export function html_beautify(html_source, options) {
     return legacy_beautify_html(html_source, options, js_beautify, css_beautify);
 }`;
 });
-update('js-beautify', 'js/lib/beautify-css.js', './src/beautify/esm/beautify-css.js', true, function (contents) {
+update('js-beautify', 'js/lib/beautify-css.js', './src/beautify/beautify-css.js', true, function (contents) {
     let topLevelFunction = '(function() {';
     let outputVar = 'var legacy_beautify_css';
     let footer = 'var css_beautify = legacy_beautify_css;';

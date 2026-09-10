@@ -3,9 +3,10 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import { createScanner } from '../parser/htmlScanner';
-import { TokenType, ScannerState } from '../htmlLanguageTypes';
+import { suite, test } from 'node:test';
+import * as assert from 'node:assert';
+import { createScanner } from '../parser/htmlScanner.js';
+import { TokenType, ScannerState } from '../htmlLanguageTypes.js';
 
 suite('HTML Scanner', () => {
 
@@ -828,6 +829,51 @@ suite('HTML Scanner', () => {
 				{ offset: 14, type: TokenType.StartTagSelfClose }
 			]
 		}]);
+	});
+
+	test('Tag with Hyphenated Name (Vue custom element)', () => {
+		assertTokens([{
+			input: '<s-c-feature>content</s-c-feature>',
+			tokens: [
+				{ offset: 0, type: TokenType.StartTagOpen },
+				{ offset: 1, type: TokenType.StartTag, content: 's-c-feature' },
+				{ offset: 12, type: TokenType.StartTagClose },
+				{ offset: 13, type: TokenType.Content },
+				{ offset: 20, type: TokenType.EndTagOpen },
+				{ offset: 22, type: TokenType.EndTag, content: 's-c-feature' },
+				{ offset: 33, type: TokenType.EndTagClose }
+			]
+		}
+		]);
+	});
+
+	test('Self-closing Tag with Hyphenated Name', () => {
+		assertTokens([{
+			input: '<my-component />',
+			tokens: [
+				{ offset: 0, type: TokenType.StartTagOpen },
+				{ offset: 1, type: TokenType.StartTag, content: 'my-component' },
+				{ offset: 13, type: TokenType.Whitespace },
+				{ offset: 14, type: TokenType.StartTagSelfClose }
+			]
+		}
+		]);
+	});
+
+	test('Tag with Hyphenated Name and Attributes', () => {
+		assertTokens([{
+			input: '<el-button type="primary">',
+			tokens: [
+				{ offset: 0, type: TokenType.StartTagOpen },
+				{ offset: 1, type: TokenType.StartTag, content: 'el-button' },
+				{ offset: 10, type: TokenType.Whitespace },
+				{ offset: 11, type: TokenType.AttributeName },
+				{ offset: 15, type: TokenType.DelimiterAssign },
+				{ offset: 16, type: TokenType.AttributeValue },
+				{ offset: 25, type: TokenType.StartTagClose }
+			]
+		}
+		]);
 	});
 
 });

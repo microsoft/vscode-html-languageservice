@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { MarkupContent } from '../htmlLanguageTypes';
+import { MarkupContent } from '../htmlLanguageTypes.js';
 
 export function normalizeMarkupContent(input: string | MarkupContent | undefined): MarkupContent | undefined {
 	if (!input) {

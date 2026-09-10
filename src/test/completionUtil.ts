@@ -3,10 +3,10 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as assert from 'assert';
-import * as htmlLanguageService from '../htmlLanguageService';
+import * as assert from 'node:assert';
+import * as htmlLanguageService from '../htmlLanguageService.js';
 
-import { TextDocument, CompletionList, CompletionItemKind, MarkupContent, TextEdit, CompletionConfiguration } from '../htmlLanguageService';
+import { TextDocument, CompletionList, CompletionItemKind, MarkupContent, TextEdit, CompletionConfiguration } from '../htmlLanguageService.js';
 
 interface ItemDescription {
 	label: string;

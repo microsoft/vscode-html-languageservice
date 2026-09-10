@@ -3,9 +3,10 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { assertHover, assertHover2 } from './hoverUtil';
-import { MarkupContent } from '../htmlLanguageTypes';
-import { BaselineImages } from '../languageFacts/dataProvider';
+import { suite, test } from 'node:test';
+import { assertHover, assertHover2 } from './hoverUtil.js';
+import { MarkupContent } from '../htmlLanguageTypes.js';
+import { BaselineImages } from '../languageFacts/dataProvider.js';
 
 suite('HTML Hover', () => {
 	test('Single', function (): any {
