@@ -34,6 +34,9 @@ suite('HTML Custom Tag Provider', () => {
 							}
 						}
 					]
+				},
+				{
+					name: 'duplicateAttr'
 				}
 			]
 		},
@@ -53,7 +56,8 @@ suite('HTML Custom Tag Provider', () => {
 
 	const globalAttributes: IAttributeData[] = [
 		{ name: 'fooAttr', description: { kind: 'markdown', value: '`fooAttr` Attribute' } },
-		{ name: 'xattr', description: { kind: 'markdown', value: '`xattr` attributes' }, valueSet: 'x' }
+		{ name: 'xattr', description: { kind: 'markdown', value: '`xattr` attributes' }, valueSet: 'x' },
+		{ name: 'duplicateAttr' }
 	];
 
 	const valueSets: IValueSet[] = [
@@ -105,6 +109,10 @@ suite('HTML Custom Tag Provider', () => {
 					label: 'xattr',
 					documentation: { kind: 'markdown', value: '`xattr` attributes' },
 					resultText: `<foo xattr="$1"`
+				},
+				{
+					label: 'duplicateAttr',
+					resultText: `<foo duplicateAttr="$1"`
 				}
 			]
 		}, undefined, languageOptions);
