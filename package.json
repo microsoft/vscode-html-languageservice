@@ -1,6 +1,6 @@
 {
   "name": "vscode-html-languageservice",
-  "version": "6.0.0-next.1",
+  "version": "6.0.0-next.2",
   "description": "Language service for HTML",
   "type": "module",
   "main": "./lib/esm/htmlLanguageService.js",
@@ -17,28 +17,25 @@
   },
   "devDependencies": {
     "@types/node": "22.x",
-    "@typescript-eslint/eslint-plugin": "^8.58.1",
-    "@typescript-eslint/parser": "^8.56.0",
     "@vscode/web-custom-data": "^0.6.3",
-    "eslint": "^10.2.0",
-    "js-beautify": "^1.15.4",
+    "js-beautify": "^2.0.3",
     "rimraf": "^6.1.3",
-    "typescript": "6.0.2"
+    "typescript": "6.0.3"
   },
   "dependencies": {
     "@vscode/l10n": "^0.0.18",
-    "vscode-languageserver-textdocument": "^1.0.12",
-    "vscode-languageserver-types": "^3.17.5",
-    "vscode-uri": "^3.1.0"
+    "vscode-languageserver-textdocument": "^1.0.14",
+    "vscode-languageserver-types": "^3.18.3",
+    "vscode-uri": "^3.2.0"
   },
   "scripts": {
     "prepack": "npm run clean && npm run compile && npm run test && npm run remove-sourcemap-refs",
-    "compile": "tsc -p ./src",
+    "compile": "tsc -p ./src && npm run lint",
     "watch": "tsc -w -p ./src",
     "clean": "rimraf lib",
     "remove-sourcemap-refs": "node ./build/remove-sourcemap-refs.js",
-    "test": "npm run compile && node --enable-source-maps --test ./lib/esm/test/*.js && npm run lint",
-    "lint": "eslint src/**/*.ts",
+    "test": "npm run compile && node --enable-source-maps --test ./lib/esm/test/*.js",
+    "lint": "node --test ./build/lint.test.ts",
     "install-types-next": "npm i vscode-languageserver-types@next -f -S && npm i vscode-languageserver-textdocument@next -f -S",
     "update-jsbeautify": "npm i js-beautify && node ./build/update-jsbeautify.js",
     "update-jsbeautify-next": "npm i js-beautify@next && node ./build/update-jsbeautify.js",

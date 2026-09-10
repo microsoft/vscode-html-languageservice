@@ -172,6 +172,18 @@ suite('HTML Completion', () => {
 		testCompletionFor('<th><input type="che|</th><td></td>', {
 			items: [{ label: 'checkbox', resultText: '<th><input type="checkbox</th><td></td>' }]
 		});
+		// unclosed quote with a stray quote later in the document (scanner would
+		// otherwise latch onto the stray quote and blow away the markup between
+		// the cursor and that quote). See microsoft/vscode#273226.
+		testCompletionFor('<th><input type="che|</th><p title="later"></p>', {
+			items: [{ label: 'checkbox', resultText: '<th><input type="checkbox</th><p title="later"></p>' }]
+		});
+		testCompletionFor('<th><input type="che|</th>\n<p title="later"></p>', {
+			items: [{ label: 'checkbox', resultText: '<th><input type="checkbox</th>\n<p title="later"></p>' }]
+		});
+		testCompletionFor('<th><input type="che|\n</th>', {
+			items: [{ label: 'checkbox', resultText: '<th><input type="checkbox\n</th>' }]
+		});
 
 		testCompletionFor('<div dir=|></div>', {
 			items: [
