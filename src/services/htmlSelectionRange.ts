@@ -130,7 +130,7 @@ export class HTMLSelectionRange {
 		return [
 			[n.start, n.end]
 		];
-	};
+	}
 
 	private getAttributeLevelRanges(document: TextDocument, currNode: Node, currOffset: number): [number, number][] {
 		const currNodeRange = Range.create(document.positionAt(currNode.start), document.positionAt(currNode.end));
