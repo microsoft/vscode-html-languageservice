@@ -107,6 +107,31 @@ suite('HTML Folding', () => {
 		assertRanges(input, [r(0, 3, 'region'), r(1, 2, 'region')]);
 	});
 
+	test('Fold regions - a comment merely mentioning endregion does not close one', () => {
+		const input = [
+			/*0*/'<!-- #region -->',
+			/*1*/'<div>',
+			/*2*/'</div>',
+			/*3*/'<!--',
+			/*4*/'  the endregion marker closes it',
+			/*5*/'-->',
+			/*6*/'<p>x</p>',
+			/*7*/'<!-- #endregion -->',
+		];
+		assertRanges(input, [r(0, 7, 'region'), r(3, 5, 'comment')]);
+	});
+
+	test('Fold comment - containing the word endregion stays foldable', () => {
+		const input = [
+			/*0*/'<!--',
+			/*1*/'  line one',
+			/*2*/'  endregion appears here',
+			/*3*/'  line three',
+			/*4*/'-->',
+		];
+		assertRanges(input, [r(0, 4, 'comment')]);
+	});
+
 
 
 	test('Fold incomplete', () => {
