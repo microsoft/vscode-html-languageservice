@@ -475,6 +475,16 @@ suite('HTML Completion', () => {
 		testTagCompletion('<div><h1><br><span></span><img></| </h1></div>', 'h1>');
 		testTagCompletion('<ng-template><td><ng-template></|   </td> </ng-template>', 'ng-template>');
 		testTagCompletion('<div><br></|>', 'div');
+		testTagCompletion('<html><head><script></|script></head><body></body></html>', null);
+		testTagCompletion('<html><head><style></|style></head><body></body></html>', null);
+		testTagCompletion('<div><span></|span></div>', null);
+		testTagCompletion('<div></|other>', null);
+		testTagCompletion('<div></|d', null);
+		testTagCompletion('<div></| custom-element>', null);
+		testTagCompletion('<my-element></|my-element>', null);
+		testTagCompletion('<script type="text/x-template"><div></|div></script>', null);
+		testTagCompletion('<div></|', 'div>');
+		testTagCompletion('<div></| >', 'div>');
 	});
 
 	test('Character entities', function (): any {
