@@ -16,6 +16,7 @@ export interface ItemDescription {
 	documentation?: string;
 	kind?: CompletionItemKind;
 	resultText?: string;
+	sortText?: string;
 	command?: { title: string, command: string };
 	notAvailable?: boolean;
 }
@@ -361,5 +362,14 @@ suite('HTML Path Completion', () => {
 				{ label: 'media/', kind: CompletionItemKind.Folder, resultText: '<link rel="icon" href="media/">', command: triggerSuggestCommand }
 			]
 		}, aboutHtmlUri);
+	});
+
+	test('Filter CSS files for <link> tag with multiple rel values', async () => {
+		await testCompletion2For('<link rel="alternate stylesheet" href="./|">', {
+			items: [
+				{ label: 'styles.css', sortText: '0_styles.css', kind: CompletionItemKind.File, resultText: '<link rel="alternate stylesheet" href="./styles.css">' },
+				{ label: 'index.html', sortText: '1_index.html', kind: CompletionItemKind.File, resultText: '<link rel="alternate stylesheet" href="./index.html">' },
+			]
+		}, indexHtmlUri);
 	});
 });
