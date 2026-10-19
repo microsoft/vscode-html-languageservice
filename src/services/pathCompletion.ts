@@ -53,11 +53,12 @@ export class PathCompletionParticipant implements ICompletionParticipant {
 				for (const [name, type] of infos) {
 					// Exclude paths that start with `.`
 					if (name.charCodeAt(0) !== CharCode_dot) {
-						const item = createCompletionItem(name, type === FileType.Directory, replaceRange);
+						const isDirectory = (type & FileType.Directory) !== 0;
+						const item = createCompletionItem(name, isDirectory, replaceRange);
 						
 						// Apply filtering/sorting based on file extension
 						if (extensionFilter) {
-							if (type === FileType.Directory) {
+							if (isDirectory) {
 								// Always include directories
 								result.push(item);
 							} else {
