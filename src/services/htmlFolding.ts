@@ -100,14 +100,14 @@ export class HTMLFolding {
 		while (token !== TokenType.EOS) {
 			switch (token) {
 				case TokenType.StartTag: {
-					const tagName = scanner.getTokenText();
+					const tagName = scanner.getTokenText().toLowerCase();
 					const startLine = document.positionAt(scanner.getTokenOffset()).line;
 					stack.push({ startLine, tagName });
 					lastTagName = tagName;
 					break;
 				}
 				case TokenType.EndTag: {
-					lastTagName = scanner.getTokenText();
+					lastTagName = scanner.getTokenText().toLowerCase();
 					break;
 				}
 				case TokenType.StartTagClose:
