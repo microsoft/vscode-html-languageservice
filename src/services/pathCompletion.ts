@@ -22,12 +22,14 @@ export class PathCompletionParticipant implements ICompletionParticipant {
 	public async computeCompletions(document: TextDocument, documentContext: DocumentContext): Promise<CompletionList> {
 		const result: CompletionList = { items: [], isIncomplete: false };
 		for (const attributeCompletion of this.atributeCompletions) {
-			const fullValue = stripQuotes(document.getText(attributeCompletion.range));
+			const attributeValue = document.getText(attributeCompletion.range);
+			const fullValue = stripQuotes(attributeValue);
+			const isQuoted = fullValue !== attributeValue;
 			if (isCompletablePath(fullValue)) {
 				if (fullValue === '.' || fullValue === '..') {
 					result.isIncomplete = true;
 				} else {
-					const replaceRange = pathToReplaceRange(attributeCompletion.value, fullValue, attributeCompletion.range);
+					const replaceRange = pathToReplaceRange(attributeCompletion.value, fullValue, attributeCompletion.range, isQuoted);
 					const suggestions = await this.providePathSuggestions(attributeCompletion.value, replaceRange, document, documentContext, attributeCompletion);
 					for (const item of suggestions) {
 						result.items.push(item);
@@ -151,16 +153,17 @@ function isCompletablePath(value: string) {
 	return true;
 }
 
-function pathToReplaceRange(valueBeforeCursor: string, fullValue: string, range: Range) {
+function pathToReplaceRange(valueBeforeCursor: string, fullValue: string, range: Range, isQuoted: boolean) {
 	let replaceRange: Range;
+	const quoteOffset = isQuoted ? 1 : 0;
 	const lastIndexOfSlash = valueBeforeCursor.lastIndexOf('/');
 	if (lastIndexOfSlash === -1) {
-		replaceRange = shiftRange(range, 1, -1);
+		replaceRange = shiftRange(range, quoteOffset, -quoteOffset);
 	} else {
 		// For cases where cursor is in the middle of attribute value, like <script src="./s|rc/test.js">
 		// Find the last slash before cursor, and calculate the start of replace range from there
 		const valueAfterLastSlash = fullValue.slice(lastIndexOfSlash + 1);
-		const startPos = shiftPosition(range.end, -1 - valueAfterLastSlash.length);
+		const startPos = shiftPosition(range.end, -quoteOffset - valueAfterLastSlash.length);
 
 		// If whitespace exists, replace until there is no more
 		const whitespaceIndex = valueAfterLastSlash.indexOf(' ');
@@ -168,7 +171,7 @@ function pathToReplaceRange(valueBeforeCursor: string, fullValue: string, range:
 		if (whitespaceIndex !== -1) {
 			endPos = shiftPosition(startPos, whitespaceIndex);
 		} else {
-			endPos = shiftPosition(range.end, -1);
+			endPos = shiftPosition(range.end, -quoteOffset);
 		}
 		replaceRange = Range.create(startPos, endPos);
 	}
