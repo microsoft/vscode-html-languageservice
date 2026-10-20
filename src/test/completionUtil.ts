@@ -14,6 +14,7 @@ interface ItemDescription {
 	kind?: CompletionItemKind;
 	resultText?: string;
 	filterText?: string;
+	sortText?: string;
 	notAvailable?: boolean;
 }
 
@@ -48,6 +49,9 @@ export function assertCompletion(completions: CompletionList, expected: ItemDesc
 	}
 	if (expected.filterText) {
 		assert.equal(match.filterText, expected.filterText);
+	}
+	if (expected.sortText) {
+		assert.equal(match.sortText, expected.sortText);
 	}
 }
 
