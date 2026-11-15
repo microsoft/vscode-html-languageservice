@@ -93,6 +93,12 @@ suite('HTML Link Detection', () => {
 		testLinkDetection('<a href="jobs.html?f=bar">link</a>', [{ offset: 9, length: 15, target: 'file:///test/data/abc/jobs.html' }]);
 	});
 
+	test('Link detection with character references', () => {
+		testLinkDetection('<a href="https://www.example.com/foo.html?bar&amp;baz">link</a>', [{ offset: 9, length: 44, target: 'https://www.example.com/foo.html?bar&baz' }]);
+		testLinkDetection('<a href="http://server/a&#38;b&#x26;c.html">link</a>', [{ offset: 9, length: 33, target: 'http://server/a&b&c.html' }]);
+		testLinkDetection('<a href="http://server/?a=1&b=2&unknown;">link</a>', [{ offset: 9, length: 31, target: 'http://server/?a=1&b=2&unknown;' }]);
+	});
+
 	test('Local targets', () => {
 		testLinkDetection('<body><h1 id="title"></h1><a href="#title"</a></body>', [{ offset: 35, length: 6, target: 'file:///test/data/abc/test.html#1,14' }]);
 		testLinkDetection('<body><h1 id="title"></h1><a href="file:///test/data/abc/test.html#title"</a></body>', [{ offset: 35, length: 37, target: 'file:///test/data/abc/test.html#1,14' }]);

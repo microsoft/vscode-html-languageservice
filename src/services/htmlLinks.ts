@@ -4,6 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { createScanner } from '../parser/htmlScanner.js';
+import { entities } from '../parser/htmlEntities.js';
 import * as strings from '../utils/strings.js';
 import { URI as Uri } from 'vscode-uri';
 
@@ -27,6 +28,16 @@ function validateRef(url: string, languageId: string): boolean {
 		return false;
 	}
 	return /\b(w[\w\d+.-]*:\/\/)?[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|\/?))/.test(url);
+}
+
+function decodeCharacterReferences(value: string): string {
+	return value.replace(/&(#[xX][0-9a-fA-F]+|#[0-9]+|[a-zA-Z][a-zA-Z0-9]*);/g, (match, ref: string) => {
+		if (ref[0] === '#') {
+			const codePoint = ref[1] === 'x' || ref[1] === 'X' ? parseInt(ref.substring(2), 16) : parseInt(ref.substring(1), 10);
+			return codePoint > 0 && codePoint <= 0x10FFFF ? String.fromCodePoint(codePoint) : match;
+		}
+		return entities[ref + ';'] || match;
+	});
 }
 
 function getWorkspaceUrl(documentUri: string, tokenContent: string, documentContext: DocumentContext, base: string | undefined): string | undefined {
@@ -67,7 +78,7 @@ function createLink(document: TextDocument, documentContext: DocumentContext, at
 		startOffset++;
 		endOffset--;
 	}
-	const workspaceUrl = getWorkspaceUrl(document.uri, tokenContent, documentContext, base);
+	const workspaceUrl = getWorkspaceUrl(document.uri, decodeCharacterReferences(tokenContent), documentContext, base);
 	if (!workspaceUrl) {
 		return undefined;
 	}
