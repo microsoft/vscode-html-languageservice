@@ -4498,6 +4498,20 @@ export const htmlData : HTMLDataV1 = {
 					"description": {
 						"kind": "markdown",
 						"value": "A Boolean attribute: if specified, the audio will automatically begin playback as soon as it can do so, without waiting for the entire audio file to finish downloading.\n\n**Note**: Sites that automatically play audio (or videos with an audio track) can be an unpleasant experience for users, so should be avoided when possible. If you must offer autoplay functionality, you should make it opt-in (requiring a user to specifically enable it). However, this can be useful when creating media elements whose source will be set at a later time, under user control."
+					},
+					"browsers": [
+						"C3",
+						"CA18",
+						"E12",
+						"FF3.5",
+						"FFA4",
+						"S3.1",
+						"SM10"
+					],
+					"status": {
+						"baseline": "high",
+						"baseline_low_date": "2016-09-13",
+						"baseline_high_date": "2019-03-13"
 					}
 				},
 				{
@@ -7038,6 +7052,7 @@ export const htmlData : HTMLDataV1 = {
 					},
 					"browsers": [
 						"C1",
+						"CA142",
 						"E12",
 						"FF1",
 						"FFA4",
@@ -8712,8 +8727,9 @@ export const htmlData : HTMLDataV1 = {
 				"SM17"
 			],
 			"status": {
-				"baseline": "low",
-				"baseline_low_date": "2023-10-13"
+				"baseline": "high",
+				"baseline_low_date": "2023-10-13",
+				"baseline_high_date": "2026-04-13"
 			}
 		},
 		{
