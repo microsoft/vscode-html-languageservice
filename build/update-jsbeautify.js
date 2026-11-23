@@ -57,16 +57,34 @@ function update(moduleName, repoPath, dest, addHeader, patch) {
                 }
             } catch (e) {
                 console.error(e);
+                process.exitCode = 1;
             }
         });
 
     }, console.error);
 }
 
+function patchDirectives(contents) {
+    const replacements = [
+        [String.raw`/ beautify( \w+[:]\w+)+ /`, String.raw`/\s*beautify(\s+\w+[:]\w+)+\s*/`],
+        [String.raw`/ (\w+)[:](\w+)/g`, String.raw`/\s+(\w+)[:](\w+)/g`],
+        [String.raw`/\sbeautify\signore:end\s/`, String.raw`/\s*beautify\s+ignore:end\s*/`],
+    ];
+    for (const [original, replacement] of replacements) {
+        const index = contents.indexOf(original);
+        if (index === -1 || contents.indexOf(original, index + original.length) !== -1) {
+            throw new Error(`Expected exactly one directive pattern: ${original}`);
+        }
+        contents = contents.replace(original, replacement);
+    }
+    return contents;
+}
+
 update('js-beautify', 'LICENSE', './src/beautify/beautify-license');
 
 // ESM version
 update('js-beautify', 'js/lib/beautify-html.js', './src/beautify/beautify-html.js', true, function (contents) {
+    contents = patchDirectives(contents);
     let topLevelFunction = '(function() {';
     let outputVar = 'var legacy_beautify_html';
     let footer = 'var style_html = legacy_beautify_html;';
@@ -91,6 +109,7 @@ export function html_beautify(html_source, options) {
 }`;
 });
 update('js-beautify', 'js/lib/beautify-css.js', './src/beautify/beautify-css.js', true, function (contents) {
+    contents = patchDirectives(contents);
     let topLevelFunction = '(function() {';
     let outputVar = 'var legacy_beautify_css';
     let footer = 'var css_beautify = legacy_beautify_css;';

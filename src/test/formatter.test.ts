@@ -405,14 +405,34 @@ suite('HTML Formatter', () => {
 			'<!--  beautify  ignore:start  -->',
 			'<div   class = "x">',
 			'</div>',
-			'<!--  beautify  ignore:end  -->'
+			'<!--  beautify  ignore:end  -->',
+			'<div   class = "y"></div>'
 		].join('\n');
 
 		var expected = [
 			'<!--  beautify  ignore:start  -->',
 			'<div   class = "x">',
 			'</div>',
-			'<!--  beautify  ignore:end  -->'
+			'<!--  beautify  ignore:end  -->',
+			'<div class="y"></div>'
+		].join('\n');
+
+		format(content, expected);
+	});
+
+	test('beautify ignore - tabs and range formatting', () => {
+		var content = [
+			'<!--beautify\tignore:start-->',
+			'|<div   class = "x"></div>|',
+			'<!--beautify\tignore:end-->',
+			'<div   class = "y"></div>'
+		].join('\n');
+
+		var expected = [
+			'<!--beautify\tignore:start-->',
+			'<div   class = "x"></div>',
+			'<!--beautify\tignore:end-->',
+			'<div   class = "y"></div>'
 		].join('\n');
 
 		format(content, expected);
@@ -449,6 +469,30 @@ suite('HTML Formatter - Embedded CSS', () => {
 		const formatted = TextDocument.applyEdits(document, edits);
 		assert.equal(formatted, expected);
 	}
+
+	test('beautify ignore - extra whitespace in CSS comments', () => {
+		const content = [
+			'<style>',
+			'/*\tbeautify\tignore:start\t*/',
+			'a{  color : red;}',
+			'/*\tbeautify\tignore:end\t*/',
+			'b{color:blue;}',
+			'</style>'
+		].join('\n');
+
+		const expected = [
+			'<style>',
+			'  /*\tbeautify\tignore:start\t*/',
+			'a{  color : red;}',
+			'/*\tbeautify\tignore:end\t*/',
+			'  b {',
+			'    color: blue;',
+			'  }',
+			'</style>'
+		].join('\n');
+
+		formatWithOptions(content, expected, { tabSize: 2, insertSpaces: true });
+	});
 
 	test('css.newlineBetweenSelectors: false', () => {
 		var content = [
