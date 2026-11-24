@@ -99,4 +99,23 @@ suite('HTML Link Detection', () => {
 		testLinkDetection('<body><h1 id="title"></h1><a href="#body"</a></body>', [{ offset: 35, length: 5, target: 'file:///test/data/abc/test.html' }]);
 	});
 
+	for (const id of ['__proto__', 'constructor', 'toString', 'hasOwnProperty', 'valueOf']) {
+		test(`Local target with declared ID ${id}`, () => {
+			const value = `<div id="${id}"></div><a href="#${id}">link</a>`;
+			testLinkDetection(value, [{ offset: value.indexOf('#'), length: id.length + 1, target: 'file:///test/data/abc/test.html#1,9' }]);
+		});
+
+		test(`Local target with missing ID ${id}`, () => {
+			testLinkDetection(`<a href="#${id}">link</a>`, [{ offset: 9, length: id.length + 1, target: 'file:///test/data/abc/test.html' }]);
+		});
+	}
+
+	test('Local target with unquoted __proto__ ID', () => {
+		testLinkDetection('<a href="#__proto__">link</a><div id=__proto__></div>', [{ offset: 9, length: 10, target: 'file:///test/data/abc/test.html#1,38' }]);
+	});
+
+	test('Local target with __proto__ ID on a later line', () => {
+		testLinkDetection('<a href="#__proto__">link</a>\n<div id=\'__proto__\'></div>', [{ offset: 9, length: 10, target: 'file:///test/data/abc/test.html#2,9' }]);
+	});
+
 });

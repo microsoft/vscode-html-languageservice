@@ -112,7 +112,7 @@ export class HTMLDocumentLinks {
 		let lastTagName: string | undefined = undefined;
 		let afterBase = false;
 		let base: string | undefined = void 0;
-		const idLocations: { [id: string]: number | undefined } = {};
+		const idLocations: { [id: string]: number | undefined } = Object.create(null);
 
 		while (token !== TokenType.EOS) {
 			switch (token) {
