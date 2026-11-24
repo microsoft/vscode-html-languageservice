@@ -568,6 +568,9 @@ export class HTMLCompletion {
 				}
 			}
 		} else if (char === '/') {
+			if (isFollowedBy(document.getText(), offset, ScannerState.AfterOpeningEndTag, TokenType.EndTag)) {
+				return null;
+			}
 			let node: Node | undefined = htmlDocument.findNodeBefore(offset);
 			while (node && node.closed && !(node.endTagStart && (node.endTagStart > offset))) {
 				node = node.parent;
