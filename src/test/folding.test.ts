@@ -46,6 +46,24 @@ suite('HTML Folding', () => {
 		assertRanges(input, [r(0, 1)]);
 	});
 
+	test('Fold tags with different casing', () => {
+		for (const [startTag, endTag] of [['DIV', 'div'], ['div', 'DIV'], ['DiV', 'dIv']]) {
+			assertRanges([`<${startTag}>`, 'Hello', `</${endTag}>`], [r(0, 1)]);
+		}
+	});
+
+	test('Fold nested mixed-case tags around void elements', () => {
+		const input = [
+			/*0*/'<DIV>',
+			/*1*/'<Section>',
+			/*2*/'<BR>',
+			/*3*/'Hello',
+			/*4*/'</SECTION>',
+			/*5*/'</div>'
+		];
+		assertRanges(input, [r(0, 4), r(1, 3)]);
+	});
+
 	test('Fold two level', () => {
 		const input = [
 			/*0*/'<html>',
