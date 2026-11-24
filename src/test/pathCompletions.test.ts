@@ -8,7 +8,7 @@ import * as path from 'path';
 import { fileURLToPath } from 'node:url';
 import { URI } from 'vscode-uri';
 import { getDocumentContext } from './testUtil/documentContext.js';
-import { CompletionItemKind, TextDocument, getLanguageService } from '../htmlLanguageService.js';
+import { CompletionItemKind, FileType, TextDocument, getLanguageService } from '../htmlLanguageService.js';
 import { getFsProvider } from './testUtil/fsProvider.js';
 import { assertCompletion } from './completionUtil.js';
 export interface ItemDescription {
@@ -61,6 +61,34 @@ suite('HTML Path Completion', () => {
 	const workspaceFolderUri = URI.file(fixtureRoot).toString();
 	const indexHtmlUri = URI.file(path.resolve(fixtureRoot, 'index.html')).toString();
 	const aboutHtmlUri = URI.file(path.resolve(fixtureRoot, 'about/about.html')).toString();
+
+	test('Symbolic links to directories retain folder completions', async () => {
+		const ls = getLanguageService({
+			fileSystemProvider: {
+				...getFsProvider(),
+				readDirectory: async () => [
+					['assets', FileType.Directory | FileType.SymbolicLink],
+					['plain', FileType.Directory],
+					['linked.js', FileType.File | FileType.SymbolicLink],
+					['regular.js', FileType.File]
+				]
+			}
+		});
+		for (const text of ['<script src="./">', '<link rel="stylesheet" href="./">']) {
+			const document = TextDocument.create(testUri, 'html', 0, text);
+			const position = document.positionAt(text.indexOf('./') + 2);
+			const list = await ls.doComplete2(document, position, ls.parseHTMLDocument(document), getDocumentContext());
+			for (const name of ['assets', 'plain']) {
+				assertCompletion(list, { label: name + '/', kind: CompletionItemKind.Folder, resultText: text.replace('./', `./${name}/`) }, document);
+				const item = list.items.find(item => item.label === name + '/');
+				assert.equal(item?.command?.command, 'editor.action.triggerSuggest');
+				assert.equal(item?.sortText, undefined);
+			}
+			for (const name of ['linked.js', 'regular.js']) {
+				assertCompletion(list, { label: name, kind: CompletionItemKind.File, resultText: text.replace('./', `./${name}`) }, document);
+			}
+		}
+	});
 
 	test('Basics - Correct label/kind/result/command', async () => {
 		await testCompletion2For('<script src="./|">', {
