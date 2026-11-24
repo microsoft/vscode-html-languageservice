@@ -110,20 +110,10 @@ export class HTMLHover {
 				const label = '&' + entity;
 
 				if (currEntity === label) {
-					let code = entities[entity].charCodeAt(0).toString(16).toUpperCase();
-					let hex = 'U+';
-
-					if (code.length < 4) {
-						const zeroes = 4 - code.length;
-						let k = 0;
-
-						while (k < zeroes) {
-							hex += '0';
-							k += 1;
-						}
-					}
-
-					hex += code;
+					const hex = Array.from(entities[entity], character => {
+						const code = character.codePointAt(0)!.toString(16).toUpperCase();
+						return 'U+' + code.padStart(4, '0');
+					}).join(' ');
 					const contentsDoc = l10n.t('Character entity representing \'{0}\', unicode equivalent \'{1}\'', entities[entity], hex);
 					if (contentsDoc) {
 						hover = { contents: contentsDoc, range };
