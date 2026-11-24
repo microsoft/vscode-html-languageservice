@@ -82,6 +82,24 @@ suite('HTML Path Completion', () => {
 		}, indexHtmlUri);
 	});
 
+	test('Unquoted path without a slash', async () => {
+		await testCompletion2For('<script src=sta|le.js>', {
+			items: [{ label: 'src/', resultText: '<script src=src/>' }]
+		}, indexHtmlUri);
+	});
+
+	test('Unquoted path with a slash and a following attribute', async () => {
+		await testCompletion2For('<script src=./src/te|st.js defer>', {
+			items: [{ label: 'feature.js', resultText: '<script src=./src/feature.js defer>' }]
+		}, indexHtmlUri);
+	});
+
+	test('Empty unquoted path', async () => {
+		await testCompletion2For('<script src=|>', {
+			items: [{ label: 'src/', resultText: '<script src=src/>' }]
+		}, indexHtmlUri);
+	});
+
 	test('No completion for remote paths', async () => {
 		await testCompletion2For('<script src="http:">', { items: [] });
 		await testCompletion2For('<script src="http:/|">', { items: [] });
@@ -265,13 +283,11 @@ suite('HTML Path Completion', () => {
 	});
 
 	test('Unquoted Path', async () => {
-		/* Unquoted value is not supported in html language service yet
-		await testCompletion2For(`<div><a href=about/|>`, {
+		await testCompletion2For(`<div><a href=about/| >`, {
 			items: [
-				{ label: 'about.html', resultText: `<div><a href=about/about.html>` }
+				{ label: 'about.html', resultText: `<div><a href=about/about.html >` }
 			]
-		}, testUri);
-		*/
+		}, indexHtmlUri);
 	});
 
 	test('Trigger completion in src and href attributes of custom elements', async () => {
