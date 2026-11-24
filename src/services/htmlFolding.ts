@@ -140,7 +140,10 @@ export class HTMLFolding {
 				case TokenType.Comment: {
 					let startLine = document.positionAt(scanner.getTokenOffset()).line;
 					const text = scanner.getTokenText();
-					const m = text.match(/^\s*#(region\b)|(endregion\b)/);
+					// Both markers have to be anchored: without the group the `^\s*#`
+					// applies only to the first alternative, so any comment merely
+					// containing the word "endregion" closed the open region.
+					const m = text.match(/^\s*#(?:(region\b)|(endregion\b))/);
 					if (m) {
 						if (m[1]) { // start pattern match
 							stack.push({ startLine, tagName: '' }); // empty tagName marks region
