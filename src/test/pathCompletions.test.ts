@@ -16,6 +16,7 @@ export interface ItemDescription {
 	documentation?: string;
 	kind?: CompletionItemKind;
 	resultText?: string;
+	sortText?: string;
 	command?: { title: string, command: string };
 	notAvailable?: boolean;
 }
@@ -361,5 +362,29 @@ suite('HTML Path Completion', () => {
 				{ label: 'media/', kind: CompletionItemKind.Folder, resultText: '<link rel="icon" href="media/">', command: triggerSuggestCommand }
 			]
 		}, aboutHtmlUri);
+	});
+
+	test('Filter files for <link> tag with space-separated or mixed-case rel values', async () => {
+		// Multiple space-separated values
+		await testCompletion2For('<link rel="alternate stylesheet" href="./|">', {
+			items: [
+				{ label: 'styles.css', sortText: '0_styles.css', kind: CompletionItemKind.File, resultText: '<link rel="alternate stylesheet" href="./styles.css">' },
+				{ label: 'index.html', sortText: '1_index.html', kind: CompletionItemKind.File, resultText: '<link rel="alternate stylesheet" href="./index.html">' },
+			]
+		}, indexHtmlUri);
+		// Mixed case
+		await testCompletion2For('<link rel="StyleSheet" href="./|">', {
+			items: [
+				{ label: 'styles.css', sortText: '0_styles.css', kind: CompletionItemKind.File, resultText: '<link rel="StyleSheet" href="./styles.css">' },
+				{ label: 'index.html', sortText: '1_index.html', kind: CompletionItemKind.File, resultText: '<link rel="StyleSheet" href="./index.html">' },
+			]
+		}, indexHtmlUri);
+		// Icon keyword combined with another value
+		await testCompletion2For('<link rel="shortcut icon" href="./|">', {
+			items: [
+				{ label: 'styles.css', sortText: '1_styles.css', kind: CompletionItemKind.File, resultText: '<link rel="shortcut icon" href="./styles.css">' },
+				{ label: 'index.html', sortText: '1_index.html', kind: CompletionItemKind.File, resultText: '<link rel="shortcut icon" href="./index.html">' },
+			]
+		}, indexHtmlUri);
 	});
 });

@@ -98,14 +98,18 @@ export class PathCompletionParticipant implements ICompletionParticipant {
 		// Handle <link> tag with rel="stylesheet"
 		if (context.tag === 'link' && context.attribute === 'href' && context.attributes) {
 			const rel = context.attributes['rel'];
-			if (rel === 'stylesheet' || rel === '"stylesheet"' || rel === "'stylesheet'") {
-				// Filter to CSS files for stylesheets
-				return { extensions: ['.css', '.scss', '.sass', '.less'], exclusive: false };
-			}
-			if (rel === 'icon' || rel === '"icon"' || rel === "'icon'" || 
-			    rel === 'apple-touch-icon' || rel === '"apple-touch-icon"' || rel === "'apple-touch-icon'") {
-				// Filter to image files for icons
-				return { extensions: ['.ico', '.png', '.svg', '.jpg', '.jpeg', '.gif', '.webp'], exclusive: false };
+
+			if (rel) {
+				const relTokens = getRelTokens(rel);
+				if (relTokens.includes('stylesheet')) {
+					// Filter to CSS files for stylesheets
+					return { extensions: ['.css', '.scss', '.sass', '.less'], exclusive: false };
+				}
+
+				if (relTokens.includes('icon') || relTokens.includes('apple-touch-icon')) {
+					// Filter to image files for icons
+					return { extensions: ['.ico', '.png', '.svg', '.jpg', '.jpeg', '.gif', '.webp'], exclusive: false };
+				}
 			}
 		}
 
@@ -142,6 +146,10 @@ function stripQuotes(fullValue: string) {
 	} else {
 		return fullValue;
 	}
+}
+
+function getRelTokens(relValue: string): string[] {
+	return stripQuotes(relValue).toLowerCase().split(/\s+/).filter(token => token.length > 0);
 }
 
 function isCompletablePath(value: string) {
