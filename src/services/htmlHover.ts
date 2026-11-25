@@ -56,11 +56,12 @@ export class HTMLHover {
 		}
 
 		function getAttrHover(currTag: string, currAttr: string, range: Range): Hover | null {
+			currAttr = currAttr.toLowerCase();
 			for (const provider of dataProviders) {
 				let hover: Hover | null = null;
 
 				provider.provideAttributes(currTag).forEach(attr => {
-					if (currAttr === attr.name && attr.description) {
+					if (currAttr === attr.name.toLowerCase() && attr.description) {
 						const contentsDoc = generateDocumentation(attr, options, doesSupportMarkdown);
 						if (contentsDoc) {
 							hover = { contents: contentsDoc, range };
