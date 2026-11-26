@@ -99,4 +99,64 @@ suite('HTML Link Detection', () => {
 		testLinkDetection('<body><h1 id="title"></h1><a href="#body"</a></body>', [{ offset: 35, length: 5, target: 'file:///test/data/abc/test.html' }]);
 	});
 
+	const encodedTargets = [
+		{ id: 'title', fragment: 't%69tle' },
+		{ id: 'caf\u00e9', fragment: 'caf%C3%A9' },
+		{ id: 'caf\u00e9', fragment: 'caf%c3%a9' },
+		{ id: 'rocket\uD83D\uDE80', fragment: 'rocket%F0%9F%9A%80' },
+		{ id: 'a/b', fragment: 'a%2Fb' },
+		{ id: 'a#b', fragment: 'a%23b' },
+		{ id: 'a%b', fragment: 'a%25b' },
+		{ id: 'a?b', fragment: 'a%3Fb' },
+		{ id: 'a+b', fragment: 'a%2Bb' },
+		{ id: 'a%2Fb', fragment: 'a%252Fb' },
+	];
+	for (const { id, fragment } of encodedTargets) {
+		for (const prefix of ['', 'file:///test/data/abc/test.html']) {
+			test(`Local encoded target ${prefix}#${fragment}`, () => {
+				const href = `${prefix}#${fragment}`;
+				const value = `<div id="${id}"></div><a href="${href}">link</a>`;
+				testLinkDetection(value, [{ offset: value.indexOf(href), length: href.length, target: 'file:///test/data/abc/test.html#1,9' }]);
+			});
+		}
+	}
+
+	for (const rawFirst of [true, false]) {
+		test(`Local raw fragment match takes precedence, raw ID first: ${rawFirst}`, () => {
+			const raw = '<div id="a%2Fb"></div>';
+			const decoded = '<div id="a/b"></div>';
+			const value = (rawFirst ? raw + decoded : decoded + raw) + '<a href="#a%2Fb">link</a>';
+			testLinkDetection(value, [{ offset: value.indexOf('#'), length: 6, target: `file:///test/data/abc/test.html#1,${value.indexOf('"a%2Fb"') + 1}` }]);
+		});
+	}
+
+	for (const fragment of ['bad%', 'bad%GG', 'bad%C3%28']) {
+		test(`Malformed local fragment remains an exact ID match: ${fragment}`, () => {
+			const value = `<div id="${fragment}"></div><a href="#${fragment}">link</a>`;
+			testLinkDetection(value, [{ offset: value.indexOf('#'), length: fragment.length + 1, target: 'file:///test/data/abc/test.html#1,9' }]);
+		});
+
+		test(`Malformed missing local fragment does not throw: ${fragment}`, () => {
+			testLinkDetection(`<a href="#${fragment}">link</a>`, [{ offset: 9, length: fragment.length + 1, target: 'file:///test/data/abc/test.html' }]);
+		});
+	}
+
+	test('Encoded missing local target keeps the existing document fallback', () => {
+		const href = '#caf%C3%A9';
+		const value = `<div id="other"></div><a href="${href}">link</a>`;
+		testLinkDetection(value, [{ offset: value.indexOf(href), length: href.length, target: 'file:///test/data/abc/test.html' }]);
+	});
+
+	test('Encoded external fragment is not rewritten', () => {
+		const href = 'https://example.com/page#caf%C3%A9';
+		const value = `<div id="caf\u00e9"></div><a href="${href}">link</a>`;
+		testLinkDetection(value, [{ offset: value.indexOf(href), length: href.length, target: href }]);
+	});
+
+	for (const fragment of ['con%73tructor', '%74oString', '%5F_proto__', '%68asOwnProperty']) {
+		test(`Decoded fragment does not resolve an undeclared inherited name: ${fragment}`, () => {
+			testLinkDetection(`<a href="#${fragment}">link</a>`, [{ offset: 9, length: fragment.length + 1, target: 'file:///test/data/abc/test.html' }]);
+		});
+	}
+
 });
