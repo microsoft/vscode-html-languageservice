@@ -155,7 +155,17 @@ export class HTMLDocumentLinks {
 			const localWithHash = document.uri + '#';
 			if (link.target && strings.startsWith(link.target, localWithHash)) {
 				const target = link.target.substring(localWithHash.length);
-				const offset = idLocations[target];
+				let offset = idLocations[target];
+				if (offset === undefined) {
+					try {
+						const decodedOffset = idLocations[decodeURIComponent(target)];
+						if (typeof decodedOffset === 'number') {
+							offset = decodedOffset;
+						}
+					} catch {
+						// Keep the document fallback for malformed URI escapes.
+					}
+				}
 				if (offset !== undefined) {
 					const pos = document.positionAt(offset);
 					link.target = `${localWithHash}${pos.line + 1},${pos.character + 1}`;
